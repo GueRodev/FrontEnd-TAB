@@ -1,3 +1,6 @@
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@400;500;600;700;800&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -35,19 +38,12 @@
     --radius: 0.5rem;
 
     --sidebar-background: 0 0% 98%;
-
     --sidebar-foreground: 240 5.3% 26.1%;
-
     --sidebar-primary: 240 5.9% 10%;
-
     --sidebar-primary-foreground: 0 0% 98%;
-
     --sidebar-accent: 240 4.8% 95.9%;
-
     --sidebar-accent-foreground: 240 5.9% 10%;
-
     --sidebar-border: 220 13% 91%;
-
     --sidebar-ring: 217.2 91.2% 59.8%;
   }
 
@@ -96,6 +92,32 @@
   }
 
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground font-sans;
+  }
+}
+
+@layer components {
+  .animate-hover {
+    @apply transition-all duration-300 ease-in-out hover:scale-105;
+  }
+  
+  .card-hover {
+    @apply transition-all duration-300 hover:-translate-y-2 hover:shadow-lg;
+  }
+  
+  .text-gradient {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-brand-darkBlue to-brand-purple;
+  }
+  
+  .btn-primary {
+    @apply bg-brand-orange text-white px-6 py-3 rounded-md font-medium hover:bg-opacity-90 transition-all;
+  }
+  
+  .btn-secondary {
+    @apply bg-brand-darkBlue text-white px-6 py-3 rounded-md font-medium hover:bg-opacity-90 transition-all;
+  }
+  
+  .btn-outline {
+    @apply border-2 border-brand-darkBlue text-brand-darkBlue px-6 py-3 rounded-md font-medium hover:bg-brand-darkBlue hover:text-white transition-all;
   }
 }
