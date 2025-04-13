@@ -1,17 +1,10 @@
-
-import React, { useEffect, useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowRight, Star, ShoppingCart, Heart } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { toast } from '@/components/ui/use-toast';
-import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
-} from "@/components/ui/carousel";
+import { AutoCarousel } from "@/components/ui/auto-carousel";
 
 interface NewProduct {
   id: string;
@@ -107,6 +100,8 @@ const newProducts: NewProduct[] = [
   }
 ];
 
+const extendedProducts = [...newProducts, ...newProducts];
+
 const NewArrivalsCarousel: React.FC = () => {
   const [wishlist, setWishlist] = useState<string[]>([]);
   const [visibleProducts, setVisibleProducts] = useState<NewProduct[]>([]);
@@ -114,7 +109,7 @@ const NewArrivalsCarousel: React.FC = () => {
   useEffect(() => {
     // Simulate products being loaded gradually for animation effect
     const timer = setTimeout(() => {
-      setVisibleProducts(newProducts);
+      setVisibleProducts(extendedProducts);
     }, 300);
     
     return () => clearTimeout(timer);
@@ -172,80 +167,73 @@ const NewArrivalsCarousel: React.FC = () => {
           </div>
           
           <div className="w-full md:w-2/3">
-            <Carousel
-              opts={{
-                align: "start",
-                loop: true,
-              }}
-              className="w-full"
+            <AutoCarousel 
+              speed={40}
+              direction="right" 
+              fadeEdges={true}
+              className="after:from-[#FFF8F0] before:from-[#FFF8F0] py-4"
             >
-              <CarouselContent className="-ml-1 md:-ml-2">
-                {visibleProducts.map((product, index) => (
-                  <CarouselItem 
-                    key={product.id} 
-                    className="pl-1 md:pl-2 md:basis-1/2 lg:basis-1/3"
-                    style={{ 
-                      animationDelay: `${index * 100}ms`,
-                    }}
+              {visibleProducts.map((product, index) => (
+                <div 
+                  key={`${product.id}-${index}`}
+                  className="flex-shrink-0 w-full sm:w-1/2 md:w-1/2 lg:w-1/3 pl-4 pr-4"
+                  style={{ 
+                    animationDelay: `${index * 100}ms`,
+                  }}
+                >
+                  <Link 
+                    to={`/product/${product.id}`}
+                    className="block"
                   >
-                    <Link 
-                      to={`/product/${product.id}`}
-                      className="block"
-                    >
-                      <div className="bg-white rounded-xl overflow-hidden shadow-md group transition-all duration-300 hover:-translate-y-1 hover:shadow-lg">
-                        <div className="relative h-52">
-                          <img 
-                            src={product.image} 
-                            alt={product.name} 
-                            className="w-full h-full object-cover object-center transform transition-transform group-hover:scale-105 duration-300"
+                    <div className="bg-white rounded-xl overflow-hidden shadow-md group transition-all duration-300 hover:-translate-y-1 hover:shadow-lg h-full">
+                      <div className="relative h-52">
+                        <img 
+                          src={product.image} 
+                          alt={product.name} 
+                          className="w-full h-full object-cover object-center transform transition-transform group-hover:scale-105 duration-300"
+                        />
+                        <Badge className="absolute top-3 left-3 bg-gradient-to-r from-red-500 to-brand-orange text-white">NEW</Badge>
+                        <button
+                          onClick={(e) => toggleWishlist(e, product.id)}
+                          className="absolute top-3 right-3 w-8 h-8 bg-white rounded-full flex items-center justify-center shadow-md hover:bg-brand-orange hover:text-white transition-colors"
+                        >
+                          <Heart 
+                            size={16} 
+                            className={wishlist.includes(product.id) ? 'fill-red-500 text-red-500' : ''} 
                           />
-                          <Badge className="absolute top-3 left-3 bg-gradient-to-r from-red-500 to-brand-orange text-white">NEW</Badge>
-                          <button
-                            onClick={(e) => toggleWishlist(e, product.id)}
-                            className="absolute top-3 right-3 w-8 h-8 bg-white rounded-full flex items-center justify-center shadow-md hover:bg-brand-orange hover:text-white transition-colors"
-                          >
-                            <Heart 
-                              size={16} 
-                              className={wishlist.includes(product.id) ? 'fill-red-500 text-red-500' : ''} 
-                            />
-                          </button>
+                        </button>
+                      </div>
+                      
+                      <div className="p-4">
+                        <div className="flex justify-between items-center mb-2">
+                          <span className="text-xs font-medium text-gray-500">{product.series}</span>
+                          <div className="flex items-center gap-1">
+                            <Star size={12} className="text-yellow-400 fill-yellow-400" />
+                            <span className="text-xs font-medium">{product.rating}</span>
+                          </div>
                         </div>
                         
-                        <div className="p-4">
-                          <div className="flex justify-between items-center mb-2">
-                            <span className="text-xs font-medium text-gray-500">{product.series}</span>
-                            <div className="flex items-center gap-1">
-                              <Star size={12} className="text-yellow-400 fill-yellow-400" />
-                              <span className="text-xs font-medium">{product.rating}</span>
-                            </div>
-                          </div>
-                          
-                          <h3 className="font-semibold text-brand-darkBlue hover:text-brand-orange transition-colors mb-2 line-clamp-1">
-                            {product.name}
-                          </h3>
-                          
-                          <div className="flex justify-between items-center mt-4">
-                            <span className="font-bold text-brand-darkBlue">${product.price.toFixed(2)}</span>
-                            <Button
-                              onClick={(e) => addToCart(e, product)}
-                              size="sm"
-                              className="bg-brand-darkBlue hover:bg-brand-orange text-white transition-colors"
-                            >
-                              <ShoppingCart size={14} className="mr-1" />
-                              Add
-                            </Button>
-                          </div>
+                        <h3 className="font-semibold text-brand-darkBlue hover:text-brand-orange transition-colors mb-2 line-clamp-1">
+                          {product.name}
+                        </h3>
+                        
+                        <div className="flex justify-between items-center mt-4">
+                          <span className="font-bold text-brand-darkBlue">${product.price.toFixed(2)}</span>
+                          <Button
+                            onClick={(e) => addToCart(e, product)}
+                            size="sm"
+                            className="bg-brand-darkBlue hover:bg-brand-orange text-white transition-colors"
+                          >
+                            <ShoppingCart size={14} className="mr-1" />
+                            Add
+                          </Button>
                         </div>
                       </div>
-                    </Link>
-                  </CarouselItem>
-                ))}
-              </CarouselContent>
-              <div className="flex items-center justify-end mt-4 gap-2">
-                <CarouselPrevious className="static transform-none h-9 w-9 rounded-full hover:bg-brand-orange hover:text-white" />
-                <CarouselNext className="static transform-none h-9 w-9 rounded-full hover:bg-brand-orange hover:text-white" />
-              </div>
-            </Carousel>
+                    </div>
+                  </Link>
+                </div>
+              ))}
+            </AutoCarousel>
           </div>
         </div>
       </div>

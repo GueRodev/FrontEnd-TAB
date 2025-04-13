@@ -1,15 +1,8 @@
-
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
-import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
-} from "@/components/ui/carousel";
 import { Badge } from "@/components/ui/badge";
+import { AutoCarousel } from "@/components/ui/auto-carousel";
 
 interface EditionProduct {
   id: string;
@@ -70,6 +63,8 @@ const editionProducts: EditionProduct[] = [
   }
 ];
 
+const extendedProducts = [...editionProducts, ...editionProducts];
+
 const EditionCarousel: React.FC = () => {
   return (
     <section className="py-16 bg-[#F5F3FF]">
@@ -94,55 +89,51 @@ const EditionCarousel: React.FC = () => {
           </div>
           
           <div className="w-full md:w-2/3">
-            <Carousel
-              opts={{
-                align: "start",
-                loop: true,
-              }}
-              className="w-full"
+            <AutoCarousel 
+              speed={35} 
+              direction="left"
+              fadeEdges={true}
+              className="after:from-[#F5F3FF] before:from-[#F5F3FF] py-4"
             >
-              <CarouselContent className="-ml-1 md:-ml-2">
-                {editionProducts.map((product) => (
-                  <CarouselItem key={product.id} className="pl-1 md:pl-2 md:basis-1/2 lg:basis-1/3">
-                    <Link to={`/product/${product.id}`}>
-                      <div className="bg-white rounded-xl overflow-hidden shadow-md transition-transform duration-300 hover:-translate-y-1 hover:shadow-lg">
-                        <div className="relative h-64 bg-gradient-to-b from-brand-darkBlue to-purple-800 flex items-center justify-center">
-                          <div className="absolute w-full h-full bg-[radial-gradient(circle,transparent_30%,rgba(0,0,0,0.3)_70%)]"></div>
-                          <div className="relative w-40 h-40 flex items-center justify-center z-10">
-                            <div className="absolute inset-0 bg-white rounded-full opacity-20 animate-pulse"></div>
-                            <img 
-                              src={product.image} 
-                              alt={product.name} 
-                              className="w-32 h-32 object-contain z-10 transform transition-transform hover:scale-110 duration-300"
-                            />
-                          </div>
-                          {product.badgeType && (
-                            <Badge className={`absolute top-3 left-3 ${
-                              product.badgeType === 'limited' ? 'bg-amber-500' : 
-                              product.badgeType === 'exclusive' ? 'bg-purple-600' : 
-                              'bg-blue-600'
-                            }`}>
-                              {product.badgeType === 'limited' ? 'Limited Edition' : 
-                               product.badgeType === 'exclusive' ? 'Exclusive' : 
-                               'Collector\'s Item'}
-                            </Badge>
-                          )}
+              {extendedProducts.map((product, index) => (
+                <div 
+                  key={`${product.id}-${index}`} 
+                  className="flex-shrink-0 w-full sm:w-1/2 md:w-1/2 lg:w-1/3 pl-4 pr-4"
+                >
+                  <Link to={`/product/${product.id}`}>
+                    <div className="bg-white rounded-xl overflow-hidden shadow-md transition-transform duration-300 hover:-translate-y-1 hover:shadow-lg h-full">
+                      <div className="relative h-64 bg-gradient-to-b from-brand-darkBlue to-purple-800 flex items-center justify-center">
+                        <div className="absolute w-full h-full bg-[radial-gradient(circle,transparent_30%,rgba(0,0,0,0.3)_70%)]"></div>
+                        <div className="relative w-40 h-40 flex items-center justify-center z-10">
+                          <div className="absolute inset-0 bg-white rounded-full opacity-20 animate-pulse"></div>
+                          <img 
+                            src={product.image} 
+                            alt={product.name} 
+                            className="w-32 h-32 object-contain z-10 transform transition-transform hover:scale-110 duration-300"
+                          />
                         </div>
-                        <div className="p-4">
-                          <div className="text-xs font-medium text-gray-500 mb-1">{product.series}</div>
-                          <h3 className="font-semibold text-lg text-brand-darkBlue mb-1">{product.name}</h3>
-                          <div className="text-sm text-gray-600">{product.category}</div>
-                        </div>
+                        {product.badgeType && (
+                          <Badge className={`absolute top-3 left-3 ${
+                            product.badgeType === 'limited' ? 'bg-amber-500' : 
+                            product.badgeType === 'exclusive' ? 'bg-purple-600' : 
+                            'bg-blue-600'
+                          }`}>
+                            {product.badgeType === 'limited' ? 'Limited Edition' : 
+                             product.badgeType === 'exclusive' ? 'Exclusive' : 
+                             'Collector\'s Item'}
+                          </Badge>
+                        )}
                       </div>
-                    </Link>
-                  </CarouselItem>
-                ))}
-              </CarouselContent>
-              <div className="flex items-center justify-end mt-4 gap-2">
-                <CarouselPrevious className="static transform-none h-9 w-9 rounded-full hover:bg-purple-500 hover:text-white" />
-                <CarouselNext className="static transform-none h-9 w-9 rounded-full hover:bg-purple-500 hover:text-white" />
-              </div>
-            </Carousel>
+                      <div className="p-4">
+                        <div className="text-xs font-medium text-gray-500 mb-1">{product.series}</div>
+                        <h3 className="font-semibold text-lg text-brand-darkBlue mb-1">{product.name}</h3>
+                        <div className="text-sm text-gray-600">{product.category}</div>
+                      </div>
+                    </div>
+                  </Link>
+                </div>
+              ))}
+            </AutoCarousel>
           </div>
         </div>
       </div>
