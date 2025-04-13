@@ -4,6 +4,8 @@ import Header from '@/components/Header';
 import Hero from '@/components/Hero';
 import CategorySection from '@/components/CategorySection';
 import FeaturedProducts from '@/components/FeaturedProducts';
+import EditionCarousel from '@/components/EditionCarousel';
+import NewArrivalsCarousel from '@/components/NewArrivalsCarousel';
 import PromotionalBanner from '@/components/PromotionalBanner';
 import Testimonials from '@/components/Testimonials';
 import NewsletterSignup from '@/components/NewsletterSignup';
@@ -16,6 +18,8 @@ const Index = () => {
       <main className="flex-grow">
         <Hero />
         <CategorySection />
+        <EditionCarousel />
+        <NewArrivalsCarousel />
         <FeaturedProducts />
         <PromotionalBanner />
         <Testimonials />
