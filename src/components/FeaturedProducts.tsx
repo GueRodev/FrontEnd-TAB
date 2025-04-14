@@ -4,7 +4,6 @@ import { Link } from 'react-router-dom';
 import { Heart, ShoppingCart, Star, ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { toast } from '@/components/ui/use-toast';
-import { AutoCarousel } from '@/components/ui/auto-carousel';
 
 interface Product {
   id: string;
@@ -71,9 +70,6 @@ const featuredProducts: Product[] = [
   }
 ];
 
-// Double the products array for smoother infinite scrolling
-const extendedProducts = [...featuredProducts, ...featuredProducts];
-
 const FeaturedProducts: React.FC = () => {
   const [wishlist, setWishlist] = useState<string[]>([]);
 
@@ -121,77 +117,70 @@ const FeaturedProducts: React.FC = () => {
           </div>
         </div>
         
-        <AutoCarousel 
-          speed={30} 
-          direction="left"
-          fadeEdges={true}
-          className="after:from-gray-50 before:from-gray-50 py-4 mb-12"
-        >
-          {extendedProducts.map((product, index) => (
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mb-12">
+          {featuredProducts.map((product) => (
             <div 
-              key={`${product.id}-${index}`}
-              className="flex-shrink-0 w-full sm:w-1/2 md:w-1/3 lg:w-1/4 pl-4 pr-4"
+              key={product.id}
+              className="bg-white rounded-lg overflow-hidden shadow-md group card-hover h-full"
             >
-              <div className="bg-white rounded-lg overflow-hidden shadow-md group card-hover h-full">
-                <div className="relative">
-                  <Link to={`/product/${product.id}`} className="block aspect-square overflow-hidden">
-                    <img 
-                      src={product.image} 
-                      alt={product.name}
-                      className="w-full h-full object-cover object-center transform group-hover:scale-105 transition-transform duration-500"
-                    />
-                  </Link>
-                  <button
-                    onClick={(e) => toggleWishlist(e, product.id)}
-                    className="absolute top-4 right-4 w-8 h-8 bg-white rounded-full flex items-center justify-center shadow-md hover:bg-brand-orange hover:text-white transition-colors"
-                  >
-                    <Heart 
-                      size={18} 
-                      className={wishlist.includes(product.id) ? 'fill-red-500 text-red-500' : ''} 
-                    />
-                  </button>
-                  {product.badge && (
-                    <span className={`absolute top-4 left-4 px-2 py-1 text-xs font-semibold rounded-full 
-                      ${product.badge === 'New' ? 'bg-green-500 text-white' : 
-                        product.badge === 'Bestseller' ? 'bg-brand-purple text-white' : 
-                        product.badge === 'Sale' ? 'bg-red-500 text-white' : 
-                        'bg-brand-orange text-white'}`
-                    }>
-                      {product.badge}
-                    </span>
-                  )}
+              <div className="relative">
+                <Link to={`/product/${product.id}`} className="block aspect-square overflow-hidden">
+                  <img 
+                    src={product.image} 
+                    alt={product.name}
+                    className="w-full h-full object-cover object-center transform group-hover:scale-105 transition-transform duration-500"
+                  />
+                </Link>
+                <button
+                  onClick={(e) => toggleWishlist(e, product.id)}
+                  className="absolute top-4 right-4 w-8 h-8 bg-white rounded-full flex items-center justify-center shadow-md hover:bg-brand-orange hover:text-white transition-colors"
+                >
+                  <Heart 
+                    size={18} 
+                    className={wishlist.includes(product.id) ? 'fill-red-500 text-red-500' : ''} 
+                  />
+                </button>
+                {product.badge && (
+                  <span className={`absolute top-4 left-4 px-2 py-1 text-xs font-semibold rounded-full 
+                    ${product.badge === 'New' ? 'bg-green-500 text-white' : 
+                      product.badge === 'Bestseller' ? 'bg-brand-purple text-white' : 
+                      product.badge === 'Sale' ? 'bg-red-500 text-white' : 
+                      'bg-brand-orange text-white'}`
+                  }>
+                    {product.badge}
+                  </span>
+                )}
+              </div>
+              
+              <div className="p-4">
+                <div className="flex items-center gap-1 mb-2">
+                  <Star size={16} className="text-yellow-400 fill-yellow-400" />
+                  <span className="text-sm text-gray-700">{product.rating}</span>
+                  <span className="text-xs text-gray-400 ml-1">(120)</span>
+                  <span className="text-xs text-gray-500 ml-auto">{product.category}</span>
                 </div>
                 
-                <div className="p-4">
-                  <div className="flex items-center gap-1 mb-2">
-                    <Star size={16} className="text-yellow-400 fill-yellow-400" />
-                    <span className="text-sm text-gray-700">{product.rating}</span>
-                    <span className="text-xs text-gray-400 ml-1">(120)</span>
-                    <span className="text-xs text-gray-500 ml-auto">{product.category}</span>
-                  </div>
-                  
-                  <Link to={`/product/${product.id}`} className="block">
-                    <h3 className="font-semibold text-brand-darkBlue hover:text-brand-orange transition-colors mb-2 line-clamp-2">
-                      {product.name}
-                    </h3>
-                  </Link>
-                  
-                  <div className="flex justify-between items-center mt-4">
-                    <span className="font-bold text-lg">${product.price.toFixed(2)}</span>
-                    <Button
-                      onClick={(e) => addToCart(e, product)}
-                      size="sm"
-                      className="bg-brand-darkBlue hover:bg-brand-orange text-white transition-colors flex items-center gap-2"
-                    >
-                      <ShoppingCart size={16} />
-                      Add
-                    </Button>
-                  </div>
+                <Link to={`/product/${product.id}`} className="block">
+                  <h3 className="font-semibold text-brand-darkBlue hover:text-brand-orange transition-colors mb-2 line-clamp-2">
+                    {product.name}
+                  </h3>
+                </Link>
+                
+                <div className="flex justify-between items-center mt-4">
+                  <span className="font-bold text-lg">${product.price.toFixed(2)}</span>
+                  <Button
+                    onClick={(e) => addToCart(e, product)}
+                    size="sm"
+                    className="bg-brand-darkBlue hover:bg-brand-orange text-white transition-colors flex items-center gap-2"
+                  >
+                    <ShoppingCart size={16} />
+                    Add
+                  </Button>
                 </div>
               </div>
             </div>
           ))}
-        </AutoCarousel>
+        </div>
         
         <div className="flex justify-center">
           <Link 
