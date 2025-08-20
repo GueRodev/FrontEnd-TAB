@@ -20,12 +20,14 @@ const Header: React.FC = () => {
   }, []);
 
   const navigationItems = [
-    { name: 'LEGO Sets', href: '/category/lego' },
-    { name: 'Star Wars', href: '/category/star-wars' },
-    { name: 'Superheroes', href: '/category/superheroes' },
-    { name: 'Collectibles', href: '/category/collectibles' },
-    { name: 'New Arrivals', href: '/new-arrivals' },
-    { name: 'On Sale', href: '/on-sale' },
+    { name: 'Lego', href: '/category/lego' },
+    { name: 'Funkos', href: '/category/funkos' },
+    { name: 'Anime', href: '/category/anime' },
+    { name: 'Coleccionables', href: '/category/coleccionables' },
+    { name: 'Peluches', href: '/category/peluches' },
+    { name: 'Starwars', href: '/category/starwars' },
+    { name: 'HarryPotter', href: '/category/harrypotter' },
+    { name: 'Otros', href: '/category/otros' },
   ];
 
   return (
