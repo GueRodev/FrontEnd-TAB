@@ -4,6 +4,14 @@ import { Link } from 'react-router-dom';
 import { Menu, X, ShoppingCart, Search, User, Heart } from 'lucide-react';
 import Logo from './Logo';
 import { cn } from '@/lib/utils';
+import {
+  NavigationMenu,
+  NavigationMenuContent,
+  NavigationMenuItem,
+  NavigationMenuLink,
+  NavigationMenuList,
+  NavigationMenuTrigger,
+} from "@/components/ui/navigation-menu";
 
 const Header: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -20,7 +28,6 @@ const Header: React.FC = () => {
   }, []);
 
   const navigationItems = [
-    { name: 'Lego', href: '/category/lego' },
     { name: 'Funkos', href: '/category/funkos' },
     { name: 'Anime', href: '/category/anime' },
     { name: 'Coleccionables', href: '/category/coleccionables' },
@@ -28,6 +35,13 @@ const Header: React.FC = () => {
     { name: 'Starwars', href: '/category/starwars' },
     { name: 'HarryPotter', href: '/category/harrypotter' },
     { name: 'Otros', href: '/category/otros' },
+  ];
+
+  const legoSubcategories = [
+    { name: 'Sets', href: '/category/lego/sets' },
+    { name: 'Polybag', href: '/category/lego/polybag' },
+    { name: 'Figuras', href: '/category/lego/figuras' },
+    { name: 'Piezas', href: '/category/lego/piezas' },
   ];
 
   return (
@@ -45,6 +59,30 @@ const Header: React.FC = () => {
         
         {/* Desktop Navigation */}
         <nav className="hidden lg:flex items-center space-x-8">
+          <NavigationMenu>
+            <NavigationMenuList>
+              <NavigationMenuItem>
+                <NavigationMenuTrigger className="text-brand-darkBlue font-semibold hover:text-brand-orange transition-colors bg-transparent hover:bg-transparent focus:bg-transparent data-[active]:bg-transparent data-[state=open]:bg-transparent">
+                  Lego
+                </NavigationMenuTrigger>
+                <NavigationMenuContent>
+                  <div className="grid w-[200px] gap-1 p-2 bg-white shadow-lg border rounded-md">
+                    {legoSubcategories.map((subcategory) => (
+                      <NavigationMenuLink key={subcategory.name} asChild>
+                        <Link
+                          to={subcategory.href}
+                          className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
+                        >
+                          <div className="text-sm font-medium leading-none">{subcategory.name}</div>
+                        </Link>
+                      </NavigationMenuLink>
+                    ))}
+                  </div>
+                </NavigationMenuContent>
+              </NavigationMenuItem>
+            </NavigationMenuList>
+          </NavigationMenu>
+          
           {navigationItems.map((item) => (
             <Link
               key={item.name}
@@ -101,6 +139,22 @@ const Header: React.FC = () => {
         <div className="lg:hidden bg-white shadow-lg animate-fade-in absolute top-full left-0 w-full">
           <div className="container mx-auto py-4 px-4">
             <nav className="flex flex-col space-y-4">
+              <div className="border-b pb-2">
+                <div className="text-brand-darkBlue font-semibold py-2">Lego</div>
+                <div className="ml-4 space-y-2">
+                  {legoSubcategories.map((subcategory) => (
+                    <Link
+                      key={subcategory.name}
+                      to={subcategory.href}
+                      className="block text-gray-600 py-1 hover:text-brand-orange transition-colors"
+                      onClick={() => setIsMenuOpen(false)}
+                    >
+                      {subcategory.name}
+                    </Link>
+                  ))}
+                </div>
+              </div>
+              
               {navigationItems.map((item) => (
                 <Link
                   key={item.name}
