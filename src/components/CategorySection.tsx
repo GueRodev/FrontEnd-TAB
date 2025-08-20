@@ -14,24 +14,59 @@ interface Category {
 const categories: Category[] = [
   {
     id: 'lego',
-    name: 'LEGO Sets',
+    name: 'Lego',
     image: '/lovable-uploads/51190e3f-2193-4b2a-85ac-e5453680e7bf.png',
-    description: 'Explore our vast collection of LEGO sets for all ages and interests.',
+    description: 'Explora nuestra vasta colección de sets LEGO para todas las edades.',
     link: '/category/lego'
   },
   {
-    id: 'star-wars',
-    name: 'Star Wars',
-    image: '/lovable-uploads/9c75102e-2923-40ad-8aaf-ff7279ad2993.png',
-    description: 'Join the force with our premium Star Wars merchandise and collectibles.',
-    link: '/category/star-wars'
+    id: 'funkos',
+    name: 'Funkos',
+    image: '/lovable-uploads/fbc358a3-bb7b-4fe9-aba6-e1d0b71a13a0.png',
+    description: 'Descubre figuras Funko Pop de tus personajes favoritos.',
+    link: '/category/funkos'
   },
   {
-    id: 'superhero',
-    name: 'Superheroes',
+    id: 'anime',
+    name: 'Anime',
+    image: '/lovable-uploads/17088b0e-dee8-4716-b76d-00be5a07559d.png',
+    description: 'Figuras y merchandising de tus series de anime favoritas.',
+    link: '/category/anime'
+  },
+  {
+    id: 'coleccionables',
+    name: 'Coleccionables',
+    image: '/lovable-uploads/51190e3f-2193-4b2a-85ac-e5453680e7bf.png',
+    description: 'Artículos únicos y ediciones limitadas para coleccionistas.',
+    link: '/category/coleccionables'
+  },
+  {
+    id: 'peluches',
+    name: 'Peluches',
     image: '/lovable-uploads/fbc358a3-bb7b-4fe9-aba6-e1d0b71a13a0.png',
-    description: 'Discover action figures and sets from Marvel, DC, and more.',
-    link: '/category/superheroes'
+    description: 'Peluches suaves y adorables de todas tus franquicias favoritas.',
+    link: '/category/peluches'
+  },
+  {
+    id: 'starwars',
+    name: 'Starwars',
+    image: '/lovable-uploads/17088b0e-dee8-4716-b76d-00be5a07559d.png',
+    description: 'Únete a la fuerza con nuestro merchandising premium de Star Wars.',
+    link: '/category/starwars'
+  },
+  {
+    id: 'harrypotter',
+    name: 'HarryPotter',
+    image: '/lovable-uploads/51190e3f-2193-4b2a-85ac-e5453680e7bf.png',
+    description: 'Artículos mágicos del mundo de Harry Potter.',
+    link: '/category/harrypotter'
+  },
+  {
+    id: 'otros',
+    name: 'Otros',
+    image: '/lovable-uploads/fbc358a3-bb7b-4fe9-aba6-e1d0b71a13a0.png',
+    description: 'Descubre más productos únicos y especiales.',
+    link: '/category/otros'
   }
 ];
 
