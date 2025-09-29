@@ -2,7 +2,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { ChevronRight } from 'lucide-react';
-import SpecialCollectionsCarousel from './SpecialCollectionsCarousel';
 
 interface Category {
   id: string;
@@ -113,7 +112,9 @@ const CategorySection: React.FC = () => {
           ))}
         </div>
         
-        <SpecialCollectionsCarousel />
+        <div className="text-center py-16">
+          <p className="text-xl text-gray-600">Carrusel Component Here</p>
+        </div>
       </div>
     </section>
   );
