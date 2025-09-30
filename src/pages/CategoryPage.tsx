@@ -107,31 +107,6 @@ const CategoryPage: React.FC = () => {
                     </div>
                   </div>
                   
-                  <div>
-                    <h4 className="font-medium mb-2">Age Range</h4>
-                    <div className="space-y-1">
-                      <div className="flex items-center">
-                        <input type="checkbox" id="age1" className="mr-2" />
-                        <label htmlFor="age1" className="text-gray-600">0-3 years</label>
-                      </div>
-                      <div className="flex items-center">
-                        <input type="checkbox" id="age2" className="mr-2" />
-                        <label htmlFor="age2" className="text-gray-600">4-6 years</label>
-                      </div>
-                      <div className="flex items-center">
-                        <input type="checkbox" id="age3" className="mr-2" />
-                        <label htmlFor="age3" className="text-gray-600">7-12 years</label>
-                      </div>
-                      <div className="flex items-center">
-                        <input type="checkbox" id="age4" className="mr-2" />
-                        <label htmlFor="age4" className="text-gray-600">13+ years</label>
-                      </div>
-                      <div className="flex items-center">
-                        <input type="checkbox" id="age5" className="mr-2" />
-                        <label htmlFor="age5" className="text-gray-600">Adults</label>
-                      </div>
-                    </div>
-                  </div>
                   
                   <div>
                     <h4 className="font-medium mb-2">Brand</h4>
