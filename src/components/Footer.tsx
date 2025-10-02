@@ -73,8 +73,7 @@ const Footer: React.FC = () => {
                 <Truck size={20} className="text-brand-orange" />
               </div>
               <div>
-                <h4 className="font-semibold">Free Shipping</h4>
-                <p className="text-sm text-gray-400">On orders over £75</p>
+                <h4 className="font-semibold">Envios a todo el País</h4>
               </div>
             </div>
             
