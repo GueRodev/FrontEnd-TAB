@@ -8,7 +8,7 @@ const Footer: React.FC = () => {
   return (
     <footer className="bg-brand-darkBlue text-white pt-16 pb-8">
       <div className="container mx-auto px-4">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
           <div>
             <Logo variant="white" className="mb-6" />
             <div className="flex space-x-4">
@@ -28,22 +28,16 @@ const Footer: React.FC = () => {
           </div>
           
           <div>
-            <h3 className="text-lg font-semibold mb-6">Shop Categories</h3>
+            <h3 className="text-lg font-semibold mb-6">Categorias</h3>
             <ul className="space-y-3">
-              <li><Link to="/category/lego" className="text-gray-300 hover:text-brand-orange transition-colors">LEGO Sets</Link></li>
-              <li><Link to="/category/star-wars" className="text-gray-300 hover:text-brand-orange transition-colors">Star Wars</Link></li>
-              <li><Link to="/category/superheroes" className="text-gray-300 hover:text-brand-orange transition-colors">Superheroes</Link></li>
-              <li><Link to="/category/collectibles" className="text-gray-300 hover:text-brand-orange transition-colors">Collectibles</Link></li>
-              <li><Link to="/new-arrivals" className="text-gray-300 hover:text-brand-orange transition-colors">New Arrivals</Link></li>
-              <li><Link to="/on-sale" className="text-gray-300 hover:text-brand-orange transition-colors">On Sale</Link></li>
-            </ul>
-          </div>
-          
-          <div>
-            <h3 className="text-lg font-semibold mb-6">Customer Service</h3>
-            <ul className="space-y-3">
-              <li><Link to="/contact" className="text-gray-300 hover:text-brand-orange transition-colors">Contact Us</Link></li>
-              <li><Link to="/faq" className="text-gray-300 hover:text-brand-orange transition-colors">FAQ</Link></li>
+              <li><Link to="/category/lego" className="text-gray-300 hover:text-brand-orange transition-colors">Lego</Link></li>
+              <li><Link to="/category/funkos" className="text-gray-300 hover:text-brand-orange transition-colors">Funkos</Link></li>
+              <li><Link to="/category/anime" className="text-gray-300 hover:text-brand-orange transition-colors">Anime</Link></li>
+              <li><Link to="/category/coleccionables" className="text-gray-300 hover:text-brand-orange transition-colors">Coleccionables</Link></li>
+              <li><Link to="/category/peluches" className="text-gray-300 hover:text-brand-orange transition-colors">Peluches</Link></li>
+              <li><Link to="/category/starwars" className="text-gray-300 hover:text-brand-orange transition-colors">Starwars</Link></li>
+              <li><Link to="/category/harrypotter" className="text-gray-300 hover:text-brand-orange transition-colors">HarryPotter</Link></li>
+              <li><Link to="/category/otros" className="text-gray-300 hover:text-brand-orange transition-colors">Otros</Link></li>
             </ul>
           </div>
           
