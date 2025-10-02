@@ -11,9 +11,6 @@ const Footer: React.FC = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
           <div>
             <Logo variant="white" className="mb-6" />
-            <p className="text-gray-300 mb-6">
-              Your one-stop shop for LEGO sets, Star Wars merchandise, superheroes, and collectibles.
-            </p>
             <div className="flex space-x-4">
               <a href="#" className="hover:text-brand-orange transition-colors" aria-label="Facebook">
                 <Facebook size={20} />
