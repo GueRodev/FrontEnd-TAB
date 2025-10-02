@@ -82,8 +82,7 @@ const Footer: React.FC = () => {
                 <CreditCard size={20} className="text-brand-orange" />
               </div>
               <div>
-                <h4 className="font-semibold">Secure Payment</h4>
-                <p className="text-sm text-gray-400">100% secure payment</p>
+                <h4 className="font-semibold">SINPE MOVIL</h4>
               </div>
             </div>
             
