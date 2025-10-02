@@ -102,16 +102,10 @@ const Footer: React.FC = () => {
             </div>
           </div>
           
-          <div className="flex flex-col md:flex-row justify-between items-center">
-            <p className="text-gray-400 text-sm mb-4 md:mb-0">
+          <div className="flex flex-col md:flex-row justify-center items-center">
+            <p className="text-gray-400 text-sm">
               &copy; {new Date().getFullYear()} Toys and Bricks. All rights reserved.
             </p>
-            <div className="flex items-center gap-4">
-              <img src="https://cdn.shopify.com/s/files/1/0057/8938/4802/files/visa.png" alt="Visa" className="h-6" />
-              <img src="https://cdn.shopify.com/s/files/1/0057/8938/4802/files/mastercard.png" alt="Mastercard" className="h-6" />
-              <img src="https://cdn.shopify.com/s/files/1/0057/8938/4802/files/paypal.png" alt="PayPal" className="h-6" />
-              <img src="https://cdn.shopify.com/s/files/1/0057/8938/4802/files/amex.png" alt="Amex" className="h-6" />
-            </div>
           </div>
         </div>
       </div>
