@@ -67,7 +67,7 @@ const Footer: React.FC = () => {
         </div>
         
         <div className="border-t border-gray-700 pt-8 mt-8">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
             <div className="flex items-center gap-3">
               <div className="p-2 bg-white/10 rounded-full">
                 <Truck size={20} className="text-brand-orange" />
@@ -83,16 +83,6 @@ const Footer: React.FC = () => {
               </div>
               <div>
                 <h4 className="font-semibold">SINPE MOVIL</h4>
-              </div>
-            </div>
-            
-            <div className="flex items-center gap-3">
-              <div className="p-2 bg-white/10 rounded-full">
-                <Shield size={20} className="text-brand-orange" />
-              </div>
-              <div>
-                <h4 className="font-semibold">Warranty Protection</h4>
-                <p className="text-sm text-gray-400">Quality guaranteed</p>
               </div>
             </div>
           </div>
