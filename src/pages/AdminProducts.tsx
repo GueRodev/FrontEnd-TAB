@@ -125,8 +125,8 @@ const AdminProducts: React.FC = () => {
           <div className="flex-1 p-4 md:p-8">
             <div className="max-w-7xl mx-auto space-y-4 md:space-y-6">
               {/* Page Header */}
-              <div className="flex flex-col sm:flex-row items-start justify-between gap-4">
-                <div>
+              <div className="flex flex-col gap-4">
+                <div className="text-center sm:text-left">
                   <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 mb-1 md:mb-2">
                     Gestión de Productos
                   </h1>
@@ -134,29 +134,31 @@ const AdminProducts: React.FC = () => {
                     Administra tu inventario de juguetes y LEGO
                   </p>
                 </div>
-                <Button 
-                  className="bg-[#1E3A8A] hover:bg-[#1E3A8A]/90 text-white w-full sm:w-auto"
-                  onClick={() => setIsAddDialogOpen(true)}
-                >
-                  <Plus className="h-4 w-4 mr-2" />
-                  Agregar Producto
-                </Button>
+                <div className="flex justify-center sm:justify-start">
+                  <Button 
+                    className="bg-[#1E3A8A] hover:bg-[#1E3A8A]/90 text-white w-full max-w-xs sm:w-auto"
+                    onClick={() => setIsAddDialogOpen(true)}
+                  >
+                    <Plus className="h-4 w-4 mr-2" />
+                    Agregar Producto
+                  </Button>
+                </div>
               </div>
 
               {/* Search and Filters */}
-              <Card>
+              <Card className="mx-auto w-full">
                 <CardContent className="p-4 md:p-6">
-                  <div className="flex flex-col sm:flex-row gap-3 md:gap-4">
-                    <div className="relative flex-1">
-                      <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 md:h-5 w-4 md:w-5 text-gray-400" />
+                  <div className="flex flex-col gap-3">
+                    <div className="relative w-full">
+                      <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
                       <Input
                         placeholder="Buscar productos..."
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
-                        className="pl-9 md:pl-10 h-10 md:h-12 border-gray-300"
+                        className="pl-9 h-10 border-gray-300 w-full"
                       />
                     </div>
-                    <Button variant="outline" className="h-10 md:h-12 px-4 md:px-6 border-gray-300">
+                    <Button variant="outline" className="h-10 px-4 border-gray-300 w-full">
                       <Filter className="h-4 w-4 mr-2" />
                       Filtros
                     </Button>
@@ -254,23 +256,24 @@ const AdminProducts: React.FC = () => {
                   </div>
 
                   {/* Mobile/Tablet Card View */}
-                  <div className="lg:hidden space-y-4">
+                  <div className="lg:hidden space-y-3">
                     {mockProducts.map((product) => (
-                      <div key={product.id} className="border rounded-lg p-4 hover:bg-gray-50 transition-colors">
-                        <div className="flex gap-4">
-                          <img 
-                            src={product.image} 
-                            alt={product.name}
-                            className="w-20 h-20 sm:w-24 sm:h-24 object-cover rounded-lg flex-shrink-0"
-                          />
-                          <div className="flex-1 min-w-0">
-                            <div className="flex justify-between items-start gap-2 mb-2">
-                              <h4 className="font-semibold text-gray-900 text-sm sm:text-base truncate">
+                      <div key={product.id} className="border rounded-lg p-3 hover:bg-gray-50 transition-colors">
+                        <div className="flex flex-col gap-3">
+                          {/* Product Header with Image and Title */}
+                          <div className="flex gap-3 items-start">
+                            <img 
+                              src={product.image} 
+                              alt={product.name}
+                              className="w-16 h-16 object-cover rounded-lg flex-shrink-0"
+                            />
+                            <div className="flex-1 min-w-0">
+                              <h4 className="font-semibold text-gray-900 text-sm mb-1">
                                 {product.name}
                               </h4>
                               <Badge 
                                 variant={product.status === 'active' ? 'default' : 'secondary'}
-                                className={`flex-shrink-0 ${
+                                className={`text-xs ${
                                   product.status === 'active' 
                                     ? 'bg-green-100 text-green-800 hover:bg-green-100' 
                                     : 'bg-gray-100 text-gray-800 hover:bg-gray-100'
@@ -279,48 +282,50 @@ const AdminProducts: React.FC = () => {
                                 {product.status === 'active' ? 'Activo' : 'Inactivo'}
                               </Badge>
                             </div>
-                            
-                            <div className="space-y-1 text-sm">
-                              <div className="flex justify-between">
-                                <span className="text-gray-600">Categoría:</span>
-                                <span className="font-medium text-gray-900">{product.category}</span>
-                              </div>
-                              <div className="flex justify-between">
-                                <span className="text-gray-600">Precio:</span>
-                                <span className="font-semibold text-gray-900">${product.price.toFixed(2)}</span>
-                              </div>
-                              <div className="flex justify-between">
-                                <span className="text-gray-600">Stock:</span>
-                                <span className={`font-medium ${
-                                  product.stock === 0 
-                                    ? 'text-red-600' 
-                                    : product.stock < 10 
-                                    ? 'text-orange-600' 
-                                    : 'text-green-600'
-                                }`}>
-                                  {product.stock}
-                                </span>
-                              </div>
+                          </div>
+                          
+                          {/* Product Details */}
+                          <div className="grid grid-cols-3 gap-2 text-xs">
+                            <div className="text-center">
+                              <p className="text-gray-600 mb-1">Categoría</p>
+                              <p className="font-medium text-gray-900">{product.category}</p>
                             </div>
-                            
-                            <div className="flex gap-2 mt-3">
-                              <Button
-                                variant="outline"
-                                size="sm"
-                                className="flex-1 text-gray-600 hover:text-[#F97316] hover:bg-[#F97316]/10"
-                              >
-                                <Pencil className="h-4 w-4 mr-1" />
-                                Editar
-                              </Button>
-                              <Button
-                                variant="outline"
-                                size="sm"
-                                className="flex-1 text-gray-600 hover:text-red-600 hover:bg-red-50"
-                              >
-                                <Trash2 className="h-4 w-4 mr-1" />
-                                Eliminar
-                              </Button>
+                            <div className="text-center">
+                              <p className="text-gray-600 mb-1">Precio</p>
+                              <p className="font-semibold text-gray-900">${product.price.toFixed(2)}</p>
                             </div>
+                            <div className="text-center">
+                              <p className="text-gray-600 mb-1">Stock</p>
+                              <p className={`font-medium ${
+                                product.stock === 0 
+                                  ? 'text-red-600' 
+                                  : product.stock < 10 
+                                  ? 'text-orange-600' 
+                                  : 'text-green-600'
+                              }`}>
+                                {product.stock}
+                              </p>
+                            </div>
+                          </div>
+                          
+                          {/* Action Buttons */}
+                          <div className="flex gap-2 pt-2 border-t">
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              className="flex-1 text-xs h-8 text-gray-600 hover:text-[#F97316] hover:bg-[#F97316]/10"
+                            >
+                              <Pencil className="h-3 w-3 mr-1" />
+                              Editar
+                            </Button>
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              className="flex-1 text-xs h-8 text-gray-600 hover:text-red-600 hover:bg-red-50"
+                            >
+                              <Trash2 className="h-3 w-3 mr-1" />
+                              Eliminar
+                            </Button>
                           </div>
                         </div>
                       </div>
