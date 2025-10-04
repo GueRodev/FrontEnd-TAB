@@ -48,8 +48,8 @@ export function AdminSidebar() {
       collapsible="icon"
     >
       {/* Header with Logo Icon */}
-      <div className="p-6 border-b border-white/10 bg-[#1A1F2C]">
-        <div className="flex items-center gap-3">
+      <div className={`p-6 border-b border-white/10 bg-[#1A1F2C] ${isCollapsed ? 'flex justify-center' : ''}`}>
+        <div className={`flex items-center gap-3 ${isCollapsed ? 'justify-center' : ''}`}>
           <div className="bg-[#F97316] p-2.5 rounded-lg flex-shrink-0">
             <Package2 className="h-6 w-6 text-white" strokeWidth={2.5} />
           </div>
