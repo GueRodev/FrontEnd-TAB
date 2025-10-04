@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AdminSidebar } from "@/components/AdminSidebar";
 import { useOrders } from "@/contexts/OrdersContext";
@@ -6,13 +6,15 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { 
   DollarSign, 
   TrendingUp, 
   ShoppingCart, 
   Download,
   FileText,
-  FileSpreadsheet
+  FileSpreadsheet,
+  Calendar
 } from "lucide-react";
 import {
   DropdownMenu,
@@ -22,9 +24,11 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
 
 const AdminFinanzas = () => {
   const { orders } = useOrders();
+  const [selectedYear, setSelectedYear] = useState<string>(new Date().getFullYear().toString());
 
   // Calcular métricas
   const completedOrders = orders.filter(order => order.status === 'completed');
@@ -43,6 +47,55 @@ const AdminFinanzas = () => {
   const recentOrders = [...completedOrders]
     .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
     .slice(0, 10);
+
+  // Obtener años disponibles
+  const availableYears = useMemo(() => {
+    const years = new Set<number>();
+    completedOrders.forEach(order => {
+      const year = new Date(order.createdAt).getFullYear();
+      years.add(year);
+    });
+    return Array.from(years).sort((a, b) => b - a);
+  }, [completedOrders]);
+
+  // Datos de ventas por mes para el año seleccionado
+  const monthlyData = useMemo(() => {
+    const months = [
+      'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
+      'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
+    ];
+
+    const data = months.map((month, index) => {
+      const monthOrders = completedOrders.filter(order => {
+        const orderDate = new Date(order.createdAt);
+        return orderDate.getMonth() === index && orderDate.getFullYear() === parseInt(selectedYear);
+      });
+
+      const revenue = monthOrders.reduce((sum, order) => sum + order.total, 0);
+      const count = monthOrders.length;
+
+      return {
+        mes: month,
+        ingresos: parseFloat(revenue.toFixed(2)),
+        ventas: count
+      };
+    });
+
+    return data;
+  }, [completedOrders, selectedYear]);
+
+  // Totales del año seleccionado
+  const yearlyStats = useMemo(() => {
+    const yearOrders = completedOrders.filter(order => {
+      const orderDate = new Date(order.createdAt);
+      return orderDate.getFullYear() === parseInt(selectedYear);
+    });
+
+    return {
+      revenue: yearOrders.reduce((sum, order) => sum + order.total, 0),
+      count: yearOrders.length
+    };
+  }, [completedOrders, selectedYear]);
 
   const exportToCSV = () => {
     const headers = ['ID Pedido', 'Fecha', 'Cliente', 'Tipo', 'Total', 'Estado'];
@@ -221,6 +274,123 @@ const AdminFinanzas = () => {
                 </CardContent>
               </Card>
             </div>
+
+            {/* Gráfico de Ventas por Mes */}
+            <Card>
+              <CardHeader>
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                  <div>
+                    <CardTitle className="text-base md:text-lg lg:text-xl">
+                      Ventas por Mes
+                    </CardTitle>
+                    <CardDescription className="text-xs md:text-sm">
+                      Rendimiento mensual de {selectedYear}
+                    </CardDescription>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Calendar className="h-4 w-4 text-muted-foreground" />
+                    <Select value={selectedYear} onValueChange={setSelectedYear}>
+                      <SelectTrigger className="w-[120px] text-xs md:text-sm h-8 md:h-9">
+                        <SelectValue placeholder="Seleccionar año" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {availableYears.length > 0 ? (
+                          availableYears.map(year => (
+                            <SelectItem key={year} value={year.toString()} className="text-xs md:text-sm">
+                              {year}
+                            </SelectItem>
+                          ))
+                        ) : (
+                          <SelectItem value={currentYear.toString()} className="text-xs md:text-sm">
+                            {currentYear}
+                          </SelectItem>
+                        )}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  {/* Resumen del año */}
+                  <div className="grid grid-cols-2 gap-4 p-4 bg-muted/50 rounded-lg">
+                    <div>
+                      <p className="text-xs md:text-sm text-muted-foreground">Total Ingresos {selectedYear}</p>
+                      <p className="text-lg md:text-xl lg:text-2xl font-bold">₡{yearlyStats.revenue.toFixed(2)}</p>
+                    </div>
+                    <div>
+                      <p className="text-xs md:text-sm text-muted-foreground">Total Ventas {selectedYear}</p>
+                      <p className="text-lg md:text-xl lg:text-2xl font-bold">{yearlyStats.count}</p>
+                    </div>
+                  </div>
+
+                  {/* Gráfico */}
+                  <div className="h-[300px] md:h-[400px] w-full">
+                    <ResponsiveContainer width="100%" height="100%">
+                      <BarChart data={monthlyData}>
+                        <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
+                        <XAxis 
+                          dataKey="mes" 
+                          className="text-xs md:text-sm"
+                          angle={-45}
+                          textAnchor="end"
+                          height={80}
+                        />
+                        <YAxis className="text-xs md:text-sm" />
+                        <Tooltip 
+                          contentStyle={{ 
+                            backgroundColor: 'hsl(var(--card))',
+                            border: '1px solid hsl(var(--border))',
+                            borderRadius: '8px',
+                            fontSize: '12px'
+                          }}
+                          formatter={(value: number, name: string) => {
+                            if (name === 'ingresos') return [`₡${value.toFixed(2)}`, 'Ingresos'];
+                            return [value, 'Ventas'];
+                          }}
+                        />
+                        <Legend 
+                          wrapperStyle={{ fontSize: '12px' }}
+                          formatter={(value) => {
+                            if (value === 'ingresos') return 'Ingresos (₡)';
+                            return 'Cantidad de Ventas';
+                          }}
+                        />
+                        <Bar dataKey="ingresos" fill="#F97316" name="ingresos" radius={[8, 8, 0, 0]} />
+                        <Bar dataKey="ventas" fill="#1A1F2C" name="ventas" radius={[8, 8, 0, 0]} />
+                      </BarChart>
+                    </ResponsiveContainer>
+                  </div>
+
+                  {/* Tabla de datos mensuales */}
+                  <div className="overflow-x-auto">
+                    <Table>
+                      <TableHeader>
+                        <TableRow>
+                          <TableHead className="text-xs md:text-sm">Mes</TableHead>
+                          <TableHead className="text-xs md:text-sm text-right">Ingresos</TableHead>
+                          <TableHead className="text-xs md:text-sm text-right">Ventas</TableHead>
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                        {monthlyData.map((data) => (
+                          <TableRow key={data.mes}>
+                            <TableCell className="font-medium text-xs md:text-sm">{data.mes}</TableCell>
+                            <TableCell className="text-right text-xs md:text-sm">₡{data.ingresos.toFixed(2)}</TableCell>
+                            <TableCell className="text-right text-xs md:text-sm">{data.ventas}</TableCell>
+                          </TableRow>
+                        ))}
+                        <TableRow className="font-bold bg-muted/50">
+                          <TableCell className="text-xs md:text-sm">TOTAL {selectedYear}</TableCell>
+                          <TableCell className="text-right text-xs md:text-sm">₡{yearlyStats.revenue.toFixed(2)}</TableCell>
+                          <TableCell className="text-right text-xs md:text-sm">{yearlyStats.count}</TableCell>
+                        </TableRow>
+                      </TableBody>
+                    </Table>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
 
             {/* Tabla de Ventas Recientes */}
             <Card>
