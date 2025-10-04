@@ -20,6 +20,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarFooter,
+  useSidebar,
 } from "@/components/ui/sidebar";
 
 const menuItems = [
@@ -37,37 +38,49 @@ const footerItems = [
 ];
 
 export function AdminSidebar() {
+  const { state } = useSidebar();
+  const isCollapsed = state === "collapsed";
+
   return (
-    <Sidebar className="!bg-[#1A1F2C] border-none" style={{ backgroundColor: '#1A1F2C' }}>
+    <Sidebar 
+      className="!bg-[#1A1F2C] border-none" 
+      style={{ backgroundColor: '#1A1F2C' }}
+      collapsible="icon"
+    >
       {/* Header with Logo Icon */}
       <div className="p-6 border-b border-white/10 bg-[#1A1F2C]">
         <div className="flex items-center gap-3">
           <div className="bg-[#F97316] p-2.5 rounded-lg flex-shrink-0">
             <Package2 className="h-6 w-6 text-white" strokeWidth={2.5} />
           </div>
-          <div className="flex flex-col leading-tight">
-            <span className="text-white font-bold text-base tracking-wide">TOYS AND</span>
-            <span className="text-[#F97316] font-bold text-base tracking-wide">BRICKS</span>
-          </div>
+          {!isCollapsed && (
+            <div className="flex flex-col leading-tight">
+              <span className="text-white font-bold text-base tracking-wide">TOYS AND</span>
+              <span className="text-[#F97316] font-bold text-base tracking-wide">BRICKS</span>
+            </div>
+          )}
         </div>
       </div>
 
       <SidebarContent className="!bg-[#1A1F2C]" style={{ backgroundColor: '#1A1F2C' }}>
         <SidebarGroup className="bg-[#1A1F2C]">
-          <SidebarGroupLabel className="text-white/70 text-xs font-semibold uppercase tracking-wider px-4 py-3">
-            Menú Principal
-          </SidebarGroupLabel>
+          {!isCollapsed && (
+            <SidebarGroupLabel className="text-white/70 text-xs font-semibold uppercase tracking-wider px-4 py-3">
+              Menú Principal
+            </SidebarGroupLabel>
+          )}
           <SidebarGroupContent>
             <SidebarMenu>
               {menuItems.map((item) => (
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton 
                     asChild 
-                    className="text-white hover:bg-white/10 data-[active=true]:bg-white/20 px-4 py-3"
+                    className="text-white hover:bg-[#F97316]/20 hover:text-[#F97316] data-[active=true]:bg-[#F97316] data-[active=true]:text-white px-4 py-3 transition-all duration-200"
+                    tooltip={isCollapsed ? item.title : undefined}
                   >
                     <Link to={item.url}>
                       <item.icon className="h-5 w-5" />
-                      <span className="font-medium">{item.title}</span>
+                      {!isCollapsed && <span className="font-medium">{item.title}</span>}
                     </Link>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
@@ -84,11 +97,12 @@ export function AdminSidebar() {
             <SidebarMenuItem key={item.title}>
               <SidebarMenuButton 
                 asChild 
-                className="text-white hover:bg-white/10 px-4 py-3"
+                className="text-white hover:bg-[#F97316]/20 hover:text-[#F97316] px-4 py-3 transition-all duration-200"
+                tooltip={isCollapsed ? item.title : undefined}
               >
                 <Link to={item.url}>
                   <item.icon className="h-5 w-5" />
-                  <span className="font-medium">{item.title}</span>
+                  {!isCollapsed && <span className="font-medium">{item.title}</span>}
                 </Link>
               </SidebarMenuButton>
             </SidebarMenuItem>
