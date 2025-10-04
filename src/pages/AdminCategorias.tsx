@@ -272,18 +272,18 @@ const AdminCategorias: React.FC = () => {
 
               <div className="bg-card rounded-lg shadow-sm border">
                 <div className="p-4 md:p-6 border-b space-y-3">
-                  <div className="flex flex-col gap-2 w-full">
-                    <div className="flex gap-2">
+                  <div className="flex flex-col gap-3 items-center">
+                    <div className="flex flex-col sm:flex-row gap-2 w-full max-w-2xl">
                       <Button 
                         onClick={() => handleOpenModal('category')}
-                        className="flex-1"
+                        className="w-full sm:flex-1"
                       >
                         <Plus className="h-4 w-4 mr-2" />
                         Agregar Categoría
                       </Button>
                       <Button 
                         variant="outline"
-                        className="flex-1"
+                        className="w-full sm:flex-1"
                         onClick={() => {
                           if (categories.length > 0) {
                             handleOpenModal('subcategory', categories[0].id);
@@ -295,7 +295,7 @@ const AdminCategorias: React.FC = () => {
                       </Button>
                     </div>
                     
-                    <div className="relative w-full">
+                    <div className="relative w-full max-w-2xl">
                       <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
                       <Input
                         type="text"
@@ -351,16 +351,16 @@ const AdminCategorias: React.FC = () => {
                   {categories.map((category) => (
                     <div key={category.id} className="border-b last:border-b-0">
                       <div className="p-4">
-                        <div className="flex items-start gap-3">
-                          <div className="flex items-center gap-2 flex-shrink-0 pt-1">
+                        <div className="flex items-start gap-2">
+                          <div className="flex flex-col items-center gap-1 flex-shrink-0 pt-1">
                             <button
-                              className="cursor-grab active:cursor-grabbing text-muted-foreground hover:text-foreground touch-manipulation p-1"
+                              className="cursor-grab active:cursor-grabbing text-muted-foreground hover:text-foreground touch-manipulation"
                             >
                               <GripVertical className="h-5 w-5" />
                             </button>
                             <button
                               onClick={() => handleToggleExpand(category.id)}
-                              className="text-muted-foreground hover:text-foreground touch-manipulation p-1"
+                              className="text-muted-foreground hover:text-foreground touch-manipulation"
                             >
                               {category.isExpanded ? (
                                 <ChevronDown className="h-4 w-4" />
@@ -371,26 +371,24 @@ const AdminCategorias: React.FC = () => {
                           </div>
                           
                           <div className="flex-1 min-w-0">
-                            <div className="flex items-start justify-between gap-2 mb-2">
-                              <div className="flex-1 min-w-0">
-                                <h3 className="font-semibold text-base mb-1">{category.name}</h3>
-                                <p className="text-sm text-muted-foreground line-clamp-2">
-                                  {category.description}
-                                </p>
-                              </div>
+                            <div className="mb-2">
+                              <h3 className="font-semibold text-base mb-1">{category.name}</h3>
+                              <p className="text-sm text-muted-foreground line-clamp-2">
+                                {category.description}
+                              </p>
                             </div>
                             
-                            <div className="flex items-center justify-between mt-3">
+                            <div className="flex items-center justify-between mt-3 pt-2 border-t">
                               <span className="text-sm text-muted-foreground">
                                 {category.subcategories.length} subcategorías
                               </span>
                               
-                              <div className="flex items-center gap-1">
+                              <div className="flex items-center gap-2">
                                 <Button
                                   variant="ghost"
                                   size="sm"
                                   onClick={() => handleEdit(category)}
-                                  className="h-8 w-8 p-0"
+                                  className="h-9 w-9 p-0"
                                 >
                                   <Edit2 className="h-4 w-4" />
                                 </Button>
@@ -398,7 +396,7 @@ const AdminCategorias: React.FC = () => {
                                   variant="ghost"
                                   size="sm"
                                   onClick={() => handleDelete(category.id)}
-                                  className="text-destructive hover:text-destructive h-8 w-8 p-0"
+                                  className="text-destructive hover:text-destructive h-9 w-9 p-0"
                                 >
                                   <Trash2 className="h-4 w-4" />
                                 </Button>
@@ -409,34 +407,34 @@ const AdminCategorias: React.FC = () => {
                         
                         {/* Subcategories */}
                         {category.isExpanded && category.subcategories.length > 0 && (
-                          <div className="mt-3 ml-9 space-y-2">
+                          <div className="mt-3 ml-7 space-y-2">
                             {category.subcategories.map((sub) => (
                               <div key={sub.id} className="bg-muted/30 rounded-lg p-3">
                                 <div className="flex items-start gap-2">
                                   <span className="text-xs text-muted-foreground flex-shrink-0 mt-1">└─</span>
                                   <div className="flex-1 min-w-0">
-                                    <div className="flex items-start justify-between gap-2 mb-1">
-                                      <h4 className="font-medium text-sm">{sub.name}</h4>
-                                      <div className="flex items-center gap-1 flex-shrink-0">
-                                        <Button
-                                          variant="ghost"
-                                          size="sm"
-                                          onClick={() => handleEditSubcategory(category.id, sub)}
-                                          className="h-7 w-7 p-0"
-                                        >
-                                          <Edit2 className="h-3 w-3" />
-                                        </Button>
-                                        <Button
-                                          variant="ghost"
-                                          size="sm"
-                                          onClick={() => handleDeleteSubcategory(category.id, sub.id)}
-                                          className="text-destructive hover:text-destructive h-7 w-7 p-0"
-                                        >
-                                          <Trash2 className="h-3 w-3" />
-                                        </Button>
-                                      </div>
+                                    <div className="mb-1">
+                                      <h4 className="font-medium text-sm mb-1">{sub.name}</h4>
+                                      <p className="text-xs text-muted-foreground line-clamp-2">{sub.description}</p>
                                     </div>
-                                    <p className="text-xs text-muted-foreground line-clamp-2">{sub.description}</p>
+                                    <div className="flex items-center justify-end gap-2 mt-2 pt-2 border-t border-border/50">
+                                      <Button
+                                        variant="ghost"
+                                        size="sm"
+                                        onClick={() => handleEditSubcategory(category.id, sub)}
+                                        className="h-8 w-8 p-0"
+                                      >
+                                        <Edit2 className="h-3.5 w-3.5" />
+                                      </Button>
+                                      <Button
+                                        variant="ghost"
+                                        size="sm"
+                                        onClick={() => handleDeleteSubcategory(category.id, sub.id)}
+                                        className="text-destructive hover:text-destructive h-8 w-8 p-0"
+                                      >
+                                        <Trash2 className="h-3.5 w-3.5" />
+                                      </Button>
+                                    </div>
                                   </div>
                                 </div>
                               </div>
