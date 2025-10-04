@@ -122,20 +122,20 @@ const AdminProducts: React.FC = () => {
           </header>
 
           {/* Main Content */}
-          <div className="flex-1 p-8">
-            <div className="max-w-7xl mx-auto space-y-6">
+          <div className="flex-1 p-4 md:p-8">
+            <div className="max-w-7xl mx-auto space-y-4 md:space-y-6">
               {/* Page Header */}
-              <div className="flex items-start justify-between">
+              <div className="flex flex-col sm:flex-row items-start justify-between gap-4">
                 <div>
-                  <h1 className="text-4xl font-bold text-gray-900 mb-2">
+                  <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 mb-1 md:mb-2">
                     Gestión de Productos
                   </h1>
-                  <p className="text-gray-600 text-lg">
+                  <p className="text-gray-600 text-sm md:text-base lg:text-lg">
                     Administra tu inventario de juguetes y LEGO
                   </p>
                 </div>
                 <Button 
-                  className="bg-[#1E3A8A] hover:bg-[#1E3A8A]/90 text-white"
+                  className="bg-[#1E3A8A] hover:bg-[#1E3A8A]/90 text-white w-full sm:w-auto"
                   onClick={() => setIsAddDialogOpen(true)}
                 >
                   <Plus className="h-4 w-4 mr-2" />
@@ -145,18 +145,18 @@ const AdminProducts: React.FC = () => {
 
               {/* Search and Filters */}
               <Card>
-                <CardContent className="p-6">
-                  <div className="flex gap-4">
+                <CardContent className="p-4 md:p-6">
+                  <div className="flex flex-col sm:flex-row gap-3 md:gap-4">
                     <div className="relative flex-1">
-                      <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+                      <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 md:h-5 w-4 md:w-5 text-gray-400" />
                       <Input
-                        placeholder="Buscar productos por nombre o categoría..."
+                        placeholder="Buscar productos..."
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
-                        className="pl-10 h-12 border-gray-300"
+                        className="pl-9 md:pl-10 h-10 md:h-12 border-gray-300"
                       />
                     </div>
-                    <Button variant="outline" className="h-12 px-6 border-gray-300">
+                    <Button variant="outline" className="h-10 md:h-12 px-4 md:px-6 border-gray-300">
                       <Filter className="h-4 w-4 mr-2" />
                       Filtros
                     </Button>
@@ -164,16 +164,17 @@ const AdminProducts: React.FC = () => {
                 </CardContent>
               </Card>
 
-              {/* Products Table */}
+              {/* Products Table/Cards */}
               <Card>
-                <CardContent className="p-6">
+                <CardContent className="p-4 md:p-6">
                   <div className="mb-4">
-                    <h3 className="text-lg font-semibold text-gray-900">
+                    <h3 className="text-base md:text-lg font-semibold text-gray-900">
                       Productos ({mockProducts.length})
                     </h3>
                   </div>
                   
-                  <div className="border rounded-lg overflow-hidden">
+                  {/* Desktop Table View */}
+                  <div className="hidden lg:block border rounded-lg overflow-hidden">
                     <Table>
                       <TableHeader>
                         <TableRow className="bg-gray-50 hover:bg-gray-50">
@@ -251,6 +252,80 @@ const AdminProducts: React.FC = () => {
                       </TableBody>
                     </Table>
                   </div>
+
+                  {/* Mobile/Tablet Card View */}
+                  <div className="lg:hidden space-y-4">
+                    {mockProducts.map((product) => (
+                      <div key={product.id} className="border rounded-lg p-4 hover:bg-gray-50 transition-colors">
+                        <div className="flex gap-4">
+                          <img 
+                            src={product.image} 
+                            alt={product.name}
+                            className="w-20 h-20 sm:w-24 sm:h-24 object-cover rounded-lg flex-shrink-0"
+                          />
+                          <div className="flex-1 min-w-0">
+                            <div className="flex justify-between items-start gap-2 mb-2">
+                              <h4 className="font-semibold text-gray-900 text-sm sm:text-base truncate">
+                                {product.name}
+                              </h4>
+                              <Badge 
+                                variant={product.status === 'active' ? 'default' : 'secondary'}
+                                className={`flex-shrink-0 ${
+                                  product.status === 'active' 
+                                    ? 'bg-green-100 text-green-800 hover:bg-green-100' 
+                                    : 'bg-gray-100 text-gray-800 hover:bg-gray-100'
+                                }`}
+                              >
+                                {product.status === 'active' ? 'Activo' : 'Inactivo'}
+                              </Badge>
+                            </div>
+                            
+                            <div className="space-y-1 text-sm">
+                              <div className="flex justify-between">
+                                <span className="text-gray-600">Categoría:</span>
+                                <span className="font-medium text-gray-900">{product.category}</span>
+                              </div>
+                              <div className="flex justify-between">
+                                <span className="text-gray-600">Precio:</span>
+                                <span className="font-semibold text-gray-900">${product.price.toFixed(2)}</span>
+                              </div>
+                              <div className="flex justify-between">
+                                <span className="text-gray-600">Stock:</span>
+                                <span className={`font-medium ${
+                                  product.stock === 0 
+                                    ? 'text-red-600' 
+                                    : product.stock < 10 
+                                    ? 'text-orange-600' 
+                                    : 'text-green-600'
+                                }`}>
+                                  {product.stock}
+                                </span>
+                              </div>
+                            </div>
+                            
+                            <div className="flex gap-2 mt-3">
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                className="flex-1 text-gray-600 hover:text-[#F97316] hover:bg-[#F97316]/10"
+                              >
+                                <Pencil className="h-4 w-4 mr-1" />
+                                Editar
+                              </Button>
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                className="flex-1 text-gray-600 hover:text-red-600 hover:bg-red-50"
+                              >
+                                <Trash2 className="h-4 w-4 mr-1" />
+                                Eliminar
+                              </Button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
                 </CardContent>
               </Card>
             </div>
@@ -260,17 +335,17 @@ const AdminProducts: React.FC = () => {
 
       {/* Add Product Dialog */}
       <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
-        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto mx-4">
           <DialogHeader>
-            <DialogTitle className="text-2xl font-bold text-gray-900">
+            <DialogTitle className="text-xl md:text-2xl font-bold text-gray-900">
               Agregar Nuevo Producto
             </DialogTitle>
-            <DialogDescription className="text-gray-600">
+            <DialogDescription className="text-sm md:text-base text-gray-600">
               Completa la información del producto para agregarlo al inventario
             </DialogDescription>
           </DialogHeader>
 
-          <form onSubmit={handleSubmit} className="space-y-6">
+          <form onSubmit={handleSubmit} className="space-y-4 md:space-y-6">
             {/* Image Upload */}
             <div className="space-y-2">
               <Label htmlFor="image" className="text-gray-900 font-medium">
@@ -327,7 +402,7 @@ const AdminProducts: React.FC = () => {
             </div>
 
             {/* Category and Price Row */}
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label htmlFor="category" className="text-gray-900 font-medium">
                   Categoría *
@@ -369,7 +444,7 @@ const AdminProducts: React.FC = () => {
             </div>
 
             {/* Stock and Status Row */}
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label htmlFor="stock" className="text-gray-900 font-medium">
                   Stock *
@@ -419,18 +494,18 @@ const AdminProducts: React.FC = () => {
               />
             </div>
 
-            <DialogFooter className="gap-2">
+            <DialogFooter className="gap-2 flex-col sm:flex-row">
               <Button
                 type="button"
                 variant="outline"
                 onClick={() => setIsAddDialogOpen(false)}
-                className="border-gray-300"
+                className="border-gray-300 w-full sm:w-auto"
               >
                 Cancelar
               </Button>
               <Button
                 type="submit"
-                className="bg-[#1E3A8A] hover:bg-[#1E3A8A]/90 text-white"
+                className="bg-[#1E3A8A] hover:bg-[#1E3A8A]/90 text-white w-full sm:w-auto"
               >
                 Guardar Producto
               </Button>

@@ -261,24 +261,28 @@ const AdminCategorias: React.FC = () => {
             <h2 className="text-xl font-semibold">Gestión de Categorías</h2>
           </header>
 
-          <div className="flex-1 p-8">
+          <div className="flex-1 p-4 md:p-8">
             <div className="max-w-7xl mx-auto">
-              <div className="mb-6">
-                <h1 className="text-3xl font-bold mb-2">Categorías y Subcategorías</h1>
-                <p className="text-muted-foreground">
+              <div className="mb-4 md:mb-6">
+                <h1 className="text-2xl sm:text-3xl font-bold mb-1 md:mb-2">Categorías y Subcategorías</h1>
+                <p className="text-muted-foreground text-sm md:text-base">
                   Gestiona las categorías de productos. Arrastra para cambiar el orden de visualización.
                 </p>
               </div>
 
               <div className="bg-card rounded-lg shadow-sm border">
-                <div className="p-6 border-b flex items-center justify-between gap-4 flex-wrap">
-                  <div className="flex gap-3 flex-1">
-                    <Button onClick={() => handleOpenModal('category')}>
+                <div className="p-4 md:p-6 border-b space-y-3 md:space-y-0 md:flex md:items-center md:justify-between md:gap-4">
+                  <div className="flex flex-col sm:flex-row gap-2 md:gap-3 w-full md:flex-1">
+                    <Button 
+                      onClick={() => handleOpenModal('category')}
+                      className="w-full sm:w-auto"
+                    >
                       <Plus className="h-4 w-4 mr-2" />
                       Agregar Categoría
                     </Button>
                     <Button 
                       variant="outline"
+                      className="w-full sm:w-auto"
                       onClick={() => {
                         if (categories.length > 0) {
                           handleOpenModal('subcategory', categories[0].id);
@@ -290,7 +294,7 @@ const AdminCategorias: React.FC = () => {
                     </Button>
                   </div>
                   
-                  <div className="relative flex-1 max-w-sm">
+                  <div className="relative w-full md:flex-1 md:max-w-sm">
                     <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
                     <Input
                       type="text"
@@ -302,7 +306,8 @@ const AdminCategorias: React.FC = () => {
                   </div>
                 </div>
 
-                <div className="overflow-x-auto">
+                {/* Desktop Table View */}
+                <div className="hidden md:block overflow-x-auto">
                   <table className="w-full">
                     <thead className="bg-muted/50 border-b">
                       <tr>
@@ -338,6 +343,98 @@ const AdminCategorias: React.FC = () => {
                     </tbody>
                   </table>
                 </div>
+
+                {/* Mobile Card View */}
+                <div className="md:hidden">
+                  {categories.map((category) => (
+                    <div key={category.id} className="border-b last:border-b-0">
+                      <div className="p-4">
+                        <div className="flex items-start justify-between gap-3">
+                          <div className="flex items-center gap-2 flex-1 min-w-0">
+                            <button
+                              className="cursor-grab active:cursor-grabbing text-muted-foreground hover:text-foreground flex-shrink-0 touch-manipulation p-1"
+                            >
+                              <GripVertical className="h-5 w-5" />
+                            </button>
+                            <button
+                              onClick={() => handleToggleExpand(category.id)}
+                              className="text-muted-foreground hover:text-foreground flex-shrink-0 touch-manipulation p-1"
+                            >
+                              {category.isExpanded ? (
+                                <ChevronDown className="h-4 w-4" />
+                              ) : (
+                                <ChevronRight className="h-4 w-4" />
+                              )}
+                            </button>
+                            <div className="flex-1 min-w-0">
+                              <h3 className="font-semibold text-sm truncate">{category.name}</h3>
+                              <p className="text-xs text-muted-foreground truncate">{category.description}</p>
+                              <span className="text-xs text-muted-foreground mt-1 inline-block">
+                                {category.subcategories.length} subcategorías
+                              </span>
+                            </div>
+                          </div>
+                          
+                          <div className="flex items-center gap-1 flex-shrink-0">
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => handleEdit(category)}
+                              className="h-8 w-8 p-0"
+                            >
+                              <Edit2 className="h-4 w-4" />
+                            </Button>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => handleDelete(category.id)}
+                              className="text-destructive hover:text-destructive h-8 w-8 p-0"
+                            >
+                              <Trash2 className="h-4 w-4" />
+                            </Button>
+                          </div>
+                        </div>
+                        
+                        {/* Subcategories */}
+                        {category.isExpanded && category.subcategories.length > 0 && (
+                          <div className="mt-3 pl-8 space-y-2">
+                            {category.subcategories.map((sub) => (
+                              <div key={sub.id} className="bg-muted/30 rounded-lg p-3">
+                                <div className="flex items-start justify-between gap-2">
+                                  <div className="flex-1 min-w-0">
+                                    <div className="flex items-center gap-2">
+                                      <span className="text-xs text-muted-foreground">└─</span>
+                                      <h4 className="font-medium text-sm truncate">{sub.name}</h4>
+                                    </div>
+                                    <p className="text-xs text-muted-foreground mt-1 truncate">{sub.description}</p>
+                                  </div>
+                                  <div className="flex items-center gap-1 flex-shrink-0">
+                                    <Button
+                                      variant="ghost"
+                                      size="sm"
+                                      onClick={() => handleEditSubcategory(category.id, sub)}
+                                      className="h-7 w-7 p-0"
+                                    >
+                                      <Edit2 className="h-3 w-3" />
+                                    </Button>
+                                    <Button
+                                      variant="ghost"
+                                      size="sm"
+                                      onClick={() => handleDeleteSubcategory(category.id, sub.id)}
+                                      className="text-destructive hover:text-destructive h-7 w-7 p-0"
+                                    >
+                                      <Trash2 className="h-3 w-3" />
+                                    </Button>
+                                  </div>
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
           </div>
@@ -346,12 +443,12 @@ const AdminCategorias: React.FC = () => {
 
       {/* Modal para Agregar/Editar */}
       <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
-        <DialogContent className="max-w-md">
+        <DialogContent className="max-w-md mx-4">
           <DialogHeader>
-            <DialogTitle>
+            <DialogTitle className="text-lg md:text-xl">
               {modalType === 'category' ? 'Agregar Categoría' : 'Agregar Subcategoría'}
             </DialogTitle>
-            <DialogDescription>
+            <DialogDescription className="text-sm">
               {modalType === 'category' 
                 ? 'Completa los datos de la nueva categoría'
                 : 'Completa los datos de la nueva subcategoría'
@@ -395,11 +492,11 @@ const AdminCategorias: React.FC = () => {
             </div>
           </div>
 
-          <div className="flex justify-end gap-3">
-            <Button variant="outline" onClick={() => setIsModalOpen(false)}>
+          <div className="flex flex-col sm:flex-row justify-end gap-2 sm:gap-3">
+            <Button variant="outline" onClick={() => setIsModalOpen(false)} className="w-full sm:w-auto">
               Cancelar
             </Button>
-            <Button onClick={() => setIsModalOpen(false)}>
+            <Button onClick={() => setIsModalOpen(false)} className="w-full sm:w-auto">
               Guardar
             </Button>
           </div>
