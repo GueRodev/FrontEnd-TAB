@@ -7,7 +7,8 @@ import {
   ShoppingCart, 
   DollarSign, 
   Settings, 
-  LogOut 
+  LogOut,
+  Package2
 } from 'lucide-react';
 import {
   Sidebar,
@@ -20,7 +21,6 @@ import {
   SidebarMenuItem,
   SidebarFooter,
 } from "@/components/ui/sidebar";
-import Logo from './Logo';
 
 const menuItems = [
   { title: "Inicio", url: "/admin", icon: BarChart3 },
@@ -39,9 +39,17 @@ const footerItems = [
 export function AdminSidebar() {
   return (
     <Sidebar className="bg-brand-darkBlue border-none">
-      {/* Logo Section */}
-      <div className="p-4 border-b border-white/10">
-        <Logo />
+      {/* Header with Logo Icon */}
+      <div className="p-6 border-b border-white/10">
+        <div className="flex items-center gap-3">
+          <div className="bg-brand-orange p-2 rounded-lg">
+            <Package2 className="h-6 w-6 text-white" />
+          </div>
+          <div className="flex flex-col">
+            <span className="text-white font-bold text-lg">TOYS AND</span>
+            <span className="text-brand-orange font-bold text-lg">BRICKS</span>
+          </div>
+        </div>
       </div>
 
       <SidebarContent className="bg-brand-darkBlue">

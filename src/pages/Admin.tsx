@@ -1,6 +1,5 @@
 import React from 'react';
-import { Shield } from 'lucide-react';
-import { SidebarProvider } from '@/components/ui/sidebar';
+import { SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar';
 import { AdminSidebar } from '@/components/AdminSidebar';
 
 const Admin: React.FC = () => {
@@ -9,15 +8,21 @@ const Admin: React.FC = () => {
       <div className="min-h-screen flex w-full">
         <AdminSidebar />
         
-        <main className="flex-1 flex items-center justify-center bg-gray-50">
-          <div className="text-center">
-            <div className="flex justify-center mb-6">
-              <Shield size={64} className="text-brand-orange" strokeWidth={2} />
+        <main className="flex-1 flex flex-col bg-gray-50">
+          {/* Header with Toggle */}
+          <header className="bg-white border-b border-gray-200 px-6 py-4 flex items-center gap-4">
+            <SidebarTrigger className="text-gray-600 hover:text-brand-orange" />
+            <h2 className="text-xl font-semibold text-gray-800">Panel de Administración</h2>
+          </header>
+
+          {/* Main Content */}
+          <div className="flex-1 p-8">
+            <div className="max-w-6xl">
+              <h1 className="text-4xl font-bold text-gray-900 mb-2">Dashboard</h1>
+              <p className="text-gray-600 text-lg">
+                Resumen general de tu tienda TOYS AND BRICKS
+              </p>
             </div>
-            <h1 className="text-4xl font-bold text-brand-darkBlue mb-4">Panel Administrativo</h1>
-            <p className="text-gray-600 text-lg">
-              Funcionalidades en desarrollo...
-            </p>
           </div>
         </main>
       </div>
