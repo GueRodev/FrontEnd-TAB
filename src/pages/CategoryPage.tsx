@@ -90,6 +90,16 @@ const CategoryPage: React.FC = () => {
       <Header />
       
       <main className="pt-20">
+        {/* Category Header */}
+        <div className="container mx-auto px-4 py-12">
+          <h1 className="text-3xl md:text-4xl font-display font-bold text-brand-darkBlue mb-2">
+            {categoryData?.name || 'Categoría'}
+          </h1>
+          <p className="text-gray-600">
+            {categoryData?.description || 'Explora nuestra colección de productos.'}
+          </p>
+        </div>
+
         {/* Product Area */}
         <div className="container mx-auto px-4 py-8">
           <div className="w-full">
