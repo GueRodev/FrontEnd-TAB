@@ -9,7 +9,7 @@ import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useOrders, OrderStatus } from '@/contexts/OrdersContext';
 import { toast } from '@/hooks/use-toast';
-import { ShoppingCart, Store, Package, CheckCircle, XCircle } from 'lucide-react';
+import { ShoppingCart, Store, Package, CheckCircle, XCircle, Trash2 } from 'lucide-react';
 
 // Datos mock de productos para el formulario de tienda física
 const mockProducts = [
@@ -20,7 +20,7 @@ const mockProducts = [
 ];
 
 const AdminOrders = () => {
-  const { orders, addOrder, updateOrderStatus } = useOrders();
+  const { orders, addOrder, updateOrderStatus, deleteOrder } = useOrders();
   const [selectedProduct, setSelectedProduct] = useState('');
   const [quantity, setQuantity] = useState(1);
   const [customerName, setCustomerName] = useState('');
@@ -101,15 +101,35 @@ const AdminOrders = () => {
     );
   };
 
+  const handleDeleteOrder = (orderId: string) => {
+    if (confirm('¿Estás seguro de que deseas eliminar este pedido?')) {
+      deleteOrder(orderId);
+      toast({
+        title: "Pedido eliminado",
+        description: "El pedido ha sido eliminado exitosamente",
+      });
+    }
+  };
+
   const OrderCard = ({ order, showDeliveryInfo = true }: { order: any; showDeliveryInfo?: boolean }) => (
     <Card>
       <CardHeader>
         <div className="flex justify-between items-start">
-          <div>
+          <div className="flex-1">
             <CardTitle className="text-lg">{order.id}</CardTitle>
             <CardDescription>{new Date(order.createdAt).toLocaleString('es-ES')}</CardDescription>
           </div>
-          {getStatusBadge(order.status)}
+          <div className="flex items-center gap-2">
+            {getStatusBadge(order.status)}
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => handleDeleteOrder(order.id)}
+              className="text-destructive hover:text-destructive hover:bg-destructive/10"
+            >
+              <Trash2 size={18} />
+            </Button>
+          </div>
         </div>
       </CardHeader>
       <CardContent className="space-y-4">

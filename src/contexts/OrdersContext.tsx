@@ -34,6 +34,7 @@ interface OrdersContextType {
   orders: Order[];
   addOrder: (order: Omit<Order, 'id' | 'createdAt'>) => void;
   updateOrderStatus: (orderId: string, status: OrderStatus) => void;
+  deleteOrder: (orderId: string) => void;
   getOrdersByType: (type: OrderType) => Order[];
 }
 
@@ -66,6 +67,10 @@ export const OrdersProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     );
   };
 
+  const deleteOrder = (orderId: string) => {
+    setOrders(prev => prev.filter(order => order.id !== orderId));
+  };
+
   const getOrdersByType = (type: OrderType) => {
     return orders.filter(order => order.type === type);
   };
@@ -76,6 +81,7 @@ export const OrdersProvider: React.FC<{ children: React.ReactNode }> = ({ childr
         orders,
         addOrder,
         updateOrderStatus,
+        deleteOrder,
         getOrdersByType,
       }}
     >
