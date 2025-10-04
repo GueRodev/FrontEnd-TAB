@@ -208,42 +208,48 @@ const AdminOrders = () => {
             <h1 className="text-2xl font-bold">Gestión de Pedidos</h1>
           </header>
 
-          <main className="p-6">
-            <div className="grid lg:grid-cols-2 gap-6">
-              {/* Sección 1: Pedidos desde el carrito */}
-              <div className="space-y-4">
-                <div className="flex items-center gap-2">
+          <main className="p-6 space-y-8">
+            {/* Sección 1: Pedidos desde el carrito */}
+            <div className="space-y-4">
+              <div>
+                <div className="flex items-center gap-2 mb-2">
                   <ShoppingCart className="h-6 w-6 text-primary" />
                   <h2 className="text-xl font-bold">Pedidos desde el Carrito</h2>
-                  <Badge variant="secondary">{onlineOrders.length}</Badge>
                 </div>
-                
-                {onlineOrders.length === 0 ? (
-                  <Card>
-                    <CardContent className="py-8 text-center text-muted-foreground">
+                <p className="text-muted-foreground">Gestiona los pedidos realizados desde la tienda online</p>
+              </div>
+              
+              <Card>
+                <CardContent className="p-6">
+                  {onlineOrders.length === 0 ? (
+                    <div className="py-8 text-center text-muted-foreground">
                       <ShoppingCart className="h-12 w-12 mx-auto mb-2 opacity-30" />
                       <p>No hay pedidos online aún</p>
-                    </CardContent>
-                  </Card>
-                ) : (
-                  <div className="space-y-4">
-                    {onlineOrders.map(order => (
-                      <OrderCard key={order.id} order={order} />
-                    ))}
-                  </div>
-                )}
-              </div>
+                    </div>
+                  ) : (
+                    <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-4">
+                      {onlineOrders.map(order => (
+                        <OrderCard key={order.id} order={order} />
+                      ))}
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+            </div>
 
-              {/* Sección 2: Crear pedido en tienda física */}
-              <div className="space-y-4">
-                <div className="flex items-center gap-2">
+            {/* Sección 2: Crear pedido en tienda física */}
+            <div className="space-y-4">
+              <div>
+                <div className="flex items-center gap-2 mb-2">
                   <Store className="h-6 w-6 text-primary" />
                   <h2 className="text-xl font-bold">Pedidos en Tienda Física</h2>
-                  <Badge variant="secondary">{inStoreOrders.length}</Badge>
                 </div>
+                <p className="text-muted-foreground">Registra y gestiona ventas presenciales</p>
+              </div>
 
+              <div className="grid lg:grid-cols-3 gap-6">
                 {/* Formulario para crear pedido */}
-                <Card>
+                <Card className="lg:col-span-1">
                   <CardHeader>
                     <CardTitle>Crear Nuevo Pedido</CardTitle>
                     <CardDescription>Registra una venta presencial</CardDescription>
@@ -321,10 +327,21 @@ const AdminOrders = () => {
                 </Card>
 
                 {/* Lista de pedidos en tienda */}
-                <div className="space-y-4">
-                  {inStoreOrders.map(order => (
-                    <OrderCard key={order.id} order={order} showDeliveryInfo={false} />
-                  ))}
+                <div className="lg:col-span-2">
+                  {inStoreOrders.length === 0 ? (
+                    <Card>
+                      <CardContent className="py-12 text-center text-muted-foreground">
+                        <Store className="h-12 w-12 mx-auto mb-2 opacity-30" />
+                        <p>No hay pedidos en tienda aún</p>
+                      </CardContent>
+                    </Card>
+                  ) : (
+                    <div className="grid md:grid-cols-2 gap-4">
+                      {inStoreOrders.map(order => (
+                        <OrderCard key={order.id} order={order} showDeliveryInfo={false} />
+                      ))}
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
