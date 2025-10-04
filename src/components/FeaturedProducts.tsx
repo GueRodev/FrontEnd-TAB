@@ -156,7 +156,8 @@ const FeaturedProducts: React.FC = () => {
                     size="sm"
                     className="bg-brand-darkBlue hover:bg-brand-orange text-white transition-colors flex items-center gap-1"
                   >
-                    <Plus size={18} />
+                    <ShoppingCart size={16} />
+                    <Plus size={16} />
                   </Button>
                 </div>
               </div>
