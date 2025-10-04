@@ -37,7 +37,9 @@ const Logo: React.FC<LogoProps> = ({ variant = 'default', className = '' }) => {
         </div>
       </div>
       <div className="font-display font-bold leading-none">
-        <span className="block text-brand-darkBlue text-xl md:text-2xl">TOYS <span className="text-brand-yellow">AND</span></span>
+        <span className={`block text-xl md:text-2xl ${variant === 'white' ? 'text-white' : 'text-brand-darkBlue'}`}>
+          TOYS <span className="text-brand-yellow">AND</span>
+        </span>
         <span className="block text-brand-orange text-xl md:text-2xl">BRICKS</span>
       </div>
     </Link>
