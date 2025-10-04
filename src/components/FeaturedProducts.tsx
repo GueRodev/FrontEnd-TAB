@@ -25,27 +25,11 @@ const featuredProducts: Product[] = [
     category: 'Starwars'
   },
   {
-    id: 'p2',
-    name: 'LEGO Marvel Avengers Tower',
-    image: '/lovable-uploads/9c75102e-2923-40ad-8aaf-ff7279ad2993.png',
-    price: 89.99,
-    rating: 4.7,
-    category: 'Coleccionables'
-  },
-  {
     id: 'p3',
     name: 'LEGO City Space Station',
     image: '/lovable-uploads/51190e3f-2193-4b2a-85ac-e5453680e7bf.png',
     price: 69.99,
     rating: 4.5,
-    category: 'Lego Sets'
-  },
-  {
-    id: 'p4',
-    name: 'LEGO Technic Bugatti Chiron',
-    image: '/lovable-uploads/9c75102e-2923-40ad-8aaf-ff7279ad2993.png',
-    price: 349.99,
-    rating: 4.8,
     category: 'Lego Sets'
   },
   {
