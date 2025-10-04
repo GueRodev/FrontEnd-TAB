@@ -100,6 +100,19 @@ const CategoryPage: React.FC = () => {
       <Header />
       
       <main className="pt-20">
+        {/* Breadcrumb */}
+        <div className="bg-brand-darkBlue text-white py-4">
+          <div className="container mx-auto px-4">
+            <div className="flex items-center gap-2 text-sm uppercase font-semibold">
+              <Link to="/" className="hover:text-brand-orange transition-colors">
+                INICIO
+              </Link>
+              <span>/</span>
+              <span>{categoryData?.name?.toUpperCase() || 'CATEGORÍA'}</span>
+            </div>
+          </div>
+        </div>
+
         {/* Category Header */}
         <div className="container mx-auto px-4 py-12">
           <h1 className="text-3xl md:text-4xl font-display font-bold text-brand-darkBlue mb-2">
