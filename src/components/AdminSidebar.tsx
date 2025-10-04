@@ -42,12 +42,12 @@ export function AdminSidebar() {
       {/* Header with Logo Icon */}
       <div className="p-6 border-b border-white/10">
         <div className="flex items-center gap-3">
-          <div className="bg-brand-orange p-2 rounded-lg">
-            <Package2 className="h-6 w-6 text-white" />
+          <div className="bg-brand-orange p-2.5 rounded-lg flex-shrink-0">
+            <Package2 className="h-6 w-6 text-white" strokeWidth={2.5} />
           </div>
-          <div className="flex flex-col">
-            <span className="text-white font-bold text-lg">TOYS AND</span>
-            <span className="text-brand-orange font-bold text-lg">BRICKS</span>
+          <div className="flex flex-col leading-tight">
+            <span className="text-white font-bold text-base tracking-wide">TOYS AND</span>
+            <span className="text-brand-orange font-bold text-base tracking-wide">BRICKS</span>
           </div>
         </div>
       </div>
