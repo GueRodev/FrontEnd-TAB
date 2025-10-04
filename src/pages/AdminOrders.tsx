@@ -208,26 +208,26 @@ const AdminOrders = () => {
             <h1 className="text-2xl font-bold">Gestión de Pedidos</h1>
           </header>
 
-          <main className="p-6 space-y-8">
+          <main className="p-4 md:p-6 space-y-6 md:space-y-8">
             {/* Sección 1: Pedidos desde el carrito */}
             <div className="space-y-4">
               <div>
                 <div className="flex items-center gap-2 mb-2">
-                  <ShoppingCart className="h-6 w-6 text-primary" />
-                  <h2 className="text-xl font-bold">Pedidos desde el Carrito</h2>
+                  <ShoppingCart className="h-5 w-5 md:h-6 md:w-6 text-primary" />
+                  <h2 className="text-lg md:text-xl font-bold">Pedidos desde el Carrito</h2>
                 </div>
-                <p className="text-muted-foreground">Gestiona los pedidos realizados desde la tienda online</p>
+                <p className="text-sm md:text-base text-muted-foreground">Gestiona los pedidos realizados desde la tienda online</p>
               </div>
               
               <Card>
-                <CardContent className="p-6">
+                <CardContent className="p-4 md:p-6">
                   {onlineOrders.length === 0 ? (
                     <div className="py-8 text-center text-muted-foreground">
                       <ShoppingCart className="h-12 w-12 mx-auto mb-2 opacity-30" />
                       <p>No hay pedidos online aún</p>
                     </div>
                   ) : (
-                    <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-4">
+                    <div className="grid gap-4 xl:grid-cols-2 2xl:grid-cols-3">
                       {onlineOrders.map(order => (
                         <OrderCard key={order.id} order={order} />
                       ))}
@@ -241,29 +241,29 @@ const AdminOrders = () => {
             <div className="space-y-4">
               <div>
                 <div className="flex items-center gap-2 mb-2">
-                  <Store className="h-6 w-6 text-primary" />
-                  <h2 className="text-xl font-bold">Pedidos en Tienda Física</h2>
+                  <Store className="h-5 w-5 md:h-6 md:w-6 text-primary" />
+                  <h2 className="text-lg md:text-xl font-bold">Pedidos en Tienda Física</h2>
                 </div>
-                <p className="text-muted-foreground">Registra y gestiona ventas presenciales</p>
+                <p className="text-sm md:text-base text-muted-foreground">Registra y gestiona ventas presenciales</p>
               </div>
 
-              <div className="grid lg:grid-cols-3 gap-6">
+              <div className="grid gap-6 xl:grid-cols-3">
                 {/* Formulario para crear pedido */}
-                <Card className="lg:col-span-1">
-                  <CardHeader>
-                    <CardTitle>Crear Nuevo Pedido</CardTitle>
-                    <CardDescription>Registra una venta presencial</CardDescription>
+                <Card className="xl:col-span-1">
+                  <CardHeader className="p-4 md:p-6">
+                    <CardTitle className="text-lg md:text-xl">Crear Nuevo Pedido</CardTitle>
+                    <CardDescription className="text-sm">Registra una venta presencial</CardDescription>
                   </CardHeader>
-                  <CardContent className="space-y-4">
+                  <CardContent className="space-y-4 p-4 md:p-6 pt-0">
                     <div>
-                      <Label htmlFor="product">Producto *</Label>
+                      <Label htmlFor="product" className="text-sm">Producto *</Label>
                       <Select value={selectedProduct} onValueChange={setSelectedProduct}>
-                        <SelectTrigger id="product">
+                        <SelectTrigger id="product" className="text-sm">
                           <SelectValue placeholder="Selecciona un producto" />
                         </SelectTrigger>
                         <SelectContent>
                           {mockProducts.map(product => (
-                            <SelectItem key={product.id} value={product.id}>
+                            <SelectItem key={product.id} value={product.id} className="text-sm">
                               {product.name} - ${product.price} (Stock: {product.stock})
                             </SelectItem>
                           ))}
@@ -272,47 +272,50 @@ const AdminOrders = () => {
                     </div>
 
                     <div>
-                      <Label htmlFor="quantity">Cantidad *</Label>
+                      <Label htmlFor="quantity" className="text-sm">Cantidad *</Label>
                       <Input
                         id="quantity"
                         type="number"
                         min="1"
                         value={quantity}
                         onChange={(e) => setQuantity(parseInt(e.target.value) || 1)}
+                        className="text-sm"
                       />
                     </div>
 
                     <div>
-                      <Label htmlFor="customerName">Nombre del Cliente *</Label>
+                      <Label htmlFor="customerName" className="text-sm">Nombre del Cliente *</Label>
                       <Input
                         id="customerName"
                         value={customerName}
                         onChange={(e) => setCustomerName(e.target.value)}
                         placeholder="Nombre completo"
+                        className="text-sm"
                       />
                     </div>
 
                     <div>
-                      <Label htmlFor="customerPhone">Teléfono *</Label>
+                      <Label htmlFor="customerPhone" className="text-sm">Teléfono *</Label>
                       <Input
                         id="customerPhone"
                         value={customerPhone}
                         onChange={(e) => setCustomerPhone(e.target.value)}
                         placeholder="Número de contacto"
+                        className="text-sm"
                       />
                     </div>
 
                     <div>
-                      <Label htmlFor="payment">Método de Pago *</Label>
+                      <Label htmlFor="payment" className="text-sm">Método de Pago *</Label>
                       <Select value={paymentMethod} onValueChange={setPaymentMethod}>
-                        <SelectTrigger id="payment">
+                        <SelectTrigger id="payment" className="text-sm">
                           <SelectValue placeholder="Selecciona método de pago" />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="Efectivo">Efectivo</SelectItem>
-                          <SelectItem value="Tarjeta">Tarjeta</SelectItem>
-                          <SelectItem value="SINPE Móvil">SINPE Móvil</SelectItem>
-                          <SelectItem value="Transferencia">Transferencia</SelectItem>
+                          <SelectItem value="Efectivo" className="text-sm">Efectivo</SelectItem>
+                          <SelectItem value="Tarjeta" className="text-sm">Tarjeta</SelectItem>
+                          <SelectItem value="SINPE Móvil" className="text-sm">SINPE Móvil</SelectItem>
+                          <SelectItem value="Transferencia" className="text-sm">Transferencia</SelectItem>
                         </SelectContent>
                       </Select>
                     </div>
@@ -327,7 +330,7 @@ const AdminOrders = () => {
                 </Card>
 
                 {/* Lista de pedidos en tienda */}
-                <div className="lg:col-span-2">
+                <div className="xl:col-span-2">
                   {inStoreOrders.length === 0 ? (
                     <Card>
                       <CardContent className="py-12 text-center text-muted-foreground">
@@ -336,7 +339,7 @@ const AdminOrders = () => {
                       </CardContent>
                     </Card>
                   ) : (
-                    <div className="grid md:grid-cols-2 gap-4">
+                    <div className="grid gap-4 2xl:grid-cols-2">
                       {inStoreOrders.map(order => (
                         <OrderCard key={order.id} order={order} showDeliveryInfo={false} />
                       ))}
