@@ -219,17 +219,17 @@ const AdminFinanzas = () => {
 
           <main className="flex-1 p-3 md:p-4 lg:p-6 space-y-4 md:space-y-6 max-w-full overflow-x-hidden">
             {/* Cards de Resumen */}
-            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 md:gap-6">
+            <div className="grid grid-cols-1 lg:grid-cols-2 2xl:grid-cols-3 gap-4 md:gap-6">
               {/* Ingresos Totales */}
               <Card>
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                   <CardTitle className="text-sm md:text-base font-medium">
                     Ingresos Totales
                   </CardTitle>
-                  <DollarSign className="h-4 w-4 md:h-5 md:w-5 text-muted-foreground" />
+                  <DollarSign className="h-4 w-4 md:h-5 md:w-5 text-muted-foreground flex-shrink-0" />
                 </CardHeader>
                 <CardContent>
-                  <div className="text-xl md:text-2xl lg:text-3xl font-bold">
+                  <div className="text-lg md:text-xl lg:text-2xl xl:text-3xl font-bold break-all">
                     ₡{totalRevenue.toFixed(2)}
                   </div>
                   <p className="text-xs text-muted-foreground mt-1">
@@ -244,10 +244,10 @@ const AdminFinanzas = () => {
                   <CardTitle className="text-sm md:text-base font-medium">
                     Ventas del Mes
                   </CardTitle>
-                  <TrendingUp className="h-4 w-4 md:h-5 md:w-5 text-muted-foreground" />
+                  <TrendingUp className="h-4 w-4 md:h-5 md:w-5 text-muted-foreground flex-shrink-0" />
                 </CardHeader>
                 <CardContent>
-                  <div className="text-xl md:text-2xl lg:text-3xl font-bold">
+                  <div className="text-lg md:text-xl lg:text-2xl xl:text-3xl font-bold break-all">
                     ₡{monthlyRevenue.toFixed(2)}
                   </div>
                   <p className="text-xs text-muted-foreground mt-1">
@@ -257,15 +257,15 @@ const AdminFinanzas = () => {
               </Card>
 
               {/* Total de Pedidos */}
-              <Card className="md:col-span-2 xl:col-span-1">
+              <Card className="lg:col-span-2 2xl:col-span-1">
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                   <CardTitle className="text-sm md:text-base font-medium">
                     Total de Pedidos
                   </CardTitle>
-                  <ShoppingCart className="h-4 w-4 md:h-5 md:w-5 text-muted-foreground" />
+                  <ShoppingCart className="h-4 w-4 md:h-5 md:w-5 text-muted-foreground flex-shrink-0" />
                 </CardHeader>
                 <CardContent>
-                  <div className="text-xl md:text-2xl lg:text-3xl font-bold">
+                  <div className="text-lg md:text-xl lg:text-2xl xl:text-3xl font-bold">
                     {orders.length}
                   </div>
                   <p className="text-xs text-muted-foreground mt-1">
@@ -313,31 +313,32 @@ const AdminFinanzas = () => {
               <CardContent>
                 <div className="space-y-4">
                   {/* Resumen del año */}
-                  <div className="grid grid-cols-2 gap-4 p-4 bg-muted/50 rounded-lg">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 md:gap-4 p-3 md:p-4 bg-muted/50 rounded-lg">
                     <div>
                       <p className="text-xs md:text-sm text-muted-foreground">Total Ingresos {selectedYear}</p>
-                      <p className="text-lg md:text-xl lg:text-2xl font-bold">₡{yearlyStats.revenue.toFixed(2)}</p>
+                      <p className="text-base md:text-lg lg:text-xl xl:text-2xl font-bold break-all">₡{yearlyStats.revenue.toFixed(2)}</p>
                     </div>
                     <div>
                       <p className="text-xs md:text-sm text-muted-foreground">Total Ventas {selectedYear}</p>
-                      <p className="text-lg md:text-xl lg:text-2xl font-bold">{yearlyStats.count}</p>
+                      <p className="text-base md:text-lg lg:text-xl xl:text-2xl font-bold">{yearlyStats.count}</p>
                     </div>
                   </div>
 
                   {/* Gráfico */}
-                  <div className="h-[300px] md:h-[400px] w-full">
+                  <div className="h-[280px] sm:h-[320px] lg:h-[380px] xl:h-[400px] w-full">
                     <ResponsiveContainer width="100%" height="100%">
-                      <BarChart data={monthlyData}>
+                      <BarChart data={monthlyData} margin={{ bottom: 60, left: 0, right: 10, top: 10 }}>
                         <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
                         <XAxis 
                           dataKey="mes" 
-                          className="text-xs md:text-sm"
+                          tick={{ fontSize: 10 }}
                           angle={-45}
                           textAnchor="end"
-                          height={80}
+                          height={70}
+                          interval={0}
                         />
-                        <YAxis className="text-xs md:text-sm" />
-                        <Tooltip 
+                        <YAxis tick={{ fontSize: 10 }} width={60} />
+                        <Tooltip
                           contentStyle={{ 
                             backgroundColor: 'hsl(var(--card))',
                             border: '1px solid hsl(var(--border))',
