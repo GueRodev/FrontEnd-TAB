@@ -95,35 +95,7 @@ const CategoryPage: React.FC = () => {
           <div className="w-full">
             {/* Products */}
             <div className="w-full">
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-                {products.map((product) => (
-                  <ProductCard
-                    key={product.id}
-                    id={product.id}
-                    name={product.name}
-                    image={product.image}
-                    price={product.price}
-                    badge={product.badge}
-                    isWishlisted={wishlist.includes(product.id)}
-                    onToggleWishlist={toggleWishlist}
-                    onAddToCart={addToCart}
-                  />
-                ))}
-              </div>
-              
-              <div className="mt-10 flex justify-center">
-                <div className="flex items-center space-x-2">
-                  <button className="px-4 py-2 border rounded-md hover:bg-gray-100 transition-colors">
-                    &laquo;
-                  </button>
-                  <button className="px-4 py-2 bg-brand-orange text-white rounded-md">1</button>
-                  <button className="px-4 py-2 border rounded-md hover:bg-gray-100 transition-colors">2</button>
-                  <button className="px-4 py-2 border rounded-md hover:bg-gray-100 transition-colors">3</button>
-                  <button className="px-4 py-2 border rounded-md hover:bg-gray-100 transition-colors">
-                    &raquo;
-                  </button>
-                </div>
-              </div>
+              {/* Products will be added here */}
             </div>
           </div>
         </div>
