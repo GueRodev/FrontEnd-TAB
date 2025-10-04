@@ -209,15 +209,15 @@ const AdminFinanzas = () => {
 
   return (
     <SidebarProvider>
-      <div className="min-h-screen flex w-full bg-background">
+      <div className="min-h-screen flex w-full bg-background overflow-hidden">
         <AdminSidebar />
-        <div className="flex-1 flex flex-col">
-          <header className="h-14 md:h-16 border-b bg-background flex items-center px-3 md:px-6 sticky top-0 z-10">
-            <SidebarTrigger className="mr-4" />
-            <h1 className="text-xl md:text-2xl lg:text-3xl font-bold">Finanzas</h1>
+        <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
+          <header className="h-14 md:h-16 border-b bg-background flex items-center px-3 md:px-6 sticky top-0 z-10 flex-shrink-0">
+            <SidebarTrigger className="mr-4 flex-shrink-0" />
+            <h1 className="text-xl md:text-2xl lg:text-3xl font-bold truncate">Finanzas</h1>
           </header>
 
-          <main className="flex-1 p-3 md:p-4 lg:p-6 space-y-4 md:space-y-6 max-w-full overflow-x-hidden">
+          <main className="flex-1 p-3 md:p-4 lg:p-6 space-y-4 md:space-y-6 overflow-y-auto overflow-x-hidden">
             {/* Cards de Resumen */}
             <div className="grid grid-cols-1 lg:grid-cols-2 2xl:grid-cols-3 gap-4 md:gap-6">
               {/* Ingresos Totales */}
