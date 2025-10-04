@@ -127,6 +127,12 @@ const FeaturedProducts: React.FC = () => {
                   <span className="text-xs text-gray-500">{product.category}</span>
                 </div>
                 
+                <Link to={`/product/${product.id}`} className="block">
+                  <h3 className="font-semibold text-gray-900 hover:text-brand-orange transition-colors mb-3 line-clamp-2">
+                    {product.name}
+                  </h3>
+                </Link>
+                
                 <div className="flex justify-between items-center mt-4">
                   <span className="font-bold text-lg">${product.price.toFixed(2)}</span>
                   <Button
