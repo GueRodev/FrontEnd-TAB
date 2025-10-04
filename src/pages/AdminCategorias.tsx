@@ -166,6 +166,16 @@ const AdminCategorias: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalType, setModalType] = useState<'category' | 'subcategory'>('category');
   const [selectedCategoryId, setSelectedCategoryId] = useState<string>('');
+  
+  // Estados para edición
+  const [isEditCategoryOpen, setIsEditCategoryOpen] = useState(false);
+  const [isEditSubcategoryOpen, setIsEditSubcategoryOpen] = useState(false);
+  const [editingCategory, setEditingCategory] = useState<Category | null>(null);
+  const [editingSubcategory, setEditingSubcategory] = useState<Subcategory | null>(null);
+  const [editFormData, setEditFormData] = useState({
+    name: '',
+    description: '',
+  });
 
   const [categories, setCategories] = useState<Category[]>([
     {
@@ -235,7 +245,12 @@ const AdminCategorias: React.FC = () => {
   };
 
   const handleEdit = (category: Category) => {
-    console.log('Edit category:', category);
+    setEditingCategory(category);
+    setEditFormData({
+      name: category.name,
+      description: category.description,
+    });
+    setIsEditCategoryOpen(true);
   };
 
   const handleDelete = (id: string) => {
@@ -243,11 +258,35 @@ const AdminCategorias: React.FC = () => {
   };
 
   const handleEditSubcategory = (categoryId: string, subcategory: Subcategory) => {
-    console.log('Edit subcategory:', subcategory);
+    setSelectedCategoryId(categoryId);
+    setEditingSubcategory(subcategory);
+    setEditFormData({
+      name: subcategory.name,
+      description: subcategory.description,
+    });
+    setIsEditSubcategoryOpen(true);
   };
 
   const handleDeleteSubcategory = (categoryId: string, subcategoryId: string) => {
     console.log('Delete subcategory:', subcategoryId);
+  };
+
+  const handleUpdateCategory = (e: React.FormEvent) => {
+    e.preventDefault();
+    // Aquí implementarás la lógica para actualizar la categoría
+    console.log('Updating category:', editingCategory?.id, editFormData);
+    setIsEditCategoryOpen(false);
+    setEditingCategory(null);
+    setEditFormData({ name: '', description: '' });
+  };
+
+  const handleUpdateSubcategory = (e: React.FormEvent) => {
+    e.preventDefault();
+    // Aquí implementarás la lógica para actualizar la subcategoría
+    console.log('Updating subcategory:', editingSubcategory?.id, editFormData);
+    setIsEditSubcategoryOpen(false);
+    setEditingSubcategory(null);
+    setEditFormData({ name: '', description: '' });
   };
 
   return (
@@ -451,7 +490,7 @@ const AdminCategorias: React.FC = () => {
         </main>
       </div>
 
-      {/* Modal para Agregar/Editar */}
+      {/* Modal para Agregar */}
       <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
         <DialogContent className="max-w-md mx-4">
           <DialogHeader>
@@ -510,6 +549,126 @@ const AdminCategorias: React.FC = () => {
               Guardar
             </Button>
           </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Modal para Editar Categoría */}
+      <Dialog open={isEditCategoryOpen} onOpenChange={setIsEditCategoryOpen}>
+        <DialogContent className="max-w-md mx-4">
+          <DialogHeader>
+            <DialogTitle className="text-lg md:text-xl">
+              Editar Categoría
+            </DialogTitle>
+            <DialogDescription className="text-sm">
+              Modifica los datos de la categoría
+            </DialogDescription>
+          </DialogHeader>
+
+          <form onSubmit={handleUpdateCategory} className="space-y-4 py-4">
+            <div className="space-y-2">
+              <Label htmlFor="edit-cat-name">Nombre *</Label>
+              <Input
+                id="edit-cat-name"
+                value={editFormData.name}
+                onChange={(e) => setEditFormData({ ...editFormData, name: e.target.value })}
+                placeholder="Ej: Sets de Construcción"
+                required
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="edit-cat-description">Descripción *</Label>
+              <Input
+                id="edit-cat-description"
+                value={editFormData.description}
+                onChange={(e) => setEditFormData({ ...editFormData, description: e.target.value })}
+                placeholder="Breve descripción"
+                required
+              />
+            </div>
+
+            <div className="flex flex-col sm:flex-row justify-end gap-2 sm:gap-3">
+              <Button 
+                type="button" 
+                variant="outline" 
+                onClick={() => setIsEditCategoryOpen(false)} 
+                className="w-full sm:w-auto"
+              >
+                Cancelar
+              </Button>
+              <Button type="submit" className="w-full sm:w-auto">
+                Actualizar
+              </Button>
+            </div>
+          </form>
+        </DialogContent>
+      </Dialog>
+
+      {/* Modal para Editar Subcategoría */}
+      <Dialog open={isEditSubcategoryOpen} onOpenChange={setIsEditSubcategoryOpen}>
+        <DialogContent className="max-w-md mx-4">
+          <DialogHeader>
+            <DialogTitle className="text-lg md:text-xl">
+              Editar Subcategoría
+            </DialogTitle>
+            <DialogDescription className="text-sm">
+              Modifica los datos de la subcategoría
+            </DialogDescription>
+          </DialogHeader>
+
+          <form onSubmit={handleUpdateSubcategory} className="space-y-4 py-4">
+            <div className="space-y-2">
+              <Label htmlFor="edit-sub-category">Categoría Padre</Label>
+              <Select value={selectedCategoryId} onValueChange={setSelectedCategoryId}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Selecciona una categoría" />
+                </SelectTrigger>
+                <SelectContent>
+                  {categories.map((cat) => (
+                    <SelectItem key={cat.id} value={cat.id}>
+                      {cat.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="edit-sub-name">Nombre *</Label>
+              <Input
+                id="edit-sub-name"
+                value={editFormData.name}
+                onChange={(e) => setEditFormData({ ...editFormData, name: e.target.value })}
+                placeholder="Ej: Star Wars"
+                required
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="edit-sub-description">Descripción *</Label>
+              <Input
+                id="edit-sub-description"
+                value={editFormData.description}
+                onChange={(e) => setEditFormData({ ...editFormData, description: e.target.value })}
+                placeholder="Breve descripción"
+                required
+              />
+            </div>
+
+            <div className="flex flex-col sm:flex-row justify-end gap-2 sm:gap-3">
+              <Button 
+                type="button" 
+                variant="outline" 
+                onClick={() => setIsEditSubcategoryOpen(false)} 
+                className="w-full sm:w-auto"
+              >
+                Cancelar
+              </Button>
+              <Button type="submit" className="w-full sm:w-auto">
+                Actualizar
+              </Button>
+            </div>
+          </form>
         </DialogContent>
       </Dialog>
     </SidebarProvider>
