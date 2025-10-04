@@ -1,7 +1,6 @@
 
 import React, { useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { ChevronRight, Sliders, List, Grid, FilterX } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
@@ -91,63 +90,12 @@ const CategoryPage: React.FC = () => {
       <Header />
       
       <main className="pt-20">
-        {/* Filter and Product Area */}
+        {/* Product Area */}
         <div className="container mx-auto px-4 py-8">
-          <div className="flex flex-col md:flex-row gap-8">
-            {/* Sidebar */}
-            <div className="w-full md:w-1/4">
-              <div className="bg-white border rounded-lg p-4 sticky top-24">
-                <div className="flex justify-between items-center mb-4">
-                  <h3 className="font-semibold text-lg flex items-center gap-2">
-                    <Sliders size={18} /> Filtros
-                  </h3>
-                  <button className="text-sm text-gray-500 hover:text-brand-orange transition-colors flex items-center gap-1">
-                    <FilterX size={16} /> Limpiar Todo
-                  </button>
-                </div>
-                
-                {/* Filter components would go here */}
-                <div className="space-y-6">
-                  <div>
-                    <h4 className="font-medium mb-2">Rango de Precio</h4>
-                    <div className="flex items-center gap-2">
-                      <input type="range" min="0" max="100" className="w-full" />
-                    </div>
-                    <div className="flex justify-between mt-2 text-sm text-gray-600">
-                      <span>$0</span>
-                      <span>$500</span>
-                    </div>
-                  </div>
-                  
-                  
-                  <div>
-                    <h4 className="font-medium mb-2">Marca</h4>
-                    <div className="space-y-1">
-                      <div className="flex items-center">
-                        <input type="checkbox" id="brand1" className="mr-2" />
-                        <label htmlFor="brand1" className="text-gray-600">LEGO</label>
-                      </div>
-                      <div className="flex items-center">
-                        <input type="checkbox" id="brand2" className="mr-2" />
-                        <label htmlFor="brand2" className="text-gray-600">Hasbro</label>
-                      </div>
-                      <div className="flex items-center">
-                        <input type="checkbox" id="brand3" className="mr-2" />
-                        <label htmlFor="brand3" className="text-gray-600">Funko</label>
-                      </div>
-                      <div className="flex items-center">
-                        <input type="checkbox" id="brand4" className="mr-2" />
-                        <label htmlFor="brand4" className="text-gray-600">Mattel</label>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            
+          <div className="w-full">
             {/* Products */}
-            <div className="w-full md:w-3/4">
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="w-full">
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
                 {products.map((product) => (
                   <ProductCard
                     key={product.id}
