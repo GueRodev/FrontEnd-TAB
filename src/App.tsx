@@ -14,6 +14,7 @@ import Wishlist from "./pages/Wishlist";
 import Account from "./pages/Account";
 import Cart from "./pages/Cart";
 import Admin from "./pages/Admin";
+import AdminProducts from "./pages/AdminProducts";
 
 const queryClient = new QueryClient();
 
@@ -33,6 +34,7 @@ const App = () => (
               <Route path="/account" element={<Account />} />
               <Route path="/cart" element={<Cart />} />
               <Route path="/admin" element={<Admin />} />
+              <Route path="/admin/productos" element={<AdminProducts />} />
               <Route path="/new-arrivals" element={<CategoryPage />} />
               <Route path="/limited-editions" element={<CategoryPage />} />
               <Route path="/on-sale" element={<CategoryPage />} />
