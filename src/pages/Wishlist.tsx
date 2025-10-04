@@ -5,11 +5,13 @@ import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import ProductCard from '@/components/ProductCard';
 import { useWishlist } from '@/contexts/WishlistContext';
+import { useCart } from '@/contexts/CartContext';
 import { Button } from '@/components/ui/button';
 import { toast } from '@/hooks/use-toast';
 
 const Wishlist: React.FC = () => {
   const { wishlist, toggleWishlist } = useWishlist();
+  const { addToCart } = useCart();
 
   const handleToggleWishlist = (e: React.MouseEvent, productId: string) => {
     e.preventDefault();
@@ -24,10 +26,14 @@ const Wishlist: React.FC = () => {
     e.preventDefault();
     e.stopPropagation();
     const product = wishlist.find(p => p.id === productId);
-    toast({
-      title: "Agregado al carrito",
-      description: `${product?.name} ha sido agregado a tu carrito`,
-    });
+    if (product) {
+      addToCart({
+        id: product.id,
+        name: product.name,
+        image: product.image,
+        price: product.price,
+      });
+    }
   };
 
   return (
