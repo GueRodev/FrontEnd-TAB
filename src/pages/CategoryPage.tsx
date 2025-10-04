@@ -147,35 +147,6 @@ const CategoryPage: React.FC = () => {
             
             {/* Products */}
             <div className="w-full md:w-3/4">
-              <div className="flex justify-between items-center mb-6 flex-wrap gap-4">
-                <div>
-                  <p className="text-gray-600">Mostrando 1-12 de 48 productos</p>
-                </div>
-                
-                <div className="flex items-center gap-4">
-                  <div className="flex items-center gap-2">
-                    <span className="text-gray-600 text-sm">Ver:</span>
-                    <button className="p-1.5 rounded hover:bg-gray-100 text-brand-orange">
-                      <Grid size={20} />
-                    </button>
-                    <button className="p-1.5 rounded hover:bg-gray-100 text-gray-600">
-                      <List size={20} />
-                    </button>
-                  </div>
-                  
-                  <div className="flex items-center gap-2">
-                    <span className="text-gray-600 text-sm">Ordenar por:</span>
-                    <select className="border rounded-md py-1 px-2 text-sm">
-                      <option>Destacados</option>
-                      <option>Precio: Menor a Mayor</option>
-                      <option>Precio: Mayor a Menor</option>
-                      <option>Más Nuevos</option>
-                      <option>Más Vendidos</option>
-                    </select>
-                  </div>
-                </div>
-              </div>
-              
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                 {products.map((product) => (
                   <ProductCard
