@@ -38,8 +38,9 @@ const footerItems = [
 ];
 
 export function AdminSidebar() {
-  const { state, open } = useSidebar();
-  const isCollapsed = state === "collapsed" && !open;
+  const { state, open, isMobile, openMobile } = useSidebar();
+  // En mobile, usar openMobile. En desktop/tablet, considerar state y open
+  const isCollapsed = isMobile ? !openMobile : (state === "collapsed" && !open);
 
   return (
     <Sidebar 
