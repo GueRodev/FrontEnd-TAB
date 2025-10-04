@@ -22,8 +22,7 @@ const featuredProducts: Product[] = [
     image: '/lovable-uploads/51190e3f-2193-4b2a-85ac-e5453680e7bf.png',
     price: 159.99,
     rating: 4.9,
-    category: 'Star Wars',
-    badge: 'Bestseller'
+    category: 'Starwars'
   },
   {
     id: 'p2',
@@ -31,7 +30,7 @@ const featuredProducts: Product[] = [
     image: '/lovable-uploads/9c75102e-2923-40ad-8aaf-ff7279ad2993.png',
     price: 89.99,
     rating: 4.7,
-    category: 'Superheroes'
+    category: 'Coleccionables'
   },
   {
     id: 'p3',
@@ -39,8 +38,7 @@ const featuredProducts: Product[] = [
     image: '/lovable-uploads/51190e3f-2193-4b2a-85ac-e5453680e7bf.png',
     price: 69.99,
     rating: 4.5,
-    category: 'LEGO City',
-    badge: 'New'
+    category: 'Lego Sets'
   },
   {
     id: 'p4',
@@ -48,8 +46,7 @@ const featuredProducts: Product[] = [
     image: '/lovable-uploads/9c75102e-2923-40ad-8aaf-ff7279ad2993.png',
     price: 349.99,
     rating: 4.8,
-    category: 'Technic',
-    badge: 'Limited Edition'
+    category: 'Lego Sets'
   },
   {
     id: 'p5',
@@ -57,7 +54,7 @@ const featuredProducts: Product[] = [
     image: '/lovable-uploads/fbc358a3-bb7b-4fe9-aba6-e1d0b71a13a0.png',
     price: 399.99,
     rating: 4.9,
-    category: 'Harry Potter'
+    category: 'HarryPotter'
   },
   {
     id: 'p6',
@@ -65,8 +62,7 @@ const featuredProducts: Product[] = [
     image: '/lovable-uploads/fbc358a3-bb7b-4fe9-aba6-e1d0b71a13a0.png',
     price: 99.99,
     rating: 4.6,
-    category: 'Superheroes',
-    badge: 'Sale'
+    category: 'Coleccionables'
   }
 ];
 
