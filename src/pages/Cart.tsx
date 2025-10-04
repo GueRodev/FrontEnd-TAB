@@ -6,7 +6,6 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
-import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from '@/components/ui/breadcrumb';
 import { toast } from '@/hooks/use-toast';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
@@ -121,25 +120,25 @@ const Cart = () => {
     : ['SINPE Móvil', 'Transferencia bancaria'];
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen flex flex-col">
       <Header />
-      <div className="pt-24 pb-12">
-        <div className="container mx-auto px-4">
-          <Breadcrumb className="mb-6">
-            <BreadcrumbList>
-              <BreadcrumbItem>
-                <BreadcrumbLink asChild>
-                  <Link to="/">INICIO</Link>
-                </BreadcrumbLink>
-              </BreadcrumbItem>
-              <BreadcrumbSeparator />
-              <BreadcrumbItem>
-                <BreadcrumbPage>CARRITO</BreadcrumbPage>
-              </BreadcrumbItem>
-            </BreadcrumbList>
-          </Breadcrumb>
+      
+      <main className="flex-grow pt-20">
+        {/* Breadcrumb */}
+        <div className="bg-brand-darkBlue text-white py-4">
+          <div className="container mx-auto px-4">
+            <div className="flex items-center gap-2 text-sm uppercase font-semibold">
+              <Link to="/" className="hover:text-brand-orange transition-colors">
+                INICIO
+              </Link>
+              <span>/</span>
+              <span>CARRITO</span>
+            </div>
+          </div>
+        </div>
 
-          <h1 className="text-3xl font-bold mb-8">Carrito de Compras</h1>
+        <div className="container mx-auto px-4 py-12">
+          <h1 className="text-3xl font-bold mb-8 text-brand-darkBlue">Carrito de Compras</h1>
 
           {items.length === 0 ? (
             <div className="text-center py-16">
@@ -335,7 +334,8 @@ const Cart = () => {
             </div>
           )}
         </div>
-      </div>
+      </main>
+
       <Footer />
     </div>
   );
