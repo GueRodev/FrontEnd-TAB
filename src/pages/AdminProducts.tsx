@@ -66,7 +66,9 @@ const mockProducts = [
 const AdminProducts: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const [selectedProduct, setSelectedProduct] = useState<any>(null);
   const [formData, setFormData] = useState({
     name: '',
     category: '',
@@ -91,6 +93,20 @@ const AdminProducts: React.FC = () => {
     setSelectedImage(null);
   };
 
+  const handleEditProduct = (product: any) => {
+    setSelectedProduct(product);
+    setFormData({
+      name: product.name,
+      category: product.category,
+      price: product.price.toString(),
+      stock: product.stock.toString(),
+      description: '',
+      status: product.status
+    });
+    setSelectedImage(product.image);
+    setIsEditDialogOpen(true);
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     // Aquí implementarás la lógica para guardar el producto
@@ -107,6 +123,26 @@ const AdminProducts: React.FC = () => {
       status: 'active'
     });
     setSelectedImage(null);
+  };
+
+  const handleUpdateProduct = (e: React.FormEvent) => {
+    e.preventDefault();
+    // Aquí implementarás la lógica para actualizar el producto
+    console.log('Updating product:', selectedProduct.id);
+    console.log('Form data:', formData);
+    console.log('Image:', selectedImage);
+    setIsEditDialogOpen(false);
+    // Reset form
+    setFormData({
+      name: '',
+      category: '',
+      price: '',
+      stock: '',
+      description: '',
+      status: 'active'
+    });
+    setSelectedImage(null);
+    setSelectedProduct(null);
   };
 
   return (
@@ -237,6 +273,7 @@ const AdminProducts: React.FC = () => {
                                   variant="ghost"
                                   size="icon"
                                   className="h-8 w-8 text-gray-600 hover:text-[#F97316] hover:bg-[#F97316]/10"
+                                  onClick={() => handleEditProduct(product)}
                                 >
                                   <Pencil className="h-4 w-4" />
                                 </Button>
@@ -314,6 +351,7 @@ const AdminProducts: React.FC = () => {
                               variant="outline"
                               size="sm"
                               className="flex-1 text-xs h-8 text-gray-600 hover:text-[#F97316] hover:bg-[#F97316]/10"
+                              onClick={() => handleEditProduct(product)}
                             >
                               <Pencil className="h-3 w-3 mr-1" />
                               Editar
@@ -513,6 +551,189 @@ const AdminProducts: React.FC = () => {
                 className="bg-[#1E3A8A] hover:bg-[#1E3A8A]/90 text-white w-full sm:w-auto"
               >
                 Guardar Producto
+              </Button>
+            </DialogFooter>
+          </form>
+        </DialogContent>
+      </Dialog>
+
+      {/* Edit Product Dialog */}
+      <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
+        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto mx-4">
+          <DialogHeader>
+            <DialogTitle className="text-xl md:text-2xl font-bold text-gray-900">
+              Editar Producto
+            </DialogTitle>
+            <DialogDescription className="text-sm md:text-base text-gray-600">
+              Modifica la información del producto
+            </DialogDescription>
+          </DialogHeader>
+
+          <form onSubmit={handleUpdateProduct} className="space-y-4 md:space-y-6">
+            {/* Image Upload */}
+            <div className="space-y-2">
+              <Label htmlFor="edit-image" className="text-gray-900 font-medium">
+                Imagen del Producto
+              </Label>
+              <div className="flex items-center gap-4">
+                {selectedImage ? (
+                  <div className="relative">
+                    <img 
+                      src={selectedImage} 
+                      alt="Preview" 
+                      className="w-32 h-32 object-cover rounded-lg border-2 border-gray-200"
+                    />
+                    <button
+                      type="button"
+                      onClick={handleRemoveImage}
+                      className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 hover:bg-red-600 transition-colors"
+                    >
+                      <X className="h-4 w-4" />
+                    </button>
+                  </div>
+                ) : (
+                  <label className="w-32 h-32 flex flex-col items-center justify-center border-2 border-dashed border-gray-300 rounded-lg cursor-pointer hover:border-[#F97316] hover:bg-gray-50 transition-colors">
+                    <Upload className="h-8 w-8 text-gray-400 mb-2" />
+                    <span className="text-sm text-gray-500">Subir imagen</span>
+                    <input
+                      id="edit-image"
+                      type="file"
+                      accept="image/*"
+                      onChange={handleImageUpload}
+                      className="hidden"
+                    />
+                  </label>
+                )}
+              </div>
+              <p className="text-sm text-gray-500">
+                Formato: JPG, PNG. Tamaño máximo: 5MB
+              </p>
+            </div>
+
+            {/* Product Name */}
+            <div className="space-y-2">
+              <Label htmlFor="edit-name" className="text-gray-900 font-medium">
+                Nombre del Producto *
+              </Label>
+              <Input
+                id="edit-name"
+                value={formData.name}
+                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                placeholder="Ej: LEGO Star Wars Millennium Falcon"
+                required
+                className="border-gray-300"
+              />
+            </div>
+
+            {/* Category and Price Row */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="edit-category" className="text-gray-900 font-medium">
+                  Categoría *
+                </Label>
+                <Select 
+                  value={formData.category} 
+                  onValueChange={(value) => setFormData({ ...formData, category: value })}
+                  required
+                >
+                  <SelectTrigger id="edit-category" className="border-gray-300">
+                    <SelectValue placeholder="Selecciona una categoría" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Star Wars">Star Wars</SelectItem>
+                    <SelectItem value="Harry Potter">Harry Potter</SelectItem>
+                    <SelectItem value="City">City</SelectItem>
+                    <SelectItem value="Technic">Technic</SelectItem>
+                    <SelectItem value="Friends">Friends</SelectItem>
+                    <SelectItem value="Marvel">Marvel</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="edit-price" className="text-gray-900 font-medium">
+                  Precio ($) *
+                </Label>
+                <Input
+                  id="edit-price"
+                  type="number"
+                  step="0.01"
+                  min="0"
+                  value={formData.price}
+                  onChange={(e) => setFormData({ ...formData, price: e.target.value })}
+                  placeholder="0.00"
+                  required
+                  className="border-gray-300"
+                />
+              </div>
+            </div>
+
+            {/* Stock and Status Row */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="edit-stock" className="text-gray-900 font-medium">
+                  Stock *
+                </Label>
+                <Input
+                  id="edit-stock"
+                  type="number"
+                  min="0"
+                  value={formData.stock}
+                  onChange={(e) => setFormData({ ...formData, stock: e.target.value })}
+                  placeholder="0"
+                  required
+                  className="border-gray-300"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="edit-status" className="text-gray-900 font-medium">
+                  Estado *
+                </Label>
+                <Select 
+                  value={formData.status} 
+                  onValueChange={(value) => setFormData({ ...formData, status: value })}
+                >
+                  <SelectTrigger id="edit-status" className="border-gray-300">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="active">Activo</SelectItem>
+                    <SelectItem value="inactive">Inactivo</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+
+            {/* Description */}
+            <div className="space-y-2">
+              <Label htmlFor="edit-description" className="text-gray-900 font-medium">
+                Descripción
+              </Label>
+              <Textarea
+                id="edit-description"
+                value={formData.description}
+                onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                placeholder="Descripción detallada del producto..."
+                rows={4}
+                className="border-gray-300 resize-none"
+              />
+            </div>
+
+            <DialogFooter className="gap-2 flex-col sm:flex-row">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => setIsEditDialogOpen(false)}
+                className="border-gray-300 w-full sm:w-auto"
+              >
+                Cancelar
+              </Button>
+              <Button
+                type="submit"
+                className="bg-[#1E3A8A] hover:bg-[#1E3A8A]/90 text-white w-full sm:w-auto"
+              >
+                Actualizar Producto
               </Button>
             </DialogFooter>
           </form>
