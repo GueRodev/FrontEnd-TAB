@@ -171,7 +171,7 @@ const AdminCategorias: React.FC = () => {
     {
       id: '1',
       name: 'Sets de Construcción',
-      description: 'Todos los sets de construcción disponibles',
+      description: 'Todos los sets disponibles',
       order: 1,
       isExpanded: false,
       subcategories: [
@@ -271,38 +271,40 @@ const AdminCategorias: React.FC = () => {
               </div>
 
               <div className="bg-card rounded-lg shadow-sm border">
-                <div className="p-4 md:p-6 border-b space-y-3 md:space-y-0 md:flex md:items-center md:justify-between md:gap-4">
-                  <div className="flex flex-col sm:flex-row gap-2 md:gap-3 w-full md:flex-1">
-                    <Button 
-                      onClick={() => handleOpenModal('category')}
-                      className="w-full sm:w-auto"
-                    >
-                      <Plus className="h-4 w-4 mr-2" />
-                      Agregar Categoría
-                    </Button>
-                    <Button 
-                      variant="outline"
-                      className="w-full sm:w-auto"
-                      onClick={() => {
-                        if (categories.length > 0) {
-                          handleOpenModal('subcategory', categories[0].id);
-                        }
-                      }}
-                    >
-                      <Plus className="h-4 w-4 mr-2" />
-                      Agregar Subcategoría
-                    </Button>
-                  </div>
-                  
-                  <div className="relative w-full md:flex-1 md:max-w-sm">
-                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
-                    <Input
-                      type="text"
-                      placeholder="Buscar categorías..."
-                      className="pl-10"
-                      value={searchQuery}
-                      onChange={(e) => setSearchQuery(e.target.value)}
-                    />
+                <div className="p-4 md:p-6 border-b space-y-3">
+                  <div className="flex flex-col gap-2 w-full">
+                    <div className="flex gap-2">
+                      <Button 
+                        onClick={() => handleOpenModal('category')}
+                        className="flex-1"
+                      >
+                        <Plus className="h-4 w-4 mr-2" />
+                        Agregar Categoría
+                      </Button>
+                      <Button 
+                        variant="outline"
+                        className="flex-1"
+                        onClick={() => {
+                          if (categories.length > 0) {
+                            handleOpenModal('subcategory', categories[0].id);
+                          }
+                        }}
+                      >
+                        <Plus className="h-4 w-4 mr-2" />
+                        Agregar Subcategoría
+                      </Button>
+                    </div>
+                    
+                    <div className="relative w-full">
+                      <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
+                      <Input
+                        type="text"
+                        placeholder="Buscar categorías..."
+                        className="pl-10 w-full"
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                      />
+                    </div>
                   </div>
                 </div>
 
@@ -349,16 +351,16 @@ const AdminCategorias: React.FC = () => {
                   {categories.map((category) => (
                     <div key={category.id} className="border-b last:border-b-0">
                       <div className="p-4">
-                        <div className="flex items-start justify-between gap-3">
-                          <div className="flex items-center gap-2 flex-1 min-w-0">
+                        <div className="flex items-start gap-3">
+                          <div className="flex items-center gap-2 flex-shrink-0 pt-1">
                             <button
-                              className="cursor-grab active:cursor-grabbing text-muted-foreground hover:text-foreground flex-shrink-0 touch-manipulation p-1"
+                              className="cursor-grab active:cursor-grabbing text-muted-foreground hover:text-foreground touch-manipulation p-1"
                             >
                               <GripVertical className="h-5 w-5" />
                             </button>
                             <button
                               onClick={() => handleToggleExpand(category.id)}
-                              className="text-muted-foreground hover:text-foreground flex-shrink-0 touch-manipulation p-1"
+                              className="text-muted-foreground hover:text-foreground touch-manipulation p-1"
                             >
                               {category.isExpanded ? (
                                 <ChevronDown className="h-4 w-4" />
@@ -366,65 +368,75 @@ const AdminCategorias: React.FC = () => {
                                 <ChevronRight className="h-4 w-4" />
                               )}
                             </button>
-                            <div className="flex-1 min-w-0">
-                              <h3 className="font-semibold text-sm truncate">{category.name}</h3>
-                              <p className="text-xs text-muted-foreground truncate">{category.description}</p>
-                              <span className="text-xs text-muted-foreground mt-1 inline-block">
-                                {category.subcategories.length} subcategorías
-                              </span>
-                            </div>
                           </div>
                           
-                          <div className="flex items-center gap-1 flex-shrink-0">
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              onClick={() => handleEdit(category)}
-                              className="h-8 w-8 p-0"
-                            >
-                              <Edit2 className="h-4 w-4" />
-                            </Button>
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              onClick={() => handleDelete(category.id)}
-                              className="text-destructive hover:text-destructive h-8 w-8 p-0"
-                            >
-                              <Trash2 className="h-4 w-4" />
-                            </Button>
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-start justify-between gap-2 mb-2">
+                              <div className="flex-1 min-w-0">
+                                <h3 className="font-semibold text-base mb-1">{category.name}</h3>
+                                <p className="text-sm text-muted-foreground line-clamp-2">
+                                  {category.description}
+                                </p>
+                              </div>
+                            </div>
+                            
+                            <div className="flex items-center justify-between mt-3">
+                              <span className="text-sm text-muted-foreground">
+                                {category.subcategories.length} subcategorías
+                              </span>
+                              
+                              <div className="flex items-center gap-1">
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  onClick={() => handleEdit(category)}
+                                  className="h-8 w-8 p-0"
+                                >
+                                  <Edit2 className="h-4 w-4" />
+                                </Button>
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  onClick={() => handleDelete(category.id)}
+                                  className="text-destructive hover:text-destructive h-8 w-8 p-0"
+                                >
+                                  <Trash2 className="h-4 w-4" />
+                                </Button>
+                              </div>
+                            </div>
                           </div>
                         </div>
                         
                         {/* Subcategories */}
                         {category.isExpanded && category.subcategories.length > 0 && (
-                          <div className="mt-3 pl-8 space-y-2">
+                          <div className="mt-3 ml-9 space-y-2">
                             {category.subcategories.map((sub) => (
                               <div key={sub.id} className="bg-muted/30 rounded-lg p-3">
-                                <div className="flex items-start justify-between gap-2">
+                                <div className="flex items-start gap-2">
+                                  <span className="text-xs text-muted-foreground flex-shrink-0 mt-1">└─</span>
                                   <div className="flex-1 min-w-0">
-                                    <div className="flex items-center gap-2">
-                                      <span className="text-xs text-muted-foreground">└─</span>
-                                      <h4 className="font-medium text-sm truncate">{sub.name}</h4>
+                                    <div className="flex items-start justify-between gap-2 mb-1">
+                                      <h4 className="font-medium text-sm">{sub.name}</h4>
+                                      <div className="flex items-center gap-1 flex-shrink-0">
+                                        <Button
+                                          variant="ghost"
+                                          size="sm"
+                                          onClick={() => handleEditSubcategory(category.id, sub)}
+                                          className="h-7 w-7 p-0"
+                                        >
+                                          <Edit2 className="h-3 w-3" />
+                                        </Button>
+                                        <Button
+                                          variant="ghost"
+                                          size="sm"
+                                          onClick={() => handleDeleteSubcategory(category.id, sub.id)}
+                                          className="text-destructive hover:text-destructive h-7 w-7 p-0"
+                                        >
+                                          <Trash2 className="h-3 w-3" />
+                                        </Button>
+                                      </div>
                                     </div>
-                                    <p className="text-xs text-muted-foreground mt-1 truncate">{sub.description}</p>
-                                  </div>
-                                  <div className="flex items-center gap-1 flex-shrink-0">
-                                    <Button
-                                      variant="ghost"
-                                      size="sm"
-                                      onClick={() => handleEditSubcategory(category.id, sub)}
-                                      className="h-7 w-7 p-0"
-                                    >
-                                      <Edit2 className="h-3 w-3" />
-                                    </Button>
-                                    <Button
-                                      variant="ghost"
-                                      size="sm"
-                                      onClick={() => handleDeleteSubcategory(category.id, sub.id)}
-                                      className="text-destructive hover:text-destructive h-7 w-7 p-0"
-                                    >
-                                      <Trash2 className="h-3 w-3" />
-                                    </Button>
+                                    <p className="text-xs text-muted-foreground line-clamp-2">{sub.description}</p>
                                   </div>
                                 </div>
                               </div>
