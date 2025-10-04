@@ -32,6 +32,11 @@ const CategoryPage: React.FC = () => {
       description: 'Explora nuestros coleccionables premium para fanáticos y coleccionistas dedicados.',
       image: '/lovable-uploads/17088b0e-dee8-4716-b76d-00be5a07559d.png'
     },
+    'peluches': {
+      name: 'Peluches',
+      description: 'Descubre nuestra adorable colección de peluches para todas las edades.',
+      image: '/lovable-uploads/fbc358a3-bb7b-4fe9-aba6-e1d0b71a13a0.png'
+    },
     'starwars': {
       name: 'Star Wars',
       description: 'Descubre la mejor mercancía y coleccionables de Star Wars para fanáticos de todas las edades.',
@@ -41,6 +46,11 @@ const CategoryPage: React.FC = () => {
       name: 'Harry Potter',
       description: 'Colección mágica de productos de Harry Potter.',
       image: '/lovable-uploads/fbc358a3-bb7b-4fe9-aba6-e1d0b71a13a0.png'
+    },
+    'otros': {
+      name: 'Otros',
+      description: 'Explora nuestra variada selección de productos únicos y especiales.',
+      image: '/lovable-uploads/17088b0e-dee8-4716-b76d-00be5a07559d.png'
     },
   }[category || 'funkos'];
 
