@@ -91,38 +91,6 @@ const CategoryPage: React.FC = () => {
       <Header />
       
       <main className="pt-20">
-        {/* Category Hero */}
-        <div className="bg-gray-100 py-12">
-          <div className="container mx-auto px-4">
-            <div className="flex flex-col md:flex-row gap-8 items-center">
-              <div className="w-full md:w-1/2">
-                <div className="breadcrumbs text-sm mb-4">
-                  <ul className="flex items-center gap-2">
-                    <li><Link to="/" className="text-gray-500 hover:text-brand-orange transition-colors">Inicio</Link></li>
-                    <ChevronRight size={14} className="text-gray-400" />
-                    <li><span className="text-brand-darkBlue font-medium">{categoryData?.name || 'Categoría'}</span></li>
-                  </ul>
-                </div>
-                
-                <h1 className="text-3xl md:text-4xl font-display font-bold text-brand-darkBlue mb-4">
-                  {categoryData?.name || 'Categoría'}
-                </h1>
-                <p className="text-gray-600 mb-6">
-                  {categoryData?.description || 'Explora nuestra colección de productos.'}
-                </p>
-              </div>
-              
-              <div className="w-full md:w-1/2">
-                <img 
-                  src={categoryData?.image || '/placeholder.svg'} 
-                  alt={categoryData?.name || 'Category'} 
-                  className="max-h-64 object-contain mx-auto"
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-        
         {/* Filter and Product Area */}
         <div className="container mx-auto px-4 py-8">
           <div className="flex flex-col md:flex-row gap-8">
