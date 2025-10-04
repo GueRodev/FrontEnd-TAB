@@ -38,8 +38,8 @@ const footerItems = [
 ];
 
 export function AdminSidebar() {
-  const { state } = useSidebar();
-  const isCollapsed = state === "collapsed";
+  const { state, open } = useSidebar();
+  const isCollapsed = state === "collapsed" && !open;
 
   return (
     <Sidebar 
