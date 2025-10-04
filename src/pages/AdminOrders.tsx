@@ -9,14 +9,16 @@ import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useOrders, OrderStatus } from '@/contexts/OrdersContext';
 import { toast } from '@/hooks/use-toast';
-import { ShoppingCart, Store, Package, CheckCircle, XCircle, Trash2 } from 'lucide-react';
+import { ShoppingCart, Store, Package, CheckCircle, XCircle, Trash2, Search } from 'lucide-react';
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/ui/command';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 
 // Datos mock de productos para el formulario de tienda física
 const mockProducts = [
-  { id: '1', name: 'LEGO Creator 3 en 1', price: 45.99, stock: 10, image: '/lovable-uploads/17088b0e-dee8-4716-b76d-00be5a07559d.png' },
-  { id: '2', name: 'LEGO City Camión de Bomberos', price: 89.99, stock: 5, image: '/lovable-uploads/31cfb3d2-5f19-4cd1-8f9d-efa9f964d81c.png' },
-  { id: '3', name: 'LEGO Star Wars X-Wing', price: 129.99, stock: 8, image: '/lovable-uploads/51190e3f-2193-4b2a-85ac-e5453680e7bf.png' },
-  { id: '4', name: 'LEGO Harry Potter Castillo', price: 199.99, stock: 3, image: '/lovable-uploads/fbc358a3-bb7b-4fe9-aba6-e1d0b71a13a0.png' },
+  { id: '1', name: 'LEGO Creator 3 en 1', price: 45.99, stock: 10, image: '/lovable-uploads/17088b0e-dee8-4716-b76d-00be5a07559d.png', category: 'Creator' },
+  { id: '2', name: 'LEGO City Camión de Bomberos', price: 89.99, stock: 5, image: '/lovable-uploads/31cfb3d2-5f19-4cd1-8f9d-efa9f964d81c.png', category: 'City' },
+  { id: '3', name: 'LEGO Star Wars X-Wing', price: 129.99, stock: 8, image: '/lovable-uploads/51190e3f-2193-4b2a-85ac-e5453680e7bf.png', category: 'Star Wars' },
+  { id: '4', name: 'LEGO Harry Potter Castillo', price: 199.99, stock: 3, image: '/lovable-uploads/fbc358a3-bb7b-4fe9-aba6-e1d0b71a13a0.png', category: 'Harry Potter' },
 ];
 
 const AdminOrders = () => {
@@ -26,9 +28,24 @@ const AdminOrders = () => {
   const [customerName, setCustomerName] = useState('');
   const [customerPhone, setCustomerPhone] = useState('');
   const [paymentMethod, setPaymentMethod] = useState('');
+  const [categoryFilter, setCategoryFilter] = useState('all');
+  const [searchQuery, setSearchQuery] = useState('');
+  const [openProductSearch, setOpenProductSearch] = useState(false);
 
   const onlineOrders = orders.filter(o => o.type === 'online');
   const inStoreOrders = orders.filter(o => o.type === 'in-store');
+
+  // Obtener categorías únicas
+  const categories = ['all', ...Array.from(new Set(mockProducts.map(p => p.category)))];
+
+  // Filtrar productos por categoría y búsqueda
+  const filteredProducts = mockProducts.filter(product => {
+    const matchesCategory = categoryFilter === 'all' || product.category === categoryFilter;
+    const matchesSearch = product.name.toLowerCase().includes(searchQuery.toLowerCase());
+    return matchesCategory && matchesSearch;
+  });
+
+  const selectedProductData = mockProducts.find(p => p.id === selectedProduct);
 
   const handleCreateInStoreOrder = () => {
     if (!selectedProduct || !customerName || !customerPhone || !paymentMethod) {
@@ -40,7 +57,7 @@ const AdminOrders = () => {
       return;
     }
 
-    const product = mockProducts.find(p => p.id === selectedProduct);
+    const product = selectedProductData;
     if (!product) return;
 
     if (quantity > product.stock) {
@@ -79,6 +96,8 @@ const AdminOrders = () => {
     setCustomerName('');
     setCustomerPhone('');
     setPaymentMethod('');
+    setSearchQuery('');
+    setCategoryFilter('all');
 
     toast({
       title: "Pedido creado",
@@ -257,20 +276,101 @@ const AdminOrders = () => {
                     <CardDescription className="text-xs md:text-sm">Registra una venta presencial</CardDescription>
                   </CardHeader>
                   <CardContent className="space-y-3 md:space-y-4 p-3 md:p-4 lg:p-6 pt-0">
-                    <div>
-                      <Label htmlFor="product" className="text-xs md:text-sm">Producto *</Label>
-                      <Select value={selectedProduct} onValueChange={setSelectedProduct}>
-                        <SelectTrigger id="product" className="text-xs md:text-sm h-9 md:h-10">
-                          <SelectValue placeholder="Selecciona un producto" />
+                    <div className="space-y-2">
+                      <Label className="text-xs md:text-sm">Producto *</Label>
+                      
+                      {/* Filtro de categoría */}
+                      <Select value={categoryFilter} onValueChange={setCategoryFilter}>
+                        <SelectTrigger className="text-xs md:text-sm h-9 md:h-10">
+                          <SelectValue placeholder="Todas las categorías" />
                         </SelectTrigger>
                         <SelectContent>
-                          {mockProducts.map(product => (
-                            <SelectItem key={product.id} value={product.id} className="text-xs md:text-sm">
-                              {product.name} - ${product.price} (Stock: {product.stock})
+                          {categories.map(category => (
+                            <SelectItem key={category} value={category} className="text-xs md:text-sm">
+                              {category === 'all' ? 'Todas las categorías' : category}
                             </SelectItem>
                           ))}
                         </SelectContent>
                       </Select>
+
+                      {/* Buscador de productos */}
+                      <Popover open={openProductSearch} onOpenChange={setOpenProductSearch}>
+                        <PopoverTrigger asChild>
+                          <Button
+                            variant="outline"
+                            role="combobox"
+                            aria-expanded={openProductSearch}
+                            className="w-full justify-between text-xs md:text-sm h-9 md:h-10"
+                          >
+                            {selectedProductData ? (
+                              <span className="truncate">{selectedProductData.name}</span>
+                            ) : (
+                              <span className="text-muted-foreground">Buscar producto...</span>
+                            )}
+                            <Search className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                          </Button>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-[--radix-popover-trigger-width] p-0" align="start">
+                          <Command>
+                            <CommandInput 
+                              placeholder="Escribe para buscar..." 
+                              value={searchQuery}
+                              onValueChange={setSearchQuery}
+                              className="text-xs md:text-sm"
+                            />
+                            <CommandList>
+                              <CommandEmpty>No se encontraron productos.</CommandEmpty>
+                              <CommandGroup>
+                                {filteredProducts.map((product) => (
+                                  <CommandItem
+                                    key={product.id}
+                                    value={product.name}
+                                    onSelect={() => {
+                                      setSelectedProduct(product.id);
+                                      setOpenProductSearch(false);
+                                    }}
+                                    className="text-xs md:text-sm"
+                                  >
+                                    <div className="flex items-center gap-2 w-full">
+                                      <img 
+                                        src={product.image} 
+                                        alt={product.name} 
+                                        className="w-8 h-8 object-cover rounded flex-shrink-0"
+                                      />
+                                      <div className="flex-1 min-w-0">
+                                        <p className="font-medium truncate">{product.name}</p>
+                                        <p className="text-xs text-muted-foreground">
+                                          ${product.price} • Stock: {product.stock}
+                                        </p>
+                                      </div>
+                                    </div>
+                                  </CommandItem>
+                                ))}
+                              </CommandGroup>
+                            </CommandList>
+                          </Command>
+                        </PopoverContent>
+                      </Popover>
+
+                      {/* Vista previa del producto seleccionado */}
+                      {selectedProductData && (
+                        <div className="bg-muted p-2 rounded-lg flex items-center gap-2">
+                          <img 
+                            src={selectedProductData.image} 
+                            alt={selectedProductData.name} 
+                            className="w-10 h-10 md:w-12 md:h-12 object-cover rounded flex-shrink-0"
+                          />
+                          <div className="flex-1 min-w-0">
+                            <p className="font-medium text-xs md:text-sm truncate">{selectedProductData.name}</p>
+                            <p className="text-xs text-muted-foreground">
+                              ${selectedProductData.price} • {selectedProductData.category}
+                            </p>
+                          </div>
+                          <Badge variant="secondary" className="text-xs">
+                            Stock: {selectedProductData.stock}
+                          </Badge>
+                        </div>
+                      )}
                     </div>
 
                     <div>
