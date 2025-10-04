@@ -1,0 +1,321 @@
+import { useState } from 'react';
+import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import { AdminSidebar } from "@/components/AdminSidebar";
+import { useOrders } from "@/contexts/OrdersContext";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Badge } from "@/components/ui/badge";
+import { 
+  DollarSign, 
+  TrendingUp, 
+  ShoppingCart, 
+  Download,
+  FileText,
+  FileSpreadsheet
+} from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { format } from "date-fns";
+import { es } from "date-fns/locale";
+
+const AdminFinanzas = () => {
+  const { orders } = useOrders();
+
+  // Calcular métricas
+  const completedOrders = orders.filter(order => order.status === 'completed');
+  const totalRevenue = completedOrders.reduce((sum, order) => sum + order.total, 0);
+  
+  // Ventas del mes actual
+  const currentMonth = new Date().getMonth();
+  const currentYear = new Date().getFullYear();
+  const monthlyOrders = completedOrders.filter(order => {
+    const orderDate = new Date(order.createdAt);
+    return orderDate.getMonth() === currentMonth && orderDate.getFullYear() === currentYear;
+  });
+  const monthlyRevenue = monthlyOrders.reduce((sum, order) => sum + order.total, 0);
+
+  // Ordenar por fecha más reciente
+  const recentOrders = [...completedOrders]
+    .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+    .slice(0, 10);
+
+  const exportToCSV = () => {
+    const headers = ['ID Pedido', 'Fecha', 'Cliente', 'Tipo', 'Total', 'Estado'];
+    const csvData = completedOrders.map(order => [
+      order.id,
+      format(new Date(order.createdAt), 'dd/MM/yyyy HH:mm', { locale: es }),
+      order.customerInfo.nombre,
+      order.type === 'online' ? 'En línea' : 'En tienda',
+      `₡${order.total.toFixed(2)}`,
+      order.status === 'completed' ? 'Completado' : order.status === 'pending' ? 'Pendiente' : 'Cancelado'
+    ]);
+
+    const csvContent = [
+      headers.join(','),
+      ...csvData.map(row => row.join(','))
+    ].join('\n');
+
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    const url = URL.createObjectURL(blob);
+    link.setAttribute('href', url);
+    link.setAttribute('download', `informe_finanzas_${format(new Date(), 'yyyy-MM-dd')}.csv`);
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
+  const exportToPDF = () => {
+    // Crear contenido HTML para PDF
+    const printWindow = window.open('', '', 'height=600,width=800');
+    if (!printWindow) return;
+
+    const htmlContent = `
+      <!DOCTYPE html>
+      <html>
+        <head>
+          <title>Informe de Finanzas</title>
+          <style>
+            body { font-family: Arial, sans-serif; padding: 20px; }
+            h1 { color: #1A1F2C; }
+            .summary { display: flex; gap: 20px; margin: 20px 0; }
+            .summary-card { 
+              border: 1px solid #ddd; 
+              padding: 15px; 
+              border-radius: 8px;
+              flex: 1;
+            }
+            .summary-card h3 { margin: 0 0 10px 0; color: #666; font-size: 14px; }
+            .summary-card p { margin: 0; font-size: 24px; font-weight: bold; color: #1A1F2C; }
+            table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+            th, td { border: 1px solid #ddd; padding: 12px; text-align: left; }
+            th { background-color: #f5f5f5; font-weight: bold; }
+            .date { color: #666; font-size: 12px; margin-top: 20px; }
+          </style>
+        </head>
+        <body>
+          <h1>Informe de Finanzas - Toys and Bricks</h1>
+          <p class="date">Generado el: ${format(new Date(), "dd 'de' MMMM 'de' yyyy", { locale: es })}</p>
+          
+          <div class="summary">
+            <div class="summary-card">
+              <h3>Ingresos Totales</h3>
+              <p>₡${totalRevenue.toFixed(2)}</p>
+            </div>
+            <div class="summary-card">
+              <h3>Ventas del Mes</h3>
+              <p>₡${monthlyRevenue.toFixed(2)}</p>
+            </div>
+            <div class="summary-card">
+              <h3>Total de Ventas</h3>
+              <p>${completedOrders.length}</p>
+            </div>
+          </div>
+
+          <h2>Ventas Recientes</h2>
+          <table>
+            <thead>
+              <tr>
+                <th>ID Pedido</th>
+                <th>Fecha</th>
+                <th>Cliente</th>
+                <th>Tipo</th>
+                <th>Total</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${recentOrders.map(order => `
+                <tr>
+                  <td>${order.id}</td>
+                  <td>${format(new Date(order.createdAt), 'dd/MM/yyyy HH:mm', { locale: es })}</td>
+                  <td>${order.customerInfo.nombre}</td>
+                  <td>${order.type === 'online' ? 'En línea' : 'En tienda'}</td>
+                  <td>₡${order.total.toFixed(2)}</td>
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>
+        </body>
+      </html>
+    `;
+
+    printWindow.document.write(htmlContent);
+    printWindow.document.close();
+    printWindow.focus();
+    setTimeout(() => {
+      printWindow.print();
+      printWindow.close();
+    }, 250);
+  };
+
+  return (
+    <SidebarProvider>
+      <div className="min-h-screen flex w-full bg-background">
+        <AdminSidebar />
+        <div className="flex-1 flex flex-col">
+          <header className="h-14 md:h-16 border-b bg-background flex items-center px-3 md:px-6 sticky top-0 z-10">
+            <SidebarTrigger className="mr-4" />
+            <h1 className="text-xl md:text-2xl lg:text-3xl font-bold">Finanzas</h1>
+          </header>
+
+          <main className="flex-1 p-3 md:p-4 lg:p-6 space-y-4 md:space-y-6 max-w-full overflow-x-hidden">
+            {/* Cards de Resumen */}
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 md:gap-6">
+              {/* Ingresos Totales */}
+              <Card>
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                  <CardTitle className="text-sm md:text-base font-medium">
+                    Ingresos Totales
+                  </CardTitle>
+                  <DollarSign className="h-4 w-4 md:h-5 md:w-5 text-muted-foreground" />
+                </CardHeader>
+                <CardContent>
+                  <div className="text-xl md:text-2xl lg:text-3xl font-bold">
+                    ₡{totalRevenue.toFixed(2)}
+                  </div>
+                  <p className="text-xs text-muted-foreground mt-1">
+                    De {completedOrders.length} ventas completadas
+                  </p>
+                </CardContent>
+              </Card>
+
+              {/* Ventas del Mes */}
+              <Card>
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                  <CardTitle className="text-sm md:text-base font-medium">
+                    Ventas del Mes
+                  </CardTitle>
+                  <TrendingUp className="h-4 w-4 md:h-5 md:w-5 text-muted-foreground" />
+                </CardHeader>
+                <CardContent>
+                  <div className="text-xl md:text-2xl lg:text-3xl font-bold">
+                    ₡{monthlyRevenue.toFixed(2)}
+                  </div>
+                  <p className="text-xs text-muted-foreground mt-1">
+                    {monthlyOrders.length} ventas en {format(new Date(), 'MMMM', { locale: es })}
+                  </p>
+                </CardContent>
+              </Card>
+
+              {/* Total de Pedidos */}
+              <Card className="md:col-span-2 xl:col-span-1">
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                  <CardTitle className="text-sm md:text-base font-medium">
+                    Total de Pedidos
+                  </CardTitle>
+                  <ShoppingCart className="h-4 w-4 md:h-5 md:w-5 text-muted-foreground" />
+                </CardHeader>
+                <CardContent>
+                  <div className="text-xl md:text-2xl lg:text-3xl font-bold">
+                    {orders.length}
+                  </div>
+                  <p className="text-xs text-muted-foreground mt-1">
+                    {completedOrders.length} completados, {orders.filter(o => o.status === 'pending').length} pendientes
+                  </p>
+                </CardContent>
+              </Card>
+            </div>
+
+            {/* Tabla de Ventas Recientes */}
+            <Card>
+              <CardHeader>
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                  <div>
+                    <CardTitle className="text-base md:text-lg lg:text-xl">
+                      Ventas Recientes
+                    </CardTitle>
+                    <CardDescription className="text-xs md:text-sm">
+                      Últimas 10 transacciones completadas
+                    </CardDescription>
+                  </div>
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button variant="outline" size="sm" className="text-xs md:text-sm h-8 md:h-9">
+                        <Download className="h-3 w-3 md:h-4 md:w-4 mr-2" />
+                        Exportar Informe
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end">
+                      <DropdownMenuItem onClick={exportToPDF} className="text-xs md:text-sm">
+                        <FileText className="h-4 w-4 mr-2" />
+                        Exportar como PDF
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onClick={exportToCSV} className="text-xs md:text-sm">
+                        <FileSpreadsheet className="h-4 w-4 mr-2" />
+                        Exportar como Excel (CSV)
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </div>
+              </CardHeader>
+              <CardContent>
+                <div className="overflow-x-auto">
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead className="text-xs md:text-sm">ID Pedido</TableHead>
+                        <TableHead className="text-xs md:text-sm">Fecha</TableHead>
+                        <TableHead className="text-xs md:text-sm">Cliente</TableHead>
+                        <TableHead className="text-xs md:text-sm">Tipo</TableHead>
+                        <TableHead className="text-xs md:text-sm text-right">Total</TableHead>
+                        <TableHead className="text-xs md:text-sm">Estado</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {recentOrders.length === 0 ? (
+                        <TableRow>
+                          <TableCell colSpan={6} className="text-center text-muted-foreground text-xs md:text-sm py-8">
+                            No hay ventas completadas aún
+                          </TableCell>
+                        </TableRow>
+                      ) : (
+                        recentOrders.map((order) => (
+                          <TableRow key={order.id}>
+                            <TableCell className="font-medium text-xs md:text-sm">
+                              {order.id}
+                            </TableCell>
+                            <TableCell className="text-xs md:text-sm">
+                              {format(new Date(order.createdAt), 'dd/MM/yyyy HH:mm', { locale: es })}
+                            </TableCell>
+                            <TableCell className="text-xs md:text-sm">
+                              {order.customerInfo.nombre}
+                            </TableCell>
+                            <TableCell className="text-xs md:text-sm">
+                              <Badge variant="outline" className="text-xs">
+                                {order.type === 'online' ? 'En línea' : 'En tienda'}
+                              </Badge>
+                            </TableCell>
+                            <TableCell className="text-right font-semibold text-xs md:text-sm">
+                              ₡{order.total.toFixed(2)}
+                            </TableCell>
+                            <TableCell>
+                              <Badge 
+                                variant={order.status === 'completed' ? 'default' : 'secondary'}
+                                className="text-xs"
+                              >
+                                {order.status === 'completed' ? 'Completado' : 
+                                 order.status === 'pending' ? 'Pendiente' : 'Cancelado'}
+                              </Badge>
+                            </TableCell>
+                          </TableRow>
+                        ))
+                      )}
+                    </TableBody>
+                  </Table>
+                </div>
+              </CardContent>
+            </Card>
+          </main>
+        </div>
+      </div>
+    </SidebarProvider>
+  );
+};
+
+export default AdminFinanzas;
