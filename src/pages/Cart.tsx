@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Trash2, Plus, Minus, ShoppingBag } from 'lucide-react';
 import { useCart } from '@/contexts/CartContext';
+import { useOrders } from '@/contexts/OrdersContext';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -12,6 +13,7 @@ import Footer from '@/components/Footer';
 
 const Cart = () => {
   const { items, removeFromCart, updateQuantity, getTotalPrice, clearCart } = useCart();
+  const { addOrder } = useOrders();
   const [deliveryOption, setDeliveryOption] = useState<'pickup' | 'delivery'>('pickup');
   const [paymentMethod, setPaymentMethod] = useState<string>('');
   
@@ -93,6 +95,30 @@ const Cart = () => {
     const encodedMessage = encodeURIComponent(message);
     const whatsappNumber = '50688888888'; // Cambiar por el número real
     const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodedMessage}`;
+
+    // Guardar pedido en el contexto
+    addOrder({
+      type: 'online',
+      status: 'pending',
+      items: items.map(item => ({
+        id: item.id,
+        name: item.name,
+        image: item.image,
+        price: item.price,
+        quantity: item.quantity,
+      })),
+      total: getTotalPrice(),
+      customerInfo: {
+        nombre: formData.nombre,
+        telefono: formData.telefono,
+        provincia: formData.provincia,
+        canton: formData.canton,
+        distrito: formData.distrito,
+        direccion: formData.direccion,
+      },
+      deliveryOption,
+      paymentMethod,
+    });
 
     // Abrir WhatsApp
     window.open(whatsappUrl, '_blank');
