@@ -2,7 +2,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import Logo from './Logo';
-import { Facebook, Twitter, Instagram, Youtube, Mail, Phone, MapPin, CreditCard, Truck, Shield } from 'lucide-react';
+import { Facebook, Instagram, Mail, Phone, MapPin, CreditCard, Truck } from 'lucide-react';
 
 const Footer: React.FC = () => {
   return (
@@ -15,14 +15,22 @@ const Footer: React.FC = () => {
               <a href="#" className="hover:text-brand-orange transition-colors" aria-label="Facebook">
                 <Facebook size={20} />
               </a>
-              <a href="#" className="hover:text-brand-orange transition-colors" aria-label="Twitter">
-                <Twitter size={20} />
-              </a>
               <a href="#" className="hover:text-brand-orange transition-colors" aria-label="Instagram">
                 <Instagram size={20} />
               </a>
-              <a href="#" className="hover:text-brand-orange transition-colors" aria-label="YouTube">
-                <Youtube size={20} />
+              <a href="#" className="hover:text-brand-orange transition-colors" aria-label="TikTok">
+                <svg 
+                  width="20" 
+                  height="20" 
+                  viewBox="0 0 24 24" 
+                  fill="none" 
+                  stroke="currentColor" 
+                  strokeWidth="2" 
+                  strokeLinecap="round" 
+                  strokeLinejoin="round"
+                >
+                  <path d="M9 12a4 4 0 1 0 4 4V4a5 5 0 0 0 5 5" />
+                </svg>
               </a>
             </div>
           </div>
