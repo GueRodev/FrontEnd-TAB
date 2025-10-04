@@ -12,8 +12,25 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import { Search, Plus, Filter, Pencil, Trash2 } from 'lucide-react';
+import { Search, Plus, Filter, Pencil, Trash2, Upload, X } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from '@/components/ui/dialog';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
 
 // Mock data - replace with actual data from your backend
 const mockProducts = [
@@ -48,6 +65,49 @@ const mockProducts = [
 
 const AdminProducts: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState('');
+  const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const [formData, setFormData] = useState({
+    name: '',
+    category: '',
+    price: '',
+    stock: '',
+    description: '',
+    status: 'active'
+  });
+
+  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setSelectedImage(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleRemoveImage = () => {
+    setSelectedImage(null);
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    // Aquí implementarás la lógica para guardar el producto
+    console.log('Form data:', formData);
+    console.log('Image:', selectedImage);
+    setIsAddDialogOpen(false);
+    // Reset form
+    setFormData({
+      name: '',
+      category: '',
+      price: '',
+      stock: '',
+      description: '',
+      status: 'active'
+    });
+    setSelectedImage(null);
+  };
 
   return (
     <SidebarProvider>
@@ -76,6 +136,7 @@ const AdminProducts: React.FC = () => {
                 </div>
                 <Button 
                   className="bg-[#1E3A8A] hover:bg-[#1E3A8A]/90 text-white"
+                  onClick={() => setIsAddDialogOpen(true)}
                 >
                   <Plus className="h-4 w-4 mr-2" />
                   Agregar Producto
@@ -196,6 +257,187 @@ const AdminProducts: React.FC = () => {
           </div>
         </main>
       </div>
+
+      {/* Add Product Dialog */}
+      <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
+        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle className="text-2xl font-bold text-gray-900">
+              Agregar Nuevo Producto
+            </DialogTitle>
+            <DialogDescription className="text-gray-600">
+              Completa la información del producto para agregarlo al inventario
+            </DialogDescription>
+          </DialogHeader>
+
+          <form onSubmit={handleSubmit} className="space-y-6">
+            {/* Image Upload */}
+            <div className="space-y-2">
+              <Label htmlFor="image" className="text-gray-900 font-medium">
+                Imagen del Producto
+              </Label>
+              <div className="flex items-center gap-4">
+                {selectedImage ? (
+                  <div className="relative">
+                    <img 
+                      src={selectedImage} 
+                      alt="Preview" 
+                      className="w-32 h-32 object-cover rounded-lg border-2 border-gray-200"
+                    />
+                    <button
+                      type="button"
+                      onClick={handleRemoveImage}
+                      className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 hover:bg-red-600 transition-colors"
+                    >
+                      <X className="h-4 w-4" />
+                    </button>
+                  </div>
+                ) : (
+                  <label className="w-32 h-32 flex flex-col items-center justify-center border-2 border-dashed border-gray-300 rounded-lg cursor-pointer hover:border-[#F97316] hover:bg-gray-50 transition-colors">
+                    <Upload className="h-8 w-8 text-gray-400 mb-2" />
+                    <span className="text-sm text-gray-500">Subir imagen</span>
+                    <input
+                      id="image"
+                      type="file"
+                      accept="image/*"
+                      onChange={handleImageUpload}
+                      className="hidden"
+                    />
+                  </label>
+                )}
+              </div>
+              <p className="text-sm text-gray-500">
+                Formato: JPG, PNG. Tamaño máximo: 5MB
+              </p>
+            </div>
+
+            {/* Product Name */}
+            <div className="space-y-2">
+              <Label htmlFor="name" className="text-gray-900 font-medium">
+                Nombre del Producto *
+              </Label>
+              <Input
+                id="name"
+                value={formData.name}
+                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                placeholder="Ej: LEGO Star Wars Millennium Falcon"
+                required
+                className="border-gray-300"
+              />
+            </div>
+
+            {/* Category and Price Row */}
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="category" className="text-gray-900 font-medium">
+                  Categoría *
+                </Label>
+                <Select 
+                  value={formData.category} 
+                  onValueChange={(value) => setFormData({ ...formData, category: value })}
+                  required
+                >
+                  <SelectTrigger className="border-gray-300">
+                    <SelectValue placeholder="Selecciona una categoría" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="star-wars">Star Wars</SelectItem>
+                    <SelectItem value="harry-potter">Harry Potter</SelectItem>
+                    <SelectItem value="city">City</SelectItem>
+                    <SelectItem value="technic">Technic</SelectItem>
+                    <SelectItem value="friends">Friends</SelectItem>
+                    <SelectItem value="creator">Creator</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="price" className="text-gray-900 font-medium">
+                  Precio (USD) *
+                </Label>
+                <Input
+                  id="price"
+                  type="number"
+                  step="0.01"
+                  value={formData.price}
+                  onChange={(e) => setFormData({ ...formData, price: e.target.value })}
+                  placeholder="0.00"
+                  required
+                  className="border-gray-300"
+                />
+              </div>
+            </div>
+
+            {/* Stock and Status Row */}
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="stock" className="text-gray-900 font-medium">
+                  Stock *
+                </Label>
+                <Input
+                  id="stock"
+                  type="number"
+                  value={formData.stock}
+                  onChange={(e) => setFormData({ ...formData, stock: e.target.value })}
+                  placeholder="0"
+                  required
+                  className="border-gray-300"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="status" className="text-gray-900 font-medium">
+                  Estado *
+                </Label>
+                <Select 
+                  value={formData.status} 
+                  onValueChange={(value) => setFormData({ ...formData, status: value })}
+                >
+                  <SelectTrigger className="border-gray-300">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="active">Activo</SelectItem>
+                    <SelectItem value="inactive">Inactivo</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+
+            {/* Description */}
+            <div className="space-y-2">
+              <Label htmlFor="description" className="text-gray-900 font-medium">
+                Descripción
+              </Label>
+              <Textarea
+                id="description"
+                value={formData.description}
+                onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                placeholder="Descripción detallada del producto..."
+                rows={4}
+                className="border-gray-300 resize-none"
+              />
+            </div>
+
+            <DialogFooter className="gap-2">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => setIsAddDialogOpen(false)}
+                className="border-gray-300"
+              >
+                Cancelar
+              </Button>
+              <Button
+                type="submit"
+                className="bg-[#1E3A8A] hover:bg-[#1E3A8A]/90 text-white"
+              >
+                Guardar Producto
+              </Button>
+            </DialogFooter>
+          </form>
+        </DialogContent>
+      </Dialog>
     </SidebarProvider>
   );
 };
