@@ -1,9 +1,9 @@
 
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Heart, ShoppingCart, ArrowRight, Plus } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { ArrowRight } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
+import ProductCard from './ProductCard';
 
 interface Product {
   id: string;
@@ -60,26 +60,25 @@ const FeaturedProducts: React.FC = () => {
     if (wishlist.includes(productId)) {
       setWishlist(wishlist.filter(id => id !== productId));
       toast({
-        title: "Removed from wishlist",
-        description: "Product has been removed from your wishlist",
+        title: "Eliminado de favoritos",
+        description: "El producto ha sido eliminado de tus favoritos",
       });
     } else {
       setWishlist([...wishlist, productId]);
       toast({
-        title: "Added to wishlist",
-        description: "Product has been added to your wishlist",
+        title: "Agregado a favoritos",
+        description: "El producto ha sido agregado a tus favoritos",
       });
     }
   };
 
-  const addToCart = (e: React.MouseEvent, product: Product) => {
+  const addToCart = (e: React.MouseEvent, productId: string) => {
     e.preventDefault();
     e.stopPropagation();
-    // This would integrate with your cart system
-    console.log('Adding to cart:', product);
+    const product = featuredProducts.find(p => p.id === productId);
     toast({
-      title: "Added to cart",
-      description: `${product.name} has been added to your cart`,
+      title: "Agregado al carrito",
+      description: `${product?.name} ha sido agregado a tu carrito`,
     });
   };
 
@@ -89,63 +88,27 @@ const FeaturedProducts: React.FC = () => {
         <div className="flex flex-col md:flex-row justify-between items-center mb-12">
           <div>
             <h2 className="text-3xl md:text-4xl font-display font-bold text-brand-darkBlue mb-2">
-              Featured Products
+              Productos Destacados
             </h2>
             <p className="text-gray-600">
-              Our most popular and trending products
+              Nuestros productos más populares y de moda
             </p>
           </div>
         </div>
         
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mb-12">
           {featuredProducts.map((product) => (
-            <div 
+            <ProductCard
               key={product.id}
-              className="bg-white rounded-lg overflow-hidden shadow-md group card-hover h-full"
-            >
-              <div className="relative">
-                <Link to={`/product/${product.id}`} className="block aspect-square overflow-hidden">
-                  <img 
-                    src={product.image} 
-                    alt={product.name}
-                    className="w-full h-full object-cover object-center transform group-hover:scale-105 transition-transform duration-500"
-                  />
-                </Link>
-                <button
-                  onClick={(e) => toggleWishlist(e, product.id)}
-                  className="absolute top-4 right-4 w-8 h-8 bg-white rounded-full flex items-center justify-center shadow-md hover:bg-brand-orange hover:text-white transition-colors"
-                >
-                  <Heart 
-                    size={18} 
-                    className={wishlist.includes(product.id) ? 'fill-red-500 text-red-500' : ''} 
-                  />
-                </button>
-              </div>
-              
-              <div className="p-4">
-                <div className="flex items-center mb-2">
-                  <span className="text-xs text-gray-500">{product.category}</span>
-                </div>
-                
-                <Link to={`/product/${product.id}`} className="block">
-                  <h3 className="font-semibold text-gray-900 hover:text-brand-orange transition-colors mb-3 line-clamp-2">
-                    {product.name}
-                  </h3>
-                </Link>
-                
-                <div className="flex justify-between items-center mt-4">
-                  <span className="font-bold text-lg">${product.price.toFixed(2)}</span>
-                  <Button
-                    onClick={(e) => addToCart(e, product)}
-                    size="sm"
-                    className="bg-brand-darkBlue hover:bg-brand-orange text-white transition-colors flex items-center gap-1"
-                  >
-                    <ShoppingCart size={16} />
-                    <Plus size={16} />
-                  </Button>
-                </div>
-              </div>
-            </div>
+              id={product.id}
+              name={product.name}
+              image={product.image}
+              price={product.price}
+              category={product.category}
+              isWishlisted={wishlist.includes(product.id)}
+              onToggleWishlist={toggleWishlist}
+              onAddToCart={addToCart}
+            />
           ))}
         </div>
         
@@ -154,7 +117,7 @@ const FeaturedProducts: React.FC = () => {
             to="/products" 
             className="btn-outline flex items-center gap-2 group"
           >
-            View All Products
+            Ver Todos los Productos
             <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
           </Link>
         </div>

@@ -28,7 +28,7 @@ const Footer: React.FC = () => {
           </div>
           
           <div>
-            <h3 className="text-lg font-semibold mb-6">Contact Info</h3>
+            <h3 className="text-lg font-semibold mb-6">Información de Contacto</h3>
             <ul className="space-y-4">
               <li className="flex items-start gap-3">
                 <MapPin size={20} className="text-brand-orange mt-1" />

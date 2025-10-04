@@ -167,16 +167,16 @@ const Header: React.FC = () => {
               ))}
               <div className="flex justify-between py-2">
                 <Link to="/account" className="text-brand-darkBlue font-semibold hover:text-brand-orange transition-colors flex items-center gap-2">
-                  <User size={18} /> Account
+                  <User size={18} /> Cuenta
                 </Link>
                 <Link to="/wishlist" className="text-brand-darkBlue font-semibold hover:text-brand-orange transition-colors flex items-center gap-2">
-                  <Heart size={18} /> Wishlist
+                  <Heart size={18} /> Favoritos
                 </Link>
               </div>
               <div className="relative mt-2">
                 <input
                   type="text"
-                  placeholder="Search products..."
+                  placeholder="Buscar productos..."
                   className="w-full p-2 pl-10 border rounded-md"
                 />
                 <Search className="absolute left-3 top-2.5 text-gray-400" size={18} />
