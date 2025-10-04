@@ -65,11 +65,11 @@ export default {
 				},
 				// Brand colors
 				brand: {
-					darkBlue: '#1A1F2C',
-					orange: '#F97316',
-					yellow: '#FEF7CD',
-					purple: '#9b87f5',
-					skyBlue: '#33C3F0',
+					darkBlue: 'hsl(217, 33%, 14%)',
+					orange: 'hsl(20, 94%, 53%)',
+					yellow: 'hsl(52, 94%, 90%)',
+					purple: 'hsl(250, 77%, 75%)',
+					skyBlue: 'hsl(195, 85%, 56%)',
 				}
 			},
 			borderRadius: {
