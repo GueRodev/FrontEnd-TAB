@@ -94,9 +94,9 @@ const AdminOrders = () => {
     };
     const { label, variant, icon: Icon } = config[status];
     return (
-      <Badge variant={variant} className="gap-1">
-        <Icon size={14} />
-        {label}
+      <Badge variant={variant} className="gap-1 text-xs whitespace-nowrap">
+        <Icon className="h-3 w-3 md:h-3.5 md:w-3.5" />
+        <span className="hidden sm:inline">{label}</span>
       </Badge>
     );
   };
@@ -112,37 +112,39 @@ const AdminOrders = () => {
   };
 
   const OrderCard = ({ order, showDeliveryInfo = true }: { order: any; showDeliveryInfo?: boolean }) => (
-    <Card>
-      <CardHeader>
-        <div className="flex justify-between items-start">
-          <div className="flex-1">
-            <CardTitle className="text-lg">{order.id}</CardTitle>
-            <CardDescription>{new Date(order.createdAt).toLocaleString('es-ES')}</CardDescription>
+    <Card className="w-full">
+      <CardHeader className="p-4 pb-3">
+        <div className="flex justify-between items-start gap-3">
+          <div className="flex-1 min-w-0">
+            <CardTitle className="text-base md:text-lg break-words">{order.id}</CardTitle>
+            <CardDescription className="text-xs md:text-sm mt-1">
+              {new Date(order.createdAt).toLocaleString('es-ES')}
+            </CardDescription>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1.5 md:gap-2 flex-shrink-0">
             {getStatusBadge(order.status)}
             <Button
               variant="ghost"
               size="icon"
               onClick={() => handleDeleteOrder(order.id)}
-              className="text-destructive hover:text-destructive hover:bg-destructive/10"
+              className="text-destructive hover:text-destructive hover:bg-destructive/10 h-8 w-8 md:h-10 md:w-10"
             >
-              <Trash2 size={18} />
+              <Trash2 className="h-4 w-4 md:h-5 md:w-5" />
             </Button>
           </div>
         </div>
       </CardHeader>
-      <CardContent className="space-y-4">
+      <CardContent className="space-y-3 md:space-y-4 p-4 pt-0">
         {/* Información del cliente */}
         <div className="bg-muted p-3 rounded-lg">
-          <p className="font-semibold">{order.customerInfo.nombre}</p>
-          <p className="text-sm text-muted-foreground">{order.customerInfo.telefono}</p>
+          <p className="font-semibold text-sm md:text-base">{order.customerInfo.nombre}</p>
+          <p className="text-xs md:text-sm text-muted-foreground">{order.customerInfo.telefono}</p>
           {showDeliveryInfo && order.deliveryOption === 'delivery' && (
-            <div className="mt-2 text-sm">
+            <div className="mt-2 text-xs md:text-sm space-y-0.5">
               <p className="font-medium">Dirección de envío:</p>
               <p>{order.customerInfo.provincia}, {order.customerInfo.canton}</p>
               <p>{order.customerInfo.distrito}</p>
-              <p>{order.customerInfo.direccion}</p>
+              <p className="break-words">{order.customerInfo.direccion}</p>
             </div>
           )}
         </div>
@@ -150,13 +152,13 @@ const AdminOrders = () => {
         {/* Productos */}
         <div className="space-y-2">
           {order.items.map((item: any) => (
-            <div key={item.id} className="flex gap-3 items-center">
-              <img src={item.image} alt={item.name} className="w-12 h-12 object-cover rounded" />
-              <div className="flex-1">
-                <p className="font-medium text-sm">{item.name}</p>
+            <div key={item.id} className="flex gap-2 md:gap-3 items-center">
+              <img src={item.image} alt={item.name} className="w-10 h-10 md:w-12 md:h-12 object-cover rounded flex-shrink-0" />
+              <div className="flex-1 min-w-0">
+                <p className="font-medium text-xs md:text-sm break-words">{item.name}</p>
                 <p className="text-xs text-muted-foreground">Cantidad: {item.quantity}</p>
               </div>
-              <p className="font-semibold">${(item.price * item.quantity).toFixed(2)}</p>
+              <p className="font-semibold text-sm md:text-base flex-shrink-0">${(item.price * item.quantity).toFixed(2)}</p>
             </div>
           ))}
         </div>
@@ -164,11 +166,11 @@ const AdminOrders = () => {
         {/* Total y método de pago */}
         <div className="border-t pt-3">
           <div className="flex justify-between items-center mb-2">
-            <span className="font-semibold">Total:</span>
-            <span className="text-lg font-bold text-primary">${order.total.toFixed(2)}</span>
+            <span className="font-semibold text-sm md:text-base">Total:</span>
+            <span className="text-lg md:text-xl font-bold text-primary">${order.total.toFixed(2)}</span>
           </div>
           {order.paymentMethod && (
-            <p className="text-sm text-muted-foreground">Pago: {order.paymentMethod}</p>
+            <p className="text-xs md:text-sm text-muted-foreground">Pago: {order.paymentMethod}</p>
           )}
         </div>
 
@@ -178,18 +180,18 @@ const AdminOrders = () => {
             <Button 
               size="sm" 
               onClick={() => updateOrderStatus(order.id, 'completed')}
-              className="flex-1"
+              className="flex-1 text-xs md:text-sm"
             >
-              <CheckCircle size={16} className="mr-1" />
+              <CheckCircle size={14} className="mr-1" />
               Finalizar
             </Button>
             <Button 
               size="sm" 
               variant="destructive"
               onClick={() => updateOrderStatus(order.id, 'cancelled')}
-              className="flex-1"
+              className="flex-1 text-xs md:text-sm"
             >
-              <XCircle size={16} className="mr-1" />
+              <XCircle size={14} className="mr-1" />
               Cancelar
             </Button>
           </div>
@@ -203,31 +205,31 @@ const AdminOrders = () => {
       <div className="min-h-screen flex w-full">
         <AdminSidebar />
         <SidebarInset className="flex-1">
-          <header className="sticky top-0 z-10 flex h-16 items-center gap-4 border-b bg-background px-6">
+          <header className="sticky top-0 z-10 flex h-14 md:h-16 items-center gap-2 md:gap-4 border-b bg-background px-4 md:px-6">
             <SidebarTrigger />
-            <h1 className="text-2xl font-bold">Gestión de Pedidos</h1>
+            <h1 className="text-xl md:text-2xl font-bold">Gestión de Pedidos</h1>
           </header>
 
-          <main className="p-4 md:p-6 space-y-6 md:space-y-8">
+          <main className="p-3 md:p-4 lg:p-6 space-y-6 md:space-y-8 max-w-full overflow-x-hidden">
             {/* Sección 1: Pedidos desde el carrito */}
-            <div className="space-y-4">
-              <div>
-                <div className="flex items-center gap-2 mb-2">
-                  <ShoppingCart className="h-5 w-5 md:h-6 md:w-6 text-primary" />
-                  <h2 className="text-lg md:text-xl font-bold">Pedidos desde el Carrito</h2>
+            <div className="space-y-3 md:space-y-4">
+              <div className="px-1">
+                <div className="flex items-center gap-2 mb-1.5 md:mb-2">
+                  <ShoppingCart className="h-5 w-5 md:h-6 md:w-6 text-primary flex-shrink-0" />
+                  <h2 className="text-base md:text-lg lg:text-xl font-bold">Pedidos desde el Carrito</h2>
                 </div>
-                <p className="text-sm md:text-base text-muted-foreground">Gestiona los pedidos realizados desde la tienda online</p>
+                <p className="text-xs md:text-sm lg:text-base text-muted-foreground">Gestiona los pedidos realizados desde la tienda online</p>
               </div>
               
               <Card>
-                <CardContent className="p-4 md:p-6">
+                <CardContent className="p-3 md:p-4 lg:p-6">
                   {onlineOrders.length === 0 ? (
-                    <div className="py-8 text-center text-muted-foreground">
-                      <ShoppingCart className="h-12 w-12 mx-auto mb-2 opacity-30" />
-                      <p>No hay pedidos online aún</p>
+                    <div className="py-8 md:py-12 text-center text-muted-foreground">
+                      <ShoppingCart className="h-10 w-10 md:h-12 md:w-12 mx-auto mb-2 opacity-30" />
+                      <p className="text-sm md:text-base">No hay pedidos online aún</p>
                     </div>
                   ) : (
-                    <div className="grid gap-4 xl:grid-cols-2 2xl:grid-cols-3">
+                    <div className="grid gap-3 md:gap-4 xl:grid-cols-2 2xl:grid-cols-3">
                       {onlineOrders.map(order => (
                         <OrderCard key={order.id} order={order} />
                       ))}
@@ -238,32 +240,32 @@ const AdminOrders = () => {
             </div>
 
             {/* Sección 2: Crear pedido en tienda física */}
-            <div className="space-y-4">
-              <div>
-                <div className="flex items-center gap-2 mb-2">
-                  <Store className="h-5 w-5 md:h-6 md:w-6 text-primary" />
-                  <h2 className="text-lg md:text-xl font-bold">Pedidos en Tienda Física</h2>
+            <div className="space-y-3 md:space-y-4">
+              <div className="px-1">
+                <div className="flex items-center gap-2 mb-1.5 md:mb-2">
+                  <Store className="h-5 w-5 md:h-6 md:w-6 text-primary flex-shrink-0" />
+                  <h2 className="text-base md:text-lg lg:text-xl font-bold">Pedidos en Tienda Física</h2>
                 </div>
-                <p className="text-sm md:text-base text-muted-foreground">Registra y gestiona ventas presenciales</p>
+                <p className="text-xs md:text-sm lg:text-base text-muted-foreground">Registra y gestiona ventas presenciales</p>
               </div>
 
-              <div className="grid gap-6 xl:grid-cols-3">
+              <div className="grid gap-4 md:gap-6 xl:grid-cols-3">
                 {/* Formulario para crear pedido */}
                 <Card className="xl:col-span-1">
-                  <CardHeader className="p-4 md:p-6">
-                    <CardTitle className="text-lg md:text-xl">Crear Nuevo Pedido</CardTitle>
-                    <CardDescription className="text-sm">Registra una venta presencial</CardDescription>
+                  <CardHeader className="p-3 md:p-4 lg:p-6">
+                    <CardTitle className="text-base md:text-lg lg:text-xl">Crear Nuevo Pedido</CardTitle>
+                    <CardDescription className="text-xs md:text-sm">Registra una venta presencial</CardDescription>
                   </CardHeader>
-                  <CardContent className="space-y-4 p-4 md:p-6 pt-0">
+                  <CardContent className="space-y-3 md:space-y-4 p-3 md:p-4 lg:p-6 pt-0">
                     <div>
-                      <Label htmlFor="product" className="text-sm">Producto *</Label>
+                      <Label htmlFor="product" className="text-xs md:text-sm">Producto *</Label>
                       <Select value={selectedProduct} onValueChange={setSelectedProduct}>
-                        <SelectTrigger id="product" className="text-sm">
+                        <SelectTrigger id="product" className="text-xs md:text-sm h-9 md:h-10">
                           <SelectValue placeholder="Selecciona un producto" />
                         </SelectTrigger>
                         <SelectContent>
                           {mockProducts.map(product => (
-                            <SelectItem key={product.id} value={product.id} className="text-sm">
+                            <SelectItem key={product.id} value={product.id} className="text-xs md:text-sm">
                               {product.name} - ${product.price} (Stock: {product.stock})
                             </SelectItem>
                           ))}
@@ -272,57 +274,57 @@ const AdminOrders = () => {
                     </div>
 
                     <div>
-                      <Label htmlFor="quantity" className="text-sm">Cantidad *</Label>
+                      <Label htmlFor="quantity" className="text-xs md:text-sm">Cantidad *</Label>
                       <Input
                         id="quantity"
                         type="number"
                         min="1"
                         value={quantity}
                         onChange={(e) => setQuantity(parseInt(e.target.value) || 1)}
-                        className="text-sm"
+                        className="text-xs md:text-sm h-9 md:h-10"
                       />
                     </div>
 
                     <div>
-                      <Label htmlFor="customerName" className="text-sm">Nombre del Cliente *</Label>
+                      <Label htmlFor="customerName" className="text-xs md:text-sm">Nombre del Cliente *</Label>
                       <Input
                         id="customerName"
                         value={customerName}
                         onChange={(e) => setCustomerName(e.target.value)}
                         placeholder="Nombre completo"
-                        className="text-sm"
+                        className="text-xs md:text-sm h-9 md:h-10"
                       />
                     </div>
 
                     <div>
-                      <Label htmlFor="customerPhone" className="text-sm">Teléfono *</Label>
+                      <Label htmlFor="customerPhone" className="text-xs md:text-sm">Teléfono *</Label>
                       <Input
                         id="customerPhone"
                         value={customerPhone}
                         onChange={(e) => setCustomerPhone(e.target.value)}
                         placeholder="Número de contacto"
-                        className="text-sm"
+                        className="text-xs md:text-sm h-9 md:h-10"
                       />
                     </div>
 
                     <div>
-                      <Label htmlFor="payment" className="text-sm">Método de Pago *</Label>
+                      <Label htmlFor="payment" className="text-xs md:text-sm">Método de Pago *</Label>
                       <Select value={paymentMethod} onValueChange={setPaymentMethod}>
-                        <SelectTrigger id="payment" className="text-sm">
+                        <SelectTrigger id="payment" className="text-xs md:text-sm h-9 md:h-10">
                           <SelectValue placeholder="Selecciona método de pago" />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="Efectivo" className="text-sm">Efectivo</SelectItem>
-                          <SelectItem value="Tarjeta" className="text-sm">Tarjeta</SelectItem>
-                          <SelectItem value="SINPE Móvil" className="text-sm">SINPE Móvil</SelectItem>
-                          <SelectItem value="Transferencia" className="text-sm">Transferencia</SelectItem>
+                          <SelectItem value="Efectivo" className="text-xs md:text-sm">Efectivo</SelectItem>
+                          <SelectItem value="Tarjeta" className="text-xs md:text-sm">Tarjeta</SelectItem>
+                          <SelectItem value="SINPE Móvil" className="text-xs md:text-sm">SINPE Móvil</SelectItem>
+                          <SelectItem value="Transferencia" className="text-xs md:text-sm">Transferencia</SelectItem>
                         </SelectContent>
                       </Select>
                     </div>
 
                     <Button 
                       onClick={handleCreateInStoreOrder}
-                      className="w-full"
+                      className="w-full text-xs md:text-sm h-9 md:h-10"
                     >
                       Crear Pedido
                     </Button>
@@ -333,13 +335,13 @@ const AdminOrders = () => {
                 <div className="xl:col-span-2">
                   {inStoreOrders.length === 0 ? (
                     <Card>
-                      <CardContent className="py-12 text-center text-muted-foreground">
-                        <Store className="h-12 w-12 mx-auto mb-2 opacity-30" />
-                        <p>No hay pedidos en tienda aún</p>
+                      <CardContent className="py-8 md:py-12 text-center text-muted-foreground">
+                        <Store className="h-10 w-10 md:h-12 md:w-12 mx-auto mb-2 opacity-30" />
+                        <p className="text-sm md:text-base">No hay pedidos en tienda aún</p>
                       </CardContent>
                     </Card>
                   ) : (
-                    <div className="grid gap-4 2xl:grid-cols-2">
+                    <div className="grid gap-3 md:gap-4 2xl:grid-cols-2">
                       {inStoreOrders.map(order => (
                         <OrderCard key={order.id} order={order} showDeliveryInfo={false} />
                       ))}
