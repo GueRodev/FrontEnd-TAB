@@ -1,9 +1,9 @@
 
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Heart, ShoppingCart, Star, ArrowRight } from 'lucide-react';
+import { Heart, ShoppingCart, ArrowRight, Plus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { toast } from '@/components/ui/use-toast';
+import { toast } from '@/hooks/use-toast';
 
 interface Product {
   id: string;
@@ -154,10 +154,9 @@ const FeaturedProducts: React.FC = () => {
                   <Button
                     onClick={(e) => addToCart(e, product)}
                     size="sm"
-                    className="bg-brand-darkBlue hover:bg-brand-orange text-white transition-colors flex items-center gap-2"
+                    className="bg-brand-darkBlue hover:bg-brand-orange text-white transition-colors flex items-center gap-1"
                   >
-                    <ShoppingCart size={16} />
-                    Add
+                    <Plus size={18} />
                   </Button>
                 </div>
               </div>
