@@ -113,17 +113,6 @@ const EditionCarousel: React.FC = () => {
                             className="w-32 h-32 object-contain z-10 transform transition-transform hover:scale-110 duration-300"
                           />
                         </div>
-                        {product.badgeType && (
-                          <Badge className={`absolute top-3 left-3 ${
-                            product.badgeType === 'limited' ? 'bg-amber-500' : 
-                            product.badgeType === 'exclusive' ? 'bg-purple-600' : 
-                            'bg-blue-600'
-                          }`}>
-                            {product.badgeType === 'limited' ? 'Limited Edition' : 
-                             product.badgeType === 'exclusive' ? 'Exclusive' : 
-                             'Collector\'s Item'}
-                          </Badge>
-                        )}
                       </div>
                       <div className="p-4">
                         <div className="text-xs font-medium text-gray-500 mb-1">{product.series}</div>

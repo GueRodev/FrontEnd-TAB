@@ -140,16 +140,6 @@ const FeaturedProducts: React.FC = () => {
                     className={wishlist.includes(product.id) ? 'fill-red-500 text-red-500' : ''} 
                   />
                 </button>
-                {product.badge && (
-                  <span className={`absolute top-4 left-4 px-2 py-1 text-xs font-semibold rounded-full 
-                    ${product.badge === 'New' ? 'bg-green-500 text-white' : 
-                      product.badge === 'Bestseller' ? 'bg-brand-purple text-white' : 
-                      product.badge === 'Sale' ? 'bg-red-500 text-white' : 
-                      'bg-brand-orange text-white'}`
-                  }>
-                    {product.badge}
-                  </span>
-                )}
               </div>
               
               <div className="p-4">
