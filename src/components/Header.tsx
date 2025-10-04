@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import { Menu, X, ShoppingCart, Search, User, Heart } from 'lucide-react';
 import Logo from './Logo';
 import { cn } from '@/lib/utils';
+import { useCart } from '@/contexts/CartContext';
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -16,7 +17,8 @@ import {
 const Header: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
-  const [cartCount, setCartCount] = useState(0);
+  const { getTotalItems } = useCart();
+  const cartCount = getTotalItems();
 
   // Handle scroll event to change header style
   useEffect(() => {
