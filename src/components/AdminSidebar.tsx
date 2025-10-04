@@ -38,22 +38,22 @@ const footerItems = [
 
 export function AdminSidebar() {
   return (
-    <Sidebar className="bg-brand-darkBlue border-none">
+    <Sidebar className="!bg-[#1A1F2C] border-none" style={{ backgroundColor: '#1A1F2C' }}>
       {/* Header with Logo Icon */}
-      <div className="p-6 border-b border-white/10">
+      <div className="p-6 border-b border-white/10 bg-[#1A1F2C]">
         <div className="flex items-center gap-3">
-          <div className="bg-brand-orange p-2.5 rounded-lg flex-shrink-0">
+          <div className="bg-[#F97316] p-2.5 rounded-lg flex-shrink-0">
             <Package2 className="h-6 w-6 text-white" strokeWidth={2.5} />
           </div>
           <div className="flex flex-col leading-tight">
             <span className="text-white font-bold text-base tracking-wide">TOYS AND</span>
-            <span className="text-brand-orange font-bold text-base tracking-wide">BRICKS</span>
+            <span className="text-[#F97316] font-bold text-base tracking-wide">BRICKS</span>
           </div>
         </div>
       </div>
 
-      <SidebarContent className="bg-brand-darkBlue">
-        <SidebarGroup>
+      <SidebarContent className="!bg-[#1A1F2C]" style={{ backgroundColor: '#1A1F2C' }}>
+        <SidebarGroup className="bg-[#1A1F2C]">
           <SidebarGroupLabel className="text-white/70 text-xs font-semibold uppercase tracking-wider px-4 py-3">
             Menú Principal
           </SidebarGroupLabel>
@@ -78,7 +78,7 @@ export function AdminSidebar() {
       </SidebarContent>
 
       {/* Footer Section */}
-      <SidebarFooter className="bg-brand-darkBlue border-t border-white/10 mt-auto">
+      <SidebarFooter className="!bg-[#1A1F2C] border-t border-white/10 mt-auto" style={{ backgroundColor: '#1A1F2C' }}>
         <SidebarMenu>
           {footerItems.map((item) => (
             <SidebarMenuItem key={item.title}>
