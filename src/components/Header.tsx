@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Menu, X, ShoppingCart, Search, User, Heart } from 'lucide-react';
+import { Menu, X, ShoppingCart, Search, User, Heart, Shield } from 'lucide-react';
 import Logo from './Logo';
 import { cn } from '@/lib/utils';
 import { useCart } from '@/contexts/CartContext';
@@ -107,6 +107,9 @@ const Header: React.FC = () => {
           <Link to="/account" className="hover:text-brand-orange transition-colors">
             <User size={22} />
           </Link>
+          <Link to="/admin" className="hover:text-brand-orange transition-colors">
+            <Shield size={22} />
+          </Link>
           <Link to="/cart" className="hover:text-brand-orange transition-colors relative">
             <ShoppingCart size={22} />
             {cartCount > 0 && (
@@ -175,6 +178,9 @@ const Header: React.FC = () => {
                   <Heart size={18} /> Favoritos
                 </Link>
               </div>
+              <Link to="/admin" className="text-brand-darkBlue font-semibold hover:text-brand-orange transition-colors flex items-center gap-2 py-2" onClick={() => setIsMenuOpen(false)}>
+                <Shield size={18} /> Admin
+              </Link>
               <div className="relative mt-2">
                 <input
                   type="text"
