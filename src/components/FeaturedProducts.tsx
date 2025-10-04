@@ -1,8 +1,9 @@
 
-import React, { useState } from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
+import { useWishlist } from '@/contexts/WishlistContext';
 import ProductCard from './ProductCard';
 
 interface Product {
@@ -51,24 +52,14 @@ const featuredProducts: Product[] = [
 ];
 
 const FeaturedProducts: React.FC = () => {
-  const [wishlist, setWishlist] = useState<string[]>([]);
+  const { isInWishlist, toggleWishlist } = useWishlist();
 
-  const toggleWishlist = (e: React.MouseEvent, productId: string) => {
+  const handleToggleWishlist = (e: React.MouseEvent, productId: string) => {
     e.preventDefault();
     e.stopPropagation();
-    
-    if (wishlist.includes(productId)) {
-      setWishlist(wishlist.filter(id => id !== productId));
-      toast({
-        title: "Eliminado de favoritos",
-        description: "El producto ha sido eliminado de tus favoritos",
-      });
-    } else {
-      setWishlist([...wishlist, productId]);
-      toast({
-        title: "Agregado a favoritos",
-        description: "El producto ha sido agregado a tus favoritos",
-      });
+    const product = featuredProducts.find(p => p.id === productId);
+    if (product) {
+      toggleWishlist(product);
     }
   };
 
@@ -105,8 +96,8 @@ const FeaturedProducts: React.FC = () => {
               image={product.image}
               price={product.price}
               category={product.category}
-              isWishlisted={wishlist.includes(product.id)}
-              onToggleWishlist={toggleWishlist}
+              isWishlisted={isInWishlist(product.id)}
+              onToggleWishlist={handleToggleWishlist}
               onAddToCart={addToCart}
             />
           ))}
