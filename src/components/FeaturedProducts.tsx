@@ -143,11 +143,8 @@ const FeaturedProducts: React.FC = () => {
               </div>
               
               <div className="p-4">
-                <div className="flex items-center gap-1 mb-2">
-                  <Star size={16} className="text-yellow-400 fill-yellow-400" />
-                  <span className="text-sm text-gray-700">{product.rating}</span>
-                  <span className="text-xs text-gray-400 ml-1">(120)</span>
-                  <span className="text-xs text-gray-500 ml-auto">{product.category}</span>
+                <div className="flex items-center mb-2">
+                  <span className="text-xs text-gray-500">{product.category}</span>
                 </div>
                 
                 <Link to={`/product/${product.id}`} className="block">
