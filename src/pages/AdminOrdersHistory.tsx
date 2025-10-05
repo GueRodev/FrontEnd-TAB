@@ -180,13 +180,13 @@ const AdminOrdersHistory = () => {
 
             {/* Tabla de pedidos archivados */}
             <Card>
-              <CardHeader className="sticky top-16 z-40 bg-card border-b">
+              <CardHeader>
                 <div className="flex items-center gap-2">
                   <Archive className="h-5 w-5 text-primary" />
                   <CardTitle>Pedidos Archivados</CardTitle>
                 </div>
               </CardHeader>
-              <CardContent className="p-0">
+              <CardContent>
                 {archivedOrders.length === 0 ? (
                   <div className="py-12 text-center text-muted-foreground">
                     <Archive className="h-12 w-12 mx-auto mb-3 opacity-30" />
@@ -195,7 +195,7 @@ const AdminOrdersHistory = () => {
                 ) : (
                   <div className="overflow-x-auto">
                     <Table>
-                      <TableHeader className="sticky top-[120px] z-30 bg-background">
+                      <TableHeader>
                         <TableRow>
                           <TableHead className="min-w-[120px]">ID Pedido</TableHead>
                           <TableHead className="min-w-[100px]">Fecha</TableHead>
