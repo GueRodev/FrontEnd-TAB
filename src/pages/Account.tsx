@@ -14,7 +14,10 @@ interface UserProfile {
   name: string;
   email: string;
   phone: string;
-  address: string;
+  provincia: string;
+  canton: string;
+  distrito: string;
+  direccion: string;
 }
 
 const Account: React.FC = () => {
@@ -22,8 +25,11 @@ const Account: React.FC = () => {
   const [profile, setProfile] = useState<UserProfile>({
     name: 'Usuario Demo',
     email: 'usuario@toysandbricks.com',
-    phone: '+1 234 567 8900',
-    address: 'Calle Principal 123, Ciudad'
+    phone: '+506 8888 8888',
+    provincia: 'San José',
+    canton: 'Central',
+    distrito: 'Carmen',
+    direccion: 'Calle Principal 123, Ciudad'
   });
 
   const [editedProfile, setEditedProfile] = useState<UserProfile>(profile);
@@ -161,27 +167,83 @@ const Account: React.FC = () => {
                       value={editedProfile.phone}
                       onChange={(e) => handleInputChange('phone', e.target.value)}
                       className="border-gray-300 focus:border-brand-orange"
+                      placeholder="+506 8888 8888"
                     />
                   ) : (
                     <p className="text-gray-700 py-2">{profile.phone}</p>
                   )}
                 </div>
 
-                {/* Address */}
+                {/* Provincia */}
                 <div className="space-y-2">
-                  <Label htmlFor="address" className="flex items-center gap-2 text-brand-darkBlue">
+                  <Label htmlFor="provincia" className="flex items-center gap-2 text-brand-darkBlue">
                     <MapPin size={18} />
-                    Dirección
+                    Provincia
                   </Label>
                   {isEditing ? (
                     <Input
-                      id="address"
-                      value={editedProfile.address}
-                      onChange={(e) => handleInputChange('address', e.target.value)}
+                      id="provincia"
+                      value={editedProfile.provincia}
+                      onChange={(e) => handleInputChange('provincia', e.target.value)}
                       className="border-gray-300 focus:border-brand-orange"
+                      placeholder="Provincia"
                     />
                   ) : (
-                    <p className="text-gray-700 py-2">{profile.address}</p>
+                    <p className="text-gray-700 py-2">{profile.provincia}</p>
+                  )}
+                </div>
+
+                {/* Canton */}
+                <div className="space-y-2">
+                  <Label htmlFor="canton" className="text-brand-darkBlue">
+                    Cantón
+                  </Label>
+                  {isEditing ? (
+                    <Input
+                      id="canton"
+                      value={editedProfile.canton}
+                      onChange={(e) => handleInputChange('canton', e.target.value)}
+                      className="border-gray-300 focus:border-brand-orange"
+                      placeholder="Cantón"
+                    />
+                  ) : (
+                    <p className="text-gray-700 py-2">{profile.canton}</p>
+                  )}
+                </div>
+
+                {/* Distrito */}
+                <div className="space-y-2">
+                  <Label htmlFor="distrito" className="text-brand-darkBlue">
+                    Distrito
+                  </Label>
+                  {isEditing ? (
+                    <Input
+                      id="distrito"
+                      value={editedProfile.distrito}
+                      onChange={(e) => handleInputChange('distrito', e.target.value)}
+                      className="border-gray-300 focus:border-brand-orange"
+                      placeholder="Distrito"
+                    />
+                  ) : (
+                    <p className="text-gray-700 py-2">{profile.distrito}</p>
+                  )}
+                </div>
+
+                {/* Address */}
+                <div className="space-y-2">
+                  <Label htmlFor="direccion" className="text-brand-darkBlue">
+                    Dirección Exacta
+                  </Label>
+                  {isEditing ? (
+                    <Input
+                      id="direccion"
+                      value={editedProfile.direccion}
+                      onChange={(e) => handleInputChange('direccion', e.target.value)}
+                      className="border-gray-300 focus:border-brand-orange"
+                      placeholder="Dirección completa"
+                    />
+                  ) : (
+                    <p className="text-gray-700 py-2">{profile.direccion}</p>
                   )}
                 </div>
 
