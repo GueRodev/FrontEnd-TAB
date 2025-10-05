@@ -45,7 +45,7 @@ const Header: React.FC = () => {
           : "bg-transparent py-4"
       )}
       style={isScrolled ? {
-        boxShadow: '0 4px 20px -2px rgba(255, 193, 7, 0.35), 0 2px 8px -2px rgba(255, 193, 7, 0.2)'
+        boxShadow: '0 4px 20px -2px rgba(0, 51, 102, 0.35), 0 2px 8px -2px rgba(0, 51, 102, 0.2)'
       } : undefined}
     >
       <div className="container mx-auto px-4 flex items-center justify-between">
