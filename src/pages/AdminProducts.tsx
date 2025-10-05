@@ -80,6 +80,7 @@ const AdminProducts: React.FC = () => {
   const [selectedProduct, setSelectedProduct] = useState<any>(null);
   const [formData, setFormData] = useState({
     name: '',
+    marca: '',
     category: '',
     subcategory: '',
     price: '',
@@ -114,6 +115,7 @@ const AdminProducts: React.FC = () => {
     setSelectedProduct(product);
     setFormData({
       name: product.name,
+      marca: product.marca || '',
       category: product.category,
       subcategory: product.subcategory || '',
       price: product.price.toString(),
@@ -140,6 +142,7 @@ const AdminProducts: React.FC = () => {
     // Create product
     addProduct({
       name: formData.name,
+      marca: formData.marca || undefined,
       categoryId: formData.category,
       subcategoryId: formData.subcategory || undefined,
       price: parseFloat(formData.price),
@@ -167,6 +170,7 @@ const AdminProducts: React.FC = () => {
     // Reset form
     setFormData({
       name: '',
+      marca: '',
       category: '',
       subcategory: '',
       price: '',
@@ -192,6 +196,7 @@ const AdminProducts: React.FC = () => {
     // Update product
     updateProduct(selectedProduct.id, {
       name: formData.name,
+      marca: formData.marca || undefined,
       categoryId: formData.category,
       subcategoryId: formData.subcategory || undefined,
       price: parseFloat(formData.price),
@@ -218,6 +223,7 @@ const AdminProducts: React.FC = () => {
     // Reset form
     setFormData({
       name: '',
+      marca: '',
       category: '',
       subcategory: '',
       price: '',
@@ -572,6 +578,20 @@ const AdminProducts: React.FC = () => {
               />
             </div>
 
+            {/* Marca */}
+            <div className="space-y-2">
+              <Label htmlFor="marca" className="text-gray-900 font-medium">
+                Marca
+              </Label>
+              <Input
+                id="marca"
+                value={formData.marca}
+                onChange={(e) => setFormData({ ...formData, marca: e.target.value })}
+                placeholder="Ej: LEGO, Mattel, Hasbro"
+                className="border-gray-300"
+              />
+            </div>
+
             {/* Category and Price Row */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="space-y-2">
@@ -779,6 +799,20 @@ const AdminProducts: React.FC = () => {
                 onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                 placeholder="Ej: LEGO Star Wars Millennium Falcon"
                 required
+                className="border-gray-300"
+              />
+            </div>
+
+            {/* Marca */}
+            <div className="space-y-2">
+              <Label htmlFor="edit-marca" className="text-gray-900 font-medium">
+                Marca
+              </Label>
+              <Input
+                id="edit-marca"
+                value={formData.marca}
+                onChange={(e) => setFormData({ ...formData, marca: e.target.value })}
+                placeholder="Ej: LEGO, Mattel, Hasbro"
                 className="border-gray-300"
               />
             </div>

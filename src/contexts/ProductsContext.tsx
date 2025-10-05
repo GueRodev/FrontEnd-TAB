@@ -3,6 +3,7 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 export interface Product {
   id: string;
   name: string;
+  marca?: string;
   categoryId: string;
   subcategoryId?: string;
   price: number;
