@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { useState, useEffect } from 'react';
 import { 
   BarChart3, 
   Package, 
@@ -39,8 +40,22 @@ const footerItems = [
 
 export function AdminSidebar() {
   const { state, open, isMobile, openMobile } = useSidebar();
-  // En mobile, usar openMobile. En desktop/tablet, considerar state y open
   const isCollapsed = isMobile ? !openMobile : (state === "collapsed" && !open);
+  
+  const [customLogo, setCustomLogo] = useState<string | null>(null);
+
+  useEffect(() => {
+    const logo = localStorage.getItem('customLogo');
+    setCustomLogo(logo);
+
+    const handleLogoUpdate = () => {
+      const updatedLogo = localStorage.getItem('customLogo');
+      setCustomLogo(updatedLogo);
+    };
+
+    window.addEventListener('logoUpdated', handleLogoUpdate);
+    return () => window.removeEventListener('logoUpdated', handleLogoUpdate);
+  }, []);
 
   return (
     <Sidebar 
@@ -48,19 +63,29 @@ export function AdminSidebar() {
       style={{ backgroundColor: '#1A1F2C' }}
       collapsible="icon"
     >
-      {/* Header with Logo Icon */}
+      {/* Header with Logo */}
       <div className={`p-6 border-b border-white/10 bg-[#1A1F2C] ${isCollapsed ? 'flex justify-center' : ''}`}>
-        <div className={`flex items-center gap-3 ${isCollapsed ? 'justify-center' : ''}`}>
-          <div className="bg-[#F97316] p-2.5 rounded-lg flex-shrink-0">
-            <Package2 className="h-6 w-6 text-white" strokeWidth={2.5} />
-          </div>
-          {!isCollapsed && (
-            <div className="flex flex-col leading-tight">
-              <span className="text-white font-bold text-base tracking-wide">TOYS AND</span>
-              <span className="text-[#F97316] font-bold text-base tracking-wide">BRICKS</span>
+        {customLogo ? (
+          <Link to="/admin" className="flex items-center justify-center">
+            <img 
+              src={customLogo} 
+              alt="Logo Admin" 
+              className={`object-contain ${isCollapsed ? 'h-10 w-10' : 'h-12'}`}
+            />
+          </Link>
+        ) : (
+          <div className={`flex items-center gap-3 ${isCollapsed ? 'justify-center' : ''}`}>
+            <div className="bg-[#F97316] p-2.5 rounded-lg flex-shrink-0">
+              <Package2 className="h-6 w-6 text-white" strokeWidth={2.5} />
             </div>
-          )}
-        </div>
+            {!isCollapsed && (
+              <div className="flex flex-col leading-tight">
+                <span className="text-white font-bold text-base tracking-wide">TOYS AND</span>
+                <span className="text-[#F97316] font-bold text-base tracking-wide">BRICKS</span>
+              </div>
+            )}
+          </div>
+        )}
       </div>
 
       <SidebarContent className="!bg-[#1A1F2C]" style={{ backgroundColor: '#1A1F2C' }}>
