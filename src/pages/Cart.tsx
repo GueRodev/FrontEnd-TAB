@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { Trash2, Plus, Minus, ShoppingBag } from 'lucide-react';
 import { useCart } from '@/contexts/CartContext';
 import { useOrders } from '@/contexts/OrdersContext';
+import { useNotifications } from '@/contexts/NotificationsContext';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -14,6 +15,7 @@ import Footer from '@/components/Footer';
 const Cart = () => {
   const { items, removeFromCart, updateQuantity, getTotalPrice, clearCart } = useCart();
   const { addOrder } = useOrders();
+  const { addNotification } = useNotifications();
   const [deliveryOption, setDeliveryOption] = useState<'pickup' | 'delivery'>('pickup');
   const [paymentMethod, setPaymentMethod] = useState<string>('');
   
@@ -97,6 +99,7 @@ const Cart = () => {
     const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodedMessage}`;
 
     // Guardar pedido en el contexto
+    const orderId = `ORD-${Date.now()}`;
     addOrder({
       type: 'online',
       status: 'pending',
@@ -118,6 +121,14 @@ const Cart = () => {
       },
       deliveryOption,
       paymentMethod,
+    });
+
+    // Agregar notificación
+    addNotification({
+      type: 'order',
+      title: 'Nuevo pedido recibido',
+      message: `Pedido ${orderId} de ${formData.nombre} - Total: $${getTotalPrice().toFixed(2)}`,
+      time: 'Ahora',
     });
 
     // Abrir WhatsApp

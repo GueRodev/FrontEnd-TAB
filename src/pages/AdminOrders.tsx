@@ -9,6 +9,7 @@ import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useOrders, OrderStatus } from '@/contexts/OrdersContext';
+import { useNotifications } from '@/contexts/NotificationsContext';
 import { toast } from '@/hooks/use-toast';
 import { ShoppingCart, Store, Package, CheckCircle, XCircle, Trash2, Search } from 'lucide-react';
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/ui/command';
@@ -24,6 +25,7 @@ const mockProducts = [
 
 const AdminOrders = () => {
   const { orders, addOrder, updateOrderStatus, deleteOrder } = useOrders();
+  const { addNotification } = useNotifications();
   const [selectedProduct, setSelectedProduct] = useState('');
   const [quantity, setQuantity] = useState(1);
   const [customerName, setCustomerName] = useState('');
@@ -90,6 +92,14 @@ const AdminOrders = () => {
     };
 
     addOrder(newOrder);
+
+    // Agregar notificación
+    addNotification({
+      type: 'order',
+      title: 'Pedido en tienda creado',
+      message: `Pedido de ${customerName} - ${product.name} x${quantity}`,
+      time: 'Ahora',
+    });
     
     // Limpiar formulario
     setSelectedProduct('');
@@ -199,7 +209,19 @@ const AdminOrders = () => {
           <div className="flex gap-2 pt-2">
             <Button 
               size="sm" 
-              onClick={() => updateOrderStatus(order.id, 'completed')}
+              onClick={() => {
+                updateOrderStatus(order.id, 'completed');
+                addNotification({
+                  type: 'order',
+                  title: 'Pedido completado',
+                  message: `Pedido ${order.id} ha sido marcado como finalizado`,
+                  time: 'Ahora',
+                });
+                toast({
+                  title: "Pedido completado",
+                  description: "El pedido ha sido marcado como finalizado",
+                });
+              }}
               className="flex-1 text-xs md:text-sm"
             >
               <CheckCircle size={14} className="mr-1" />
@@ -208,7 +230,19 @@ const AdminOrders = () => {
             <Button 
               size="sm" 
               variant="destructive"
-              onClick={() => updateOrderStatus(order.id, 'cancelled')}
+              onClick={() => {
+                updateOrderStatus(order.id, 'cancelled');
+                addNotification({
+                  type: 'order',
+                  title: 'Pedido cancelado',
+                  message: `Pedido ${order.id} ha sido cancelado`,
+                  time: 'Ahora',
+                });
+                toast({
+                  title: "Pedido cancelado",
+                  description: "El pedido ha sido cancelado",
+                });
+              }}
               className="flex-1 text-xs md:text-sm"
             >
               <XCircle size={14} className="mr-1" />

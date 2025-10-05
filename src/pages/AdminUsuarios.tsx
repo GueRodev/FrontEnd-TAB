@@ -27,6 +27,7 @@ import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { Separator } from '@/components/ui/separator';
 import { toast } from '@/hooks/use-toast';
+import { useNotifications } from '@/contexts/NotificationsContext';
 
 // Mock data - replace with actual data from your backend
 const mockClientes = [
@@ -117,6 +118,7 @@ const mockAdmins = [
 ];
 
 const AdminUsuarios: React.FC = () => {
+  const { addNotification } = useNotifications();
   const [clientes, setClientes] = useState(mockClientes);
   const [searchClientes, setSearchClientes] = useState('');
   const [searchAdmins, setSearchAdmins] = useState('');
@@ -135,6 +137,14 @@ const AdminUsuarios: React.FC = () => {
       prevClientes.map(cliente => {
         if (cliente.id === id) {
           const nuevoEstado = !cliente.activo;
+          
+          // Agregar notificación
+          addNotification({
+            type: 'user',
+            title: nuevoEstado ? 'Cliente activado' : 'Cliente desactivado',
+            message: `${cliente.nombre} ha sido ${nuevoEstado ? 'activado' : 'desactivado'}`,
+            time: 'Ahora',
+          });
           
           // Mostrar notificación
           toast({

@@ -32,6 +32,8 @@ import {
 } from '@/components/ui/select';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
+import { useNotifications } from '@/contexts/NotificationsContext';
+import { toast } from '@/hooks/use-toast';
 
 // Mock data - replace with actual data from your backend
 const mockProducts = [
@@ -65,6 +67,7 @@ const mockProducts = [
 ];
 
 const AdminProducts: React.FC = () => {
+  const { addNotification } = useNotifications();
   const [searchQuery, setSearchQuery] = useState('');
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
@@ -113,6 +116,20 @@ const AdminProducts: React.FC = () => {
     // Aquí implementarás la lógica para guardar el producto
     console.log('Form data:', formData);
     console.log('Image:', selectedImage);
+    
+    // Agregar notificación
+    addNotification({
+      type: 'product',
+      title: 'Producto creado',
+      message: `${formData.name} ha sido agregado al inventario`,
+      time: 'Ahora',
+    });
+
+    toast({
+      title: "Producto creado",
+      description: `${formData.name} ha sido agregado exitosamente`,
+    });
+
     setIsAddDialogOpen(false);
     // Reset form
     setFormData({
@@ -132,6 +149,20 @@ const AdminProducts: React.FC = () => {
     console.log('Updating product:', selectedProduct.id);
     console.log('Form data:', formData);
     console.log('Image:', selectedImage);
+    
+    // Agregar notificación
+    addNotification({
+      type: 'product',
+      title: 'Producto actualizado',
+      message: `${formData.name} ha sido modificado`,
+      time: 'Ahora',
+    });
+
+    toast({
+      title: "Producto actualizado",
+      description: `${formData.name} ha sido actualizado exitosamente`,
+    });
+
     setIsEditDialogOpen(false);
     // Reset form
     setFormData({
