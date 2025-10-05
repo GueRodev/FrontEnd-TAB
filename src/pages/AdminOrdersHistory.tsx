@@ -144,7 +144,7 @@ const AdminOrdersHistory = () => {
         <SidebarInset className="flex-1">
           <AdminHeader title="Historial de Pedidos" />
 
-          <main className="p-3 md:p-4 lg:p-6 space-y-4 md:space-y-6 pt-20">
+          <main className="p-3 md:p-4 lg:p-6 space-y-4 md:space-y-6">
             {/* Botones de acción */}
             <div className="flex flex-wrap gap-3 justify-between items-center">
               <Button
@@ -180,13 +180,13 @@ const AdminOrdersHistory = () => {
 
             {/* Tabla de pedidos archivados */}
             <Card>
-              <CardHeader>
+              <CardHeader className="sticky top-16 z-40 bg-card border-b">
                 <div className="flex items-center gap-2">
                   <Archive className="h-5 w-5 text-primary" />
                   <CardTitle>Pedidos Archivados</CardTitle>
                 </div>
               </CardHeader>
-              <CardContent>
+              <CardContent className="p-0">
                 {archivedOrders.length === 0 ? (
                   <div className="py-12 text-center text-muted-foreground">
                     <Archive className="h-12 w-12 mx-auto mb-3 opacity-30" />
@@ -195,7 +195,7 @@ const AdminOrdersHistory = () => {
                 ) : (
                   <div className="overflow-x-auto">
                     <Table>
-                      <TableHeader>
+                      <TableHeader className="sticky top-[120px] z-30 bg-background">
                         <TableRow>
                           <TableHead className="min-w-[120px]">ID Pedido</TableHead>
                           <TableHead className="min-w-[100px]">Fecha</TableHead>
