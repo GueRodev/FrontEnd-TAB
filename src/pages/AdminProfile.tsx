@@ -8,15 +8,14 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { useToast } from '@/hooks/use-toast';
-import { Camera, Mail, Phone, MapPin, User as UserIcon, Building } from 'lucide-react';
+import { Camera, Mail, Phone, User as UserIcon, Lock } from 'lucide-react';
 
 interface AdminProfile {
   name: string;
   email: string;
   phone: string;
   role: string;
-  department: string;
-  location: string;
+  password: string;
   avatarUrl: string;
 }
 
@@ -29,8 +28,7 @@ const AdminProfile = () => {
     email: 'admin@toysandbricks.com',
     phone: '+1 (555) 123-4567',
     role: 'Administrador Principal',
-    department: 'Gestión',
-    location: 'Ciudad de México, México',
+    password: '••••••••',
     avatarUrl: '',
   });
 
@@ -209,33 +207,19 @@ const AdminProfile = () => {
                       />
                     </div>
 
-                    {/* Department */}
+                    {/* Password */}
                     <div className="space-y-2">
-                      <Label htmlFor="department" className="flex items-center gap-2">
-                        <Building className="h-4 w-4" />
-                        Departamento
+                      <Label htmlFor="password" className="flex items-center gap-2">
+                        <Lock className="h-4 w-4" />
+                        Contraseña
                       </Label>
                       <Input
-                        id="department"
-                        value={profile.department}
-                        onChange={(e) => handleInputChange('department', e.target.value)}
+                        id="password"
+                        type="password"
+                        value={profile.password}
+                        onChange={(e) => handleInputChange('password', e.target.value)}
                         disabled={!isEditing}
-                        placeholder="Tu departamento"
-                      />
-                    </div>
-
-                    {/* Location */}
-                    <div className="space-y-2 md:col-span-2">
-                      <Label htmlFor="location" className="flex items-center gap-2">
-                        <MapPin className="h-4 w-4" />
-                        Ubicación
-                      </Label>
-                      <Input
-                        id="location"
-                        value={profile.location}
-                        onChange={(e) => handleInputChange('location', e.target.value)}
-                        disabled={!isEditing}
-                        placeholder="Ciudad, País"
+                        placeholder="••••••••"
                       />
                     </div>
                   </div>
