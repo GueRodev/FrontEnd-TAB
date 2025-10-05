@@ -3,6 +3,7 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { Menu, X, ShoppingCart, Search, User, Heart, Shield } from 'lucide-react';
 import Logo from './Logo';
+import SearchDialog from './SearchDialog';
 import { cn } from '@/lib/utils';
 import { useCart } from '@/contexts/CartContext';
 import { useCategories } from '@/contexts/CategoriesContext';
@@ -18,6 +19,7 @@ import {
 const Header: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
   const { getTotalItems } = useCart();
   const { categories } = useCategories();
   const cartCount = getTotalItems();
@@ -100,7 +102,11 @@ const Header: React.FC = () => {
 
         {/* Desktop Icons */}
         <div className="hidden lg:flex items-center space-x-6">
-          <button className="hover:text-brand-orange transition-colors">
+          <button 
+            onClick={() => setIsSearchOpen(true)}
+            className="hover:text-brand-orange transition-colors"
+            aria-label="Buscar productos"
+          >
             <Search size={22} />
           </button>
           <Link to="/wishlist" className="hover:text-brand-orange transition-colors relative">
@@ -124,6 +130,13 @@ const Header: React.FC = () => {
 
         {/* Mobile Menu Toggle */}
         <div className="flex items-center space-x-4 lg:hidden">
+          <button 
+            onClick={() => setIsSearchOpen(true)}
+            className="hover:text-brand-orange transition-colors"
+            aria-label="Buscar productos"
+          >
+            <Search size={22} />
+          </button>
           <Link to="/cart" className="relative">
             <ShoppingCart size={22} />
             {cartCount > 0 && (
@@ -194,18 +207,13 @@ const Header: React.FC = () => {
               <Link to="/admin" className="text-brand-darkBlue font-semibold hover:text-brand-orange transition-colors flex items-center gap-2 py-2" onClick={() => setIsMenuOpen(false)}>
                 <Shield size={18} /> Admin
               </Link>
-              <div className="relative mt-2">
-                <input
-                  type="text"
-                  placeholder="Buscar productos..."
-                  className="w-full p-2 pl-10 border rounded-md"
-                />
-                <Search className="absolute left-3 top-2.5 text-gray-400" size={18} />
-              </div>
             </nav>
           </div>
         </div>
       )}
+
+      {/* Search Dialog */}
+      <SearchDialog open={isSearchOpen} onOpenChange={setIsSearchOpen} />
     </header>
   );
 };
