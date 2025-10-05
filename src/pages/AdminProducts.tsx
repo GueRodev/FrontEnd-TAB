@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { SidebarProvider, SidebarInset } from '@/components/ui/sidebar';
 import { AdminSidebar } from '@/components/AdminSidebar';
 import AdminHeader from '@/components/AdminHeader';
@@ -33,6 +33,7 @@ import {
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { useNotifications } from '@/contexts/NotificationsContext';
+import { useCategories } from '@/contexts/CategoriesContext';
 import { toast } from '@/hooks/use-toast';
 
 // Mock data - replace with actual data from your backend
@@ -68,6 +69,7 @@ const mockProducts = [
 
 const AdminProducts: React.FC = () => {
   const { addNotification } = useNotifications();
+  const { categories } = useCategories();
   const [searchQuery, setSearchQuery] = useState('');
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
@@ -76,11 +78,19 @@ const AdminProducts: React.FC = () => {
   const [formData, setFormData] = useState({
     name: '',
     category: '',
+    subcategory: '',
     price: '',
     stock: '',
     description: '',
     status: 'active'
   });
+
+  // Get subcategories based on selected category
+  const availableSubcategories = useMemo(() => {
+    if (!formData.category) return [];
+    const category = categories.find(cat => cat.id === formData.category);
+    return category?.subcategories || [];
+  }, [formData.category, categories]);
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -102,6 +112,7 @@ const AdminProducts: React.FC = () => {
     setFormData({
       name: product.name,
       category: product.category,
+      subcategory: product.subcategory || '',
       price: product.price.toString(),
       stock: product.stock.toString(),
       description: '',
@@ -135,6 +146,7 @@ const AdminProducts: React.FC = () => {
     setFormData({
       name: '',
       category: '',
+      subcategory: '',
       price: '',
       stock: '',
       description: '',
@@ -168,6 +180,7 @@ const AdminProducts: React.FC = () => {
     setFormData({
       name: '',
       category: '',
+      subcategory: '',
       price: '',
       stock: '',
       description: '',
@@ -479,38 +492,68 @@ const AdminProducts: React.FC = () => {
                 </Label>
                 <Select 
                   value={formData.category} 
-                  onValueChange={(value) => setFormData({ ...formData, category: value })}
+                  onValueChange={(value) => {
+                    setFormData({ ...formData, category: value, subcategory: '' });
+                  }}
                   required
                 >
-                  <SelectTrigger className="border-gray-300">
+                  <SelectTrigger className="border-gray-300 bg-white">
                     <SelectValue placeholder="Selecciona una categoría" />
                   </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="star-wars">Star Wars</SelectItem>
-                    <SelectItem value="harry-potter">Harry Potter</SelectItem>
-                    <SelectItem value="city">City</SelectItem>
-                    <SelectItem value="technic">Technic</SelectItem>
-                    <SelectItem value="friends">Friends</SelectItem>
-                    <SelectItem value="creator">Creator</SelectItem>
+                  <SelectContent className="bg-white z-50">
+                    {categories.map((category) => (
+                      <SelectItem key={category.id} value={category.id}>
+                        {category.name}
+                      </SelectItem>
+                    ))}
                   </SelectContent>
                 </Select>
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="price" className="text-gray-900 font-medium">
-                  Precio (USD) *
+                <Label htmlFor="subcategory" className="text-gray-900 font-medium">
+                  Subcategoría
                 </Label>
-                <Input
-                  id="price"
-                  type="number"
-                  step="0.01"
-                  value={formData.price}
-                  onChange={(e) => setFormData({ ...formData, price: e.target.value })}
-                  placeholder="0.00"
-                  required
-                  className="border-gray-300"
-                />
+                <Select 
+                  value={formData.subcategory} 
+                  onValueChange={(value) => setFormData({ ...formData, subcategory: value })}
+                  disabled={!formData.category || availableSubcategories.length === 0}
+                >
+                  <SelectTrigger className="border-gray-300 bg-white">
+                    <SelectValue placeholder={
+                      !formData.category 
+                        ? "Primero selecciona una categoría" 
+                        : availableSubcategories.length === 0
+                        ? "Sin subcategorías"
+                        : "Selecciona una subcategoría"
+                    } />
+                  </SelectTrigger>
+                  <SelectContent className="bg-white z-50">
+                    {availableSubcategories.map((subcategory) => (
+                      <SelectItem key={subcategory.id} value={subcategory.id}>
+                        {subcategory.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
+            </div>
+
+            {/* Price Row */}
+            <div className="space-y-2">
+              <Label htmlFor="price" className="text-gray-900 font-medium">
+                Precio (USD) *
+              </Label>
+              <Input
+                id="price"
+                type="number"
+                step="0.01"
+                value={formData.price}
+                onChange={(e) => setFormData({ ...formData, price: e.target.value })}
+                placeholder="0.00"
+                required
+                className="border-gray-300"
+              />
             </div>
 
             {/* Stock and Status Row */}
@@ -660,39 +703,69 @@ const AdminProducts: React.FC = () => {
                 </Label>
                 <Select 
                   value={formData.category} 
-                  onValueChange={(value) => setFormData({ ...formData, category: value })}
+                  onValueChange={(value) => {
+                    setFormData({ ...formData, category: value, subcategory: '' });
+                  }}
                   required
                 >
-                  <SelectTrigger id="edit-category" className="border-gray-300">
+                  <SelectTrigger id="edit-category" className="border-gray-300 bg-white">
                     <SelectValue placeholder="Selecciona una categoría" />
                   </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="Star Wars">Star Wars</SelectItem>
-                    <SelectItem value="Harry Potter">Harry Potter</SelectItem>
-                    <SelectItem value="City">City</SelectItem>
-                    <SelectItem value="Technic">Technic</SelectItem>
-                    <SelectItem value="Friends">Friends</SelectItem>
-                    <SelectItem value="Marvel">Marvel</SelectItem>
+                  <SelectContent className="bg-white z-50">
+                    {categories.map((category) => (
+                      <SelectItem key={category.id} value={category.id}>
+                        {category.name}
+                      </SelectItem>
+                    ))}
                   </SelectContent>
                 </Select>
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="edit-price" className="text-gray-900 font-medium">
-                  Precio ($) *
+                <Label htmlFor="edit-subcategory" className="text-gray-900 font-medium">
+                  Subcategoría
                 </Label>
-                <Input
-                  id="edit-price"
-                  type="number"
-                  step="0.01"
-                  min="0"
-                  value={formData.price}
-                  onChange={(e) => setFormData({ ...formData, price: e.target.value })}
-                  placeholder="0.00"
-                  required
-                  className="border-gray-300"
-                />
+                <Select 
+                  value={formData.subcategory} 
+                  onValueChange={(value) => setFormData({ ...formData, subcategory: value })}
+                  disabled={!formData.category || availableSubcategories.length === 0}
+                >
+                  <SelectTrigger id="edit-subcategory" className="border-gray-300 bg-white">
+                    <SelectValue placeholder={
+                      !formData.category 
+                        ? "Primero selecciona una categoría" 
+                        : availableSubcategories.length === 0
+                        ? "Sin subcategorías"
+                        : "Selecciona una subcategoría"
+                    } />
+                  </SelectTrigger>
+                  <SelectContent className="bg-white z-50">
+                    {availableSubcategories.map((subcategory) => (
+                      <SelectItem key={subcategory.id} value={subcategory.id}>
+                        {subcategory.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
+            </div>
+
+            {/* Price Row */}
+            <div className="space-y-2">
+              <Label htmlFor="edit-price" className="text-gray-900 font-medium">
+                Precio ($) *
+              </Label>
+              <Input
+                id="edit-price"
+                type="number"
+                step="0.01"
+                min="0"
+                value={formData.price}
+                onChange={(e) => setFormData({ ...formData, price: e.target.value })}
+                placeholder="0.00"
+                required
+                className="border-gray-300"
+              />
             </div>
 
             {/* Stock and Status Row */}
