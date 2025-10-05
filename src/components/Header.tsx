@@ -5,6 +5,7 @@ import { Menu, X, ShoppingCart, Search, User, Heart, Shield } from 'lucide-react
 import Logo from './Logo';
 import { cn } from '@/lib/utils';
 import { useCart } from '@/contexts/CartContext';
+import NotificationsPopover from './NotificationsPopover';
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -97,13 +98,14 @@ const Header: React.FC = () => {
         </nav>
 
         {/* Desktop Icons */}
-        <div className="hidden lg:flex items-center space-x-6">
+        <div className="hidden lg:flex items-center space-x-4">
           <button className="hover:text-brand-orange transition-colors">
             <Search size={22} />
           </button>
           <Link to="/wishlist" className="hover:text-brand-orange transition-colors relative">
             <Heart size={22} />
           </Link>
+          <NotificationsPopover />
           <Link to="/account" className="hover:text-brand-orange transition-colors">
             <User size={22} />
           </Link>

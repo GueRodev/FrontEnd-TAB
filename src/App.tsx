@@ -7,6 +7,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { WishlistProvider } from "./contexts/WishlistContext";
 import { CartProvider } from "./contexts/CartContext";
 import { OrdersProvider } from "./contexts/OrdersContext";
+import { NotificationsProvider } from "./contexts/NotificationsContext";
 import ScrollToTop from "./components/ScrollToTop";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
@@ -28,12 +29,13 @@ const App = () => (
     <CartProvider>
       <OrdersProvider>
         <WishlistProvider>
-          <TooltipProvider>
-            <Toaster />
-            <Sonner />
-            <BrowserRouter>
-              <ScrollToTop />
-              <Routes>
+          <NotificationsProvider>
+            <TooltipProvider>
+              <Toaster />
+              <Sonner />
+              <BrowserRouter>
+                <ScrollToTop />
+                <Routes>
                 <Route path="/" element={<Index />} />
                 <Route path="/category/:category" element={<CategoryPage />} />
                 <Route path="/wishlist" element={<Wishlist />} />
@@ -53,6 +55,7 @@ const App = () => (
               </Routes>
             </BrowserRouter>
           </TooltipProvider>
+        </NotificationsProvider>
         </WishlistProvider>
       </OrdersProvider>
     </CartProvider>
