@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { SidebarProvider } from '@/components/ui/sidebar';
+import { SidebarProvider, SidebarInset } from '@/components/ui/sidebar';
 import { AdminSidebar } from '@/components/AdminSidebar';
 import AdminHeader from '@/components/AdminHeader';
 import { Button } from '@/components/ui/button';
@@ -294,8 +294,7 @@ const AdminCategorias: React.FC = () => {
     <SidebarProvider>
       <div className="min-h-screen flex w-full">
         <AdminSidebar />
-        
-        <main className="flex-1 flex flex-col bg-background">
+        <SidebarInset className="flex-1">
           <AdminHeader title="Gestión de Categorías" />
 
           <div className="flex-1 p-4 md:p-8">
@@ -485,7 +484,7 @@ const AdminCategorias: React.FC = () => {
               </div>
             </div>
           </div>
-        </main>
+        </SidebarInset>
       </div>
 
       {/* Modal para Agregar */}

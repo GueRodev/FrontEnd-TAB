@@ -1,5 +1,5 @@
 import { useState, useMemo } from 'react';
-import { SidebarProvider } from "@/components/ui/sidebar";
+import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar";
 import { AdminSidebar } from "@/components/AdminSidebar";
 import AdminHeader from '@/components/AdminHeader';
 import { useOrders } from "@/contexts/OrdersContext";
@@ -202,12 +202,12 @@ const AdminFinanzas = () => {
 
   return (
     <SidebarProvider>
-      <div className="min-h-screen flex w-full bg-background overflow-hidden">
+      <div className="min-h-screen flex w-full">
         <AdminSidebar />
-        <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
+        <SidebarInset className="flex-1">
           <AdminHeader title="Finanzas" />
 
-          <main className="flex-1 p-3 md:p-4 lg:p-6 space-y-4 md:space-y-6 overflow-y-auto overflow-x-hidden">
+          <main className="p-3 md:p-4 lg:p-6 space-y-4 md:space-y-6">
             {/* Cards de Resumen */}
             <div className="grid grid-cols-1 lg:grid-cols-2 2xl:grid-cols-3 gap-4 md:gap-6">
               {/* Ingresos Totales */}
@@ -460,7 +460,7 @@ const AdminFinanzas = () => {
               </CardContent>
             </Card>
           </main>
-        </div>
+        </SidebarInset>
       </div>
     </SidebarProvider>
   );
