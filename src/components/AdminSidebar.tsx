@@ -122,16 +122,16 @@ export function AdminSidebar() {
       <div className="!bg-[#1A1F2C] border-t border-white/10 p-4" style={{ backgroundColor: '#1A1F2C' }}>
         <Link 
           to="/admin/perfil" 
-          className="flex items-center gap-3 p-2 rounded-lg hover:bg-white/5 transition-colors"
+          className={`flex items-center gap-3 p-2 rounded-lg hover:bg-white/5 transition-colors ${isCollapsed ? 'justify-center' : ''}`}
         >
-          <Avatar className="h-10 w-10 border-2 border-white/10">
+          <Avatar className="h-10 w-10 border-2 border-white/10 flex-shrink-0">
             <AvatarImage src="" alt="Admin" />
             <AvatarFallback className="bg-[#F97316] text-white font-semibold">
               AD
             </AvatarFallback>
           </Avatar>
           {!isCollapsed && (
-            <div className="flex flex-col min-w-0">
+            <div className="flex flex-col min-w-0 flex-1 overflow-hidden">
               <span className="text-white text-sm font-medium truncate">
                 Admin Usuario
               </span>
