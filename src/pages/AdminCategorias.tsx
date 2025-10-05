@@ -148,6 +148,134 @@ const SortableRow: React.FC<SortableRowProps> = ({
   );
 };
 
+// Mobile Sortable Card Component
+const SortableCard: React.FC<SortableRowProps> = ({ 
+  category, 
+  onEdit, 
+  onDelete, 
+  onToggleExpand,
+  onEditSubcategory,
+  onDeleteSubcategory
+}) => {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id: category.id });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.5 : 1,
+  };
+
+  return (
+    <div 
+      ref={setNodeRef} 
+      style={style}
+      className="border-b last:border-b-0"
+    >
+      <div className="p-4">
+        <div className="flex items-start gap-2">
+          <div className="flex flex-col items-center gap-1 flex-shrink-0 pt-1">
+            <button
+              className="cursor-grab active:cursor-grabbing text-muted-foreground hover:text-foreground touch-manipulation"
+              {...attributes}
+              {...listeners}
+            >
+              <GripVertical className="h-5 w-5" />
+            </button>
+            <button
+              onClick={() => onToggleExpand(category.id)}
+              className="text-muted-foreground hover:text-foreground touch-manipulation"
+            >
+              {category.isExpanded ? (
+                <ChevronDown className="h-4 w-4" />
+              ) : (
+                <ChevronRight className="h-4 w-4" />
+              )}
+            </button>
+          </div>
+          
+          <div className="flex-1 min-w-0">
+            <div className="mb-2">
+              <h3 className="font-semibold text-base mb-1">{category.name}</h3>
+              <p className="text-sm text-muted-foreground line-clamp-2">
+                {category.description}
+              </p>
+            </div>
+            
+            <div className="flex items-center justify-between mt-3 pt-2 border-t">
+              <span className="text-sm text-muted-foreground">
+                {category.subcategories.length} subcategorías
+              </span>
+              
+              <div className="flex items-center gap-2">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => onEdit(category)}
+                  className="h-9 w-9 p-0"
+                >
+                  <Edit2 className="h-4 w-4" />
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => onDelete(category.id)}
+                  className="text-destructive hover:text-destructive h-9 w-9 p-0"
+                >
+                  <Trash2 className="h-4 w-4" />
+                </Button>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        {/* Subcategories */}
+        {category.isExpanded && category.subcategories.length > 0 && (
+          <div className="mt-3 ml-7 space-y-2">
+            {category.subcategories.map((sub) => (
+              <div key={sub.id} className="bg-muted/30 rounded-lg p-3">
+                <div className="flex items-start gap-2">
+                  <span className="text-xs text-muted-foreground flex-shrink-0 mt-1">└─</span>
+                  <div className="flex-1 min-w-0">
+                    <div className="mb-1">
+                      <h4 className="font-medium text-sm mb-1">{sub.name}</h4>
+                      <p className="text-xs text-muted-foreground line-clamp-2">{sub.description}</p>
+                    </div>
+                    <div className="flex items-center justify-end gap-2 mt-2 pt-2 border-t border-border/50">
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => onEditSubcategory(category.id, sub)}
+                        className="h-8 w-8 p-0"
+                      >
+                        <Edit2 className="h-3.5 w-3.5" />
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => onDeleteSubcategory(category.id, sub.id)}
+                        className="text-destructive hover:text-destructive h-8 w-8 p-0"
+                      >
+                        <Trash2 className="h-3.5 w-3.5" />
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
+
 const AdminCategorias: React.FC = () => {
   const { categories, setCategories, updateCategoryOrder } = useCategories();
   const [searchQuery, setSearchQuery] = useState('');
@@ -389,102 +517,28 @@ const AdminCategorias: React.FC = () => {
 
                 {/* Mobile Card View */}
                 <div className="md:hidden">
-                  {pendingCategories.map((category) => (
-                    <div key={category.id} className="border-b last:border-b-0">
-                      <div className="p-4">
-                        <div className="flex items-start gap-2">
-                          <div className="flex flex-col items-center gap-1 flex-shrink-0 pt-1">
-                            <button
-                              className="cursor-grab active:cursor-grabbing text-muted-foreground hover:text-foreground touch-manipulation"
-                            >
-                              <GripVertical className="h-5 w-5" />
-                            </button>
-                            <button
-                              onClick={() => handleToggleExpand(category.id)}
-                              className="text-muted-foreground hover:text-foreground touch-manipulation"
-                            >
-                              {category.isExpanded ? (
-                                <ChevronDown className="h-4 w-4" />
-                              ) : (
-                                <ChevronRight className="h-4 w-4" />
-                              )}
-                            </button>
-                          </div>
-                          
-                          <div className="flex-1 min-w-0">
-                            <div className="mb-2">
-                              <h3 className="font-semibold text-base mb-1">{category.name}</h3>
-                              <p className="text-sm text-muted-foreground line-clamp-2">
-                                {category.description}
-                              </p>
-                            </div>
-                            
-                            <div className="flex items-center justify-between mt-3 pt-2 border-t">
-                              <span className="text-sm text-muted-foreground">
-                                {category.subcategories.length} subcategorías
-                              </span>
-                              
-                              <div className="flex items-center gap-2">
-                                <Button
-                                  variant="ghost"
-                                  size="sm"
-                                  onClick={() => handleEdit(category)}
-                                  className="h-9 w-9 p-0"
-                                >
-                                  <Edit2 className="h-4 w-4" />
-                                </Button>
-                                <Button
-                                  variant="ghost"
-                                  size="sm"
-                                  onClick={() => handleDelete(category.id)}
-                                  className="text-destructive hover:text-destructive h-9 w-9 p-0"
-                                >
-                                  <Trash2 className="h-4 w-4" />
-                                </Button>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                        
-                        {/* Subcategories */}
-                        {category.isExpanded && category.subcategories.length > 0 && (
-                          <div className="mt-3 ml-7 space-y-2">
-                            {category.subcategories.map((sub) => (
-                              <div key={sub.id} className="bg-muted/30 rounded-lg p-3">
-                                <div className="flex items-start gap-2">
-                                  <span className="text-xs text-muted-foreground flex-shrink-0 mt-1">└─</span>
-                                  <div className="flex-1 min-w-0">
-                                    <div className="mb-1">
-                                      <h4 className="font-medium text-sm mb-1">{sub.name}</h4>
-                                      <p className="text-xs text-muted-foreground line-clamp-2">{sub.description}</p>
-                                    </div>
-                                    <div className="flex items-center justify-end gap-2 mt-2 pt-2 border-t border-border/50">
-                                      <Button
-                                        variant="ghost"
-                                        size="sm"
-                                        onClick={() => handleEditSubcategory(category.id, sub)}
-                                        className="h-8 w-8 p-0"
-                                      >
-                                        <Edit2 className="h-3.5 w-3.5" />
-                                      </Button>
-                                      <Button
-                                        variant="ghost"
-                                        size="sm"
-                                        onClick={() => handleDeleteSubcategory(category.id, sub.id)}
-                                        className="text-destructive hover:text-destructive h-8 w-8 p-0"
-                                      >
-                                        <Trash2 className="h-3.5 w-3.5" />
-                                      </Button>
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
-                            ))}
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  ))}
+                  <DndContext
+                    sensors={sensors}
+                    collisionDetection={closestCenter}
+                    onDragEnd={handleDragEnd}
+                  >
+                    <SortableContext
+                      items={pendingCategories.map((cat) => cat.id)}
+                      strategy={verticalListSortingStrategy}
+                    >
+                      {pendingCategories.map((category) => (
+                        <SortableCard
+                          key={category.id}
+                          category={category}
+                          onEdit={handleEdit}
+                          onDelete={handleDelete}
+                          onToggleExpand={handleToggleExpand}
+                          onEditSubcategory={handleEditSubcategory}
+                          onDeleteSubcategory={handleDeleteSubcategory}
+                        />
+                      ))}
+                    </SortableContext>
+                  </DndContext>
                 </div>
               </div>
             </div>
