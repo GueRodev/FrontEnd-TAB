@@ -40,10 +40,17 @@ const Wishlist: React.FC = () => {
     <div className="min-h-screen flex flex-col">
       <Header />
       
-      <main className="flex-grow pt-20">
+      {/* Hero-style background section */}
+      <section className="pt-24 md:pt-32 pb-8 bg-gradient-to-b from-brand-yellow to-white relative overflow-hidden">
+        <div className="absolute inset-0 z-0 overflow-hidden">
+          <div className="absolute -right-24 -top-24 w-64 h-64 rounded-full bg-brand-orange opacity-10"></div>
+          <div className="absolute left-1/3 top-1/3 w-32 h-32 rounded-full bg-brand-purple opacity-10"></div>
+          <div className="absolute right-1/4 bottom-1/4 w-48 h-48 rounded-full bg-brand-skyBlue opacity-10"></div>
+        </div>
+        
         {/* Breadcrumb */}
-        <div className="bg-brand-darkBlue text-white py-4">
-          <div className="container mx-auto px-4">
+        <div className="container mx-auto px-4 relative z-10">
+          <div className="bg-brand-darkBlue text-white py-3 px-6 rounded-lg inline-block mb-6">
             <div className="flex items-center gap-2 text-sm uppercase font-semibold">
               <Link to="/" className="hover:text-brand-orange transition-colors">
                 INICIO
@@ -55,7 +62,7 @@ const Wishlist: React.FC = () => {
         </div>
 
         {/* Page Header */}
-        <div className="container mx-auto px-4 py-12">
+        <div className="container mx-auto px-4 py-6 relative z-10">
           <div className="flex items-center gap-3 mb-2">
             <Heart className="text-brand-orange" size={32} />
             <h1 className="text-3xl md:text-4xl font-display font-bold text-brand-darkBlue">
@@ -69,9 +76,11 @@ const Wishlist: React.FC = () => {
             }
           </p>
         </div>
+      </section>
 
+      <main className="flex-grow">
         {/* Wishlist Content */}
-        <div className="container mx-auto px-4 pb-16">
+        <div className="container mx-auto px-4 py-8 bg-white">
           {wishlist.length === 0 ? (
             <div className="text-center py-16 bg-gray-50 rounded-lg">
               <Heart className="mx-auto mb-4 text-gray-300" size={64} />

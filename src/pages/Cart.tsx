@@ -160,10 +160,17 @@ const Cart = () => {
     <div className="min-h-screen flex flex-col">
       <Header />
       
-      <main className="flex-grow pt-20">
+      {/* Hero-style background section */}
+      <section className="pt-24 md:pt-32 pb-8 bg-gradient-to-b from-brand-yellow to-white relative overflow-hidden">
+        <div className="absolute inset-0 z-0 overflow-hidden">
+          <div className="absolute -right-24 -top-24 w-64 h-64 rounded-full bg-brand-orange opacity-10"></div>
+          <div className="absolute left-1/3 top-1/3 w-32 h-32 rounded-full bg-brand-purple opacity-10"></div>
+          <div className="absolute right-1/4 bottom-1/4 w-48 h-48 rounded-full bg-brand-skyBlue opacity-10"></div>
+        </div>
+        
         {/* Breadcrumb */}
-        <div className="bg-brand-darkBlue text-white py-4">
-          <div className="container mx-auto px-4">
+        <div className="container mx-auto px-4 relative z-10">
+          <div className="bg-brand-darkBlue text-white py-3 px-6 rounded-lg inline-block mb-6">
             <div className="flex items-center gap-2 text-sm uppercase font-semibold">
               <Link to="/" className="hover:text-brand-orange transition-colors">
                 INICIO
@@ -174,8 +181,8 @@ const Cart = () => {
           </div>
         </div>
 
-        <div className="container mx-auto px-4 py-12">
-          <h1 className="text-3xl font-bold mb-8 text-brand-darkBlue">Carrito de Compras</h1>
+        <div className="container mx-auto px-4 py-6 relative z-10">
+          <h1 className="text-3xl font-bold mb-4 text-brand-darkBlue">Carrito de Compras</h1>
 
           {items.length === 0 ? (
             <div className="text-center py-16">
@@ -371,7 +378,7 @@ const Cart = () => {
             </div>
           )}
         </div>
-      </main>
+      </section>
 
       <Footer />
     </div>
