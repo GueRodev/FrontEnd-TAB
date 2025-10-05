@@ -66,8 +66,8 @@ export function AdminSidebar() {
       collapsible="icon"
     >
       {/* Header with Logo */}
-      <div className={`border-b border-white/10 bg-[#1A1F2C] transition-all duration-300 overflow-hidden flex items-center ${
-        isCollapsed ? 'p-4 justify-center' : 'p-6'
+      <div className={`border-b border-white/10 bg-[#1A1F2C] transition-all duration-300 ${
+        isCollapsed ? 'p-5 flex items-center justify-center' : 'p-6'
       }`}>
         {customLogo ? (
           <Link to="/admin" className="flex items-center justify-center">
@@ -78,14 +78,16 @@ export function AdminSidebar() {
             />
           </Link>
         ) : (
-          <div className={`flex items-center gap-3 transition-all duration-300 ${isCollapsed ? 'justify-center' : ''}`}>
+          <div className={`flex items-center transition-all duration-300 ${
+            isCollapsed ? 'gap-0' : 'gap-3'
+          }`}>
             <div className="bg-[#F97316] p-2.5 rounded-lg flex-shrink-0 transition-all duration-300">
               <Package2 className="h-6 w-6 text-white" strokeWidth={2.5} />
             </div>
-            <div className={`flex flex-col leading-tight overflow-hidden transition-all duration-300 ${
+            <div className={`flex flex-col leading-tight transition-all duration-300 ${
               isCollapsed 
-                ? 'w-0 opacity-0 translate-x-[-10px]' 
-                : 'w-auto opacity-100 translate-x-0'
+                ? 'w-0 opacity-0 scale-0' 
+                : 'w-auto opacity-100 scale-100 ml-0'
             }`}>
               <span className="text-white font-bold text-base tracking-wide whitespace-nowrap">TOYS AND</span>
               <span className="text-[#F97316] font-bold text-base tracking-wide whitespace-nowrap">BRICKS</span>
