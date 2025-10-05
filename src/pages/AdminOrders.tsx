@@ -17,10 +17,10 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 
 // Datos mock de productos para el formulario de tienda física
 const mockProducts = [
-  { id: '1', name: 'LEGO Creator 3 en 1', price: 45.99, stock: 10, image: '/lovable-uploads/17088b0e-dee8-4716-b76d-00be5a07559d.png', category: 'Creator' },
-  { id: '2', name: 'LEGO City Camión de Bomberos', price: 89.99, stock: 5, image: '/lovable-uploads/31cfb3d2-5f19-4cd1-8f9d-efa9f964d81c.png', category: 'City' },
-  { id: '3', name: 'LEGO Star Wars X-Wing', price: 129.99, stock: 8, image: '/lovable-uploads/51190e3f-2193-4b2a-85ac-e5453680e7bf.png', category: 'Star Wars' },
-  { id: '4', name: 'LEGO Harry Potter Castillo', price: 199.99, stock: 3, image: '/lovable-uploads/fbc358a3-bb7b-4fe9-aba6-e1d0b71a13a0.png', category: 'Harry Potter' },
+  { id: '1', name: 'LEGO Creator 3 en 1', price: 25294.50, stock: 10, image: '/lovable-uploads/17088b0e-dee8-4716-b76d-00be5a07559d.png', category: 'Creator' },
+  { id: '2', name: 'LEGO City Camión de Bomberos', price: 49494.50, stock: 5, image: '/lovable-uploads/31cfb3d2-5f19-4cd1-8f9d-efa9f964d81c.png', category: 'City' },
+  { id: '3', name: 'LEGO Star Wars X-Wing', price: 71494.50, stock: 8, image: '/lovable-uploads/51190e3f-2193-4b2a-85ac-e5453680e7bf.png', category: 'Star Wars' },
+  { id: '4', name: 'LEGO Harry Potter Castillo', price: 109994.50, stock: 3, image: '/lovable-uploads/fbc358a3-bb7b-4fe9-aba6-e1d0b71a13a0.png', category: 'Harry Potter' },
 ];
 
 const AdminOrders = () => {
@@ -188,7 +188,7 @@ const AdminOrders = () => {
                 <p className="font-medium text-xs md:text-sm break-words">{item.name}</p>
                 <p className="text-xs text-muted-foreground">Cantidad: {item.quantity}</p>
               </div>
-              <p className="font-semibold text-sm md:text-base flex-shrink-0">${(item.price * item.quantity).toFixed(2)}</p>
+              <p className="font-semibold text-sm md:text-base flex-shrink-0">₡{(item.price * item.quantity).toFixed(2)}</p>
             </div>
           ))}
         </div>
@@ -197,7 +197,7 @@ const AdminOrders = () => {
         <div className="border-t pt-3">
           <div className="flex justify-between items-center mb-2">
             <span className="font-semibold text-sm md:text-base">Total:</span>
-            <span className="text-lg md:text-xl font-bold text-primary">${order.total.toFixed(2)}</span>
+            <span className="text-lg md:text-xl font-bold text-primary">₡{order.total.toFixed(2)}</span>
           </div>
           {order.paymentMethod && (
             <p className="text-xs md:text-sm text-muted-foreground">Pago: {order.paymentMethod}</p>
@@ -372,7 +372,7 @@ const AdminOrders = () => {
                                       <div className="flex-1 min-w-0">
                                         <p className="font-medium truncate">{product.name}</p>
                                         <p className="text-xs text-muted-foreground">
-                                          ${product.price} • Stock: {product.stock}
+                                          ₡{product.price} • Stock: {product.stock}
                                         </p>
                                       </div>
                                     </div>
@@ -395,7 +395,7 @@ const AdminOrders = () => {
                           <div className="flex-1 min-w-0">
                             <p className="font-medium text-xs md:text-sm truncate">{selectedProductData.name}</p>
                             <p className="text-xs text-muted-foreground">
-                              ${selectedProductData.price} • {selectedProductData.category}
+                              ₡{selectedProductData.price} • {selectedProductData.category}
                             </p>
                           </div>
                           <Badge variant="secondary" className="text-xs">

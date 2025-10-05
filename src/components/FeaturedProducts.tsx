@@ -21,7 +21,7 @@ const featuredProducts: Product[] = [
     id: 'p1',
     name: 'LEGO Star Wars Millennium Falcon',
     image: '/lovable-uploads/51190e3f-2193-4b2a-85ac-e5453680e7bf.png',
-    price: 159.99,
+    price: 87994.50,
     rating: 4.9,
     category: 'Starwars'
   },
@@ -29,7 +29,7 @@ const featuredProducts: Product[] = [
     id: 'p3',
     name: 'LEGO City Space Station',
     image: '/lovable-uploads/51190e3f-2193-4b2a-85ac-e5453680e7bf.png',
-    price: 69.99,
+    price: 38494.50,
     rating: 4.5,
     category: 'Lego Sets'
   },
@@ -37,7 +37,7 @@ const featuredProducts: Product[] = [
     id: 'p5',
     name: 'LEGO Harry Potter Hogwarts Castle',
     image: '/lovable-uploads/fbc358a3-bb7b-4fe9-aba6-e1d0b71a13a0.png',
-    price: 399.99,
+    price: 219994.50,
     rating: 4.9,
     category: 'HarryPotter'
   },
@@ -45,7 +45,7 @@ const featuredProducts: Product[] = [
     id: 'p6',
     name: 'LEGO Batman Batmobile',
     image: '/lovable-uploads/fbc358a3-bb7b-4fe9-aba6-e1d0b71a13a0.png',
-    price: 99.99,
+    price: 54994.50,
     rating: 4.6,
     category: 'Coleccionables'
   }

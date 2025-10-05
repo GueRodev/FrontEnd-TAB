@@ -73,7 +73,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
         </Link>
         
         <div className="flex justify-between items-center mt-4">
-          <span className="font-bold text-lg">${price.toFixed(2)}</span>
+          <span className="font-bold text-lg">₡{price.toFixed(2)}</span>
           {onAddToCart && (
             <Button
               onClick={(e) => onAddToCart(e, id)}

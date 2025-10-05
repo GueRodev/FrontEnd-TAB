@@ -42,7 +42,7 @@ const mockProducts = [
     image: '/lovable-uploads/17088b0e-dee8-4716-b76d-00be5a07559d.png',
     name: 'LEGO Star Wars',
     category: 'Star Wars',
-    price: 89.99,
+    price: 49494.50,
     stock: 15,
     status: 'active'
   },
@@ -51,7 +51,7 @@ const mockProducts = [
     image: '/lovable-uploads/31cfb3d2-5f19-4cd1-8f9d-efa9f964d81c.png',
     name: 'LEGO Harry Potter',
     category: 'Harry Potter',
-    price: 129.99,
+    price: 71494.50,
     stock: 8,
     status: 'active'
   },
@@ -60,7 +60,7 @@ const mockProducts = [
     image: '/lovable-uploads/51190e3f-2193-4b2a-85ac-e5453680e7bf.png',
     name: 'LEGO City',
     category: 'City',
-    price: 59.99,
+    price: 32994.50,
     stock: 0,
     status: 'inactive'
   },
@@ -270,7 +270,7 @@ const AdminProducts: React.FC = () => {
                               {product.category}
                             </TableCell>
                             <TableCell className="text-gray-900 font-medium">
-                              ${product.price.toFixed(2)}
+                              ₡{product.price.toFixed(2)}
                             </TableCell>
                             <TableCell>
                               <span className={`font-medium ${
@@ -357,7 +357,7 @@ const AdminProducts: React.FC = () => {
                             </div>
                             <div className="text-center">
                               <p className="text-gray-600 mb-1">Precio</p>
-                              <p className="font-semibold text-gray-900">${product.price.toFixed(2)}</p>
+                              <p className="font-semibold text-gray-900">₡{product.price.toFixed(2)}</p>
                             </div>
                             <div className="text-center">
                               <p className="text-gray-600 mb-1">Stock</p>

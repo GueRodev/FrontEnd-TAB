@@ -68,9 +68,9 @@ const Cart = () => {
     let message = `*NUEVO PEDIDO*\n\n`;
     message += `*Productos:*\n`;
     items.forEach(item => {
-      message += `• ${item.name} x${item.quantity} - $${(item.price * item.quantity).toFixed(2)}\n`;
+      message += `• ${item.name} x${item.quantity} - ₡${(item.price * item.quantity).toFixed(2)}\n`;
     });
-    message += `\n*Total: $${getTotalPrice().toFixed(2)}*\n\n`;
+    message += `\n*Total: ₡${getTotalPrice().toFixed(2)}*\n\n`;
     
     message += `*Datos del cliente:*\n`;
     message += `Nombre: ${formData.nombre}\n`;
@@ -127,7 +127,7 @@ const Cart = () => {
     addNotification({
       type: 'order',
       title: 'Nuevo pedido recibido',
-      message: `Pedido ${orderId} de ${formData.nombre} - Total: $${getTotalPrice().toFixed(2)}`,
+      message: `Pedido ${orderId} de ${formData.nombre} - Total: ₡${getTotalPrice().toFixed(2)}`,
       time: 'Ahora',
     });
 
@@ -201,7 +201,7 @@ const Cart = () => {
                     />
                     <div className="flex-1">
                       <h3 className="font-semibold mb-2">{item.name}</h3>
-                      <p className="text-lg font-bold text-brand-orange">${item.price.toFixed(2)}</p>
+                      <p className="text-lg font-bold text-brand-orange">₡{item.price.toFixed(2)}</p>
                       
                       <div className="flex items-center gap-3 mt-3">
                         <div className="flex items-center gap-2 bg-gray-100 rounded-lg p-1">
@@ -238,11 +238,11 @@ const Cart = () => {
                   <h2 className="text-xl font-semibold mb-4">Resumen del pedido</h2>
                   <div className="flex justify-between mb-2 text-gray-600">
                     <span>Subtotal</span>
-                    <span>${getTotalPrice().toFixed(2)}</span>
+                    <span>₡{getTotalPrice().toFixed(2)}</span>
                   </div>
                   <div className="flex justify-between font-bold text-lg pt-2 border-t">
                     <span>Total</span>
-                    <span className="text-brand-orange">${getTotalPrice().toFixed(2)}</span>
+                    <span className="text-brand-orange">₡{getTotalPrice().toFixed(2)}</span>
                   </div>
                 </div>
 

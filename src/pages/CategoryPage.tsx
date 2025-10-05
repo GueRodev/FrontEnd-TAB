@@ -62,7 +62,7 @@ const CategoryPage: React.FC = () => {
     image: index % 3 === 0 ? '/lovable-uploads/51190e3f-2193-4b2a-85ac-e5453680e7bf.png' : 
            index % 3 === 1 ? '/lovable-uploads/9c75102e-2923-40ad-8aaf-ff7279ad2993.png' : 
            '/lovable-uploads/fbc358a3-bb7b-4fe9-aba6-e1d0b71a13a0.png',
-    price: 29.99 + index * 10,
+    price: (29.99 + index * 10) * 550,
     badge: (index % 4 === 0 ? 'new' : index % 5 === 0 ? 'sale' : undefined) as 'new' | 'sale' | undefined,
   }));
 
