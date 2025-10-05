@@ -144,7 +144,7 @@ const AdminOrdersHistory = () => {
         <SidebarInset className="flex-1">
           <AdminHeader title="Historial de Pedidos" />
 
-          <main className="p-3 md:p-4 lg:p-6 space-y-4 md:space-y-6">
+          <main className="p-3 md:p-4 lg:p-6 space-y-4 md:space-y-6 pt-20">
             {/* Botones de acción */}
             <div className="flex flex-wrap gap-3 justify-between items-center">
               <Button
