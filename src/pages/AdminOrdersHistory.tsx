@@ -6,15 +6,17 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { useOrders, OrderStatus } from '@/contexts/OrdersContext';
+import { useNotifications } from '@/contexts/NotificationsContext';
 import { toast } from '@/hooks/use-toast';
-import { Archive, FileDown, ArrowLeft } from 'lucide-react';
+import { Archive, FileDown, ArrowLeft, RotateCcw } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import * as XLSX from 'xlsx';
 
 const AdminOrdersHistory = () => {
-  const { getArchivedOrders } = useOrders();
+  const { getArchivedOrders, unarchiveOrder } = useOrders();
+  const { addNotification } = useNotifications();
   const navigate = useNavigate();
   const archivedOrders = getArchivedOrders();
 
@@ -64,6 +66,20 @@ const AdminOrdersHistory = () => {
     toast({
       title: "PDF generado",
       description: "El archivo PDF se ha descargado exitosamente",
+    });
+  };
+
+  const handleRestoreOrder = (orderId: string) => {
+    unarchiveOrder(orderId);
+    addNotification({
+      type: 'order',
+      title: 'Pedido restaurado',
+      message: `El pedido ${orderId} ha sido restaurado`,
+      time: 'Ahora',
+    });
+    toast({
+      title: "Pedido restaurado",
+      description: "El pedido ha sido restaurado y está visible en la página de pedidos",
     });
   };
 
@@ -190,6 +206,7 @@ const AdminOrdersHistory = () => {
                           <TableHead className="min-w-[120px]">Total</TableHead>
                           <TableHead className="min-w-[120px]">Método Pago</TableHead>
                           <TableHead className="min-w-[200px]">Productos</TableHead>
+                          <TableHead className="min-w-[100px] text-center">Acciones</TableHead>
                         </TableRow>
                       </TableHeader>
                       <TableBody>
@@ -231,6 +248,18 @@ const AdminOrdersHistory = () => {
                                   </div>
                                 ))}
                               </div>
+                            </TableCell>
+                            <TableCell className="text-center">
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => handleRestoreOrder(order.id)}
+                                className="gap-1"
+                                title="Restaurar pedido"
+                              >
+                                <RotateCcw className="h-4 w-4" />
+                                <span className="hidden md:inline">Restaurar</span>
+                              </Button>
                             </TableCell>
                           </TableRow>
                         ))}

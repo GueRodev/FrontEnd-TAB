@@ -38,6 +38,7 @@ interface OrdersContextType {
   updateOrderStatus: (orderId: string, status: OrderStatus) => void;
   deleteOrder: (orderId: string) => void;
   archiveOrder: (orderId: string) => void;
+  unarchiveOrder: (orderId: string) => void;
   getOrdersByType: (type: OrderType) => Order[];
   getArchivedOrders: () => Order[];
 }
@@ -83,6 +84,14 @@ export const OrdersProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     );
   };
 
+  const unarchiveOrder = (orderId: string) => {
+    setOrders(prev =>
+      prev.map(order =>
+        order.id === orderId ? { ...order, archived: false, archivedAt: undefined } : order
+      )
+    );
+  };
+
   const getOrdersByType = (type: OrderType) => {
     return orders.filter(order => order.type === type && !order.archived);
   };
@@ -99,6 +108,7 @@ export const OrdersProvider: React.FC<{ children: React.ReactNode }> = ({ childr
         updateOrderStatus,
         deleteOrder,
         archiveOrder,
+        unarchiveOrder,
         getOrdersByType,
         getArchivedOrders,
       }}
