@@ -98,11 +98,11 @@ export function AdminSidebar() {
 
       <SidebarContent className="!bg-[#1A1F2C]" style={{ backgroundColor: '#1A1F2C' }}>
         <SidebarGroup className="bg-[#1A1F2C]">
-          {!isCollapsed && (
-            <SidebarGroupLabel className="text-white/70 text-xs font-semibold uppercase tracking-wider px-4 py-3">
-              Menú Principal
-            </SidebarGroupLabel>
-          )}
+          <SidebarGroupLabel className={`text-white/70 text-xs font-semibold uppercase tracking-wider px-4 py-3 transition-all duration-300 ${
+            isCollapsed ? 'h-0 opacity-0 scale-0 py-0' : 'h-auto opacity-100 scale-100'
+          }`}>
+            Menú Principal
+          </SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               {menuItems.map((item) => (
@@ -112,9 +112,13 @@ export function AdminSidebar() {
                     className="text-white hover:bg-[#F97316]/20 hover:text-[#F97316] data-[active=true]:bg-[#F97316] data-[active=true]:text-white px-4 py-3 transition-all duration-200"
                     tooltip={isCollapsed ? item.title : undefined}
                   >
-                    <Link to={item.url}>
-                      <item.icon className="h-5 w-5" />
-                      {!isCollapsed && <span className="font-medium">{item.title}</span>}
+                    <Link to={item.url} className="flex items-center gap-3">
+                      <item.icon className="h-5 w-5 flex-shrink-0" />
+                      <span className={`font-medium transition-all duration-300 ${
+                        isCollapsed ? 'w-0 opacity-0 scale-0' : 'w-auto opacity-100 scale-100'
+                      }`}>
+                        {item.title}
+                      </span>
                     </Link>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
@@ -128,7 +132,9 @@ export function AdminSidebar() {
       <div className="!bg-[#1A1F2C] border-t border-white/10 p-4" style={{ backgroundColor: '#1A1F2C' }}>
         <Link 
           to="/admin/perfil" 
-          className={`flex items-center gap-3 p-2 rounded-lg hover:bg-white/5 transition-colors ${isCollapsed ? 'justify-center' : ''}`}
+          className={`flex items-center p-2 rounded-lg hover:bg-white/5 transition-all duration-300 ${
+            isCollapsed ? 'gap-0 justify-center' : 'gap-3'
+          }`}
         >
           <Avatar className="h-10 w-10 border-2 border-white/10 flex-shrink-0">
             <AvatarImage src="" alt="Admin" />
@@ -136,16 +142,18 @@ export function AdminSidebar() {
               AD
             </AvatarFallback>
           </Avatar>
-          {!isCollapsed && (
-            <div className="flex flex-col min-w-0 flex-1 overflow-hidden">
-              <span className="text-white text-sm font-medium truncate">
-                Admin Usuario
-              </span>
-              <span className="text-white/60 text-xs truncate">
-                admin@toysandbricks.com
-              </span>
-            </div>
-          )}
+          <div className={`flex flex-col min-w-0 flex-1 transition-all duration-300 ${
+            isCollapsed 
+              ? 'w-0 opacity-0 scale-0' 
+              : 'w-auto opacity-100 scale-100'
+          }`}>
+            <span className="text-white text-sm font-medium truncate whitespace-nowrap">
+              Admin Usuario
+            </span>
+            <span className="text-white/60 text-xs truncate whitespace-nowrap">
+              admin@toysandbricks.com
+            </span>
+          </div>
         </Link>
       </div>
 
@@ -159,9 +167,13 @@ export function AdminSidebar() {
                 className="text-white hover:bg-[#F97316]/20 hover:text-[#F97316] px-4 py-3 transition-all duration-200"
                 tooltip={isCollapsed ? item.title : undefined}
               >
-                <Link to={item.url}>
-                  <item.icon className="h-5 w-5" />
-                  {!isCollapsed && <span className="font-medium">{item.title}</span>}
+                <Link to={item.url} className="flex items-center gap-3">
+                  <item.icon className="h-5 w-5 flex-shrink-0" />
+                  <span className={`font-medium transition-all duration-300 ${
+                    isCollapsed ? 'w-0 opacity-0 scale-0' : 'w-auto opacity-100 scale-100'
+                  }`}>
+                    {item.title}
+                  </span>
                 </Link>
               </SidebarMenuButton>
             </SidebarMenuItem>
