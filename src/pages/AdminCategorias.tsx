@@ -12,6 +12,16 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import {
@@ -316,6 +326,19 @@ const AdminCategorias: React.FC = () => {
     description: '',
   });
 
+  // Estados para confirmación de eliminación de subcategoría
+  const [deleteSubcategoryDialog, setDeleteSubcategoryDialog] = useState<{
+    open: boolean;
+    categoryId: string;
+    subcategoryId: string;
+    subcategoryName: string;
+  }>({
+    open: false,
+    categoryId: '',
+    subcategoryId: '',
+    subcategoryName: '',
+  });
+
   const sensors = useSensors(
     useSensor(PointerSensor),
     useSensor(KeyboardSensor, {
@@ -505,6 +528,7 @@ const AdminCategorias: React.FC = () => {
     setIsEditSubcategoryOpen(true);
   };
 
+  // Abrir diálogo de confirmación para eliminar subcategoría
   const handleDeleteSubcategory = (categoryId: string, subcategoryId: string) => {
     const category = categories.find(cat => cat.id === categoryId);
     const subcategory = category?.subcategories.find(sub => sub.id === subcategoryId);
@@ -518,7 +542,30 @@ const AdminCategorias: React.FC = () => {
       return;
     }
 
-    // Eliminar la subcategoría
+    // Abrir diálogo de confirmación antes de eliminar
+    setDeleteSubcategoryDialog({
+      open: true,
+      categoryId,
+      subcategoryId,
+      subcategoryName: subcategory.name,
+    });
+  };
+
+  // Confirmar eliminación de subcategoría
+  // NOTA: Cuando se conecte a base de datos, aquí se debe:
+  // 1. Verificar si hay productos asociados a esta subcategoría
+  // 2. Si hay productos, mostrar mensaje de error o reasignarlos
+  // 3. Hacer la llamada a la API/Supabase para eliminar de la BD
+  // 4. Actualizar el estado local solo después de confirmar eliminación exitosa
+  const confirmDeleteSubcategory = () => {
+    const { categoryId, subcategoryId, subcategoryName } = deleteSubcategoryDialog;
+
+    // TODO: Cuando se conecte a base de datos, agregar aquí:
+    // - Validación de productos asociados
+    // - Llamada a API/Supabase para eliminar
+    // - Manejo de errores de base de datos
+    
+    // Eliminar la subcategoría del estado local
     const updatedCategories = categories.map(cat => {
       if (cat.id === categoryId) {
         return {
@@ -532,9 +579,17 @@ const AdminCategorias: React.FC = () => {
     setCategories(updatedCategories);
     setPendingCategories(updatedCategories);
 
+    // Cerrar el diálogo
+    setDeleteSubcategoryDialog({
+      open: false,
+      categoryId: '',
+      subcategoryId: '',
+      subcategoryName: '',
+    });
+
     toast({
       title: "Subcategoría eliminada",
-      description: `La subcategoría "${subcategory.name}" se ha eliminado exitosamente`,
+      description: `La subcategoría "${subcategoryName}" se ha eliminado exitosamente`,
     });
   };
 
@@ -899,6 +954,43 @@ const AdminCategorias: React.FC = () => {
           </form>
         </DialogContent>
       </Dialog>
+
+      {/* AlertDialog para confirmar eliminación de subcategoría */}
+      {/* NOTA IMPORTANTE PARA BASE DE DATOS:
+          Cuando se conecte a Supabase/base de datos, este diálogo debe:
+          1. Validar si existen productos asociados a la subcategoría antes de mostrar
+          2. Si hay productos, mostrar opción de reasignar o prevenir eliminación
+          3. Mostrar cantidad de productos afectados en el mensaje
+          4. Implementar rollback en caso de error durante la eliminación
+      */}
+      <AlertDialog 
+        open={deleteSubcategoryDialog.open} 
+        onOpenChange={(open) => 
+          setDeleteSubcategoryDialog({ ...deleteSubcategoryDialog, open })
+        }
+      >
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>¿Estás seguro?</AlertDialogTitle>
+            <AlertDialogDescription>
+              Estás a punto de eliminar la subcategoría <strong>"{deleteSubcategoryDialog.subcategoryName}"</strong>.
+              <br /><br />
+              Esta acción no se puede deshacer. 
+              {/* TODO: Cuando se conecte a BD, agregar aquí: */}
+              {/* "Esto también afectará a X productos asociados." */}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancelar</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={confirmDeleteSubcategory}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            >
+              Eliminar
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </SidebarProvider>
   );
 };
