@@ -10,23 +10,19 @@ import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useOrders, OrderStatus } from '@/contexts/OrdersContext';
 import { useNotifications } from '@/contexts/NotificationsContext';
+import { useCategories } from '@/contexts/CategoriesContext';
+import { useProducts } from '@/contexts/ProductsContext';
 import { toast } from '@/hooks/use-toast';
 import { ShoppingCart, Store, Package, CheckCircle, XCircle, Trash2, Search, Archive, History } from 'lucide-react';
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/ui/command';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { useNavigate } from 'react-router-dom';
 
-// Datos mock de productos para el formulario de tienda física
-const mockProducts = [
-  { id: '1', name: 'LEGO Creator 3 en 1', price: 25294.50, stock: 10, image: '/lovable-uploads/17088b0e-dee8-4716-b76d-00be5a07559d.png', category: 'Creator' },
-  { id: '2', name: 'LEGO City Camión de Bomberos', price: 49494.50, stock: 5, image: '/lovable-uploads/31cfb3d2-5f19-4cd1-8f9d-efa9f964d81c.png', category: 'City' },
-  { id: '3', name: 'LEGO Star Wars X-Wing', price: 71494.50, stock: 8, image: '/lovable-uploads/51190e3f-2193-4b2a-85ac-e5453680e7bf.png', category: 'Star Wars' },
-  { id: '4', name: 'LEGO Harry Potter Castillo', price: 109994.50, stock: 3, image: '/lovable-uploads/fbc358a3-bb7b-4fe9-aba6-e1d0b71a13a0.png', category: 'Harry Potter' },
-];
-
 const AdminOrders = () => {
   const { addOrder, updateOrderStatus, deleteOrder, archiveOrder, getOrdersByType } = useOrders();
   const { addNotification } = useNotifications();
+  const { categories } = useCategories();
+  const { products } = useProducts();
   const navigate = useNavigate();
   const [selectedProduct, setSelectedProduct] = useState('');
   const [quantity, setQuantity] = useState(1);
@@ -40,17 +36,17 @@ const AdminOrders = () => {
   const onlineOrders = getOrdersByType('online');
   const inStoreOrders = getOrdersByType('in-store');
 
-  // Obtener categorías únicas
-  const categories = ['all', ...Array.from(new Set(mockProducts.map(p => p.category)))];
+  // Obtener solo productos activos
+  const activeProducts = products.filter(p => p.status === 'active');
 
   // Filtrar productos por categoría y búsqueda
-  const filteredProducts = mockProducts.filter(product => {
-    const matchesCategory = categoryFilter === 'all' || product.category === categoryFilter;
+  const filteredProducts = activeProducts.filter(product => {
+    const matchesCategory = categoryFilter === 'all' || product.categoryId === categoryFilter;
     const matchesSearch = product.name.toLowerCase().includes(searchQuery.toLowerCase());
     return matchesCategory && matchesSearch;
   });
 
-  const selectedProductData = mockProducts.find(p => p.id === selectedProduct);
+  const selectedProductData = activeProducts.find(p => p.id === selectedProduct);
 
   const handleCreateInStoreOrder = () => {
     if (!selectedProduct || !customerName || !customerPhone || !paymentMethod) {
@@ -354,11 +350,16 @@ const AdminOrders = () => {
                           <SelectValue placeholder="Todas las categorías" />
                         </SelectTrigger>
                         <SelectContent>
-                          {categories.map(category => (
-                            <SelectItem key={category} value={category} className="text-xs md:text-sm">
-                              {category === 'all' ? 'Todas las categorías' : category}
-                            </SelectItem>
-                          ))}
+                          <SelectItem value="all" className="text-xs md:text-sm">
+                            Todas las categorías
+                          </SelectItem>
+                          {categories
+                            .sort((a, b) => a.order - b.order)
+                            .map(category => (
+                              <SelectItem key={category.id} value={category.id} className="text-xs md:text-sm">
+                                {category.name}
+                              </SelectItem>
+                            ))}
                         </SelectContent>
                       </Select>
 
@@ -432,7 +433,7 @@ const AdminOrders = () => {
                           <div className="flex-1 min-w-0">
                             <p className="font-medium text-xs md:text-sm truncate">{selectedProductData.name}</p>
                             <p className="text-xs text-muted-foreground">
-                              ₡{selectedProductData.price} • {selectedProductData.category}
+                              ₡{selectedProductData.price} • {categories.find(c => c.id === selectedProductData.categoryId)?.name || 'Sin categoría'}
                             </p>
                           </div>
                           <Badge variant="secondary" className="text-xs">
