@@ -8,6 +8,7 @@ import { WishlistProvider } from "./contexts/WishlistContext";
 import { CartProvider } from "./contexts/CartContext";
 import { OrdersProvider } from "./contexts/OrdersContext";
 import { NotificationsProvider } from "./contexts/NotificationsContext";
+import { CategoriesProvider } from "./contexts/CategoriesContext";
 import ScrollToTop from "./components/ScrollToTop";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
@@ -29,15 +30,16 @@ const queryClient = new QueryClient();
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
-    <CartProvider>
-      <OrdersProvider>
-        <WishlistProvider>
-          <NotificationsProvider>
-            <TooltipProvider>
-              <Toaster />
-              <Sonner />
-              <BrowserRouter>
-                <ScrollToTop />
+    <CategoriesProvider>
+      <CartProvider>
+        <OrdersProvider>
+          <WishlistProvider>
+            <NotificationsProvider>
+              <TooltipProvider>
+                <Toaster />
+                <Sonner />
+                <BrowserRouter>
+                  <ScrollToTop />
                 <Routes>
                 <Route path="/" element={<Index />} />
                 <Route path="/category/:category" element={<CategoryPage />} />
@@ -59,12 +61,13 @@ const App = () => (
                 {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                 <Route path="*" element={<NotFound />} />
               </Routes>
-            </BrowserRouter>
-          </TooltipProvider>
-        </NotificationsProvider>
-        </WishlistProvider>
-      </OrdersProvider>
-    </CartProvider>
+              </BrowserRouter>
+            </TooltipProvider>
+          </NotificationsProvider>
+          </WishlistProvider>
+        </OrdersProvider>
+      </CartProvider>
+    </CategoriesProvider>
   </QueryClientProvider>
 );
 
