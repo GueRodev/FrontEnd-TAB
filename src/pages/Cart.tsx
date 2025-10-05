@@ -89,7 +89,7 @@ const Cart = () => {
     
     message += `*Método de pago:* ${paymentMethod}\n`;
     
-    if (deliveryOption === 'delivery' && (paymentMethod === 'SINPE Móvil' || paymentMethod === 'Transferencia bancaria')) {
+    if (paymentMethod === 'SINPE Móvil' || paymentMethod === 'Transferencia bancaria') {
       message += `\n_*Nota:* Recuerde enviar el comprobante de pago por este medio_`;
     }
 
@@ -153,7 +153,7 @@ const Cart = () => {
   };
 
   const paymentOptions = deliveryOption === 'pickup' 
-    ? ['Efectivo', 'Tarjeta']
+    ? ['Efectivo', 'Tarjeta', 'SINPE Móvil']
     : ['SINPE Móvil', 'Transferencia bancaria'];
 
   return (
@@ -352,7 +352,7 @@ const Cart = () => {
                           </div>
                         ))}
                       </RadioGroup>
-                      {deliveryOption === 'delivery' && paymentMethod && (
+                      {(paymentMethod === 'SINPE Móvil' || paymentMethod === 'Transferencia bancaria') && (
                         <p className="text-xs text-gray-500 mt-2">
                           * Debe enviar el comprobante por WhatsApp
                         </p>
