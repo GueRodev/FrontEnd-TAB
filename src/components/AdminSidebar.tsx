@@ -98,6 +98,11 @@ export function AdminSidebar() {
 
       <SidebarContent className="!bg-[#1A1F2C]" style={{ backgroundColor: '#1A1F2C' }}>
         <SidebarGroup className="bg-[#1A1F2C]">
+          {!isCollapsed && (
+            <SidebarGroupLabel className="text-white/70 text-xs font-semibold uppercase tracking-wider px-4 py-3 transition-all duration-300">
+              Menú
+            </SidebarGroupLabel>
+          )}
           <SidebarGroupContent>
             <SidebarMenu>
               {menuItems.map((item) => (
