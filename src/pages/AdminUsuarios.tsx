@@ -35,66 +35,46 @@ const mockClientes = [
     id: 1,
     nombre: 'Juan Pérez',
     email: 'juan.perez@email.com',
-    telefono: '+1 234 567 8901',
+    telefono: '+506 8888 8901',
     activo: true,
     fechaRegistro: '2024-01-15',
     ordenes: 12,
-    direcciones: [
-      {
-        id: 1,
-        tipo: 'Principal',
-        calle: 'Av. Principal 123',
-        ciudad: 'Ciudad de México',
-        codigoPostal: '01234',
-        pais: 'México'
-      },
-      {
-        id: 2,
-        tipo: 'Trabajo',
-        calle: 'Calle Secundaria 456',
-        ciudad: 'Ciudad de México',
-        codigoPostal: '01235',
-        pais: 'México'
-      }
-    ]
+    direccion: {
+      provincia: 'San José',
+      canton: 'Central',
+      distrito: 'Carmen',
+      direccion: 'Av. Principal 123'
+    }
   },
   {
     id: 2,
     nombre: 'María García',
     email: 'maria.garcia@email.com',
-    telefono: '+1 234 567 8902',
+    telefono: '+506 8888 8902',
     activo: true,
     fechaRegistro: '2024-02-20',
     ordenes: 8,
-    direcciones: [
-      {
-        id: 3,
-        tipo: 'Principal',
-        calle: 'Av. Reforma 789',
-        ciudad: 'Guadalajara',
-        codigoPostal: '44100',
-        pais: 'México'
-      }
-    ]
+    direccion: {
+      provincia: 'Heredia',
+      canton: 'San Pablo',
+      distrito: 'Rincón',
+      direccion: 'Av. Reforma 789'
+    }
   },
   {
     id: 3,
     nombre: 'Carlos López',
     email: 'carlos.lopez@email.com',
-    telefono: '+1 234 567 8903',
+    telefono: '+506 8888 8903',
     activo: false,
     fechaRegistro: '2023-12-10',
     ordenes: 3,
-    direcciones: [
-      {
-        id: 4,
-        tipo: 'Principal',
-        calle: 'Calle Norte 321',
-        ciudad: 'Monterrey',
-        codigoPostal: '64000',
-        pais: 'México'
-      }
-    ]
+    direccion: {
+      provincia: 'Alajuela',
+      canton: 'Alajuela',
+      distrito: 'Centro',
+      direccion: 'Calle Norte 321'
+    }
   },
 ];
 
@@ -282,28 +262,34 @@ const AdminUsuarios: React.FC = () => {
                                   className="text-[#F97316] hover:text-[#F97316] hover:bg-[#F97316]/10"
                                 >
                                   <MapPin className="h-4 w-4 mr-1" />
-                                  {expandedCliente === cliente.id ? 'Ocultar' : 'Ver'} Direcciones
+                                  {expandedCliente === cliente.id ? 'Ocultar' : 'Ver'} Dirección
                                 </Button>
                               </TableCell>
                             </TableRow>
                             {expandedCliente === cliente.id && (
                               <TableRow>
                                 <TableCell colSpan={7} className="bg-gray-50">
-                                  <div className="p-4 space-y-3">
-                                    <h4 className="font-semibold text-gray-900 mb-3">Direcciones del Cliente</h4>
-                                    <div className="grid gap-3 md:grid-cols-2">
-                                      {cliente.direcciones.map((direccion) => (
-                                        <div key={direccion.id} className="bg-white p-4 rounded-lg border">
-                                          <div className="flex items-start justify-between mb-2">
-                                            <Badge variant="outline" className="bg-[#F97316]/10 text-[#F97316] border-[#F97316]/20">
-                                              {direccion.tipo}
-                                            </Badge>
-                                          </div>
-                                          <p className="text-sm text-gray-900 font-medium">{direccion.calle}</p>
-                                          <p className="text-sm text-gray-600">{direccion.ciudad}, {direccion.codigoPostal}</p>
-                                          <p className="text-sm text-gray-600">{direccion.pais}</p>
+                                  <div className="p-4">
+                                    <h4 className="font-semibold text-gray-900 mb-3">Dirección del Cliente</h4>
+                                    <div className="bg-white p-4 rounded-lg border max-w-md">
+                                      <div className="space-y-2 text-sm">
+                                        <div>
+                                          <span className="font-medium text-gray-700">Provincia: </span>
+                                          <span className="text-gray-900">{cliente.direccion.provincia}</span>
                                         </div>
-                                      ))}
+                                        <div>
+                                          <span className="font-medium text-gray-700">Cantón: </span>
+                                          <span className="text-gray-900">{cliente.direccion.canton}</span>
+                                        </div>
+                                        <div>
+                                          <span className="font-medium text-gray-700">Distrito: </span>
+                                          <span className="text-gray-900">{cliente.direccion.distrito}</span>
+                                        </div>
+                                        <div>
+                                          <span className="font-medium text-gray-700">Dirección: </span>
+                                          <span className="text-gray-900">{cliente.direccion.direccion}</span>
+                                        </div>
+                                      </div>
                                     </div>
                                   </div>
                                 </TableCell>
@@ -360,21 +346,32 @@ const AdminUsuarios: React.FC = () => {
                           className="w-full text-[#F97316] border-[#F97316]/20 hover:bg-[#F97316]/10"
                         >
                           <MapPin className="h-4 w-4 mr-1" />
-                          {expandedCliente === cliente.id ? 'Ocultar' : 'Ver'} Direcciones ({cliente.direcciones.length})
+                          {expandedCliente === cliente.id ? 'Ocultar' : 'Ver'} Dirección
                         </Button>
 
                         {expandedCliente === cliente.id && (
-                          <div className="mt-3 space-y-2">
-                            {cliente.direcciones.map((direccion) => (
-                              <div key={direccion.id} className="bg-gray-50 p-3 rounded-lg border text-sm">
-                                <Badge variant="outline" className="bg-[#F97316]/10 text-[#F97316] border-[#F97316]/20 mb-2">
-                                  {direccion.tipo}
-                                </Badge>
-                                <p className="text-gray-900 font-medium">{direccion.calle}</p>
-                                <p className="text-gray-600">{direccion.ciudad}, {direccion.codigoPostal}</p>
-                                <p className="text-gray-600">{direccion.pais}</p>
+                          <div className="mt-3">
+                            <div className="bg-gray-50 p-3 rounded-lg border">
+                              <h5 className="font-semibold text-gray-900 mb-2 text-sm">Dirección</h5>
+                              <div className="space-y-1 text-sm">
+                                <p>
+                                  <span className="text-gray-600">Provincia: </span>
+                                  <span className="text-gray-900">{cliente.direccion.provincia}</span>
+                                </p>
+                                <p>
+                                  <span className="text-gray-600">Cantón: </span>
+                                  <span className="text-gray-900">{cliente.direccion.canton}</span>
+                                </p>
+                                <p>
+                                  <span className="text-gray-600">Distrito: </span>
+                                  <span className="text-gray-900">{cliente.direccion.distrito}</span>
+                                </p>
+                                <p>
+                                  <span className="text-gray-600">Dirección: </span>
+                                  <span className="text-gray-900">{cliente.direccion.direccion}</span>
+                                </p>
                               </div>
-                            ))}
+                            </div>
                           </div>
                         )}
                       </div>
