@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { SidebarProvider, SidebarInset } from '@/components/ui/sidebar';
 import { AdminSidebar } from '@/components/AdminSidebar';
 import AdminHeader from '@/components/AdminHeader';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Plus, Search, GripVertical, Edit2, Trash2, ChevronDown, ChevronRight } from 'lucide-react';
+import { Plus, Search, GripVertical, Edit2, Trash2, ChevronDown, ChevronRight, Save } from 'lucide-react';
 import {
   Dialog,
   DialogContent,
@@ -155,6 +155,10 @@ const AdminCategorias: React.FC = () => {
   const [modalType, setModalType] = useState<'category' | 'subcategory'>('category');
   const [selectedCategoryId, setSelectedCategoryId] = useState<string>('');
   
+  // Estados para cambios pendientes
+  const [pendingCategories, setPendingCategories] = useState<Category[]>(categories);
+  const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
+  
   // Estados para edición
   const [isEditCategoryOpen, setIsEditCategoryOpen] = useState(false);
   const [isEditSubcategoryOpen, setIsEditSubcategoryOpen] = useState(false);
@@ -172,21 +176,44 @@ const AdminCategorias: React.FC = () => {
     })
   );
 
+  // Sincronizar pendingCategories cuando categories cambie desde el contexto
+  useEffect(() => {
+    if (!hasUnsavedChanges) {
+      setPendingCategories(categories);
+    }
+  }, [categories, hasUnsavedChanges]);
+
   const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;
 
     if (over && active.id !== over.id) {
-      const oldIndex = categories.findIndex((item) => item.id === active.id);
-      const newIndex = categories.findIndex((item) => item.id === over.id);
+      const oldIndex = pendingCategories.findIndex((item) => item.id === active.id);
+      const newIndex = pendingCategories.findIndex((item) => item.id === over.id);
       
-      const newItems = arrayMove(categories, oldIndex, newIndex);
-      updateCategoryOrder(newItems);
-      
-      toast({
-        title: "Orden actualizado",
-        description: "El orden de las categorías se ha actualizado en el sitio web",
-      });
+      const newItems = arrayMove(pendingCategories, oldIndex, newIndex);
+      setPendingCategories(newItems);
+      setHasUnsavedChanges(true);
     }
+  };
+
+  const handleSaveChanges = () => {
+    updateCategoryOrder(pendingCategories);
+    setHasUnsavedChanges(false);
+    
+    toast({
+      title: "Cambios guardados",
+      description: "El orden de las categorías se ha actualizado en el sitio web",
+    });
+  };
+
+  const handleCancelChanges = () => {
+    setPendingCategories(categories);
+    setHasUnsavedChanges(false);
+    
+    toast({
+      title: "Cambios descartados",
+      description: "Se ha restaurado el orden original de las categorías",
+    });
   };
 
   const handleOpenModal = (type: 'category' | 'subcategory', categoryId?: string) => {
@@ -196,8 +223,8 @@ const AdminCategorias: React.FC = () => {
   };
 
   const handleToggleExpand = (id: string) => {
-    setCategories(
-      categories.map((cat) =>
+    setPendingCategories(
+      pendingCategories.map((cat) =>
         cat.id === id ? { ...cat, isExpanded: !cat.isExpanded } : cat
       )
     );
@@ -288,6 +315,26 @@ const AdminCategorias: React.FC = () => {
                         Agregar Subcategoría
                       </Button>
                     </div>
+
+                    {hasUnsavedChanges && (
+                      <div className="flex flex-col sm:flex-row gap-2 w-full max-w-2xl">
+                        <Button 
+                          onClick={handleSaveChanges}
+                          className="w-full sm:flex-1"
+                          variant="default"
+                        >
+                          <Save className="h-4 w-4 mr-2" />
+                          Guardar Cambios
+                        </Button>
+                        <Button 
+                          onClick={handleCancelChanges}
+                          variant="outline"
+                          className="w-full sm:flex-1"
+                        >
+                          Descartar Cambios
+                        </Button>
+                      </div>
+                    )}
                     
                     <div className="relative w-full max-w-2xl">
                       <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
@@ -320,10 +367,10 @@ const AdminCategorias: React.FC = () => {
                         onDragEnd={handleDragEnd}
                       >
                         <SortableContext
-                          items={categories.map((cat) => cat.id)}
+                          items={pendingCategories.map((cat) => cat.id)}
                           strategy={verticalListSortingStrategy}
                         >
-                          {categories.map((category) => (
+                          {pendingCategories.map((category) => (
                             <SortableRow
                               key={category.id}
                               category={category}
@@ -342,7 +389,7 @@ const AdminCategorias: React.FC = () => {
 
                 {/* Mobile Card View */}
                 <div className="md:hidden">
-                  {categories.map((category) => (
+                  {pendingCategories.map((category) => (
                     <div key={category.id} className="border-b last:border-b-0">
                       <div className="p-4">
                         <div className="flex items-start gap-2">
