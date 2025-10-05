@@ -506,7 +506,36 @@ const AdminCategorias: React.FC = () => {
   };
 
   const handleDeleteSubcategory = (categoryId: string, subcategoryId: string) => {
-    console.log('Delete subcategory:', subcategoryId);
+    const category = categories.find(cat => cat.id === categoryId);
+    const subcategory = category?.subcategories.find(sub => sub.id === subcategoryId);
+    
+    if (!subcategory) {
+      toast({
+        title: "Error",
+        description: "No se encontró la subcategoría",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    // Eliminar la subcategoría
+    const updatedCategories = categories.map(cat => {
+      if (cat.id === categoryId) {
+        return {
+          ...cat,
+          subcategories: cat.subcategories.filter(sub => sub.id !== subcategoryId),
+        };
+      }
+      return cat;
+    });
+
+    setCategories(updatedCategories);
+    setPendingCategories(updatedCategories);
+
+    toast({
+      title: "Subcategoría eliminada",
+      description: `La subcategoría "${subcategory.name}" se ha eliminado exitosamente`,
+    });
   };
 
   const handleUpdateCategory = (e: React.FormEvent) => {
