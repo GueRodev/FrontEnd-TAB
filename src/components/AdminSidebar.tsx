@@ -66,26 +66,28 @@ export function AdminSidebar() {
       collapsible="icon"
     >
       {/* Header with Logo */}
-      <div className={`p-6 border-b border-white/10 bg-[#1A1F2C] ${isCollapsed ? 'flex justify-center' : ''}`}>
+      <div className={`p-6 border-b border-white/10 bg-[#1A1F2C] transition-all duration-300 overflow-hidden ${isCollapsed ? 'flex justify-center' : ''}`}>
         {customLogo ? (
           <Link to="/admin" className="flex items-center justify-center">
             <img 
               src={customLogo} 
               alt="Logo Admin" 
-              className={`object-contain ${isCollapsed ? 'h-10 w-10' : 'h-12'}`}
+              className={`object-contain transition-all duration-300 ${isCollapsed ? 'h-10 w-10' : 'h-12'}`}
             />
           </Link>
         ) : (
-          <div className={`flex items-center gap-3 ${isCollapsed ? 'justify-center' : ''}`}>
-            <div className="bg-[#F97316] p-2.5 rounded-lg flex-shrink-0">
+          <div className={`flex items-center gap-3 transition-all duration-300 ${isCollapsed ? 'justify-center' : ''}`}>
+            <div className="bg-[#F97316] p-2.5 rounded-lg flex-shrink-0 transition-all duration-300">
               <Package2 className="h-6 w-6 text-white" strokeWidth={2.5} />
             </div>
-            {!isCollapsed && (
-              <div className="flex flex-col leading-tight">
-                <span className="text-white font-bold text-base tracking-wide">TOYS AND</span>
-                <span className="text-[#F97316] font-bold text-base tracking-wide">BRICKS</span>
-              </div>
-            )}
+            <div className={`flex flex-col leading-tight overflow-hidden transition-all duration-300 ${
+              isCollapsed 
+                ? 'w-0 opacity-0 translate-x-[-10px]' 
+                : 'w-auto opacity-100 translate-x-0'
+            }`}>
+              <span className="text-white font-bold text-base tracking-wide whitespace-nowrap">TOYS AND</span>
+              <span className="text-[#F97316] font-bold text-base tracking-wide whitespace-nowrap">BRICKS</span>
+            </div>
           </div>
         )}
       </div>
