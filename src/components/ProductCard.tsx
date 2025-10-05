@@ -27,7 +27,21 @@ const ProductCard: React.FC<ProductCardProps> = ({
   onAddToCart,
 }) => {
   return (
-    <div className="bg-white rounded-lg overflow-hidden shadow-md group card-hover h-full">
+    <div 
+      className="bg-white rounded-lg overflow-hidden shadow-md group card-hover h-full relative"
+      style={{
+        // Efecto neón gradient card color naranja
+        // Puedes personalizar los colores RGB del gradiente aquí
+        boxShadow: '0 0 20px rgba(255, 102, 0, 0.15), 0 0 40px rgba(255, 102, 0, 0.08), 0 4px 15px rgba(0, 0, 0, 0.1)',
+        transition: 'all 0.3s ease'
+      }}
+      onMouseEnter={(e) => {
+        e.currentTarget.style.boxShadow = '0 0 30px rgba(255, 102, 0, 0.4), 0 0 60px rgba(255, 102, 0, 0.2), 0 8px 25px rgba(0, 0, 0, 0.15)';
+      }}
+      onMouseLeave={(e) => {
+        e.currentTarget.style.boxShadow = '0 0 20px rgba(255, 102, 0, 0.15), 0 0 40px rgba(255, 102, 0, 0.08), 0 4px 15px rgba(0, 0, 0, 0.1)';
+      }}
+    >
       <div className="relative">
         <Link to={`/product/${id}`} className="block aspect-square overflow-hidden">
           <img 
