@@ -12,20 +12,12 @@ import {
   DollarSign, 
   TrendingUp, 
   ShoppingCart, 
-  Download,
-  FileText,
-  FileSpreadsheet,
   Calendar
 } from "lucide-react";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
+import ExportButton from '@/components/ExportButton';
 
 const AdminFinanzas = () => {
   const { orders } = useOrders();
@@ -285,24 +277,11 @@ const AdminFinanzas = () => {
                       Últimas 10 transacciones completadas
                     </CardDescription>
                   </div>
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <Button variant="outline" size="sm" className="text-xs md:text-sm h-8 md:h-9">
-                        <Download className="h-3 w-3 md:h-4 md:w-4 mr-2" />
-                        Exportar Informe
-                      </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end">
-                      <DropdownMenuItem onClick={exportToPDF} className="text-xs md:text-sm">
-                        <FileText className="h-4 w-4 mr-2" />
-                        Exportar como PDF
-                      </DropdownMenuItem>
-                      <DropdownMenuItem onClick={exportToCSV} className="text-xs md:text-sm">
-                        <FileSpreadsheet className="h-4 w-4 mr-2" />
-                        Exportar como Excel (CSV)
-                      </DropdownMenuItem>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
+                  <ExportButton
+                    onExportPDF={exportToPDF}
+                    onExportExcel={exportToCSV}
+                  />
+                
                 </div>
               </CardHeader>
               <CardContent>

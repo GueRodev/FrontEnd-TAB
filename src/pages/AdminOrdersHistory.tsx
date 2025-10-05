@@ -8,11 +8,12 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { useOrders, OrderStatus } from '@/contexts/OrdersContext';
 import { useNotifications } from '@/contexts/NotificationsContext';
 import { toast } from '@/hooks/use-toast';
-import { Archive, FileDown, ArrowLeft, RotateCcw } from 'lucide-react';
+import { Archive, ArrowLeft, RotateCcw } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import * as XLSX from 'xlsx';
+import ExportButton from '@/components/ExportButton';
 
 const AdminOrdersHistory = () => {
   const { getArchivedOrders, unarchiveOrder } = useOrders();
@@ -156,26 +157,11 @@ const AdminOrdersHistory = () => {
                 Volver a Pedidos
               </Button>
               
-              <div className="flex gap-2">
-                <Button
-                  onClick={exportToPDF}
-                  variant="default"
-                  className="gap-2"
-                  disabled={archivedOrders.length === 0}
-                >
-                  <FileDown className="h-4 w-4" />
-                  Exportar PDF
-                </Button>
-                <Button
-                  onClick={exportToExcel}
-                  variant="default"
-                  className="gap-2"
-                  disabled={archivedOrders.length === 0}
-                >
-                  <FileDown className="h-4 w-4" />
-                  Exportar Excel
-                </Button>
-              </div>
+              <ExportButton
+                onExportPDF={exportToPDF}
+                onExportExcel={exportToExcel}
+                disabled={archivedOrders.length === 0}
+              />
             </div>
 
             {/* Tabla de pedidos archivados */}
