@@ -66,7 +66,9 @@ export function AdminSidebar() {
       collapsible="icon"
     >
       {/* Header with Logo */}
-      <div className={`p-6 border-b border-white/10 bg-[#1A1F2C] transition-all duration-300 overflow-hidden ${isCollapsed ? 'flex justify-center' : ''}`}>
+      <div className={`border-b border-white/10 bg-[#1A1F2C] transition-all duration-300 overflow-hidden flex items-center ${
+        isCollapsed ? 'p-4 justify-center' : 'p-6'
+      }`}>
         {customLogo ? (
           <Link to="/admin" className="flex items-center justify-center">
             <img 
