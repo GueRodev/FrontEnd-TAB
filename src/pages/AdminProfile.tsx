@@ -26,7 +26,7 @@ const AdminProfile = () => {
   const [profile, setProfile] = useState<AdminProfile>({
     name: 'Admin Usuario',
     email: 'admin@toysandbricks.com',
-    phone: '+1 (555) 123-4567',
+    phone: '+506 1234-5678',
     role: 'Administrador Principal',
     password: '••••••••',
     avatarUrl: '',
@@ -203,7 +203,7 @@ const AdminProfile = () => {
                         value={profile.phone}
                         onChange={(e) => handleInputChange('phone', e.target.value)}
                         disabled={!isEditing}
-                        placeholder="+1 (555) 123-4567"
+                        placeholder="+506 1234-5678"
                       />
                     </div>
 
