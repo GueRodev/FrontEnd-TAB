@@ -10,6 +10,7 @@ export interface Product {
   description: string;
   image: string;
   status: 'active' | 'inactive';
+  isFeatured: boolean;
   createdAt: string;
 }
 
@@ -38,6 +39,7 @@ export const ProductsProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     const newProduct: Product = {
       ...productData,
       id: `product-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+      isFeatured: productData.isFeatured || false,
       createdAt: new Date().toISOString(),
     };
     setProducts(prev => [...prev, newProduct]);

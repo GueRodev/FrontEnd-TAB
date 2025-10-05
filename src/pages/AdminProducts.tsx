@@ -32,6 +32,7 @@ import {
 } from '@/components/ui/select';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
+import { Switch } from '@/components/ui/switch';
 import { useNotifications } from '@/contexts/NotificationsContext';
 import { useCategories } from '@/contexts/CategoriesContext';
 import { useProducts } from '@/contexts/ProductsContext';
@@ -146,6 +147,7 @@ const AdminProducts: React.FC = () => {
       description: formData.description,
       image: selectedImage,
       status: formData.status as 'active' | 'inactive',
+      isFeatured: false,
     });
     
     // Agregar notificación
@@ -310,6 +312,7 @@ const AdminProducts: React.FC = () => {
                           <TableHead className="font-semibold text-gray-700">Precio</TableHead>
                           <TableHead className="font-semibold text-gray-700">Stock</TableHead>
                           <TableHead className="font-semibold text-gray-700">Estado</TableHead>
+                          <TableHead className="font-semibold text-gray-700">Destacado</TableHead>
                           <TableHead className="font-semibold text-gray-700 text-right">Acciones</TableHead>
                         </TableRow>
                       </TableHeader>
@@ -356,6 +359,20 @@ const AdminProducts: React.FC = () => {
                                 >
                                   {product.status === 'active' ? 'Activo' : 'Inactivo'}
                                 </Badge>
+                              </TableCell>
+                              <TableCell>
+                                <div className="flex items-center justify-center">
+                                  <Switch
+                                    checked={product.isFeatured}
+                                    onCheckedChange={(checked) => {
+                                      updateProduct(product.id, { isFeatured: checked });
+                                      toast({
+                                        title: checked ? "Producto destacado" : "Producto no destacado",
+                                        description: `${product.name} ${checked ? 'aparecerá' : 'no aparecerá'} en productos destacados`,
+                                      });
+                                    }}
+                                  />
+                                </div>
                               </TableCell>
                               <TableCell className="text-right">
                                 <div className="flex justify-end gap-2">
@@ -437,6 +454,21 @@ const AdminProducts: React.FC = () => {
                                 {product.stock}
                               </p>
                             </div>
+                          </div>
+                          
+                          {/* Featured Toggle */}
+                          <div className="flex items-center justify-between pt-2 border-t">
+                            <span className="text-xs text-gray-600">Destacado</span>
+                            <Switch
+                              checked={product.isFeatured}
+                              onCheckedChange={(checked) => {
+                                updateProduct(product.id, { isFeatured: checked });
+                                toast({
+                                  title: checked ? "Producto destacado" : "Producto no destacado",
+                                  description: `${product.name} ${checked ? 'aparecerá' : 'no aparecerá'} en productos destacados`,
+                                });
+                              }}
+                            />
                           </div>
                           
                           {/* Action Buttons */}
