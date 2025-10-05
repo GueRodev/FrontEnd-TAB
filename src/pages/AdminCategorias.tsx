@@ -33,6 +33,19 @@ import {
 import { CSS } from '@dnd-kit/utilities';
 import { useCategories, Category, Subcategory } from '@/contexts/CategoriesContext';
 import { toast } from '@/hooks/use-toast';
+import { z } from 'zod';
+
+// Esquemas de validación
+const categorySchema = z.object({
+  name: z.string().trim().min(1, 'El nombre es requerido').max(50, 'El nombre debe tener máximo 50 caracteres'),
+  description: z.string().trim().min(1, 'La descripción es requerida').max(200, 'La descripción debe tener máximo 200 caracteres'),
+});
+
+const subcategorySchema = z.object({
+  name: z.string().trim().min(1, 'El nombre es requerido').max(50, 'El nombre debe tener máximo 50 caracteres'),
+  description: z.string().trim().min(1, 'La descripción es requerida').max(200, 'La descripción debe tener máximo 200 caracteres'),
+  categoryId: z.string().min(1, 'Debe seleccionar una categoría padre'),
+});
 
 interface SortableRowProps {
   category: Category;
@@ -297,6 +310,12 @@ const AdminCategorias: React.FC = () => {
     description: '',
   });
 
+  // Estados para el formulario de agregar
+  const [addFormData, setAddFormData] = useState({
+    name: '',
+    description: '',
+  });
+
   const sensors = useSensors(
     useSensor(PointerSensor),
     useSensor(KeyboardSensor, {
@@ -347,7 +366,112 @@ const AdminCategorias: React.FC = () => {
   const handleOpenModal = (type: 'category' | 'subcategory', categoryId?: string) => {
     setModalType(type);
     if (categoryId) setSelectedCategoryId(categoryId);
+    setAddFormData({ name: '', description: '' });
     setIsModalOpen(true);
+  };
+
+  // Función auxiliar para generar slug
+  const generateSlug = (name: string, parentSlug?: string): string => {
+    const baseSlug = name
+      .toLowerCase()
+      .trim()
+      .replace(/[áàäâ]/g, 'a')
+      .replace(/[éèëê]/g, 'e')
+      .replace(/[íìïî]/g, 'i')
+      .replace(/[óòöô]/g, 'o')
+      .replace(/[úùüû]/g, 'u')
+      .replace(/ñ/g, 'n')
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/^-+|-+$/g, '');
+    
+    return parentSlug ? `${parentSlug}/${baseSlug}` : baseSlug;
+  };
+
+  // Función para agregar categoría o subcategoría
+  const handleAddItem = (e: React.FormEvent) => {
+    e.preventDefault();
+
+    try {
+      if (modalType === 'category') {
+        // Validar datos de categoría
+        const validatedData = categorySchema.parse(addFormData);
+        
+        const newCategory: Category = {
+          id: `cat-${Date.now()}`,
+          name: validatedData.name,
+          description: validatedData.description,
+          order: categories.length + 1,
+          slug: generateSlug(validatedData.name),
+          subcategories: [],
+          isExpanded: false,
+        };
+
+        const updatedCategories = [...categories, newCategory];
+        setCategories(updatedCategories);
+        setPendingCategories(updatedCategories);
+
+        toast({
+          title: "Categoría creada",
+          description: `La categoría "${validatedData.name}" se ha creado exitosamente`,
+        });
+      } else {
+        // Validar datos de subcategoría
+        const validatedData = subcategorySchema.parse({
+          ...addFormData,
+          categoryId: selectedCategoryId,
+        });
+
+        const parentCategory = categories.find(cat => cat.id === selectedCategoryId);
+        
+        if (!parentCategory) {
+          toast({
+            title: "Error",
+            description: "No se encontró la categoría padre",
+            variant: "destructive",
+          });
+          return;
+        }
+
+        const newSubcategory: Subcategory = {
+          id: `sub-${Date.now()}`,
+          name: validatedData.name,
+          description: validatedData.description,
+          order: parentCategory.subcategories.length + 1,
+          slug: generateSlug(validatedData.name, parentCategory.slug),
+        };
+
+        const updatedCategories = categories.map(cat => {
+          if (cat.id === selectedCategoryId) {
+            return {
+              ...cat,
+              subcategories: [...cat.subcategories, newSubcategory],
+            };
+          }
+          return cat;
+        });
+
+        setCategories(updatedCategories);
+        setPendingCategories(updatedCategories);
+
+        toast({
+          title: "Subcategoría creada",
+          description: `La subcategoría "${validatedData.name}" se ha creado exitosamente`,
+        });
+      }
+
+      // Resetear formulario y cerrar modal
+      setAddFormData({ name: '', description: '' });
+      setIsModalOpen(false);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        const firstError = error.errors[0];
+        toast({
+          title: "Error de validación",
+          description: firstError.message,
+          variant: "destructive",
+        });
+      }
+    }
   };
 
   const handleToggleExpand = (id: string) => {
@@ -581,27 +705,46 @@ const AdminCategorias: React.FC = () => {
             )}
 
             <div className="space-y-2">
-              <Label htmlFor="name">Nombre</Label>
+              <Label htmlFor="name">Nombre *</Label>
               <Input
                 id="name"
                 placeholder={modalType === 'category' ? 'Ej: Sets de Construcción' : 'Ej: Star Wars'}
+                value={addFormData.name}
+                onChange={(e) => setAddFormData({ ...addFormData, name: e.target.value })}
+                maxLength={50}
+                required
               />
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="description">Descripción</Label>
+              <Label htmlFor="description">Descripción *</Label>
               <Input
                 id="description"
                 placeholder="Breve descripción"
+                value={addFormData.description}
+                onChange={(e) => setAddFormData({ ...addFormData, description: e.target.value })}
+                maxLength={200}
+                required
               />
             </div>
           </div>
 
           <div className="flex flex-col sm:flex-row justify-end gap-2 sm:gap-3">
-            <Button variant="outline" onClick={() => setIsModalOpen(false)} className="w-full sm:w-auto">
+            <Button 
+              variant="outline" 
+              onClick={() => {
+                setIsModalOpen(false);
+                setAddFormData({ name: '', description: '' });
+              }} 
+              className="w-full sm:w-auto"
+            >
               Cancelar
             </Button>
-            <Button onClick={() => setIsModalOpen(false)} className="w-full sm:w-auto">
+            <Button 
+              onClick={handleAddItem} 
+              className="w-full sm:w-auto"
+              disabled={!addFormData.name.trim() || !addFormData.description.trim() || (modalType === 'subcategory' && !selectedCategoryId)}
+            >
               Guardar
             </Button>
           </div>
