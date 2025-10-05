@@ -4,6 +4,7 @@ import { toast } from '@/hooks/use-toast';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import ProductCard from '@/components/ProductCard';
+import DecorativeBackground from '@/components/DecorativeBackground';
 import { useProducts } from '@/contexts/ProductsContext';
 import { useCategories } from '@/contexts/CategoriesContext';
 import { useCart } from '@/contexts/CartContext';
@@ -108,11 +109,7 @@ const CategoryPage: React.FC = () => {
       
       {/* Hero-style background section */}
       <section className="pt-24 md:pt-32 pb-8 bg-gradient-to-b from-brand-yellow to-white relative overflow-hidden">
-        <div className="absolute inset-0 z-0 overflow-hidden">
-          <div className="absolute -right-24 -top-24 w-64 h-64 rounded-full bg-brand-orange opacity-10"></div>
-          <div className="absolute left-1/3 top-1/3 w-32 h-32 rounded-full bg-brand-purple opacity-10"></div>
-          <div className="absolute right-1/4 bottom-1/4 w-48 h-48 rounded-full bg-brand-skyBlue opacity-10"></div>
-        </div>
+        <DecorativeBackground />
         
         {/* Breadcrumb */}
         <div className="container mx-auto px-4 relative z-10">
