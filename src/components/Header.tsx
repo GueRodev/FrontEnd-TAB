@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect, useMemo } from 'react';
-import { Link } from 'react-router-dom';
-import { Menu, X, ShoppingCart, Search, User, Heart, Shield } from 'lucide-react';
+import { Link, useNavigate } from 'react-router-dom';
+import { Menu, X, ShoppingCart, Search, User, Heart, Shield, LogOut } from 'lucide-react';
 import Logo from './Logo';
 import SearchDialog from './SearchDialog';
 import { cn } from '@/lib/utils';
@@ -15,6 +15,13 @@ import {
   NavigationMenuList,
   NavigationMenuTrigger,
 } from "@/components/ui/navigation-menu";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+  DropdownMenuSeparator,
+} from "@/components/ui/dropdown-menu";
 
 const Header: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -22,6 +29,7 @@ const Header: React.FC = () => {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const { getTotalItems } = useCart();
   const { categories } = useCategories();
+  const navigate = useNavigate();
   const cartCount = getTotalItems();
 
   // Handle scroll event to change header style
@@ -37,6 +45,12 @@ const Header: React.FC = () => {
   const sortedCategories = useMemo(() => {
     return [...categories].sort((a, b) => a.order - b.order);
   }, [categories]);
+
+  const handleLogout = () => {
+    // TODO: Implementar lógica de cierre de sesión cuando se integre autenticación
+    // Por ahora solo redirige al inicio
+    navigate('/');
+  };
 
   return (
     <header 
@@ -112,9 +126,32 @@ const Header: React.FC = () => {
           <Link to="/wishlist" className="hover:text-brand-orange transition-colors relative">
             <Heart size={22} />
           </Link>
-          <Link to="/account" className="hover:text-brand-orange transition-colors">
-            <User size={22} />
-          </Link>
+          
+          {/* Dropdown Menu de Perfil */}
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <button className="hover:text-brand-orange transition-colors focus:outline-none">
+                <User size={22} />
+              </button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-48 bg-white z-50">
+              <DropdownMenuItem asChild>
+                <Link to="/account" className="cursor-pointer flex items-center gap-2">
+                  <User size={16} />
+                  Mi Perfil
+                </Link>
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem 
+                onClick={handleLogout}
+                className="cursor-pointer flex items-center gap-2 text-red-600 focus:text-red-600"
+              >
+                <LogOut size={16} />
+                Cerrar Sesión
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+
           <Link to="/admin" className="hover:text-brand-orange transition-colors">
             <Shield size={22} />
           </Link>
