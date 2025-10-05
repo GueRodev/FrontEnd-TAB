@@ -31,22 +31,8 @@ import {
   verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-
-interface Category {
-  id: string;
-  name: string;
-  description: string;
-  order: number;
-  subcategories: Subcategory[];
-  isExpanded?: boolean;
-}
-
-interface Subcategory {
-  id: string;
-  name: string;
-  description: string;
-  order: number;
-}
+import { useCategories, Category, Subcategory } from '@/contexts/CategoriesContext';
+import { toast } from '@/hooks/use-toast';
 
 interface SortableRowProps {
   category: Category;
@@ -163,6 +149,7 @@ const SortableRow: React.FC<SortableRowProps> = ({
 };
 
 const AdminCategorias: React.FC = () => {
+  const { categories, setCategories, updateCategoryOrder } = useCategories();
   const [searchQuery, setSearchQuery] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalType, setModalType] = useState<'category' | 'subcategory'>('category');
@@ -178,38 +165,6 @@ const AdminCategorias: React.FC = () => {
     description: '',
   });
 
-  const [categories, setCategories] = useState<Category[]>([
-    {
-      id: '1',
-      name: 'Sets de Construcción',
-      description: 'Todos los sets disponibles',
-      order: 1,
-      isExpanded: false,
-      subcategories: [
-        { id: 's1', name: 'Star Wars', description: 'Sets temáticos de Star Wars', order: 1 },
-        { id: 's2', name: 'City', description: 'Sets de la ciudad', order: 2 },
-      ],
-    },
-    {
-      id: '2',
-      name: 'Figuras',
-      description: 'Minifiguras y personajes',
-      order: 2,
-      isExpanded: false,
-      subcategories: [
-        { id: 's3', name: 'Superhéroes', description: 'Figuras de superhéroes', order: 1 },
-      ],
-    },
-    {
-      id: '3',
-      name: 'Accesorios',
-      description: 'Accesorios y piezas sueltas',
-      order: 3,
-      isExpanded: false,
-      subcategories: [],
-    },
-  ]);
-
   const sensors = useSensors(
     useSensor(PointerSensor),
     useSensor(KeyboardSensor, {
@@ -221,12 +176,15 @@ const AdminCategorias: React.FC = () => {
     const { active, over } = event;
 
     if (over && active.id !== over.id) {
-      setCategories((items) => {
-        const oldIndex = items.findIndex((item) => item.id === active.id);
-        const newIndex = items.findIndex((item) => item.id === over.id);
-        
-        const newItems = arrayMove(items, oldIndex, newIndex);
-        return newItems.map((item, index) => ({ ...item, order: index + 1 }));
+      const oldIndex = categories.findIndex((item) => item.id === active.id);
+      const newIndex = categories.findIndex((item) => item.id === over.id);
+      
+      const newItems = arrayMove(categories, oldIndex, newIndex);
+      updateCategoryOrder(newItems);
+      
+      toast({
+        title: "Orden actualizado",
+        description: "El orden de las categorías se ha actualizado en el sitio web",
       });
     }
   };
@@ -238,8 +196,8 @@ const AdminCategorias: React.FC = () => {
   };
 
   const handleToggleExpand = (id: string) => {
-    setCategories((prev) =>
-      prev.map((cat) =>
+    setCategories(
+      categories.map((cat) =>
         cat.id === id ? { ...cat, isExpanded: !cat.isExpanded } : cat
       )
     );

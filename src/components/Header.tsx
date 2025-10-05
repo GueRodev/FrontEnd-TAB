@@ -1,10 +1,11 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { Menu, X, ShoppingCart, Search, User, Heart, Shield } from 'lucide-react';
 import Logo from './Logo';
 import { cn } from '@/lib/utils';
 import { useCart } from '@/contexts/CartContext';
+import { useCategories } from '@/contexts/CategoriesContext';
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -18,6 +19,7 @@ const Header: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const { getTotalItems } = useCart();
+  const { categories } = useCategories();
   const cartCount = getTotalItems();
 
   // Handle scroll event to change header style
@@ -29,22 +31,13 @@ const Header: React.FC = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const navigationItems = [
-    { name: 'Funkos', href: '/category/funkos' },
-    { name: 'Anime', href: '/category/anime' },
-    { name: 'Coleccionables', href: '/category/coleccionables' },
-    { name: 'Peluches', href: '/category/peluches' },
-    { name: 'Starwars', href: '/category/starwars' },
-    { name: 'HarryPotter', href: '/category/harrypotter' },
-    { name: 'Otros', href: '/category/otros' },
-  ];
-
-  const legoSubcategories = [
-    { name: 'Sets', href: '/category/lego/sets' },
-    { name: 'Polybag', href: '/category/lego/polybag' },
-    { name: 'Figuras', href: '/category/lego/figuras' },
-    { name: 'Piezas', href: '/category/lego/piezas' },
-  ];
+  // Get sorted categories and separate Lego from others
+  const { legoCategory, otherCategories } = useMemo(() => {
+    const sorted = [...categories].sort((a, b) => a.order - b.order);
+    const lego = sorted.find(cat => cat.slug === 'lego');
+    const others = sorted.filter(cat => cat.slug !== 'lego');
+    return { legoCategory: lego, otherCategories: others };
+  }, [categories]);
 
   return (
     <header 
@@ -61,37 +54,48 @@ const Header: React.FC = () => {
         
         {/* Desktop Navigation */}
         <nav className="hidden lg:flex items-center space-x-8">
-          <NavigationMenu>
-            <NavigationMenuList>
-              <NavigationMenuItem>
-                <NavigationMenuTrigger className="text-brand-darkBlue font-semibold hover:text-brand-orange transition-colors bg-transparent hover:bg-transparent focus:bg-transparent data-[active]:bg-transparent data-[state=open]:bg-transparent">
-                  Lego
-                </NavigationMenuTrigger>
-                <NavigationMenuContent>
-                  <div className="grid w-[200px] gap-1 p-2 bg-white shadow-lg border rounded-md">
-                    {legoSubcategories.map((subcategory) => (
-                      <NavigationMenuLink key={subcategory.name} asChild>
-                        <Link
-                          to={subcategory.href}
-                          className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
-                        >
-                          <div className="text-sm font-medium leading-none">{subcategory.name}</div>
-                        </Link>
-                      </NavigationMenuLink>
-                    ))}
-                  </div>
-                </NavigationMenuContent>
-              </NavigationMenuItem>
-            </NavigationMenuList>
-          </NavigationMenu>
-          
-          {navigationItems.map((item) => (
+          {legoCategory && legoCategory.subcategories.length > 0 ? (
+            <NavigationMenu>
+              <NavigationMenuList>
+                <NavigationMenuItem>
+                  <NavigationMenuTrigger className="text-brand-darkBlue font-semibold hover:text-brand-orange transition-colors bg-transparent hover:bg-transparent focus:bg-transparent data-[active]:bg-transparent data-[state=open]:bg-transparent">
+                    {legoCategory.name}
+                  </NavigationMenuTrigger>
+                  <NavigationMenuContent>
+                    <div className="grid w-[200px] gap-1 p-2 bg-white shadow-lg border rounded-md">
+                      {legoCategory.subcategories
+                        .sort((a, b) => a.order - b.order)
+                        .map((subcategory) => (
+                          <NavigationMenuLink key={subcategory.id} asChild>
+                            <Link
+                              to={`/category/${subcategory.slug}`}
+                              className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
+                            >
+                              <div className="text-sm font-medium leading-none">{subcategory.name}</div>
+                            </Link>
+                          </NavigationMenuLink>
+                        ))}
+                    </div>
+                  </NavigationMenuContent>
+                </NavigationMenuItem>
+              </NavigationMenuList>
+            </NavigationMenu>
+          ) : legoCategory ? (
             <Link
-              key={item.name}
-              to={item.href}
+              to={`/category/${legoCategory.slug}`}
               className="text-brand-darkBlue font-semibold hover:text-brand-orange transition-colors relative after:content-[''] after:absolute after:w-full after:scale-x-0 after:h-0.5 after:bottom-0 after:left-0 after:bg-brand-orange after:origin-bottom-right after:transition-transform after:duration-300 hover:after:scale-x-100 hover:after:origin-bottom-left"
             >
-              {item.name}
+              {legoCategory.name}
+            </Link>
+          ) : null}
+          
+          {otherCategories.map((category) => (
+            <Link
+              key={category.id}
+              to={`/category/${category.slug}`}
+              className="text-brand-darkBlue font-semibold hover:text-brand-orange transition-colors relative after:content-[''] after:absolute after:w-full after:scale-x-0 after:h-0.5 after:bottom-0 after:left-0 after:bg-brand-orange after:origin-bottom-right after:transition-transform after:duration-300 hover:after:scale-x-100 hover:after:origin-bottom-left"
+            >
+              {category.name}
             </Link>
           ))}
         </nav>
@@ -144,30 +148,34 @@ const Header: React.FC = () => {
         <div className="lg:hidden bg-white shadow-lg animate-fade-in absolute top-full left-0 w-full">
           <div className="container mx-auto py-4 px-4">
             <nav className="flex flex-col space-y-4">
-              <div className="border-b pb-2">
-                <div className="text-brand-darkBlue font-semibold py-2">Lego</div>
-                <div className="ml-4 space-y-2">
-                  {legoSubcategories.map((subcategory) => (
-                    <Link
-                      key={subcategory.name}
-                      to={subcategory.href}
-                      className="block text-gray-600 py-1 hover:text-brand-orange transition-colors"
-                      onClick={() => setIsMenuOpen(false)}
-                    >
-                      {subcategory.name}
-                    </Link>
-                  ))}
+              {legoCategory && legoCategory.subcategories.length > 0 && (
+                <div className="border-b pb-2">
+                  <div className="text-brand-darkBlue font-semibold py-2">{legoCategory.name}</div>
+                  <div className="ml-4 space-y-2">
+                    {legoCategory.subcategories
+                      .sort((a, b) => a.order - b.order)
+                      .map((subcategory) => (
+                        <Link
+                          key={subcategory.id}
+                          to={`/category/${subcategory.slug}`}
+                          className="block text-gray-600 py-1 hover:text-brand-orange transition-colors"
+                          onClick={() => setIsMenuOpen(false)}
+                        >
+                          {subcategory.name}
+                        </Link>
+                      ))}
+                  </div>
                 </div>
-              </div>
+              )}
               
-              {navigationItems.map((item) => (
+              {otherCategories.map((category) => (
                 <Link
-                  key={item.name}
-                  to={item.href}
+                  key={category.id}
+                  to={`/category/${category.slug}`}
                   className="text-brand-darkBlue font-semibold py-2 hover:text-brand-orange transition-colors"
                   onClick={() => setIsMenuOpen(false)}
                 >
-                  {item.name}
+                  {category.name}
                 </Link>
               ))}
               <div className="flex justify-between py-2">
