@@ -52,7 +52,7 @@ const FeaturedProducts: React.FC = () => {
   }
 
   return (
-    <section className="py-16 bg-white">
+    <section className="py-16 bg-gradient-to-b from-white to-gray-50">
       <div className="container mx-auto px-4">
         <div className="flex flex-col md:flex-row justify-between items-center mb-12">
           <div>
