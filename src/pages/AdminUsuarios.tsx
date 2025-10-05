@@ -25,6 +25,7 @@ import {
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { Separator } from '@/components/ui/separator';
+import { toast } from '@/hooks/use-toast';
 
 // Mock data - replace with actual data from your backend
 const mockClientes = [
@@ -115,6 +116,7 @@ const mockAdmins = [
 ];
 
 const AdminUsuarios: React.FC = () => {
+  const [clientes, setClientes] = useState(mockClientes);
   const [searchClientes, setSearchClientes] = useState('');
   const [searchAdmins, setSearchAdmins] = useState('');
   const [expandedCliente, setExpandedCliente] = useState<number | null>(null);
@@ -128,8 +130,23 @@ const AdminUsuarios: React.FC = () => {
   });
 
   const handleClienteToggle = (id: number) => {
-    console.log('Toggle cliente activo:', id);
-    // Aquí implementarás la lógica para activar/desactivar cliente
+    setClientes(prevClientes => 
+      prevClientes.map(cliente => {
+        if (cliente.id === id) {
+          const nuevoEstado = !cliente.activo;
+          
+          // Mostrar notificación
+          toast({
+            title: nuevoEstado ? "Cliente activado" : "Cliente desactivado",
+            description: `${cliente.nombre} ha sido ${nuevoEstado ? 'activado' : 'desactivado'} correctamente.`,
+            variant: nuevoEstado ? "default" : "destructive",
+          });
+          
+          return { ...cliente, activo: nuevoEstado };
+        }
+        return cliente;
+      })
+    );
   };
 
   const handleExpandCliente = (id: number) => {
@@ -171,7 +188,7 @@ const AdminUsuarios: React.FC = () => {
     }
   };
 
-  const filteredClientes = mockClientes.filter(cliente =>
+  const filteredClientes = clientes.filter(cliente =>
     cliente.nombre.toLowerCase().includes(searchClientes.toLowerCase()) ||
     cliente.email.toLowerCase().includes(searchClientes.toLowerCase())
   );
