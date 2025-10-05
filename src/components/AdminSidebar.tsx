@@ -45,16 +45,16 @@ export function AdminSidebar() {
   const [customLogo, setCustomLogo] = useState<string | null>(null);
 
   useEffect(() => {
-    const logo = localStorage.getItem('customLogo');
+    const logo = localStorage.getItem('customAdminLogo');
     setCustomLogo(logo);
 
     const handleLogoUpdate = () => {
-      const updatedLogo = localStorage.getItem('customLogo');
+      const updatedLogo = localStorage.getItem('customAdminLogo');
       setCustomLogo(updatedLogo);
     };
 
-    window.addEventListener('logoUpdated', handleLogoUpdate);
-    return () => window.removeEventListener('logoUpdated', handleLogoUpdate);
+    window.addEventListener('adminLogoUpdated', handleLogoUpdate);
+    return () => window.removeEventListener('adminLogoUpdated', handleLogoUpdate);
   }, []);
 
   return (
