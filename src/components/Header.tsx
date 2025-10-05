@@ -45,7 +45,11 @@ const Header: React.FC = () => {
           : "bg-transparent py-4"
       )}
       style={isScrolled ? {
-        boxShadow: '0 4px 20px -2px rgba(0, 51, 102, 0.35), 0 2px 8px -2px rgba(0, 51, 102, 0.2)'
+        // Aquí puedes personalizar el color del efecto de animación en el header
+        // Cambia los valores RGB en rgba() para modificar el color del neón
+        // Formato: rgba(R, G, B, transparencia)
+        // Azul actual: rgba(0, 51, 102, ...)
+        boxShadow: '0 0 30px rgba(0, 51, 102, 0.4), 0 0 15px rgba(0, 51, 102, 0.3), 0 4px 20px rgba(0, 51, 102, 0.25)'
       } : undefined}
     >
       <div className="container mx-auto px-4 flex items-center justify-between">
