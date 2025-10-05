@@ -9,8 +9,10 @@ import {
   DollarSign, 
   Settings, 
   LogOut,
-  Package2
+  Package2,
+  User
 } from 'lucide-react';
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   Sidebar,
   SidebarContent,
@@ -116,8 +118,33 @@ export function AdminSidebar() {
         </SidebarGroup>
       </SidebarContent>
 
+      {/* User Section - TODO: Aquí se implementa el nombre del usuario logueado */}
+      <div className="!bg-[#1A1F2C] border-t border-white/10 p-4" style={{ backgroundColor: '#1A1F2C' }}>
+        <Link 
+          to="/admin/perfil" 
+          className="flex items-center gap-3 p-2 rounded-lg hover:bg-white/5 transition-colors"
+        >
+          <Avatar className="h-10 w-10 border-2 border-white/10">
+            <AvatarImage src="" alt="Admin" />
+            <AvatarFallback className="bg-[#F97316] text-white font-semibold">
+              AD
+            </AvatarFallback>
+          </Avatar>
+          {!isCollapsed && (
+            <div className="flex flex-col min-w-0">
+              <span className="text-white text-sm font-medium truncate">
+                Admin Usuario
+              </span>
+              <span className="text-white/60 text-xs truncate">
+                admin@toysandbricks.com
+              </span>
+            </div>
+          )}
+        </Link>
+      </div>
+
       {/* Footer Section */}
-      <SidebarFooter className="!bg-[#1A1F2C] border-t border-white/10 mt-auto" style={{ backgroundColor: '#1A1F2C' }}>
+      <SidebarFooter className="!bg-[#1A1F2C] border-t border-white/10" style={{ backgroundColor: '#1A1F2C' }}>
         <SidebarMenu>
           {footerItems.map((item) => (
             <SidebarMenuItem key={item.title}>
