@@ -15,18 +15,12 @@ import {
   NavigationMenuList,
   NavigationMenuTrigger,
 } from "@/components/ui/navigation-menu";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-  DropdownMenuSeparator,
-} from "@/components/ui/dropdown-menu";
 
 const Header: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
   const { getTotalItems } = useCart();
   const { categories } = useCategories();
   const navigate = useNavigate();
@@ -127,30 +121,38 @@ const Header: React.FC = () => {
             <Heart size={22} />
           </Link>
           
-          {/* Dropdown Menu de Perfil */}
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <button className="hover:text-brand-orange transition-colors focus:outline-none">
-                <User size={22} />
-              </button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-48 bg-white z-50">
-              <DropdownMenuItem asChild>
-                <Link to="/account" className="cursor-pointer flex items-center gap-2">
-                  <User size={16} />
-                  Mi Perfil
-                </Link>
-              </DropdownMenuItem>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem 
-                onClick={handleLogout}
-                className="cursor-pointer flex items-center gap-2 text-red-600 focus:text-red-600"
-              >
-                <LogOut size={16} />
-                Cerrar Sesión
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+          {/* Dropdown Menu de Perfil con Hover */}
+          <div 
+            className="relative"
+            onMouseEnter={() => setIsProfileMenuOpen(true)}
+            onMouseLeave={() => setIsProfileMenuOpen(false)}
+          >
+            <button className="hover:text-brand-orange transition-colors focus:outline-none">
+              <User size={22} />
+            </button>
+            
+            {isProfileMenuOpen && (
+              <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg border z-50 animate-fade-in">
+                <div className="py-1">
+                  <Link 
+                    to="/account" 
+                    className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors"
+                  >
+                    <User size={16} />
+                    Mi Perfil
+                  </Link>
+                  <div className="border-t border-gray-100" />
+                  <button 
+                    onClick={handleLogout}
+                    className="w-full flex items-center gap-2 px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors"
+                  >
+                    <LogOut size={16} />
+                    Cerrar Sesión
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
 
           <Link to="/admin" className="hover:text-brand-orange transition-colors">
             <Shield size={22} />
