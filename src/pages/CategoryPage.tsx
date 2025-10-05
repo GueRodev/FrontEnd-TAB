@@ -106,7 +106,7 @@ const CategoryPage: React.FC = () => {
     <>
       <Header />
       
-      <main className="pt-20">
+      <main className="pt-24 md:pt-32">
         {/* Breadcrumb */}
         <div className="bg-brand-darkBlue text-white py-4">
           <div className="container mx-auto px-4">
