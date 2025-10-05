@@ -89,14 +89,15 @@ const AdminOrders = () => {
       paymentMethod: paymentMethod,
     };
 
-    addOrder(newOrder);
+    const orderId = addOrder(newOrder);
 
-    // Agregar notificación
+    // Agregar notificación con el orderId
     addNotification({
       type: 'order',
       title: 'Pedido en tienda creado',
       message: `Pedido de ${customerName} - ${product.name} x${quantity}`,
       time: 'Ahora',
+      orderId: orderId,
     });
     
     // Limpiar formulario
@@ -146,6 +147,7 @@ const AdminOrders = () => {
       title: 'Pedido archivado',
       message: `El pedido ${orderId} ha sido archivado`,
       time: 'Ahora',
+      orderId: orderId,
     });
     toast({
       title: "Pedido archivado",
@@ -237,6 +239,7 @@ const AdminOrders = () => {
                   title: 'Pedido completado',
                   message: `Pedido ${order.id} ha sido marcado como finalizado`,
                   time: 'Ahora',
+                  orderId: order.id,
                 });
                 toast({
                   title: "Pedido completado",
@@ -258,6 +261,7 @@ const AdminOrders = () => {
                   title: 'Pedido cancelado',
                   message: `Pedido ${order.id} ha sido cancelado`,
                   time: 'Ahora',
+                  orderId: order.id,
                 });
                 toast({
                   title: "Pedido cancelado",

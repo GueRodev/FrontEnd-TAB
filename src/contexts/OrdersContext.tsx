@@ -34,7 +34,7 @@ export interface Order {
 
 interface OrdersContextType {
   orders: Order[];
-  addOrder: (order: Omit<Order, 'id' | 'createdAt'>) => void;
+  addOrder: (order: Omit<Order, 'id' | 'createdAt'>) => string; // Retorna el ID del pedido creado
   updateOrderStatus: (orderId: string, status: OrderStatus) => void;
   deleteOrder: (orderId: string) => void;
   archiveOrder: (orderId: string) => void;
@@ -62,6 +62,7 @@ export const OrdersProvider: React.FC<{ children: React.ReactNode }> = ({ childr
       createdAt: new Date().toISOString(),
     };
     setOrders(prev => [newOrder, ...prev]);
+    return newOrder.id; // Retornar el ID del pedido creado
   };
 
   const updateOrderStatus = (orderId: string, status: OrderStatus) => {

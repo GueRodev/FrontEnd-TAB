@@ -6,10 +6,12 @@ import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { useNotifications } from '@/contexts/NotificationsContext';
+import { useNavigate } from 'react-router-dom';
 import { cn } from '@/lib/utils';
 
 const NotificationsPopover: React.FC = () => {
   const { notifications, unreadCount, markAsRead, markAllAsRead } = useNotifications();
+  const navigate = useNavigate();
   const [open, setOpen] = useState(false);
 
   const unreadNotifications = notifications.filter(n => !n.read);
@@ -28,13 +30,32 @@ const NotificationsPopover: React.FC = () => {
     }
   };
 
-  const handleNotificationClick = (id: string) => {
-    markAsRead(id);
+  const handleNotificationClick = (notification: any) => {
+    markAsRead(notification.id);
+    
+    // Redirigir según el tipo de notificación
+    if (notification.link) {
+      navigate(notification.link);
+      setOpen(false);
+    } else if (notification.type === 'order' && notification.orderId) {
+      // Redirigir a la página de pedidos con el pedido específico
+      navigate('/admin/pedidos');
+      setOpen(false);
+    } else if (notification.type === 'order') {
+      navigate('/admin/pedidos');
+      setOpen(false);
+    } else if (notification.type === 'user') {
+      navigate('/admin/usuarios');
+      setOpen(false);
+    } else if (notification.type === 'product') {
+      navigate('/admin/productos');
+      setOpen(false);
+    }
   };
 
   const NotificationItem = ({ notification }: { notification: any }) => (
     <div
-      onClick={() => handleNotificationClick(notification.id)}
+      onClick={() => handleNotificationClick(notification)}
       className={cn(
         "flex items-start gap-3 p-3 hover:bg-accent/50 cursor-pointer transition-colors border-b border-border/40 last:border-0",
         !notification.read && "bg-accent/20"

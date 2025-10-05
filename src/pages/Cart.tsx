@@ -99,8 +99,7 @@ const Cart = () => {
     const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodedMessage}`;
 
     // Guardar pedido en el contexto
-    const orderId = `ORD-${Date.now()}`;
-    addOrder({
+    const orderId = addOrder({
       type: 'online',
       status: 'pending',
       items: items.map(item => ({
@@ -123,12 +122,13 @@ const Cart = () => {
       paymentMethod,
     });
 
-    // Agregar notificación
+    // Agregar notificación con orderId
     addNotification({
       type: 'order',
       title: 'Nuevo pedido recibido',
       message: `Pedido ${orderId} de ${formData.nombre} - Total: ₡${getTotalPrice().toFixed(2)}`,
       time: 'Ahora',
+      orderId: orderId,
     });
 
     // Abrir WhatsApp

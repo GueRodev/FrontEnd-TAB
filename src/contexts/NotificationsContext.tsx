@@ -8,6 +8,8 @@ export interface Notification {
   time: string;
   read: boolean;
   createdAt: Date;
+  orderId?: string; // ID del pedido para redirección
+  link?: string; // URL opcional para redirección personalizada
 }
 
 interface NotificationsContextType {
