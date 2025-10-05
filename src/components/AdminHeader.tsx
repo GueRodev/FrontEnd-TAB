@@ -1,5 +1,6 @@
 import React from 'react';
 import { User } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import NotificationsPopover from './NotificationsPopover';
 import { SidebarTrigger } from '@/components/ui/sidebar';
@@ -21,8 +22,10 @@ const AdminHeader: React.FC<AdminHeaderProps> = ({ title }) => {
       
       <div className="ml-auto flex items-center gap-2">
         <NotificationsPopover />
-        <Button variant="ghost" size="icon" className="relative">
-          <User className="h-5 w-5" />
+        <Button variant="ghost" size="icon" className="relative" asChild>
+          <Link to="/admin/perfil">
+            <User className="h-5 w-5" />
+          </Link>
         </Button>
       </div>
     </header>
