@@ -28,6 +28,8 @@ export interface Order {
   };
   deliveryOption?: 'pickup' | 'delivery';
   paymentMethod?: string;
+  archived?: boolean;
+  archivedAt?: string;
 }
 
 interface OrdersContextType {
@@ -35,7 +37,9 @@ interface OrdersContextType {
   addOrder: (order: Omit<Order, 'id' | 'createdAt'>) => void;
   updateOrderStatus: (orderId: string, status: OrderStatus) => void;
   deleteOrder: (orderId: string) => void;
+  archiveOrder: (orderId: string) => void;
   getOrdersByType: (type: OrderType) => Order[];
+  getArchivedOrders: () => Order[];
 }
 
 const OrdersContext = createContext<OrdersContextType | undefined>(undefined);
@@ -71,8 +75,20 @@ export const OrdersProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     setOrders(prev => prev.filter(order => order.id !== orderId));
   };
 
+  const archiveOrder = (orderId: string) => {
+    setOrders(prev =>
+      prev.map(order =>
+        order.id === orderId ? { ...order, archived: true, archivedAt: new Date().toISOString() } : order
+      )
+    );
+  };
+
   const getOrdersByType = (type: OrderType) => {
-    return orders.filter(order => order.type === type);
+    return orders.filter(order => order.type === type && !order.archived);
+  };
+
+  const getArchivedOrders = () => {
+    return orders.filter(order => order.archived);
   };
 
   return (
@@ -82,7 +98,9 @@ export const OrdersProvider: React.FC<{ children: React.ReactNode }> = ({ childr
         addOrder,
         updateOrderStatus,
         deleteOrder,
+        archiveOrder,
         getOrdersByType,
+        getArchivedOrders,
       }}
     >
       {children}

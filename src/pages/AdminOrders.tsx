@@ -11,9 +11,10 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { useOrders, OrderStatus } from '@/contexts/OrdersContext';
 import { useNotifications } from '@/contexts/NotificationsContext';
 import { toast } from '@/hooks/use-toast';
-import { ShoppingCart, Store, Package, CheckCircle, XCircle, Trash2, Search } from 'lucide-react';
+import { ShoppingCart, Store, Package, CheckCircle, XCircle, Trash2, Search, Archive, History } from 'lucide-react';
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/ui/command';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { useNavigate } from 'react-router-dom';
 
 // Datos mock de productos para el formulario de tienda física
 const mockProducts = [
@@ -24,8 +25,9 @@ const mockProducts = [
 ];
 
 const AdminOrders = () => {
-  const { orders, addOrder, updateOrderStatus, deleteOrder } = useOrders();
+  const { orders, addOrder, updateOrderStatus, deleteOrder, archiveOrder } = useOrders();
   const { addNotification } = useNotifications();
+  const navigate = useNavigate();
   const [selectedProduct, setSelectedProduct] = useState('');
   const [quantity, setQuantity] = useState(1);
   const [customerName, setCustomerName] = useState('');
@@ -141,6 +143,20 @@ const AdminOrders = () => {
     }
   };
 
+  const handleArchiveOrder = (orderId: string) => {
+    archiveOrder(orderId);
+    addNotification({
+      type: 'order',
+      title: 'Pedido archivado',
+      message: `El pedido ${orderId} ha sido archivado`,
+      time: 'Ahora',
+    });
+    toast({
+      title: "Pedido archivado",
+      description: "El pedido ha sido archivado exitosamente",
+    });
+  };
+
   const OrderCard = ({ order, showDeliveryInfo = true }: { order: any; showDeliveryInfo?: boolean }) => (
     <Card className="w-full">
       <CardHeader className="p-4 pb-3">
@@ -153,6 +169,15 @@ const AdminOrders = () => {
           </div>
           <div className="flex items-center gap-1.5 md:gap-2 flex-shrink-0">
             {getStatusBadge(order.status)}
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => handleArchiveOrder(order.id)}
+              className="text-muted-foreground hover:text-foreground hover:bg-muted h-8 w-8 md:h-10 md:w-10"
+              title="Archivar pedido"
+            >
+              <Archive className="h-4 w-4 md:h-5 md:w-5" />
+            </Button>
             <Button
               variant="ghost"
               size="icon"
@@ -262,6 +287,18 @@ const AdminOrders = () => {
           <AdminHeader title="Gestión de Pedidos" />
 
           <main className="p-3 md:p-4 lg:p-6 space-y-6 md:space-y-8 max-w-full overflow-x-hidden">
+            {/* Botón para ir al historial */}
+            <div className="flex justify-end">
+              <Button
+                onClick={() => navigate('/admin/pedidos/historial')}
+                variant="outline"
+                className="gap-2"
+              >
+                <History className="h-4 w-4" />
+                Ver Historial de Pedidos
+              </Button>
+            </div>
+
             {/* Sección 1: Pedidos desde el carrito */}
             <div className="space-y-3 md:space-y-4">
               <div className="px-1">
