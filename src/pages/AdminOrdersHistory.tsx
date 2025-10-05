@@ -250,16 +250,22 @@ const AdminOrdersHistory = () => {
                               </div>
                             </TableCell>
                             <TableCell className="text-center">
-                              <Button
-                                variant="outline"
-                                size="sm"
-                                onClick={() => handleRestoreOrder(order.id)}
-                                className="gap-1"
-                                title="Restaurar pedido"
-                              >
-                                <RotateCcw className="h-4 w-4" />
-                                <span className="hidden md:inline">Restaurar</span>
-                              </Button>
+                              {order.archived ? (
+                                <Button
+                                  variant="outline"
+                                  size="sm"
+                                  onClick={() => handleRestoreOrder(order.id)}
+                                  className="gap-1"
+                                  title="Restaurar pedido"
+                                >
+                                  <RotateCcw className="h-4 w-4" />
+                                  <span className="hidden md:inline">Restaurar</span>
+                                </Button>
+                              ) : (
+                                <Badge variant="secondary" className="text-xs">
+                                  Activo
+                                </Badge>
+                              )}
                             </TableCell>
                           </TableRow>
                         ))}

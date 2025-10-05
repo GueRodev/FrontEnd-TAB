@@ -97,7 +97,9 @@ export const OrdersProvider: React.FC<{ children: React.ReactNode }> = ({ childr
   };
 
   const getArchivedOrders = () => {
-    return orders.filter(order => order.archived);
+    // Devuelve todos los pedidos que alguna vez fueron archivados (tienen archivedAt)
+    // independientemente de si fueron restaurados después
+    return orders.filter(order => order.archivedAt);
   };
 
   return (
