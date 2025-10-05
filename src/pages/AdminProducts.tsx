@@ -650,7 +650,7 @@ const AdminProducts: React.FC = () => {
             {/* Price Row */}
             <div className="space-y-2">
               <Label htmlFor="price" className="text-gray-900 font-medium">
-                Precio (USD) *
+                Precio (₡) *
               </Label>
               <Input
                 id="price"
@@ -875,7 +875,7 @@ const AdminProducts: React.FC = () => {
             {/* Price Row */}
             <div className="space-y-2">
               <Label htmlFor="edit-price" className="text-gray-900 font-medium">
-                Precio ($) *
+                Precio (₡) *
               </Label>
               <Input
                 id="edit-price"
