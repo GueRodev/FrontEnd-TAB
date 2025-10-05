@@ -137,14 +137,18 @@ const Header: React.FC = () => {
                   <Link 
                     to="/account" 
                     className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors"
+                    onClick={() => setIsProfileMenuOpen(false)}
                   >
                     <User size={16} />
                     Mi Perfil
                   </Link>
                   <div className="border-t border-gray-100" />
                   <button 
-                    onClick={handleLogout}
-                    className="w-full flex items-center gap-2 px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors"
+                    onClick={() => {
+                      handleLogout();
+                      setIsProfileMenuOpen(false);
+                    }}
+                    className="w-full flex items-center gap-2 px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors text-left"
                   >
                     <LogOut size={16} />
                     Cerrar Sesión
