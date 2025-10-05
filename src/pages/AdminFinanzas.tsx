@@ -275,6 +275,96 @@ const AdminFinanzas = () => {
               </Card>
             </div>
 
+            {/* Tabla de Ventas Recientes */}
+            <Card>
+              <CardHeader>
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                  <div>
+                    <CardTitle className="text-base md:text-lg lg:text-xl">
+                      Ventas Recientes
+                    </CardTitle>
+                    <CardDescription className="text-xs md:text-sm">
+                      Últimas 10 transacciones completadas
+                    </CardDescription>
+                  </div>
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button variant="outline" size="sm" className="text-xs md:text-sm h-8 md:h-9">
+                        <Download className="h-3 w-3 md:h-4 md:w-4 mr-2" />
+                        Exportar Informe
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end">
+                      <DropdownMenuItem onClick={exportToPDF} className="text-xs md:text-sm">
+                        <FileText className="h-4 w-4 mr-2" />
+                        Exportar como PDF
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onClick={exportToCSV} className="text-xs md:text-sm">
+                        <FileSpreadsheet className="h-4 w-4 mr-2" />
+                        Exportar como Excel (CSV)
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </div>
+              </CardHeader>
+              <CardContent>
+                <div className="overflow-x-auto">
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead className="text-xs md:text-sm">ID Pedido</TableHead>
+                        <TableHead className="text-xs md:text-sm">Fecha</TableHead>
+                        <TableHead className="text-xs md:text-sm">Cliente</TableHead>
+                        <TableHead className="text-xs md:text-sm">Tipo</TableHead>
+                        <TableHead className="text-xs md:text-sm text-right">Total</TableHead>
+                        <TableHead className="text-xs md:text-sm">Estado</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {recentOrders.length === 0 ? (
+                        <TableRow>
+                          <TableCell colSpan={6} className="text-center text-muted-foreground text-xs md:text-sm py-8">
+                            No hay ventas completadas aún
+                          </TableCell>
+                        </TableRow>
+                      ) : (
+                        recentOrders.map((order) => (
+                          <TableRow key={order.id}>
+                            <TableCell className="font-medium text-xs md:text-sm">
+                              {order.id}
+                            </TableCell>
+                            <TableCell className="text-xs md:text-sm">
+                              {format(new Date(order.createdAt), 'dd/MM/yyyy HH:mm', { locale: es })}
+                            </TableCell>
+                            <TableCell className="text-xs md:text-sm">
+                              {order.customerInfo.nombre}
+                            </TableCell>
+                            <TableCell className="text-xs md:text-sm">
+                              <Badge variant="outline" className="text-xs">
+                                {order.type === 'online' ? 'En línea' : 'En tienda'}
+                              </Badge>
+                            </TableCell>
+                            <TableCell className="text-right font-semibold text-xs md:text-sm">
+                              ₡{order.total.toFixed(2)}
+                            </TableCell>
+                            <TableCell>
+                              <Badge 
+                                variant={order.status === 'completed' ? 'default' : 'secondary'}
+                                className="text-xs"
+                              >
+                                {order.status === 'completed' ? 'Completado' : 
+                                 order.status === 'pending' ? 'Pendiente' : 'Cancelado'}
+                              </Badge>
+                            </TableCell>
+                          </TableRow>
+                        ))
+                      )}
+                    </TableBody>
+                  </Table>
+                </div>
+              </CardContent>
+            </Card>
+
             {/* Gráfico de Ventas por Mes */}
             <Card>
               <CardHeader>
@@ -389,96 +479,6 @@ const AdminFinanzas = () => {
                       </TableBody>
                     </Table>
                   </div>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Tabla de Ventas Recientes */}
-            <Card>
-              <CardHeader>
-                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-                  <div>
-                    <CardTitle className="text-base md:text-lg lg:text-xl">
-                      Ventas Recientes
-                    </CardTitle>
-                    <CardDescription className="text-xs md:text-sm">
-                      Últimas 10 transacciones completadas
-                    </CardDescription>
-                  </div>
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <Button variant="outline" size="sm" className="text-xs md:text-sm h-8 md:h-9">
-                        <Download className="h-3 w-3 md:h-4 md:w-4 mr-2" />
-                        Exportar Informe
-                      </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end">
-                      <DropdownMenuItem onClick={exportToPDF} className="text-xs md:text-sm">
-                        <FileText className="h-4 w-4 mr-2" />
-                        Exportar como PDF
-                      </DropdownMenuItem>
-                      <DropdownMenuItem onClick={exportToCSV} className="text-xs md:text-sm">
-                        <FileSpreadsheet className="h-4 w-4 mr-2" />
-                        Exportar como Excel (CSV)
-                      </DropdownMenuItem>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                </div>
-              </CardHeader>
-              <CardContent>
-                <div className="overflow-x-auto">
-                  <Table>
-                    <TableHeader>
-                      <TableRow>
-                        <TableHead className="text-xs md:text-sm">ID Pedido</TableHead>
-                        <TableHead className="text-xs md:text-sm">Fecha</TableHead>
-                        <TableHead className="text-xs md:text-sm">Cliente</TableHead>
-                        <TableHead className="text-xs md:text-sm">Tipo</TableHead>
-                        <TableHead className="text-xs md:text-sm text-right">Total</TableHead>
-                        <TableHead className="text-xs md:text-sm">Estado</TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {recentOrders.length === 0 ? (
-                        <TableRow>
-                          <TableCell colSpan={6} className="text-center text-muted-foreground text-xs md:text-sm py-8">
-                            No hay ventas completadas aún
-                          </TableCell>
-                        </TableRow>
-                      ) : (
-                        recentOrders.map((order) => (
-                          <TableRow key={order.id}>
-                            <TableCell className="font-medium text-xs md:text-sm">
-                              {order.id}
-                            </TableCell>
-                            <TableCell className="text-xs md:text-sm">
-                              {format(new Date(order.createdAt), 'dd/MM/yyyy HH:mm', { locale: es })}
-                            </TableCell>
-                            <TableCell className="text-xs md:text-sm">
-                              {order.customerInfo.nombre}
-                            </TableCell>
-                            <TableCell className="text-xs md:text-sm">
-                              <Badge variant="outline" className="text-xs">
-                                {order.type === 'online' ? 'En línea' : 'En tienda'}
-                              </Badge>
-                            </TableCell>
-                            <TableCell className="text-right font-semibold text-xs md:text-sm">
-                              ₡{order.total.toFixed(2)}
-                            </TableCell>
-                            <TableCell>
-                              <Badge 
-                                variant={order.status === 'completed' ? 'default' : 'secondary'}
-                                className="text-xs"
-                              >
-                                {order.status === 'completed' ? 'Completado' : 
-                                 order.status === 'pending' ? 'Pendiente' : 'Cancelado'}
-                              </Badge>
-                            </TableCell>
-                          </TableRow>
-                        ))
-                      )}
-                    </TableBody>
-                  </Table>
                 </div>
               </CardContent>
             </Card>
