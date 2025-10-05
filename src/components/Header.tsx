@@ -25,6 +25,7 @@ const Header: React.FC = () => {
   const { categories } = useCategories();
   const navigate = useNavigate();
   const cartCount = getTotalItems();
+  const profileMenuTimeoutRef = React.useRef<NodeJS.Timeout | null>(null);
 
   // Handle scroll event to change header style
   useEffect(() => {
@@ -45,6 +46,28 @@ const Header: React.FC = () => {
     // Por ahora solo redirige al inicio
     navigate('/');
   };
+
+  const handleProfileMenuEnter = () => {
+    if (profileMenuTimeoutRef.current) {
+      clearTimeout(profileMenuTimeoutRef.current);
+    }
+    setIsProfileMenuOpen(true);
+  };
+
+  const handleProfileMenuLeave = () => {
+    profileMenuTimeoutRef.current = setTimeout(() => {
+      setIsProfileMenuOpen(false);
+    }, 300); // 300ms de delay antes de cerrar
+  };
+
+  // Limpiar timeout al desmontar
+  useEffect(() => {
+    return () => {
+      if (profileMenuTimeoutRef.current) {
+        clearTimeout(profileMenuTimeoutRef.current);
+      }
+    };
+  }, []);
 
   return (
     <header 
@@ -121,18 +144,18 @@ const Header: React.FC = () => {
             <Heart size={22} />
           </Link>
           
-          {/* Dropdown Menu de Perfil con Hover */}
+          {/* Dropdown Menu de Perfil con Hover mejorado */}
           <div 
             className="relative"
-            onMouseEnter={() => setIsProfileMenuOpen(true)}
-            onMouseLeave={() => setIsProfileMenuOpen(false)}
+            onMouseEnter={handleProfileMenuEnter}
+            onMouseLeave={handleProfileMenuLeave}
           >
             <button className="hover:text-brand-orange transition-colors focus:outline-none">
               <User size={22} />
             </button>
             
             {isProfileMenuOpen && (
-              <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg border z-50 animate-fade-in">
+              <div className="absolute right-0 mt-1 w-48 bg-white rounded-md shadow-lg border z-50 animate-fade-in">
                 <div className="py-1">
                   <Link 
                     to="/account" 
