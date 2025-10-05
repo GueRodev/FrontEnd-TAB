@@ -25,7 +25,7 @@ const mockProducts = [
 ];
 
 const AdminOrders = () => {
-  const { orders, addOrder, updateOrderStatus, deleteOrder, archiveOrder } = useOrders();
+  const { addOrder, updateOrderStatus, deleteOrder, archiveOrder, getOrdersByType } = useOrders();
   const { addNotification } = useNotifications();
   const navigate = useNavigate();
   const [selectedProduct, setSelectedProduct] = useState('');
@@ -37,8 +37,8 @@ const AdminOrders = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [openProductSearch, setOpenProductSearch] = useState(false);
 
-  const onlineOrders = orders.filter(o => o.type === 'online');
-  const inStoreOrders = orders.filter(o => o.type === 'in-store');
+  const onlineOrders = getOrdersByType('online');
+  const inStoreOrders = getOrdersByType('in-store');
 
   // Obtener categorías únicas
   const categories = ['all', ...Array.from(new Set(mockProducts.map(p => p.category)))];
