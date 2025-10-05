@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar';
+import { SidebarProvider } from '@/components/ui/sidebar';
 import { AdminSidebar } from '@/components/AdminSidebar';
+import AdminHeader from '@/components/AdminHeader';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Plus, Search, GripVertical, Edit2, Trash2, ChevronDown, ChevronRight } from 'lucide-react';
@@ -295,10 +296,7 @@ const AdminCategorias: React.FC = () => {
         <AdminSidebar />
         
         <main className="flex-1 flex flex-col bg-background">
-          <header className="bg-card border-b px-6 py-4 flex items-center gap-4">
-            <SidebarTrigger />
-            <h2 className="text-xl font-semibold">Gestión de Categorías</h2>
-          </header>
+          <AdminHeader title="Gestión de Categorías" />
 
           <div className="flex-1 p-4 md:p-8">
             <div className="max-w-7xl mx-auto">

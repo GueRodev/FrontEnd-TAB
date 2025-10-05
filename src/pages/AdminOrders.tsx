@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { AdminSidebar } from '@/components/AdminSidebar';
-import { SidebarProvider, SidebarInset, SidebarTrigger } from '@/components/ui/sidebar';
+import { SidebarProvider, SidebarInset } from '@/components/ui/sidebar';
+import AdminHeader from '@/components/AdminHeader';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -224,10 +225,7 @@ const AdminOrders = () => {
       <div className="min-h-screen flex w-full">
         <AdminSidebar />
         <SidebarInset className="flex-1">
-          <header className="sticky top-0 z-10 flex h-14 md:h-16 items-center gap-2 md:gap-4 border-b bg-background px-4 md:px-6">
-            <SidebarTrigger />
-            <h1 className="text-xl md:text-2xl font-bold">Gestión de Pedidos</h1>
-          </header>
+          <AdminHeader title="Gestión de Pedidos" />
 
           <main className="p-3 md:p-4 lg:p-6 space-y-6 md:space-y-8 max-w-full overflow-x-hidden">
             {/* Sección 1: Pedidos desde el carrito */}

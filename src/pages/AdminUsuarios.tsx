@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar';
+import { SidebarProvider } from '@/components/ui/sidebar';
 import { AdminSidebar } from '@/components/AdminSidebar';
+import AdminHeader from '@/components/AdminHeader';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent } from '@/components/ui/card';
@@ -204,11 +205,7 @@ const AdminUsuarios: React.FC = () => {
         <AdminSidebar />
         
         <main className="flex-1 flex flex-col bg-gray-50">
-          {/* Header with Toggle */}
-          <header className="bg-white border-b border-gray-200 px-4 sm:px-6 py-4 flex items-center gap-4">
-            <SidebarTrigger className="text-gray-600 hover:text-[#F97316]" />
-            <h2 className="text-lg sm:text-xl font-semibold text-gray-800">Gestión de Usuarios</h2>
-          </header>
+          <AdminHeader title="Gestión de Usuarios" />
 
           {/* Main Content */}
           <div className="flex-1 p-4 sm:p-6 lg:p-8 space-y-8">
