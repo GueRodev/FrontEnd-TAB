@@ -104,7 +104,17 @@ const defaultCategories: Category[] = [
 export const CategoriesProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [categories, setCategories] = useState<Category[]>(() => {
     const stored = localStorage.getItem('categories');
-    return stored ? JSON.parse(stored) : defaultCategories;
+    const parsedCategories = stored ? JSON.parse(stored) : defaultCategories;
+    
+    // Limpiar subcategorías de Lego si existen (migración de datos)
+    const cleanedCategories = parsedCategories.map((cat: Category) => {
+      if (cat.slug === 'lego' && cat.subcategories.length > 0) {
+        return { ...cat, subcategories: [] };
+      }
+      return cat;
+    });
+    
+    return cleanedCategories;
   });
 
   useEffect(() => {
