@@ -34,6 +34,7 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { useNotifications } from '@/contexts/NotificationsContext';
 import { useCategories } from '@/contexts/CategoriesContext';
+import { useProducts } from '@/contexts/ProductsContext';
 import { toast } from '@/hooks/use-toast';
 
 // Mock data - replace with actual data from your backend
@@ -70,6 +71,7 @@ const mockProducts = [
 const AdminProducts: React.FC = () => {
   const { addNotification } = useNotifications();
   const { categories } = useCategories();
+  const { products, addProduct, updateProduct, deleteProduct } = useProducts();
   const [searchQuery, setSearchQuery] = useState('');
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
@@ -124,9 +126,27 @@ const AdminProducts: React.FC = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Aquí implementarás la lógica para guardar el producto
-    console.log('Form data:', formData);
-    console.log('Image:', selectedImage);
+    
+    if (!formData.name || !formData.category || !formData.price || !selectedImage) {
+      toast({
+        title: "Error",
+        description: "Por favor completa todos los campos requeridos",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    // Create product
+    addProduct({
+      name: formData.name,
+      categoryId: formData.category,
+      subcategoryId: formData.subcategory || undefined,
+      price: parseFloat(formData.price),
+      stock: parseInt(formData.stock) || 0,
+      description: formData.description,
+      image: selectedImage,
+      status: formData.status as 'active' | 'inactive',
+    });
     
     // Agregar notificación
     addNotification({
@@ -157,10 +177,27 @@ const AdminProducts: React.FC = () => {
 
   const handleUpdateProduct = (e: React.FormEvent) => {
     e.preventDefault();
-    // Aquí implementarás la lógica para actualizar el producto
-    console.log('Updating product:', selectedProduct.id);
-    console.log('Form data:', formData);
-    console.log('Image:', selectedImage);
+    
+    if (!selectedProduct || !formData.name || !formData.category || !formData.price) {
+      toast({
+        title: "Error",
+        description: "Por favor completa todos los campos requeridos",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    // Update product
+    updateProduct(selectedProduct.id, {
+      name: formData.name,
+      categoryId: formData.category,
+      subcategoryId: formData.subcategory || undefined,
+      price: parseFloat(formData.price),
+      stock: parseInt(formData.stock) || 0,
+      description: formData.description,
+      image: selectedImage || selectedProduct.image,
+      status: formData.status as 'active' | 'inactive',
+    });
     
     // Agregar notificación
     addNotification({
@@ -188,6 +225,17 @@ const AdminProducts: React.FC = () => {
     });
     setSelectedImage(null);
     setSelectedProduct(null);
+  };
+
+  const handleDeleteProduct = (productId: string) => {
+    const product = products.find(p => p.id === productId);
+    if (product) {
+      deleteProduct(productId);
+      toast({
+        title: "Producto eliminado",
+        description: `${product.name} ha sido eliminado del inventario`,
+      });
+    }
   };
 
   return (
@@ -247,7 +295,7 @@ const AdminProducts: React.FC = () => {
                 <CardContent className="p-4 md:p-6">
                   <div className="mb-4">
                     <h3 className="text-base md:text-lg font-semibold text-gray-900">
-                      Productos ({mockProducts.length})
+                      Productos ({products.length})
                     </h3>
                   </div>
                   
@@ -266,75 +314,81 @@ const AdminProducts: React.FC = () => {
                         </TableRow>
                       </TableHeader>
                       <TableBody>
-                        {mockProducts.map((product) => (
-                          <TableRow key={product.id} className="hover:bg-gray-50">
-                            <TableCell>
-                              <img 
-                                src={product.image} 
-                                alt={product.name}
-                                className="w-16 h-16 object-cover rounded-lg"
-                              />
-                            </TableCell>
-                            <TableCell className="font-medium text-gray-900">
-                              {product.name}
-                            </TableCell>
-                            <TableCell className="text-gray-600">
-                              {product.category}
-                            </TableCell>
-                            <TableCell className="text-gray-900 font-medium">
-                              ₡{product.price.toFixed(2)}
-                            </TableCell>
-                            <TableCell>
-                              <span className={`font-medium ${
-                                product.stock === 0 
-                                  ? 'text-red-600' 
-                                  : product.stock < 10 
-                                  ? 'text-orange-600' 
-                                  : 'text-green-600'
-                              }`}>
-                                {product.stock}
-                              </span>
-                            </TableCell>
-                            <TableCell>
-                              <Badge 
-                                variant={product.status === 'active' ? 'default' : 'secondary'}
-                                className={
-                                  product.status === 'active' 
-                                    ? 'bg-green-100 text-green-800 hover:bg-green-100' 
-                                    : 'bg-gray-100 text-gray-800 hover:bg-gray-100'
-                                }
-                              >
-                                {product.status === 'active' ? 'Activo' : 'Inactivo'}
-                              </Badge>
-                            </TableCell>
-                            <TableCell className="text-right">
-                              <div className="flex justify-end gap-2">
-                                <Button
-                                  variant="ghost"
-                                  size="icon"
-                                  className="h-8 w-8 text-gray-600 hover:text-[#F97316] hover:bg-[#F97316]/10"
-                                  onClick={() => handleEditProduct(product)}
+                        {products.map((product) => {
+                          const category = categories.find(c => c.id === product.categoryId);
+                          return (
+                            <TableRow key={product.id} className="hover:bg-gray-50">
+                              <TableCell>
+                                <img 
+                                  src={product.image} 
+                                  alt={product.name}
+                                  className="w-16 h-16 object-cover rounded-lg"
+                                />
+                              </TableCell>
+                              <TableCell className="font-medium text-gray-900">
+                                {product.name}
+                              </TableCell>
+                              <TableCell className="text-gray-600">
+                                {category?.name || 'Sin categoría'}
+                              </TableCell>
+                              <TableCell className="text-gray-900 font-medium">
+                                ₡{product.price.toFixed(2)}
+                              </TableCell>
+                              <TableCell>
+                                <span className={`font-medium ${
+                                  product.stock === 0 
+                                    ? 'text-red-600' 
+                                    : product.stock < 10 
+                                    ? 'text-orange-600' 
+                                    : 'text-green-600'
+                                }`}>
+                                  {product.stock}
+                                </span>
+                              </TableCell>
+                              <TableCell>
+                                <Badge 
+                                  variant={product.status === 'active' ? 'default' : 'secondary'}
+                                  className={
+                                    product.status === 'active' 
+                                      ? 'bg-green-100 text-green-800 hover:bg-green-100' 
+                                      : 'bg-gray-100 text-gray-800 hover:bg-gray-100'
+                                  }
                                 >
-                                  <Pencil className="h-4 w-4" />
-                                </Button>
-                                <Button
-                                  variant="ghost"
-                                  size="icon"
-                                  className="h-8 w-8 text-gray-600 hover:text-red-600 hover:bg-red-50"
-                                >
-                                  <Trash2 className="h-4 w-4" />
-                                </Button>
-                              </div>
-                            </TableCell>
-                          </TableRow>
-                        ))}
+                                  {product.status === 'active' ? 'Activo' : 'Inactivo'}
+                                </Badge>
+                              </TableCell>
+                              <TableCell className="text-right">
+                                <div className="flex justify-end gap-2">
+                                  <Button
+                                    variant="ghost"
+                                    size="icon"
+                                    className="h-8 w-8 text-gray-600 hover:text-[#F97316] hover:bg-[#F97316]/10"
+                                    onClick={() => handleEditProduct(product)}
+                                  >
+                                    <Pencil className="h-4 w-4" />
+                                  </Button>
+                                  <Button
+                                    variant="ghost"
+                                    size="icon"
+                                    className="h-8 w-8 text-gray-600 hover:text-red-600 hover:bg-red-50"
+                                    onClick={() => handleDeleteProduct(product.id)}
+                                  >
+                                    <Trash2 className="h-4 w-4" />
+                                  </Button>
+                                </div>
+                              </TableCell>
+                            </TableRow>
+                          );
+                        })}
                       </TableBody>
                     </Table>
                   </div>
 
                   {/* Mobile/Tablet Card View */}
                   <div className="lg:hidden space-y-3">
-                    {mockProducts.map((product) => (
+                    {products.map((product) => {
+                      const category = categories.find(c => c.id === product.categoryId);
+                      return (
                       <div key={product.id} className="border rounded-lg p-3 hover:bg-gray-50 transition-colors">
                         <div className="flex flex-col gap-3">
                           {/* Product Header with Image and Title */}
@@ -365,7 +419,7 @@ const AdminProducts: React.FC = () => {
                           <div className="grid grid-cols-3 gap-2 text-xs">
                             <div className="text-center">
                               <p className="text-gray-600 mb-1">Categoría</p>
-                              <p className="font-medium text-gray-900">{product.category}</p>
+                              <p className="font-medium text-gray-900">{category?.name || 'Sin categoría'}</p>
                             </div>
                             <div className="text-center">
                               <p className="text-gray-600 mb-1">Precio</p>
@@ -400,6 +454,7 @@ const AdminProducts: React.FC = () => {
                               variant="outline"
                               size="sm"
                               className="flex-1 text-xs h-8 text-gray-600 hover:text-red-600 hover:bg-red-50"
+                              onClick={() => handleDeleteProduct(product.id)}
                             >
                               <Trash2 className="h-3 w-3 mr-1" />
                               Eliminar
@@ -407,7 +462,8 @@ const AdminProducts: React.FC = () => {
                           </div>
                         </div>
                       </div>
-                    ))}
+                      );
+                    })}
                   </div>
                 </CardContent>
               </Card>

@@ -1,99 +1,106 @@
-
-import React, { useState } from 'react';
+import React, { useMemo } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { toast } from '@/hooks/use-toast';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import ProductCard from '@/components/ProductCard';
+import { useProducts } from '@/contexts/ProductsContext';
+import { useCategories } from '@/contexts/CategoriesContext';
+import { useCart } from '@/contexts/CartContext';
+import { useWishlist } from '@/contexts/WishlistContext';
 
 const CategoryPage: React.FC = () => {
-  const { category } = useParams<{ category: string }>();
-  const [wishlist, setWishlist] = useState<string[]>([]);
-  
-  // This would come from your API based on the category
-  const categoryData = {
-    'lego': {
-      name: 'Sets LEGO',
-      description: 'Explora nuestra extensa colección de sets LEGO para todas las edades e intereses.',
-      image: '/lovable-uploads/51190e3f-2193-4b2a-85ac-e5453680e7bf.png'
-    },
-    'funkos': {
-      name: 'Funkos',
-      description: 'Descubre nuestra colección de Funko Pop de todas tus series y películas favoritas.',
-      image: '/lovable-uploads/51190e3f-2193-4b2a-85ac-e5453680e7bf.png'
-    },
-    'anime': {
-      name: 'Anime',
-      description: 'Encuentra figuras y coleccionables de tus animes favoritos.',
-      image: '/lovable-uploads/9c75102e-2923-40ad-8aaf-ff7279ad2993.png'
-    },
-    'coleccionables': {
-      name: 'Coleccionables',
-      description: 'Explora nuestros coleccionables premium para fanáticos y coleccionistas dedicados.',
-      image: '/lovable-uploads/17088b0e-dee8-4716-b76d-00be5a07559d.png'
-    },
-    'peluches': {
-      name: 'Peluches',
-      description: 'Descubre nuestra adorable colección de peluches para todas las edades.',
-      image: '/lovable-uploads/fbc358a3-bb7b-4fe9-aba6-e1d0b71a13a0.png'
-    },
-    'starwars': {
-      name: 'Star Wars',
-      description: 'Descubre la mejor mercancía y coleccionables de Star Wars para fanáticos de todas las edades.',
-      image: '/lovable-uploads/9c75102e-2923-40ad-8aaf-ff7279ad2993.png'
-    },
-    'harrypotter': {
-      name: 'Harry Potter',
-      description: 'Colección mágica de productos de Harry Potter.',
-      image: '/lovable-uploads/fbc358a3-bb7b-4fe9-aba6-e1d0b71a13a0.png'
-    },
-    'otros': {
-      name: 'Otros',
-      description: 'Explora nuestra variada selección de productos únicos y especiales.',
-      image: '/lovable-uploads/17088b0e-dee8-4716-b76d-00be5a07559d.png'
-    },
-  }[category || 'funkos'];
+  const { category, subcategory } = useParams<{ category: string; subcategory?: string }>();
+  const { categories } = useCategories();
+  const { getProductsByCategory, getProductsBySubcategory } = useProducts();
+  const { addToCart } = useCart();
+  const { wishlist, addToWishlist, removeFromWishlist } = useWishlist();
 
-  const products = Array.from({ length: 9 }).map((_, index) => ({
-    id: `product-${index}`,
-    name: index % 3 === 0 ? 'LEGO Star Wars X-Wing Fighter' : 
-         index % 3 === 1 ? 'Marvel Avengers Iron Man Action Figure' : 
-         'DC Comics Batman Batmobile',
-    image: index % 3 === 0 ? '/lovable-uploads/51190e3f-2193-4b2a-85ac-e5453680e7bf.png' : 
-           index % 3 === 1 ? '/lovable-uploads/9c75102e-2923-40ad-8aaf-ff7279ad2993.png' : 
-           '/lovable-uploads/fbc358a3-bb7b-4fe9-aba6-e1d0b71a13a0.png',
-    price: (29.99 + index * 10) * 550,
-    badge: (index % 4 === 0 ? 'new' : index % 5 === 0 ? 'sale' : undefined) as 'new' | 'sale' | undefined,
-  }));
+  // Find the current category
+  const currentCategory = useMemo(() => 
+    categories.find(cat => cat.slug === category),
+    [categories, category]
+  );
+
+  // Find the current subcategory if provided
+  const currentSubcategory = useMemo(() => {
+    if (!subcategory || !currentCategory) return undefined;
+    return currentCategory.subcategories.find(sub => sub.slug === subcategory);
+  }, [currentCategory, subcategory]);
+
+  // Get products based on category or subcategory
+  const products = useMemo(() => {
+    if (!currentCategory) return [];
+    
+    if (currentSubcategory) {
+      return getProductsBySubcategory(currentSubcategory.id);
+    }
+    
+    return getProductsByCategory(currentCategory.id);
+  }, [currentCategory, currentSubcategory, getProductsByCategory, getProductsBySubcategory]);
 
   const toggleWishlist = (e: React.MouseEvent, productId: string) => {
     e.preventDefault();
     e.stopPropagation();
     
-    if (wishlist.includes(productId)) {
-      setWishlist(wishlist.filter(id => id !== productId));
+    if (wishlist.some(item => item.id === productId)) {
+      removeFromWishlist(productId);
       toast({
         title: "Eliminado de favoritos",
         description: "El producto ha sido eliminado de tus favoritos",
       });
     } else {
-      setWishlist([...wishlist, productId]);
+      const product = products.find(p => p.id === productId);
+      if (product) {
+        addToWishlist({
+          id: product.id,
+          name: product.name,
+          price: product.price,
+          image: product.image,
+          category: currentCategory.name,
+        });
+        toast({
+          title: "Agregado a favoritos",
+          description: "El producto ha sido agregado a tus favoritos",
+        });
+      }
+    }
+  };
+
+  const handleAddToCart = (e: React.MouseEvent, productId: string) => {
+    e.preventDefault();
+    e.stopPropagation();
+    const product = products.find(p => p.id === productId);
+    if (product) {
+      addToCart({
+        id: product.id,
+        name: product.name,
+        price: product.price,
+        image: product.image,
+      });
       toast({
-        title: "Agregado a favoritos",
-        description: "El producto ha sido agregado a tus favoritos",
+        title: "Agregado al carrito",
+        description: `${product.name} ha sido agregado a tu carrito`,
       });
     }
   };
 
-  const addToCart = (e: React.MouseEvent, productId: string) => {
-    e.preventDefault();
-    e.stopPropagation();
-    const product = products.find(p => p.id === productId);
-    toast({
-      title: "Agregado al carrito",
-      description: `${product?.name} ha sido agregado a tu carrito`,
-    });
-  };
+  if (!currentCategory) {
+    return (
+      <>
+        <Header />
+        <main className="pt-20 min-h-screen flex items-center justify-center">
+          <div className="text-center">
+            <h1 className="text-3xl font-bold text-brand-darkBlue mb-4">Categoría no encontrada</h1>
+            <Link to="/" className="text-brand-orange hover:underline">
+              Volver al inicio
+            </Link>
+          </div>
+        </main>
+        <Footer />
+      </>
+    );
+  }
 
   return (
     <>
@@ -108,7 +115,18 @@ const CategoryPage: React.FC = () => {
                 INICIO
               </Link>
               <span>/</span>
-              <span>{categoryData?.name?.toUpperCase() || 'CATEGORÍA'}</span>
+              <Link 
+                to={`/category/${currentCategory.slug}`} 
+                className="hover:text-brand-orange transition-colors"
+              >
+                {currentCategory.name.toUpperCase()}
+              </Link>
+              {currentSubcategory && (
+                <>
+                  <span>/</span>
+                  <span>{currentSubcategory.name.toUpperCase()}</span>
+                </>
+              )}
             </div>
           </div>
         </div>
@@ -116,21 +134,38 @@ const CategoryPage: React.FC = () => {
         {/* Category Header */}
         <div className="container mx-auto px-4 py-12">
           <h1 className="text-3xl md:text-4xl font-display font-bold text-brand-darkBlue mb-2">
-            {categoryData?.name || 'Categoría'}
+            {currentSubcategory ? currentSubcategory.name : currentCategory.name}
           </h1>
           <p className="text-gray-600">
-            {categoryData?.description || 'Explora nuestra colección de productos.'}
+            {currentSubcategory ? currentSubcategory.description : currentCategory.description}
           </p>
         </div>
 
-        {/* Product Area */}
+        {/* Products Grid */}
         <div className="container mx-auto px-4 py-8">
-          <div className="w-full">
-            {/* Products */}
-            <div className="w-full">
-              {/* Products will be added here */}
+          {products.length > 0 ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+              {products.map((product) => (
+                <ProductCard
+                  key={product.id}
+                  id={product.id}
+                  name={product.name}
+                  price={product.price}
+                  image={product.image}
+                  category={currentCategory.name}
+                  isWishlisted={wishlist.some(item => item.id === product.id)}
+                  onToggleWishlist={(e) => toggleWishlist(e, product.id)}
+                  onAddToCart={(e) => handleAddToCart(e, product.id)}
+                />
+              ))}
             </div>
-          </div>
+          ) : (
+            <div className="text-center py-12">
+              <p className="text-gray-500 text-lg">
+                No hay productos disponibles en esta categoría
+              </p>
+            </div>
+          )}
         </div>
       </main>
       
