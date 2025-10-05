@@ -87,7 +87,8 @@ export const OrdersProvider: React.FC<{ children: React.ReactNode }> = ({ childr
   const unarchiveOrder = (orderId: string) => {
     setOrders(prev =>
       prev.map(order =>
-        order.id === orderId ? { ...order, archived: false, archivedAt: undefined } : order
+        // Solo cambiamos archived a false, pero mantenemos archivedAt para el historial
+        order.id === orderId ? { ...order, archived: false } : order
       )
     );
   };
