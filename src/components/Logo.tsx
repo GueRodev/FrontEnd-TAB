@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 
 interface LogoProps {
@@ -8,6 +8,22 @@ interface LogoProps {
 }
 
 const Logo: React.FC<LogoProps> = ({ variant = 'default', className = '' }) => {
+  const [customLogo, setCustomLogo] = useState<string | null>(null);
+
+  useEffect(() => {
+    // Check for custom logo on mount
+    const logo = localStorage.getItem('customLogo');
+    setCustomLogo(logo);
+
+    // Listen for logo updates
+    const handleLogoUpdate = () => {
+      const updatedLogo = localStorage.getItem('customLogo');
+      setCustomLogo(updatedLogo);
+    };
+
+    window.addEventListener('logoUpdated', handleLogoUpdate);
+    return () => window.removeEventListener('logoUpdated', handleLogoUpdate);
+  }, []);
   const getLogoClasses = () => {
     switch (variant) {
       case 'white':
@@ -19,6 +35,23 @@ const Logo: React.FC<LogoProps> = ({ variant = 'default', className = '' }) => {
     }
   };
 
+  // If custom logo exists, show it
+  if (customLogo) {
+    return (
+      <Link 
+        to="/" 
+        className={`flex items-center transition-transform hover:scale-105 ${className}`}
+      >
+        <img 
+          src={customLogo} 
+          alt="Logo" 
+          className={`object-contain ${variant === 'small' ? 'h-8' : 'h-10 md:h-12'}`}
+        />
+      </Link>
+    );
+  }
+
+  // Default logo
   return (
     <Link 
       to="/" 

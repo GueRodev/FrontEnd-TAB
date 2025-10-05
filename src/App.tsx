@@ -21,6 +21,7 @@ import AdminCategorias from "./pages/AdminCategorias";
 import AdminUsuarios from "./pages/AdminUsuarios";
 import AdminOrders from "./pages/AdminOrders";
 import AdminFinanzas from "./pages/AdminFinanzas";
+import AdminConfiguracion from "./pages/AdminConfiguracion";
 
 const queryClient = new QueryClient();
 
@@ -47,6 +48,7 @@ const App = () => (
                 <Route path="/admin/usuarios" element={<AdminUsuarios />} />
                 <Route path="/admin/pedidos" element={<AdminOrders />} />
                 <Route path="/admin/finanzas" element={<AdminFinanzas />} />
+                <Route path="/admin/configuracion" element={<AdminConfiguracion />} />
                 <Route path="/new-arrivals" element={<CategoryPage />} />
                 <Route path="/limited-editions" element={<CategoryPage />} />
                 <Route path="/on-sale" element={<CategoryPage />} />
