@@ -17,6 +17,7 @@ import CategoryPage from "./pages/CategoryPage";
 import Wishlist from "./pages/Wishlist";
 import Account from "./pages/Account";
 import Cart from "./pages/Cart";
+import Auth from "./pages/Auth";
 import Admin from "./pages/Admin";
 import AdminProducts from "./pages/AdminProducts";
 import AdminCategorias from "./pages/AdminCategorias";
@@ -44,6 +45,7 @@ const App = () => (
                   <ScrollToTop />
                 <Routes>
                 <Route path="/" element={<Index />} />
+                <Route path="/auth" element={<Auth />} />
                 <Route path="/category/:category" element={<CategoryPage />} />
                 <Route path="/category/:category/:subcategory" element={<CategoryPage />} />
                 <Route path="/wishlist" element={<Wishlist />} />

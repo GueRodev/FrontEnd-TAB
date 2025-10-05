@@ -43,8 +43,8 @@ const Header: React.FC = () => {
 
   const handleLogout = () => {
     // TODO: Implementar lógica de cierre de sesión cuando se integre autenticación
-    // Por ahora solo redirige al inicio
-    navigate('/');
+    // Por ahora solo redirige a la página de login
+    navigate('/auth');
   };
 
   const handleProfileMenuEnter = () => {
