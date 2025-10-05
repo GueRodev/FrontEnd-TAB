@@ -61,7 +61,7 @@ export function AdminSidebar() {
 
   return (
     <Sidebar 
-      className="!bg-[#1A1F2C] border-none" 
+      className="!bg-[#1A1F2C] border-none z-50" 
       style={{ backgroundColor: '#1A1F2C' }}
       collapsible="icon"
     >
