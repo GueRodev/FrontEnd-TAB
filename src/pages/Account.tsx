@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { User, Mail, Phone, MapPin, Calendar, Edit2, Save, X } from 'lucide-react';
+import { User, Mail, Phone, MapPin, Edit2, Save, X } from 'lucide-react';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
+import DecorativeBackground from '@/components/DecorativeBackground';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -14,7 +15,6 @@ interface UserProfile {
   email: string;
   phone: string;
   address: string;
-  memberSince: string;
 }
 
 const Account: React.FC = () => {
@@ -23,8 +23,7 @@ const Account: React.FC = () => {
     name: 'Usuario Demo',
     email: 'usuario@toysandbricks.com',
     phone: '+1 234 567 8900',
-    address: 'Calle Principal 123, Ciudad',
-    memberSince: 'Enero 2024'
+    address: 'Calle Principal 123, Ciudad'
   });
 
   const [editedProfile, setEditedProfile] = useState<UserProfile>(profile);
@@ -58,11 +57,7 @@ const Account: React.FC = () => {
       
       {/* Hero-style background section */}
       <section className="pt-24 md:pt-32 pb-8 bg-gradient-to-b from-brand-yellow to-white relative overflow-hidden">
-        <div className="absolute inset-0 z-0 overflow-hidden">
-          <div className="absolute -right-24 -top-24 w-64 h-64 rounded-full bg-brand-orange opacity-10"></div>
-          <div className="absolute left-1/3 top-1/3 w-32 h-32 rounded-full bg-brand-purple opacity-10"></div>
-          <div className="absolute right-1/4 bottom-1/4 w-48 h-48 rounded-full bg-brand-skyBlue opacity-10"></div>
-        </div>
+        <DecorativeBackground />
         
         {/* Breadcrumb */}
         <div className="container mx-auto px-4 relative z-10">
@@ -190,15 +185,6 @@ const Account: React.FC = () => {
                   )}
                 </div>
 
-                {/* Member Since */}
-                <div className="space-y-2">
-                  <Label className="flex items-center gap-2 text-brand-darkBlue">
-                    <Calendar size={18} />
-                    Miembro Desde
-                  </Label>
-                  <p className="text-gray-700 py-2">{profile.memberSince}</p>
-                </div>
-
                 {/* Action Buttons */}
                 {isEditing && (
                   <div className="flex gap-3 pt-4">
@@ -221,39 +207,6 @@ const Account: React.FC = () => {
                 )}
               </CardContent>
             </Card>
-
-            {/* Additional Cards */}
-            <div className="grid md:grid-cols-2 gap-6 mt-6">
-              <Card>
-                <CardHeader>
-                  <CardTitle>Mis Pedidos</CardTitle>
-                  <CardDescription>Historial de compras</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-gray-600 mb-4">No tienes pedidos recientes</p>
-                  <Link to="/orders">
-                    <Button variant="outline" className="w-full">
-                      Ver Historial
-                    </Button>
-                  </Link>
-                </CardContent>
-              </Card>
-
-              <Card>
-                <CardHeader>
-                  <CardTitle>Favoritos</CardTitle>
-                  <CardDescription>Productos guardados</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-gray-600 mb-4">Explora tus productos favoritos</p>
-                  <Link to="/wishlist">
-                    <Button variant="outline" className="w-full">
-                      Ver Favoritos
-                    </Button>
-                  </Link>
-                </CardContent>
-              </Card>
-            </div>
           </div>
         </div>
       </section>
