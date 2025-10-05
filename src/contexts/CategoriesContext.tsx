@@ -34,12 +34,7 @@ const defaultCategories: Category[] = [
     order: 1,
     slug: 'lego',
     isExpanded: false,
-    subcategories: [
-      { id: 's1', name: 'Sets', description: 'Sets completos de LEGO', order: 1, slug: 'lego/sets' },
-      { id: 's2', name: 'Polybag', description: 'Sets pequeños en bolsa', order: 2, slug: 'lego/polybag' },
-      { id: 's3', name: 'Figuras', description: 'Minifiguras LEGO', order: 3, slug: 'lego/figuras' },
-      { id: 's4', name: 'Piezas', description: 'Piezas sueltas', order: 4, slug: 'lego/piezas' },
-    ],
+    subcategories: [],
   },
   {
     id: '2',

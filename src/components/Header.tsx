@@ -6,14 +6,6 @@ import Logo from './Logo';
 import { cn } from '@/lib/utils';
 import { useCart } from '@/contexts/CartContext';
 import { useCategories } from '@/contexts/CategoriesContext';
-import {
-  NavigationMenu,
-  NavigationMenuContent,
-  NavigationMenuItem,
-  NavigationMenuLink,
-  NavigationMenuList,
-  NavigationMenuTrigger,
-} from "@/components/ui/navigation-menu";
 
 const Header: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -31,12 +23,9 @@ const Header: React.FC = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Get sorted categories and separate Lego from others
-  const { legoCategory, otherCategories } = useMemo(() => {
-    const sorted = [...categories].sort((a, b) => a.order - b.order);
-    const lego = sorted.find(cat => cat.slug === 'lego');
-    const others = sorted.filter(cat => cat.slug !== 'lego');
-    return { legoCategory: lego, otherCategories: others };
+  // Get sorted categories
+  const sortedCategories = useMemo(() => {
+    return [...categories].sort((a, b) => a.order - b.order);
   }, [categories]);
 
   return (
@@ -54,42 +43,7 @@ const Header: React.FC = () => {
         
         {/* Desktop Navigation */}
         <nav className="hidden lg:flex items-center space-x-8">
-          {legoCategory && legoCategory.subcategories.length > 0 ? (
-            <NavigationMenu>
-              <NavigationMenuList>
-                <NavigationMenuItem>
-                  <NavigationMenuTrigger className="text-brand-darkBlue font-semibold hover:text-brand-orange transition-colors bg-transparent hover:bg-transparent focus:bg-transparent data-[active]:bg-transparent data-[state=open]:bg-transparent">
-                    {legoCategory.name}
-                  </NavigationMenuTrigger>
-                  <NavigationMenuContent>
-                    <div className="grid w-[200px] gap-1 p-2 bg-white shadow-lg border rounded-md">
-                      {legoCategory.subcategories
-                        .sort((a, b) => a.order - b.order)
-                        .map((subcategory) => (
-                          <NavigationMenuLink key={subcategory.id} asChild>
-                            <Link
-                              to={`/category/${subcategory.slug}`}
-                              className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
-                            >
-                              <div className="text-sm font-medium leading-none">{subcategory.name}</div>
-                            </Link>
-                          </NavigationMenuLink>
-                        ))}
-                    </div>
-                  </NavigationMenuContent>
-                </NavigationMenuItem>
-              </NavigationMenuList>
-            </NavigationMenu>
-          ) : legoCategory ? (
-            <Link
-              to={`/category/${legoCategory.slug}`}
-              className="text-brand-darkBlue font-semibold hover:text-brand-orange transition-colors relative after:content-[''] after:absolute after:w-full after:scale-x-0 after:h-0.5 after:bottom-0 after:left-0 after:bg-brand-orange after:origin-bottom-right after:transition-transform after:duration-300 hover:after:scale-x-100 hover:after:origin-bottom-left"
-            >
-              {legoCategory.name}
-            </Link>
-          ) : null}
-          
-          {otherCategories.map((category) => (
+          {sortedCategories.map((category) => (
             <Link
               key={category.id}
               to={`/category/${category.slug}`}
@@ -148,27 +102,7 @@ const Header: React.FC = () => {
         <div className="lg:hidden bg-white shadow-lg animate-fade-in absolute top-full left-0 w-full">
           <div className="container mx-auto py-4 px-4">
             <nav className="flex flex-col space-y-4">
-              {legoCategory && legoCategory.subcategories.length > 0 && (
-                <div className="border-b pb-2">
-                  <div className="text-brand-darkBlue font-semibold py-2">{legoCategory.name}</div>
-                  <div className="ml-4 space-y-2">
-                    {legoCategory.subcategories
-                      .sort((a, b) => a.order - b.order)
-                      .map((subcategory) => (
-                        <Link
-                          key={subcategory.id}
-                          to={`/category/${subcategory.slug}`}
-                          className="block text-gray-600 py-1 hover:text-brand-orange transition-colors"
-                          onClick={() => setIsMenuOpen(false)}
-                        >
-                          {subcategory.name}
-                        </Link>
-                      ))}
-                  </div>
-                </div>
-              )}
-              
-              {otherCategories.map((category) => (
+              {sortedCategories.map((category) => (
                 <Link
                   key={category.id}
                   to={`/category/${category.slug}`}
