@@ -4,6 +4,7 @@ import { Trash2, Plus, Minus, ShoppingBag } from 'lucide-react';
 import { useCart } from '@/contexts/CartContext';
 import { useOrders } from '@/contexts/OrdersContext';
 import { useNotifications } from '@/contexts/NotificationsContext';
+import { useProducts } from '@/contexts/ProductsContext';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -16,6 +17,7 @@ const Cart = () => {
   const { items, removeFromCart, updateQuantity, getTotalPrice, clearCart } = useCart();
   const { addOrder } = useOrders();
   const { addNotification } = useNotifications();
+  const { products, updateProduct } = useProducts();
   const [deliveryOption, setDeliveryOption] = useState<'pickup' | 'delivery'>('pickup');
   const [paymentMethod, setPaymentMethod] = useState<string>('');
   
@@ -129,6 +131,16 @@ const Cart = () => {
       message: `Pedido ${orderId} de ${formData.nombre} - Total: ₡${getTotalPrice().toFixed(2)}`,
       time: 'Ahora',
       orderId: orderId,
+    });
+
+    // Actualizar stock de productos
+    items.forEach(item => {
+      const product = products.find(p => p.id === item.id);
+      if (product) {
+        updateProduct(product.id, {
+          stock: product.stock - item.quantity
+        });
+      }
     });
 
     // Abrir WhatsApp

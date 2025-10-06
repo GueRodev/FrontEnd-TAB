@@ -22,7 +22,7 @@ const AdminOrders = () => {
   const { addOrder, updateOrderStatus, deleteOrder, archiveOrder, getOrdersByType } = useOrders();
   const { addNotification } = useNotifications();
   const { categories } = useCategories();
-  const { products } = useProducts();
+  const { products, updateProduct } = useProducts();
   const navigate = useNavigate();
   const [selectedProduct, setSelectedProduct] = useState('');
   const [quantity, setQuantity] = useState(1);
@@ -90,6 +90,11 @@ const AdminOrders = () => {
     };
 
     const orderId = addOrder(newOrder);
+
+    // Actualizar stock del producto
+    updateProduct(product.id, {
+      stock: product.stock - quantity
+    });
 
     // Agregar notificación con el orderId
     addNotification({
