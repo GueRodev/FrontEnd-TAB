@@ -5,7 +5,7 @@ import AdminHeader from '@/components/AdminHeader';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent } from '@/components/ui/card';
-import { Plus, Search, GripVertical, Edit2, Trash2, ChevronDown, ChevronRight, Save } from 'lucide-react';
+import { Plus, GripVertical, Edit2, Trash2, ChevronDown, ChevronRight, Save } from 'lucide-react';
 import {
   Dialog,
   DialogContent,
@@ -306,7 +306,6 @@ const SortableCard: React.FC<SortableRowProps> = ({
 
 const AdminCategorias: React.FC = () => {
   const { categories, setCategories, updateCategoryOrder } = useCategories();
-  const [searchQuery, setSearchQuery] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalType, setModalType] = useState<'category' | 'subcategory'>('category');
   const [selectedCategoryId, setSelectedCategoryId] = useState<string>('');
@@ -679,22 +678,6 @@ const AdminCategorias: React.FC = () => {
                   </>
                 )}
               </div>
-
-              {/* Search */}
-              <Card className="mx-auto w-full">
-                <CardContent className="p-4 md:p-6">
-                  <div className="relative w-full">
-                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
-                    <Input
-                      type="text"
-                      placeholder="Buscar categorías..."
-                      className="pl-9 h-10 border-gray-300 w-full"
-                      value={searchQuery}
-                      onChange={(e) => setSearchQuery(e.target.value)}
-                    />
-                  </div>
-                </CardContent>
-              </Card>
 
               {/* Categories Table/Cards */}
               <div className="bg-card rounded-lg shadow-sm border">
