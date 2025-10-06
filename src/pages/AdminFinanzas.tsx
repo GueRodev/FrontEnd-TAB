@@ -207,22 +207,22 @@ const AdminFinanzas = () => {
         <SidebarInset className="flex-1">
           <AdminHeader title="Finanzas" />
 
-          <main className="p-3 md:p-4 lg:p-6 space-y-3 md:space-y-6">
+          <main className="p-3 md:p-4 lg:p-6 space-y-4 md:space-y-6">
             {/* Cards de Resumen */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
               {/* Ingresos Totales */}
               <Card>
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-1 p-3 md:p-6 md:pb-2">
-                  <CardTitle className="text-xs md:text-base font-medium">
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                  <CardTitle className="text-sm md:text-base font-medium">
                     Ingresos Totales
                   </CardTitle>
                   <DollarSign className="h-4 w-4 md:h-5 md:w-5 text-muted-foreground flex-shrink-0" />
                 </CardHeader>
-                <CardContent className="p-3 pt-0 md:p-6 md:pt-0">
-                  <div className="text-base md:text-xl lg:text-2xl font-bold break-all">
+                <CardContent>
+                  <div className="text-lg md:text-xl lg:text-2xl font-bold break-all">
                     ₡{totalRevenue.toFixed(2)}
                   </div>
-                  <p className="text-[10px] md:text-xs text-muted-foreground mt-0.5">
+                  <p className="text-xs text-muted-foreground mt-1">
                     {completedOrders.length} ventas completadas
                   </p>
                 </CardContent>
@@ -230,17 +230,17 @@ const AdminFinanzas = () => {
 
               {/* Ventas del Mes */}
               <Card>
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-1 p-3 md:p-6 md:pb-2">
-                  <CardTitle className="text-xs md:text-base font-medium">
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                  <CardTitle className="text-sm md:text-base font-medium">
                     Ventas del Mes
                   </CardTitle>
                   <TrendingUp className="h-4 w-4 md:h-5 md:w-5 text-muted-foreground flex-shrink-0" />
                 </CardHeader>
-                <CardContent className="p-3 pt-0 md:p-6 md:pt-0">
-                  <div className="text-base md:text-xl lg:text-2xl font-bold break-all">
+                <CardContent>
+                  <div className="text-lg md:text-xl lg:text-2xl font-bold break-all">
                     ₡{monthlyRevenue.toFixed(2)}
                   </div>
-                  <p className="text-[10px] md:text-xs text-muted-foreground mt-0.5">
+                  <p className="text-xs text-muted-foreground mt-1">
                     {monthlyOrders.length} ventas en {format(new Date(), 'MMMM', { locale: es })}
                   </p>
                 </CardContent>
@@ -248,17 +248,17 @@ const AdminFinanzas = () => {
 
               {/* Total de Pedidos */}
               <Card className="sm:col-span-2 lg:col-span-1">
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-1 p-3 md:p-6 md:pb-2">
-                  <CardTitle className="text-xs md:text-base font-medium">
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                  <CardTitle className="text-sm md:text-base font-medium">
                     Total de Pedidos
                   </CardTitle>
                   <ShoppingCart className="h-4 w-4 md:h-5 md:w-5 text-muted-foreground flex-shrink-0" />
                 </CardHeader>
-                <CardContent className="p-3 pt-0 md:p-6 md:pt-0">
-                  <div className="text-base md:text-xl lg:text-2xl font-bold">
+                <CardContent>
+                  <div className="text-lg md:text-xl lg:text-2xl font-bold">
                     {orders.length}
                   </div>
-                  <p className="text-[10px] md:text-xs text-muted-foreground mt-0.5">
+                  <p className="text-xs text-muted-foreground mt-1">
                     {completedOrders.length} completados, {orders.filter(o => o.status === 'pending').length} pendientes
                   </p>
                 </CardContent>
@@ -267,13 +267,13 @@ const AdminFinanzas = () => {
 
             {/* Tabla de Ventas Recientes */}
             <Card>
-              <CardHeader className="p-3 pb-2 md:p-6">
+              <CardHeader>
                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
                   <div>
-                    <CardTitle className="text-sm md:text-lg lg:text-xl">
+                    <CardTitle className="text-base md:text-lg lg:text-xl">
                       Ventas Recientes
                     </CardTitle>
-                    <CardDescription className="text-[10px] md:text-sm">
+                    <CardDescription className="text-xs md:text-sm">
                       Últimas 10 transacciones completadas
                     </CardDescription>
                   </div>
@@ -284,7 +284,7 @@ const AdminFinanzas = () => {
                 
                 </div>
               </CardHeader>
-              <CardContent className="p-3 pt-0 md:p-6 md:pt-0">
+              <CardContent>
                 <div className="overflow-x-auto">
                   <Table>
                     <TableHeader>
@@ -344,13 +344,13 @@ const AdminFinanzas = () => {
 
             {/* Gráfico de Ventas por Mes */}
             <Card>
-              <CardHeader className="p-3 pb-2 md:p-6">
+              <CardHeader>
                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
                   <div>
-                    <CardTitle className="text-sm md:text-lg lg:text-xl">
+                    <CardTitle className="text-base md:text-lg lg:text-xl">
                       Ventas por Mes
                     </CardTitle>
-                    <CardDescription className="text-[10px] md:text-sm">
+                    <CardDescription className="text-xs md:text-sm">
                       Rendimiento mensual de {selectedYear}
                     </CardDescription>
                   </div>
@@ -377,17 +377,17 @@ const AdminFinanzas = () => {
                   </div>
                 </div>
               </CardHeader>
-              <CardContent className="p-3 pt-0 md:p-6 md:pt-0">
-                <div className="space-y-3 md:space-y-4">
+              <CardContent>
+                <div className="space-y-4">
                   {/* Resumen del año */}
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 md:gap-4 p-2 md:p-4 bg-muted/50 rounded-lg">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 p-4 bg-muted/50 rounded-lg">
                     <div>
-                      <p className="text-[10px] md:text-sm text-muted-foreground">Total Ingresos {selectedYear}</p>
-                      <p className="text-sm md:text-lg lg:text-xl font-bold break-all">₡{yearlyStats.revenue.toFixed(2)}</p>
+                      <p className="text-xs text-muted-foreground">Total Ingresos {selectedYear}</p>
+                      <p className="text-lg md:text-xl font-bold break-all">₡{yearlyStats.revenue.toFixed(2)}</p>
                     </div>
                     <div>
-                      <p className="text-[10px] md:text-sm text-muted-foreground">Total Ventas {selectedYear}</p>
-                      <p className="text-sm md:text-lg lg:text-xl font-bold">{yearlyStats.count}</p>
+                      <p className="text-xs text-muted-foreground">Total Ventas {selectedYear}</p>
+                      <p className="text-lg md:text-xl font-bold">{yearlyStats.count}</p>
                     </div>
                   </div>
 
