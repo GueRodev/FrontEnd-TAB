@@ -24,7 +24,6 @@ import AdminCategorias from "./pages/AdminCategorias";
 import AdminUsuarios from "./pages/AdminUsuarios";
 import AdminOrders from "./pages/AdminOrders";
 import AdminOrdersHistory from "./pages/AdminOrdersHistory";
-import AdminFinanzas from "./pages/AdminFinanzas";
 import AdminConfiguracion from "./pages/AdminConfiguracion";
 import AdminProfile from "./pages/AdminProfile";
 
@@ -57,7 +56,6 @@ const App = () => (
                 <Route path="/admin/usuarios" element={<AdminUsuarios />} />
                 <Route path="/admin/pedidos" element={<AdminOrders />} />
                 <Route path="/admin/pedidos/historial" element={<AdminOrdersHistory />} />
-                <Route path="/admin/finanzas" element={<AdminFinanzas />} />
                 <Route path="/admin/configuracion" element={<AdminConfiguracion />} />
                 <Route path="/admin/perfil" element={<AdminProfile />} />
                 <Route path="/new-arrivals" element={<CategoryPage />} />

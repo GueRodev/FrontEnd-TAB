@@ -6,7 +6,6 @@ import {
   FolderTree, 
   Users, 
   ShoppingCart, 
-  DollarSign, 
   Settings, 
   LogOut,
   Package2,
@@ -32,7 +31,6 @@ const menuItems = [
   { title: "Categorías", url: "/admin/categorias", icon: FolderTree },
   { title: "Usuarios", url: "/admin/usuarios", icon: Users },
   { title: "Pedidos", url: "/admin/pedidos", icon: ShoppingCart },
-  { title: "Finanzas", url: "/admin/finanzas", icon: DollarSign },
 ];
 
 const footerItems = [
