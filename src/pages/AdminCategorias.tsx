@@ -4,6 +4,7 @@ import { AdminSidebar } from '@/components/AdminSidebar';
 import AdminHeader from '@/components/AdminHeader';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { Card, CardContent } from '@/components/ui/card';
 import { Plus, Search, GripVertical, Edit2, Trash2, ChevronDown, ChevronRight, Save } from 'lucide-react';
 import {
   Dialog,
@@ -111,10 +112,12 @@ const SortableRow: React.FC<SortableRowProps> = ({
                 <ChevronRight className="h-4 w-4" />
               )}
             </button>
-            <span className="font-medium">{category.name}</span>
+            <div>
+              <div className="font-medium">{category.name}</div>
+              <div className="text-sm text-muted-foreground">{category.description}</div>
+            </div>
           </div>
         </td>
-        <td className="px-6 py-4 text-muted-foreground">{category.description}</td>
         <td className="px-6 py-4 text-center">{category.subcategories.length}</td>
         <td className="px-6 py-4">
           <div className="flex items-center gap-2">
@@ -141,10 +144,12 @@ const SortableRow: React.FC<SortableRowProps> = ({
           <td className="px-6 py-3">
             <div className="flex items-center gap-2 pl-12">
               <span className="text-sm text-muted-foreground">└─</span>
-              <span className="text-sm">{sub.name}</span>
+              <div>
+                <div className="text-sm font-medium">{sub.name}</div>
+                <div className="text-xs text-muted-foreground">{sub.description}</div>
+              </div>
             </div>
           </td>
-          <td className="px-6 py-3 text-sm text-muted-foreground">{sub.description}</td>
           <td className="px-6 py-3"></td>
           <td className="px-6 py-3">
             <div className="flex items-center gap-2">
@@ -618,78 +623,81 @@ const AdminCategorias: React.FC = () => {
         <SidebarInset className="flex-1">
           <AdminHeader title="Gestión de Categorías" />
 
-          <div className="flex-1 p-3 md:p-6">
-            <div className="max-w-7xl mx-auto">
-              <div className="mb-4 md:mb-6">
-                <h1 className="text-xl md:text-2xl lg:text-3xl font-bold mb-1 md:mb-2">Categorías y Subcategorías</h1>
-                <p className="text-muted-foreground text-xs md:text-sm">
-                  Gestiona las categorías de productos. Arrastra para cambiar el orden de visualización.
-                </p>
+          <div className="flex-1 p-4 md:p-8">
+            <div className="max-w-7xl mx-auto space-y-4 md:space-y-6">
+              {/* Page Header */}
+              <div className="flex flex-col gap-4">
+                <div className="text-center sm:text-left">
+                  <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 mb-1 md:mb-2">
+                    Categorías y Subcategorías
+                  </h1>
+                  <p className="text-gray-600 text-sm md:text-base lg:text-lg">
+                    Gestiona las categorías de productos. Arrastra para cambiar el orden de visualización.
+                  </p>
+                </div>
               </div>
 
-              <div className="bg-card rounded-lg shadow-sm border">
-                <div className="p-3 md:p-6 border-b space-y-3">
-                  <div className="flex flex-col gap-2 md:gap-3">
-                    <div className="flex flex-col sm:flex-row gap-2 w-full">
-                      <Button 
-                        onClick={() => handleOpenModal('category')}
-                        size="sm"
-                        className="w-full sm:w-auto text-xs md:text-sm h-8 md:h-9"
-                      >
-                        <Plus className="h-3 w-3 md:h-4 md:w-4 mr-1 md:mr-2" />
-                        <span className="hidden sm:inline">Agregar Categoría</span>
-                        <span className="sm:hidden">Categoría</span>
-                      </Button>
-                      <Button 
-                        variant="outline"
-                        size="sm"
-                        className="w-full sm:w-auto text-xs md:text-sm h-8 md:h-9"
-                        onClick={() => {
-                          if (categories.length > 0) {
-                            handleOpenModal('subcategory', categories[0].id);
-                          }
-                        }}
-                      >
-                        <Plus className="h-3 w-3 md:h-4 md:w-4 mr-1 md:mr-2" />
-                        <span className="hidden sm:inline">Agregar Subcategoría</span>
-                        <span className="sm:hidden">Subcategoría</span>
-                      </Button>
-                    </div>
+              {/* Action Buttons */}
+              <div className="flex flex-col sm:flex-row gap-2 w-full">
+                <Button 
+                  onClick={() => handleOpenModal('category')}
+                  className="w-full sm:w-auto"
+                >
+                  <Plus className="h-4 w-4 mr-2" />
+                  Agregar Categoría
+                </Button>
+                <Button 
+                  variant="outline"
+                  className="w-full sm:w-auto"
+                  onClick={() => {
+                    if (categories.length > 0) {
+                      handleOpenModal('subcategory', categories[0].id);
+                    }
+                  }}
+                >
+                  <Plus className="h-4 w-4 mr-2" />
+                  Agregar Subcategoría
+                </Button>
+                
+                {hasUnsavedChanges && (
+                  <>
+                    <Button 
+                      onClick={handleSaveChanges}
+                      className="w-full sm:w-auto"
+                      variant="default"
+                    >
+                      <Save className="h-4 w-4 mr-2" />
+                      Guardar Cambios
+                    </Button>
+                    <Button 
+                      onClick={handleCancelChanges}
+                      variant="outline"
+                      className="w-full sm:w-auto"
+                    >
+                      Descartar Cambios
+                    </Button>
+                  </>
+                )}
+              </div>
 
-                    {hasUnsavedChanges && (
-                      <div className="flex flex-col sm:flex-row gap-2 w-full">
-                        <Button 
-                          onClick={handleSaveChanges}
-                          size="sm"
-                          className="w-full sm:flex-1 text-xs md:text-sm h-8 md:h-9"
-                          variant="default"
-                        >
-                          <Save className="h-3 w-3 md:h-4 md:w-4 mr-1 md:mr-2" />
-                          Guardar
-                        </Button>
-                        <Button 
-                          onClick={handleCancelChanges}
-                          size="sm"
-                          variant="outline"
-                          className="w-full sm:flex-1 text-xs md:text-sm h-8 md:h-9"
-                        >
-                          Descartar
-                        </Button>
-                      </div>
-                    )}
-                    
-                    <div className="relative w-full">
-                      <Search className="absolute left-2 md:left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-3 w-3 md:h-4 md:w-4" />
-                      <Input
-                        type="text"
-                        placeholder="Buscar categorías..."
-                        className="pl-7 md:pl-10 w-full text-xs md:text-sm h-8 md:h-9"
-                        value={searchQuery}
-                        onChange={(e) => setSearchQuery(e.target.value)}
-                      />
-                    </div>
+              {/* Search */}
+              <Card className="mx-auto w-full">
+                <CardContent className="p-4 md:p-6">
+                  <div className="relative w-full">
+                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+                    <Input
+                      type="text"
+                      placeholder="Buscar categorías..."
+                      className="pl-9 h-10 border-gray-300 w-full"
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                    />
                   </div>
-                </div>
+                </CardContent>
+              </Card>
+
+              {/* Categories Table/Cards */}
+              <div className="bg-card rounded-lg shadow-sm border">
 
                 {/* Desktop Table View */}
                 <div className="hidden md:block overflow-x-auto">
@@ -697,7 +705,6 @@ const AdminCategorias: React.FC = () => {
                     <thead className="bg-muted/50 border-b">
                       <tr>
                         <th className="px-6 py-3 text-left text-sm font-medium">Nombre</th>
-                        <th className="px-6 py-3 text-left text-sm font-medium">Descripción</th>
                         <th className="px-6 py-3 text-center text-sm font-medium">Subcategorías</th>
                         <th className="px-6 py-3 text-left text-sm font-medium">Acciones</th>
                       </tr>
