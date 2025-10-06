@@ -628,10 +628,10 @@ const AdminCategorias: React.FC = () => {
               <div className="flex flex-col gap-4">
                 <div className="text-center sm:text-left">
                   <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 mb-1 md:mb-2">
-                    Categorías y Subcategorías
+                    Categorías
                   </h1>
                   <p className="text-gray-600 text-sm md:text-base lg:text-lg">
-                    Gestiona las categorías de productos. Arrastra para cambiar el orden de visualización.
+                    Gestiona la Categoría de Productos
                   </p>
                 </div>
               </div>
