@@ -214,11 +214,11 @@ const AdminFinanzas = () => {
         <SidebarInset className="flex-1">
           <AdminHeader title="Finanzas" />
 
-          <main className="p-3 md:p-4 lg:p-6 space-y-4 md:space-y-6">
+          <main className="p-4 md:p-4 lg:p-6 space-y-4 md:space-y-6 overflow-x-hidden">
             {/* Cards de Métricas Principales */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 w-full">
               {/* Ingresos Totales */}
-              <Card>
+              <Card className="w-full max-w-full min-w-0">
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                   <CardTitle className="text-sm md:text-base font-medium">
                     Ingresos Totales
@@ -226,7 +226,7 @@ const AdminFinanzas = () => {
                   <DollarSign className="h-4 w-4 md:h-5 md:w-5 text-muted-foreground flex-shrink-0" />
                 </CardHeader>
                 <CardContent>
-                  <div className="text-lg md:text-xl lg:text-2xl font-bold break-all">
+                  <div className="text-lg md:text-xl lg:text-2xl font-bold break-words">
                     ₡{totalRevenue.toFixed(2)}
                   </div>
                   <p className="text-xs text-muted-foreground mt-1">
@@ -236,7 +236,7 @@ const AdminFinanzas = () => {
               </Card>
 
               {/* Ventas del Mes */}
-              <Card>
+              <Card className="w-full max-w-full min-w-0">
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                   <CardTitle className="text-sm md:text-base font-medium">
                     Ventas del Mes
@@ -244,7 +244,7 @@ const AdminFinanzas = () => {
                   <TrendingUp className="h-4 w-4 md:h-5 md:w-5 text-green-500 flex-shrink-0" />
                 </CardHeader>
                 <CardContent>
-                  <div className="text-lg md:text-xl lg:text-2xl font-bold break-all">
+                  <div className="text-lg md:text-xl lg:text-2xl font-bold break-words">
                     ₡{monthlyRevenue.toFixed(2)}
                   </div>
                   <p className="text-xs text-muted-foreground mt-1">
@@ -254,7 +254,7 @@ const AdminFinanzas = () => {
               </Card>
 
               {/* Ventas de Hoy */}
-              <Card>
+              <Card className="w-full max-w-full min-w-0">
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                   <CardTitle className="text-sm md:text-base font-medium">
                     Ventas de Hoy
@@ -262,7 +262,7 @@ const AdminFinanzas = () => {
                   <Clock className="h-4 w-4 md:h-5 md:w-5 text-blue-500 flex-shrink-0" />
                 </CardHeader>
                 <CardContent>
-                  <div className="text-lg md:text-xl lg:text-2xl font-bold break-all">
+                  <div className="text-lg md:text-xl lg:text-2xl font-bold break-words">
                     ₡{todayRevenue.toFixed(2)}
                   </div>
                   <p className="text-xs text-muted-foreground mt-1">
@@ -272,7 +272,7 @@ const AdminFinanzas = () => {
               </Card>
 
               {/* Total de Pedidos */}
-              <Card>
+              <Card className="w-full max-w-full min-w-0">
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                   <CardTitle className="text-sm md:text-base font-medium">
                     Total de Pedidos
@@ -291,7 +291,7 @@ const AdminFinanzas = () => {
             </div>
 
             {/* Ventas Recientes */}
-            <Card>
+            <Card className="w-full max-w-full min-w-0">
               <CardHeader>
                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
                   <div>
@@ -357,7 +357,7 @@ const AdminFinanzas = () => {
             </Card>
 
             {/* Gráfico de Ventas por Mes */}
-            <Card>
+            <Card className="w-full max-w-full min-w-0">
               <CardHeader>
                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
                   <div>
