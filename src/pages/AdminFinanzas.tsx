@@ -4,7 +4,6 @@ import { AdminSidebar } from "@/components/AdminSidebar";
 import AdminHeader from '@/components/AdminHeader';
 import { useOrders } from "@/contexts/OrdersContext";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -12,7 +11,8 @@ import {
   DollarSign, 
   TrendingUp, 
   ShoppingCart, 
-  Calendar
+  Calendar,
+  Clock
 } from "lucide-react";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
@@ -36,6 +36,13 @@ const AdminFinanzas = () => {
   });
   const monthlyRevenue = monthlyOrders.reduce((sum, order) => sum + order.total, 0);
 
+  // Ventas del día
+  const today = new Date().toDateString();
+  const todayOrders = completedOrders.filter(order => 
+    new Date(order.createdAt).toDateString() === today
+  );
+  const todayRevenue = todayOrders.reduce((sum, order) => sum + order.total, 0);
+
   // Ordenar por fecha más reciente
   const recentOrders = [...completedOrders]
     .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
@@ -54,8 +61,8 @@ const AdminFinanzas = () => {
   // Datos de ventas por mes para el año seleccionado
   const monthlyData = useMemo(() => {
     const months = [
-      'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
-      'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
+      'Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun',
+      'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'
     ];
 
     const data = months.map((month, index) => {
@@ -208,8 +215,8 @@ const AdminFinanzas = () => {
           <AdminHeader title="Finanzas" />
 
           <main className="p-3 md:p-4 lg:p-6 space-y-4 md:space-y-6">
-            {/* Cards de Resumen */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
+            {/* Cards de Métricas Principales */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
               {/* Ingresos Totales */}
               <Card>
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -234,38 +241,56 @@ const AdminFinanzas = () => {
                   <CardTitle className="text-sm md:text-base font-medium">
                     Ventas del Mes
                   </CardTitle>
-                  <TrendingUp className="h-4 w-4 md:h-5 md:w-5 text-muted-foreground flex-shrink-0" />
+                  <TrendingUp className="h-4 w-4 md:h-5 md:w-5 text-green-500 flex-shrink-0" />
                 </CardHeader>
                 <CardContent>
                   <div className="text-lg md:text-xl lg:text-2xl font-bold break-all">
                     ₡{monthlyRevenue.toFixed(2)}
                   </div>
                   <p className="text-xs text-muted-foreground mt-1">
-                    {monthlyOrders.length} ventas en {format(new Date(), 'MMMM', { locale: es })}
+                    {monthlyOrders.length} pedidos en {format(new Date(), 'MMMM', { locale: es })}
+                  </p>
+                </CardContent>
+              </Card>
+
+              {/* Ventas de Hoy */}
+              <Card>
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                  <CardTitle className="text-sm md:text-base font-medium">
+                    Ventas de Hoy
+                  </CardTitle>
+                  <Clock className="h-4 w-4 md:h-5 md:w-5 text-blue-500 flex-shrink-0" />
+                </CardHeader>
+                <CardContent>
+                  <div className="text-lg md:text-xl lg:text-2xl font-bold break-all">
+                    ₡{todayRevenue.toFixed(2)}
+                  </div>
+                  <p className="text-xs text-muted-foreground mt-1">
+                    {todayOrders.length} pedidos hoy
                   </p>
                 </CardContent>
               </Card>
 
               {/* Total de Pedidos */}
-              <Card className="sm:col-span-2 lg:col-span-1">
+              <Card>
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                   <CardTitle className="text-sm md:text-base font-medium">
                     Total de Pedidos
                   </CardTitle>
-                  <ShoppingCart className="h-4 w-4 md:h-5 md:w-5 text-muted-foreground flex-shrink-0" />
+                  <ShoppingCart className="h-4 w-4 md:h-5 md:w-5 text-orange-500 flex-shrink-0" />
                 </CardHeader>
                 <CardContent>
                   <div className="text-lg md:text-xl lg:text-2xl font-bold">
                     {orders.length}
                   </div>
                   <p className="text-xs text-muted-foreground mt-1">
-                    {completedOrders.length} completados, {orders.filter(o => o.status === 'pending').length} pendientes
+                    {completedOrders.length} completados
                   </p>
                 </CardContent>
               </Card>
             </div>
 
-            {/* Tabla de Ventas Recientes */}
+            {/* Ventas Recientes */}
             <Card>
               <CardHeader>
                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
@@ -281,7 +306,6 @@ const AdminFinanzas = () => {
                     onExportPDF={exportToPDF}
                     onExportExcel={exportToCSV}
                   />
-                
                 </div>
               </CardHeader>
               <CardContent>
@@ -289,18 +313,17 @@ const AdminFinanzas = () => {
                   <Table>
                     <TableHeader>
                       <TableRow>
-                        <TableHead className="text-xs md:text-sm">ID Pedido</TableHead>
+                        <TableHead className="text-xs md:text-sm">ID</TableHead>
                         <TableHead className="text-xs md:text-sm">Fecha</TableHead>
                         <TableHead className="text-xs md:text-sm">Cliente</TableHead>
                         <TableHead className="text-xs md:text-sm">Tipo</TableHead>
                         <TableHead className="text-xs md:text-sm text-right">Total</TableHead>
-                        <TableHead className="text-xs md:text-sm">Estado</TableHead>
                       </TableRow>
                     </TableHeader>
                     <TableBody>
                       {recentOrders.length === 0 ? (
                         <TableRow>
-                          <TableCell colSpan={6} className="text-center text-muted-foreground text-xs md:text-sm py-8">
+                          <TableCell colSpan={5} className="text-center text-muted-foreground text-xs md:text-sm py-8">
                             No hay ventas completadas aún
                           </TableCell>
                         </TableRow>
@@ -308,30 +331,21 @@ const AdminFinanzas = () => {
                         recentOrders.map((order) => (
                           <TableRow key={order.id}>
                             <TableCell className="font-medium text-xs md:text-sm">
-                              {order.id}
+                              #{order.id.slice(0, 8)}
                             </TableCell>
                             <TableCell className="text-xs md:text-sm">
-                              {format(new Date(order.createdAt), 'dd/MM/yyyy HH:mm', { locale: es })}
+                              {format(new Date(order.createdAt), 'dd/MM/yy', { locale: es })}
                             </TableCell>
                             <TableCell className="text-xs md:text-sm">
                               {order.customerInfo.nombre}
                             </TableCell>
                             <TableCell className="text-xs md:text-sm">
                               <Badge variant="outline" className="text-xs">
-                                {order.type === 'online' ? 'En línea' : 'En tienda'}
+                                {order.type === 'online' ? 'Online' : 'Tienda'}
                               </Badge>
                             </TableCell>
                             <TableCell className="text-right font-semibold text-xs md:text-sm">
                               ₡{order.total.toFixed(2)}
-                            </TableCell>
-                            <TableCell>
-                              <Badge 
-                                variant={order.status === 'completed' ? 'default' : 'secondary'}
-                                className="text-xs"
-                              >
-                                {order.status === 'completed' ? 'Completado' : 
-                                 order.status === 'pending' ? 'Pendiente' : 'Cancelado'}
-                              </Badge>
                             </TableCell>
                           </TableRow>
                         ))
@@ -392,40 +406,33 @@ const AdminFinanzas = () => {
                   </div>
 
                   {/* Gráfico */}
-                  <div className="h-[250px] sm:h-[300px] lg:h-[350px] w-full">
+                  <div className="h-[250px] sm:h-[300px] w-full">
                     <ResponsiveContainer width="100%" height="100%">
-                      <BarChart data={monthlyData} margin={{ bottom: 60, left: 0, right: 10, top: 10 }}>
+                      <BarChart data={monthlyData} margin={{ bottom: 50, left: 0, right: 10, top: 10 }}>
                         <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
                         <XAxis 
                           dataKey="mes" 
                           tick={{ fontSize: 10 }}
                           angle={-45}
                           textAnchor="end"
-                          height={70}
+                          height={60}
                           interval={0}
                         />
-                        <YAxis tick={{ fontSize: 10 }} width={60} />
+                        <YAxis tick={{ fontSize: 10 }} width={50} />
                         <Tooltip
                           contentStyle={{ 
                             backgroundColor: 'hsl(var(--card))',
                             border: '1px solid hsl(var(--border))',
                             borderRadius: '8px',
-                            fontSize: '12px'
+                            fontSize: '11px'
                           }}
                           formatter={(value: number, name: string) => {
                             if (name === 'ingresos') return [`₡${value.toFixed(2)}`, 'Ingresos'];
                             return [value, 'Ventas'];
                           }}
                         />
-                        <Legend 
-                          wrapperStyle={{ fontSize: '12px' }}
-                          formatter={(value) => {
-                            if (value === 'ingresos') return 'Ingresos (₡)';
-                            return 'Cantidad de Ventas';
-                          }}
-                        />
-                        <Bar dataKey="ingresos" fill="#F97316" name="ingresos" radius={[8, 8, 0, 0]} />
-                        <Bar dataKey="ventas" fill="#1A1F2C" name="ventas" radius={[8, 8, 0, 0]} />
+                        <Bar dataKey="ingresos" fill="#F97316" name="ingresos" radius={[4, 4, 0, 0]} />
+                        <Bar dataKey="ventas" fill="#1A1F2C" name="ventas" radius={[4, 4, 0, 0]} />
                       </BarChart>
                     </ResponsiveContainer>
                   </div>
