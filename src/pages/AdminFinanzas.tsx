@@ -309,15 +309,15 @@ const AdminFinanzas = () => {
                 </div>
               </CardHeader>
               <CardContent>
-                <div className="overflow-x-auto">
-                  <Table>
+                <div className="overflow-x-auto -mx-6 px-6 md:mx-0 md:px-0">
+                  <Table className="min-w-[600px]">
                     <TableHeader>
                       <TableRow>
-                        <TableHead className="text-xs md:text-sm">ID</TableHead>
-                        <TableHead className="text-xs md:text-sm">Fecha</TableHead>
-                        <TableHead className="text-xs md:text-sm">Cliente</TableHead>
-                        <TableHead className="text-xs md:text-sm">Tipo</TableHead>
-                        <TableHead className="text-xs md:text-sm text-right">Total</TableHead>
+                        <TableHead className="text-xs md:text-sm whitespace-nowrap">ID</TableHead>
+                        <TableHead className="text-xs md:text-sm whitespace-nowrap">Fecha</TableHead>
+                        <TableHead className="text-xs md:text-sm whitespace-nowrap">Cliente</TableHead>
+                        <TableHead className="text-xs md:text-sm whitespace-nowrap">Tipo</TableHead>
+                        <TableHead className="text-xs md:text-sm text-right whitespace-nowrap">Total</TableHead>
                       </TableRow>
                     </TableHeader>
                     <TableBody>
