@@ -49,12 +49,10 @@ import { z } from 'zod';
 // Esquemas de validación
 const categorySchema = z.object({
   name: z.string().trim().min(1, 'El nombre es requerido').max(50, 'El nombre debe tener máximo 50 caracteres'),
-  description: z.string().trim().min(1, 'La descripción es requerida').max(200, 'La descripción debe tener máximo 200 caracteres'),
 });
 
 const subcategorySchema = z.object({
   name: z.string().trim().min(1, 'El nombre es requerido').max(50, 'El nombre debe tener máximo 50 caracteres'),
-  description: z.string().trim().min(1, 'La descripción es requerida').max(200, 'La descripción debe tener máximo 200 caracteres'),
   categoryId: z.string().min(1, 'Debe seleccionar una categoría padre'),
 });
 
@@ -114,7 +112,6 @@ const SortableRow: React.FC<SortableRowProps> = ({
             </button>
             <div>
               <div className="font-medium">{category.name}</div>
-              <div className="text-sm text-muted-foreground">{category.description}</div>
             </div>
           </div>
         </td>
@@ -146,7 +143,6 @@ const SortableRow: React.FC<SortableRowProps> = ({
               <span className="text-sm text-muted-foreground">└─</span>
               <div>
                 <div className="text-sm font-medium">{sub.name}</div>
-                <div className="text-xs text-muted-foreground">{sub.description}</div>
               </div>
             </div>
           </td>
@@ -231,9 +227,6 @@ const SortableCard: React.FC<SortableRowProps> = ({
           <div className="flex-1 min-w-0">
             <div className="mb-2">
               <h3 className="font-semibold text-sm mb-0.5">{category.name}</h3>
-              <p className="text-xs text-muted-foreground line-clamp-2">
-                {category.description}
-              </p>
             </div>
             
             <div className="flex items-center justify-between mt-2 pt-2 border-t">
@@ -273,7 +266,6 @@ const SortableCard: React.FC<SortableRowProps> = ({
                   <div className="flex-1 min-w-0">
                     <div className="mb-1">
                       <h4 className="font-medium text-xs mb-0.5">{sub.name}</h4>
-                      <p className="text-xs text-muted-foreground line-clamp-2">{sub.description}</p>
                     </div>
                     <div className="flex items-center justify-end gap-1 mt-1.5 pt-1.5 border-t border-border/50">
                       <Button
@@ -321,13 +313,11 @@ const AdminCategorias: React.FC = () => {
   const [editingSubcategory, setEditingSubcategory] = useState<Subcategory | null>(null);
   const [editFormData, setEditFormData] = useState({
     name: '',
-    description: '',
   });
 
   // Estados para el formulario de agregar
   const [addFormData, setAddFormData] = useState({
     name: '',
-    description: '',
   });
 
   // Estados para confirmación de eliminación de subcategoría
@@ -393,7 +383,7 @@ const AdminCategorias: React.FC = () => {
   const handleOpenModal = (type: 'category' | 'subcategory', categoryId?: string) => {
     setModalType(type);
     if (categoryId) setSelectedCategoryId(categoryId);
-    setAddFormData({ name: '', description: '' });
+    setAddFormData({ name: '' });
     setIsModalOpen(true);
   };
 
@@ -426,7 +416,6 @@ const AdminCategorias: React.FC = () => {
         const newCategory: Category = {
           id: `cat-${Date.now()}`,
           name: validatedData.name,
-          description: validatedData.description,
           order: categories.length + 1,
           slug: generateSlug(validatedData.name),
           subcategories: [],
@@ -462,7 +451,6 @@ const AdminCategorias: React.FC = () => {
         const newSubcategory: Subcategory = {
           id: `sub-${Date.now()}`,
           name: validatedData.name,
-          description: validatedData.description,
           order: parentCategory.subcategories.length + 1,
           slug: generateSlug(validatedData.name, parentCategory.slug),
         };
@@ -487,7 +475,7 @@ const AdminCategorias: React.FC = () => {
       }
 
       // Resetear formulario y cerrar modal
-      setAddFormData({ name: '', description: '' });
+      setAddFormData({ name: '' });
       setIsModalOpen(false);
     } catch (error) {
       if (error instanceof z.ZodError) {
@@ -513,7 +501,6 @@ const AdminCategorias: React.FC = () => {
     setEditingCategory(category);
     setEditFormData({
       name: category.name,
-      description: category.description,
     });
     setIsEditCategoryOpen(true);
   };
@@ -527,7 +514,6 @@ const AdminCategorias: React.FC = () => {
     setEditingSubcategory(subcategory);
     setEditFormData({
       name: subcategory.name,
-      description: subcategory.description,
     });
     setIsEditSubcategoryOpen(true);
   };
@@ -603,7 +589,7 @@ const AdminCategorias: React.FC = () => {
     console.log('Updating category:', editingCategory?.id, editFormData);
     setIsEditCategoryOpen(false);
     setEditingCategory(null);
-    setEditFormData({ name: '', description: '' });
+    setEditFormData({ name: '' });
   };
 
   const handleUpdateSubcategory = (e: React.FormEvent) => {
@@ -612,7 +598,7 @@ const AdminCategorias: React.FC = () => {
     console.log('Updating subcategory:', editingSubcategory?.id, editFormData);
     setIsEditSubcategoryOpen(false);
     setEditingSubcategory(null);
-    setEditFormData({ name: '', description: '' });
+    setEditFormData({ name: '' });
   };
 
   return (
@@ -795,18 +781,6 @@ const AdminCategorias: React.FC = () => {
                 required
               />
             </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="description">Descripción *</Label>
-              <Input
-                id="description"
-                placeholder="Breve descripción"
-                value={addFormData.description}
-                onChange={(e) => setAddFormData({ ...addFormData, description: e.target.value })}
-                maxLength={200}
-                required
-              />
-            </div>
           </div>
 
           <div className="flex flex-col sm:flex-row justify-end gap-2 sm:gap-3">
@@ -814,7 +788,7 @@ const AdminCategorias: React.FC = () => {
               variant="outline" 
               onClick={() => {
                 setIsModalOpen(false);
-                setAddFormData({ name: '', description: '' });
+                setAddFormData({ name: '' });
               }} 
               className="w-full sm:w-auto"
             >
@@ -823,7 +797,7 @@ const AdminCategorias: React.FC = () => {
             <Button 
               onClick={handleAddItem} 
               className="w-full sm:w-auto"
-              disabled={!addFormData.name.trim() || !addFormData.description.trim() || (modalType === 'subcategory' && !selectedCategoryId)}
+              disabled={!addFormData.name.trim() || (modalType === 'subcategory' && !selectedCategoryId)}
             >
               Guardar
             </Button>
@@ -851,17 +825,6 @@ const AdminCategorias: React.FC = () => {
                 value={editFormData.name}
                 onChange={(e) => setEditFormData({ ...editFormData, name: e.target.value })}
                 placeholder="Ej: Sets de Construcción"
-                required
-              />
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="edit-cat-description">Descripción *</Label>
-              <Input
-                id="edit-cat-description"
-                value={editFormData.description}
-                onChange={(e) => setEditFormData({ ...editFormData, description: e.target.value })}
-                placeholder="Breve descripción"
                 required
               />
             </div>
@@ -919,17 +882,6 @@ const AdminCategorias: React.FC = () => {
                 value={editFormData.name}
                 onChange={(e) => setEditFormData({ ...editFormData, name: e.target.value })}
                 placeholder="Ej: Star Wars"
-                required
-              />
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="edit-sub-description">Descripción *</Label>
-              <Input
-                id="edit-sub-description"
-                value={editFormData.description}
-                onChange={(e) => setEditFormData({ ...editFormData, description: e.target.value })}
-                placeholder="Breve descripción"
                 required
               />
             </div>

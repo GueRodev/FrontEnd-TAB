@@ -3,7 +3,7 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 export interface Subcategory {
   id: string;
   name: string;
-  description: string;
+  description?: string;
   order: number;
   slug: string;
 }
@@ -11,7 +11,7 @@ export interface Subcategory {
 export interface Category {
   id: string;
   name: string;
-  description: string;
+  description?: string;
   order: number;
   slug: string;
   subcategories: Subcategory[];
@@ -30,7 +30,6 @@ const defaultCategories: Category[] = [
   {
     id: '1',
     name: 'Lego',
-    description: 'Sets de construcción LEGO para todas las edades',
     order: 1,
     slug: 'lego',
     isExpanded: false,
@@ -39,7 +38,6 @@ const defaultCategories: Category[] = [
   {
     id: '2',
     name: 'Funkos',
-    description: 'Figuras Funko Pop de tus personajes favoritos',
     order: 2,
     slug: 'funkos',
     isExpanded: false,
@@ -48,7 +46,6 @@ const defaultCategories: Category[] = [
   {
     id: '3',
     name: 'Anime',
-    description: 'Figuras y coleccionables de anime',
     order: 3,
     slug: 'anime',
     isExpanded: false,
@@ -57,7 +54,6 @@ const defaultCategories: Category[] = [
   {
     id: '4',
     name: 'Coleccionables',
-    description: 'Artículos premium para coleccionistas',
     order: 4,
     slug: 'coleccionables',
     isExpanded: false,
@@ -66,7 +62,6 @@ const defaultCategories: Category[] = [
   {
     id: '5',
     name: 'Peluches',
-    description: 'Peluches suaves y adorables',
     order: 5,
     slug: 'peluches',
     isExpanded: false,
@@ -75,7 +70,6 @@ const defaultCategories: Category[] = [
   {
     id: '6',
     name: 'Starwars',
-    description: 'Merchandising oficial de Star Wars',
     order: 6,
     slug: 'starwars',
     isExpanded: false,
@@ -84,7 +78,6 @@ const defaultCategories: Category[] = [
   {
     id: '7',
     name: 'HarryPotter',
-    description: 'Productos del mundo mágico de Harry Potter',
     order: 7,
     slug: 'harrypotter',
     isExpanded: false,
@@ -93,7 +86,6 @@ const defaultCategories: Category[] = [
   {
     id: '8',
     name: 'Otros',
-    description: 'Otros productos únicos y especiales',
     order: 8,
     slug: 'otros',
     isExpanded: false,
