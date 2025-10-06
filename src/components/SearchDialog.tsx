@@ -4,6 +4,7 @@ import { Search, X } from 'lucide-react';
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
@@ -53,6 +54,9 @@ const SearchDialog: React.FC<SearchDialogProps> = ({ open, onOpenChange }) => {
           <DialogTitle className="text-2xl font-bold text-brand-darkBlue">
             Buscar Productos
           </DialogTitle>
+          <DialogDescription className="text-gray-600">
+            Busca productos por nombre o categoría
+          </DialogDescription>
         </DialogHeader>
         
         <div className="px-6 pb-2">
