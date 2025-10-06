@@ -512,7 +512,7 @@ const AdminProducts: React.FC = () => {
 
       {/* Add Product Dialog */}
       <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
-        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto mx-4">
+        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto w-[calc(100%-2rem)] sm:w-full">
           <DialogHeader>
             <DialogTitle className="text-xl md:text-2xl font-bold text-gray-900">
               Agregar Nuevo Producto
@@ -737,7 +737,7 @@ const AdminProducts: React.FC = () => {
 
       {/* Edit Product Dialog */}
       <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
-        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto mx-4">
+        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto w-[calc(100%-2rem)] sm:w-full">
           <DialogHeader>
             <DialogTitle className="text-xl md:text-2xl font-bold text-gray-900">
               Editar Producto
