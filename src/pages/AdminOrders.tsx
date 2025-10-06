@@ -91,11 +91,6 @@ const AdminOrders = () => {
 
     const orderId = addOrder(newOrder);
 
-    // Actualizar stock del producto
-    updateProduct(product.id, {
-      stock: product.stock - quantity
-    });
-
     // Agregar notificación con el orderId
     addNotification({
       type: 'order',
@@ -238,6 +233,16 @@ const AdminOrders = () => {
             <Button 
               size="sm" 
               onClick={() => {
+                // Actualizar stock de productos al finalizar pedido
+                order.items.forEach((item: any) => {
+                  const product = products.find(p => p.id === item.id);
+                  if (product) {
+                    updateProduct(product.id, {
+                      stock: product.stock - item.quantity
+                    });
+                  }
+                });
+
                 updateOrderStatus(order.id, 'completed');
                 addNotification({
                   type: 'order',
@@ -248,7 +253,7 @@ const AdminOrders = () => {
                 });
                 toast({
                   title: "Pedido completado",
-                  description: "El pedido ha sido marcado como finalizado",
+                  description: "El pedido ha sido marcado como finalizado y el stock actualizado",
                 });
               }}
               className="flex-1 text-xs md:text-sm"
