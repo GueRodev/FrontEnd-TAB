@@ -130,12 +130,26 @@ const AdminOrders = () => {
     );
   };
 
-  const handleDeleteOrder = (orderId: string) => {
+  const handleDeleteOrder = (orderId: string, order: any) => {
     if (confirm('¿Estás seguro de que deseas eliminar este pedido?')) {
+      // Restaurar stock de productos si el pedido fue completado
+      if (order.status === 'completed') {
+        order.items.forEach((item: any) => {
+          const product = products.find(p => p.id === item.id);
+          if (product) {
+            updateProduct(product.id, {
+              stock: product.stock + item.quantity
+            });
+          }
+        });
+      }
+      
       deleteOrder(orderId);
       toast({
         title: "Pedido eliminado",
-        description: "El pedido ha sido eliminado exitosamente",
+        description: order.status === 'completed' 
+          ? "El pedido ha sido eliminado y el stock ha sido restablecido"
+          : "El pedido ha sido eliminado exitosamente",
       });
     }
   };
@@ -179,7 +193,7 @@ const AdminOrders = () => {
             <Button
               variant="ghost"
               size="icon"
-              onClick={() => handleDeleteOrder(order.id)}
+              onClick={() => handleDeleteOrder(order.id, order)}
               className="text-destructive hover:text-destructive hover:bg-destructive/10 h-8 w-8 md:h-10 md:w-10"
             >
               <Trash2 className="h-4 w-4 md:h-5 md:w-5" />
