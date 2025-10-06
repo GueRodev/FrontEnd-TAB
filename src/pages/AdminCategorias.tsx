@@ -738,7 +738,7 @@ const AdminCategorias: React.FC = () => {
 
       {/* Modal para Agregar */}
       <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
-        <DialogContent className="max-w-md mx-4">
+        <DialogContent className="max-w-md w-[calc(100%-2rem)] sm:w-full">
           <DialogHeader>
             <DialogTitle className="text-lg md:text-xl">
               {modalType === 'category' ? 'Agregar Categoría' : 'Agregar Subcategoría'}
@@ -807,7 +807,7 @@ const AdminCategorias: React.FC = () => {
 
       {/* Modal para Editar Categoría */}
       <Dialog open={isEditCategoryOpen} onOpenChange={setIsEditCategoryOpen}>
-        <DialogContent className="max-w-md mx-4">
+        <DialogContent className="max-w-md w-[calc(100%-2rem)] sm:w-full">
           <DialogHeader>
             <DialogTitle className="text-lg md:text-xl">
               Editar Categoría
@@ -848,7 +848,7 @@ const AdminCategorias: React.FC = () => {
 
       {/* Modal para Editar Subcategoría */}
       <Dialog open={isEditSubcategoryOpen} onOpenChange={setIsEditSubcategoryOpen}>
-        <DialogContent className="max-w-md mx-4">
+        <DialogContent className="max-w-md w-[calc(100%-2rem)] sm:w-full">
           <DialogHeader>
             <DialogTitle className="text-lg md:text-xl">
               Editar Subcategoría
