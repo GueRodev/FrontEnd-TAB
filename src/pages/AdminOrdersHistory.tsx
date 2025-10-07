@@ -45,8 +45,8 @@ const AdminOrdersHistory = () => {
     const tableData = archivedOrders.map(order => [
       order.id,
       new Date(order.createdAt).toLocaleDateString('es-ES'),
-      order.customerInfo.nombre,
-      order.customerInfo.telefono,
+      order.customerInfo.name,
+      order.customerInfo.phone,
       getTypeLabel(order.type),
       getStatusLabel(order.status),
       `₡${order.total.toFixed(2)}`,
@@ -90,12 +90,12 @@ const AdminOrdersHistory = () => {
       'ID': order.id,
       'Fecha Creación': new Date(order.createdAt).toLocaleString('es-ES'),
       'Fecha Archivo': order.archivedAt ? new Date(order.archivedAt).toLocaleString('es-ES') : 'N/A',
-      'Cliente': order.customerInfo.nombre,
-      'Teléfono': order.customerInfo.telefono,
-      'Provincia': order.customerInfo.provincia || 'N/A',
+      'Cliente': order.customerInfo.name,
+      'Teléfono': order.customerInfo.phone,
+      'Provincia': order.customerInfo.province || 'N/A',
       'Cantón': order.customerInfo.canton || 'N/A',
-      'Distrito': order.customerInfo.distrito || 'N/A',
-      'Dirección': order.customerInfo.direccion || 'N/A',
+      'Distrito': order.customerInfo.district || 'N/A',
+      'Dirección': order.customerInfo.address || 'N/A',
       'Tipo': getTypeLabel(order.type),
       'Estado': getStatusLabel(order.status),
       'Método Pago': order.paymentMethod || 'N/A',
@@ -204,8 +204,8 @@ const AdminOrdersHistory = () => {
                               <TableCell className="text-xs lg:text-sm">
                                 {new Date(order.createdAt).toLocaleDateString('es-ES')}
                               </TableCell>
-                              <TableCell className="text-xs lg:text-sm">{order.customerInfo.nombre}</TableCell>
-                              <TableCell className="text-xs lg:text-sm">{order.customerInfo.telefono}</TableCell>
+                              <TableCell className="text-xs lg:text-sm">{order.customerInfo.name}</TableCell>
+                              <TableCell className="text-xs lg:text-sm">{order.customerInfo.phone}</TableCell>
                               <TableCell>
                                 <Badge variant="outline" className="text-xs">
                                   {getTypeLabel(order.type)}
@@ -291,11 +291,11 @@ const AdminOrdersHistory = () => {
                             <div className="grid grid-cols-2 gap-3">
                               <div className="space-y-1">
                                 <p className="text-xs text-muted-foreground">Cliente</p>
-                                <p className="text-sm font-medium truncate">{order.customerInfo.nombre}</p>
+                                <p className="text-sm font-medium truncate">{order.customerInfo.name}</p>
                               </div>
                               <div className="space-y-1">
                                 <p className="text-xs text-muted-foreground">Teléfono</p>
-                                <p className="text-sm">{order.customerInfo.telefono}</p>
+                                <p className="text-sm">{order.customerInfo.phone}</p>
                               </div>
                             </div>
 

@@ -19,12 +19,12 @@ export interface Order {
   total: number;
   createdAt: string;
   customerInfo: {
-    nombre: string;
-    telefono: string;
-    provincia?: string;
+    name: string;
+    phone: string;
+    province?: string;
     canton?: string;
-    distrito?: string;
-    direccion?: string;
+    district?: string;
+    address?: string;
   };
   deliveryOption?: 'pickup' | 'delivery';
   paymentMethod?: string;

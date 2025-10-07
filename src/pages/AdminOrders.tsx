@@ -82,8 +82,8 @@ const AdminOrders = () => {
       }],
       total: product.price * quantity,
       customerInfo: {
-        nombre: customerName,
-        telefono: customerPhone,
+        name: customerName,
+        phone: customerPhone,
       },
       deliveryOption: 'pickup' as const,
       paymentMethod: paymentMethod,
@@ -204,14 +204,14 @@ const AdminOrders = () => {
       <CardContent className="space-y-3 md:space-y-4 p-4 pt-0">
         {/* Información del cliente */}
         <div className="bg-muted p-3 rounded-lg">
-          <p className="font-semibold text-sm md:text-base">{order.customerInfo.nombre}</p>
-          <p className="text-xs md:text-sm text-muted-foreground">{order.customerInfo.telefono}</p>
+          <p className="font-semibold text-sm md:text-base">{order.customerInfo.name}</p>
+          <p className="text-xs md:text-sm text-muted-foreground">{order.customerInfo.phone}</p>
           {showDeliveryInfo && order.deliveryOption === 'delivery' && (
             <div className="mt-2 text-xs md:text-sm space-y-0.5">
               <p className="font-medium">Dirección de envío:</p>
-              <p>{order.customerInfo.provincia}, {order.customerInfo.canton}</p>
-              <p>{order.customerInfo.distrito}</p>
-              <p className="break-words">{order.customerInfo.direccion}</p>
+              <p>{order.customerInfo.province}, {order.customerInfo.canton}</p>
+              <p>{order.customerInfo.district}</p>
+              <p className="break-words">{order.customerInfo.address}</p>
             </div>
           )}
         </div>

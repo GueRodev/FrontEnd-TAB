@@ -14,10 +14,10 @@ interface UserProfile {
   name: string;
   email: string;
   phone: string;
-  provincia: string;
+  province: string;
   canton: string;
-  distrito: string;
-  direccion: string;
+  district: string;
+  address: string;
 }
 
 const Account: React.FC = () => {
@@ -26,10 +26,10 @@ const Account: React.FC = () => {
     name: 'Usuario Demo',
     email: 'usuario@toysandbricks.com',
     phone: '+506 8888 8888',
-    provincia: 'San José',
+    province: 'San José',
     canton: 'Central',
-    distrito: 'Carmen',
-    direccion: 'Calle Principal 123, Ciudad'
+    district: 'Carmen',
+    address: 'Calle Principal 123, Ciudad'
   });
 
   const [editedProfile, setEditedProfile] = useState<UserProfile>(profile);
@@ -176,20 +176,20 @@ const Account: React.FC = () => {
 
                 {/* Provincia */}
                 <div className="space-y-2">
-                  <Label htmlFor="provincia" className="flex items-center gap-2 text-brand-darkBlue">
+                  <Label htmlFor="province" className="flex items-center gap-2 text-brand-darkBlue">
                     <MapPin size={18} />
                     Provincia
                   </Label>
                   {isEditing ? (
                     <Input
-                      id="provincia"
-                      value={editedProfile.provincia}
-                      onChange={(e) => handleInputChange('provincia', e.target.value)}
+                      id="province"
+                      value={editedProfile.province}
+                      onChange={(e) => handleInputChange('province', e.target.value)}
                       className="border-gray-300 focus:border-brand-orange"
                       placeholder="Provincia"
                     />
                   ) : (
-                    <p className="text-gray-700 py-2">{profile.provincia}</p>
+                    <p className="text-gray-700 py-2">{profile.province}</p>
                   )}
                 </div>
 
@@ -213,37 +213,37 @@ const Account: React.FC = () => {
 
                 {/* Distrito */}
                 <div className="space-y-2">
-                  <Label htmlFor="distrito" className="text-brand-darkBlue">
+                  <Label htmlFor="district" className="text-brand-darkBlue">
                     Distrito
                   </Label>
                   {isEditing ? (
                     <Input
-                      id="distrito"
-                      value={editedProfile.distrito}
-                      onChange={(e) => handleInputChange('distrito', e.target.value)}
+                      id="district"
+                      value={editedProfile.district}
+                      onChange={(e) => handleInputChange('district', e.target.value)}
                       className="border-gray-300 focus:border-brand-orange"
                       placeholder="Distrito"
                     />
                   ) : (
-                    <p className="text-gray-700 py-2">{profile.distrito}</p>
+                    <p className="text-gray-700 py-2">{profile.district}</p>
                   )}
                 </div>
 
                 {/* Address */}
                 <div className="space-y-2">
-                  <Label htmlFor="direccion" className="text-brand-darkBlue">
+                  <Label htmlFor="address" className="text-brand-darkBlue">
                     Dirección Exacta
                   </Label>
                   {isEditing ? (
                     <Input
-                      id="direccion"
-                      value={editedProfile.direccion}
-                      onChange={(e) => handleInputChange('direccion', e.target.value)}
+                      id="address"
+                      value={editedProfile.address}
+                      onChange={(e) => handleInputChange('address', e.target.value)}
                       className="border-gray-300 focus:border-brand-orange"
                       placeholder="Dirección completa"
                     />
                   ) : (
-                    <p className="text-gray-700 py-2">{profile.direccion}</p>
+                    <p className="text-gray-700 py-2">{profile.address}</p>
                   )}
                 </div>
 

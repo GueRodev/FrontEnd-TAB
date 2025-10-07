@@ -279,7 +279,7 @@ const Admin = () => {
                                 #{order.id.slice(0, 8)}
                               </TableCell>
                               <TableCell className="text-xs md:text-sm">
-                                {order.customerInfo.nombre}
+                                {order.customerInfo.name}
                               </TableCell>
                               <TableCell className="text-right font-semibold text-xs md:text-sm">
                                 ₡{order.total.toFixed(2)}

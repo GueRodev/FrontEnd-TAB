@@ -21,12 +21,12 @@ const Cart = () => {
   const [paymentMethod, setPaymentMethod] = useState<string>('');
   
   const [formData, setFormData] = useState({
-    nombre: '',
-    telefono: '',
-    provincia: '',
+    name: '',
+    phone: '',
+    province: '',
     canton: '',
-    distrito: '',
-    direccion: '',
+    district: '',
+    address: '',
   });
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -38,7 +38,7 @@ const Cart = () => {
 
   const handleFinalizarCompra = () => {
     // Validar campos requeridos
-    if (!formData.nombre || !formData.telefono) {
+    if (!formData.name || !formData.phone) {
       toast({
         title: "Campos incompletos",
         description: "Por favor completa todos los campos requeridos",
@@ -47,7 +47,7 @@ const Cart = () => {
       return;
     }
 
-    if (deliveryOption === 'delivery' && (!formData.provincia || !formData.canton || !formData.distrito || !formData.direccion)) {
+    if (deliveryOption === 'delivery' && (!formData.province || !formData.canton || !formData.district || !formData.address)) {
       toast({
         title: "Campos incompletos",
         description: "Por favor completa todos los campos de dirección",
@@ -74,18 +74,18 @@ const Cart = () => {
     message += `\n*Total: ₡${getTotalPrice().toFixed(2)}*\n\n`;
     
     message += `*Datos del cliente:*\n`;
-    message += `Nombre: ${formData.nombre}\n`;
-    message += `Teléfono: ${formData.telefono}\n\n`;
+    message += `Nombre: ${formData.name}\n`;
+    message += `Teléfono: ${formData.phone}\n\n`;
     
     message += `*Tipo de entrega:*\n`;
     if (deliveryOption === 'pickup') {
       message += `Retiro en Tienda\n\n`;
     } else {
       message += `Envío a Domicilio\n`;
-      message += `Provincia: ${formData.provincia}\n`;
+      message += `Provincia: ${formData.province}\n`;
       message += `Cantón: ${formData.canton}\n`;
-      message += `Distrito: ${formData.distrito}\n`;
-      message += `Dirección: ${formData.direccion}\n\n`;
+      message += `Distrito: ${formData.district}\n`;
+      message += `Dirección: ${formData.address}\n\n`;
     }
     
     message += `*Método de pago:* ${paymentMethod}\n`;
@@ -112,12 +112,12 @@ const Cart = () => {
       })),
       total: getTotalPrice(),
       customerInfo: {
-        nombre: formData.nombre,
-        telefono: formData.telefono,
-        provincia: formData.provincia,
+        name: formData.name,
+        phone: formData.phone,
+        province: formData.province,
         canton: formData.canton,
-        distrito: formData.distrito,
-        direccion: formData.direccion,
+        district: formData.district,
+        address: formData.address,
       },
       deliveryOption,
       paymentMethod,
@@ -127,7 +127,7 @@ const Cart = () => {
     addNotification({
       type: 'order',
       title: 'Nuevo pedido recibido',
-      message: `Pedido ${orderId} de ${formData.nombre} - Total: ₡${getTotalPrice().toFixed(2)}`,
+      message: `Pedido ${orderId} de ${formData.name} - Total: ₡${getTotalPrice().toFixed(2)}`,
       time: 'Ahora',
       orderId: orderId,
     });
@@ -138,12 +138,12 @@ const Cart = () => {
     // Limpiar carrito y formulario
     clearCart();
     setFormData({
-      nombre: '',
-      telefono: '',
-      provincia: '',
+      name: '',
+      phone: '',
+      province: '',
       canton: '',
-      distrito: '',
-      direccion: '',
+      district: '',
+      address: '',
     });
     setPaymentMethod('');
 
@@ -259,11 +259,11 @@ const Cart = () => {
                   
                   <div className="space-y-4">
                     <div>
-                      <Label htmlFor="nombre">Nombre *</Label>
+                      <Label htmlFor="name">Nombre *</Label>
                       <Input
-                        id="nombre"
-                        name="nombre"
-                        value={formData.nombre}
+                        id="name"
+                        name="name"
+                        value={formData.name}
                         onChange={handleInputChange}
                         placeholder="Tu nombre completo"
                         required
@@ -271,11 +271,11 @@ const Cart = () => {
                     </div>
 
                     <div>
-                      <Label htmlFor="telefono">Teléfono *</Label>
+                      <Label htmlFor="phone">Teléfono *</Label>
                       <Input
-                        id="telefono"
-                        name="telefono"
-                        value={formData.telefono}
+                        id="phone"
+                        name="phone"
+                        value={formData.phone}
                         onChange={handleInputChange}
                         placeholder="Tu número de teléfono"
                         required
@@ -301,11 +301,11 @@ const Cart = () => {
                         <h3 className="font-semibold text-sm text-gray-700">Datos de envío</h3>
                         
                         <div>
-                          <Label htmlFor="provincia">Provincia *</Label>
+                          <Label htmlFor="province">Provincia *</Label>
                           <Input
-                            id="provincia"
-                            name="provincia"
-                            value={formData.provincia}
+                            id="province"
+                            name="province"
+                            value={formData.province}
                             onChange={handleInputChange}
                             placeholder="Provincia"
                             required
@@ -325,11 +325,11 @@ const Cart = () => {
                         </div>
 
                         <div>
-                          <Label htmlFor="distrito">Distrito *</Label>
+                          <Label htmlFor="district">Distrito *</Label>
                           <Input
-                            id="distrito"
-                            name="distrito"
-                            value={formData.distrito}
+                            id="district"
+                            name="district"
+                            value={formData.district}
                             onChange={handleInputChange}
                             placeholder="Distrito"
                             required
@@ -337,11 +337,11 @@ const Cart = () => {
                         </div>
 
                         <div>
-                          <Label htmlFor="direccion">Dirección exacta *</Label>
+                          <Label htmlFor="address">Dirección exacta *</Label>
                           <Input
-                            id="direccion"
-                            name="direccion"
-                            value={formData.direccion}
+                            id="address"
+                            name="address"
+                            value={formData.address}
                             onChange={handleInputChange}
                             placeholder="Dirección completa"
                             required
