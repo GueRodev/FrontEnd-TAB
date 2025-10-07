@@ -27,14 +27,14 @@ import {
 
 const menuItems = [
   { title: "Inicio", url: "/admin", icon: BarChart3 },
-  { title: "Productos", url: "/admin/productos", icon: Package },
-  { title: "Categorías", url: "/admin/categorias", icon: FolderTree },
-  { title: "Usuarios", url: "/admin/usuarios", icon: Users },
-  { title: "Pedidos", url: "/admin/pedidos", icon: ShoppingCart },
+  { title: "Productos", url: "/admin/products", icon: Package },
+  { title: "Categorías", url: "/admin/categories", icon: FolderTree },
+  { title: "Usuarios", url: "/admin/users", icon: Users },
+  { title: "Pedidos", url: "/admin/orders", icon: ShoppingCart },
 ];
 
 const footerItems = [
-  { title: "Configuración", url: "/admin/configuracion", icon: Settings },
+  { title: "Configuración", url: "/admin/settings", icon: Settings },
   { title: "Cerrar Sesión", url: "/", icon: LogOut },
 ];
 
@@ -129,7 +129,7 @@ export function AdminSidebar() {
       {/* User Section - TODO: Aquí se implementa el nombre del usuario logueado */}
       <div className="!bg-[#1A1F2C] border-t border-white/10 p-4" style={{ backgroundColor: '#1A1F2C' }}>
         <Link 
-          to="/admin/perfil" 
+          to="/admin/profile" 
           className={`flex items-center p-2 rounded-lg hover:bg-white/5 transition-all duration-300 ${
             isCollapsed ? 'gap-0 justify-center' : 'gap-3'
           }`}

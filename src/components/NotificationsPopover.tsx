@@ -39,16 +39,16 @@ const NotificationsPopover: React.FC = () => {
       setOpen(false);
     } else if (notification.type === 'order' && notification.orderId) {
       // Redirigir a la página de pedidos con el pedido específico
-      navigate('/admin/pedidos');
+      navigate('/admin/orders');
       setOpen(false);
     } else if (notification.type === 'order') {
-      navigate('/admin/pedidos');
+      navigate('/admin/orders');
       setOpen(false);
     } else if (notification.type === 'user') {
-      navigate('/admin/usuarios');
+      navigate('/admin/users');
       setOpen(false);
     } else if (notification.type === 'product') {
-      navigate('/admin/productos');
+      navigate('/admin/products');
       setOpen(false);
     }
   };

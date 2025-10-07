@@ -244,7 +244,7 @@ const Admin = () => {
                     <CardTitle className="text-base md:text-lg lg:text-xl">
                       Pedidos Recientes
                     </CardTitle>
-                    <Link to="/admin/pedidos">
+                    <Link to="/admin/orders">
                       <Badge variant="outline" className="text-xs cursor-pointer hover:bg-muted">
                         Ver todos
                       </Badge>
@@ -318,7 +318,7 @@ const Admin = () => {
                     <CardTitle className="text-base md:text-lg lg:text-xl">
                       Productos Más Vendidos
                     </CardTitle>
-                    <Link to="/admin/productos">
+                    <Link to="/admin/products">
                       <Badge variant="outline" className="text-xs cursor-pointer hover:bg-muted">
                         Ver todos
                       </Badge>

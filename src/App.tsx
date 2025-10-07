@@ -51,13 +51,13 @@ const App = () => (
                 <Route path="/account" element={<Account />} />
                 <Route path="/cart" element={<Cart />} />
                 <Route path="/admin" element={<Admin />} />
-                <Route path="/admin/productos" element={<AdminProducts />} />
-                <Route path="/admin/categorias" element={<AdminCategories />} />
-                <Route path="/admin/usuarios" element={<AdminUsers />} />
-                <Route path="/admin/pedidos" element={<AdminOrders />} />
-                <Route path="/admin/pedidos/historial" element={<AdminOrdersHistory />} />
-                <Route path="/admin/configuracion" element={<AdminSettings />} />
-                <Route path="/admin/perfil" element={<AdminProfile />} />
+                <Route path="/admin/products" element={<AdminProducts />} />
+                <Route path="/admin/categories" element={<AdminCategories />} />
+                <Route path="/admin/users" element={<AdminUsers />} />
+                <Route path="/admin/orders" element={<AdminOrders />} />
+                <Route path="/admin/orders/history" element={<AdminOrdersHistory />} />
+                <Route path="/admin/settings" element={<AdminSettings />} />
+                <Route path="/admin/profile" element={<AdminProfile />} />
                 <Route path="/new-arrivals" element={<CategoryPage />} />
                 <Route path="/limited-editions" element={<CategoryPage />} />
                 <Route path="/on-sale" element={<CategoryPage />} />

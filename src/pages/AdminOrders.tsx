@@ -314,7 +314,7 @@ const AdminOrders = () => {
             {/* Botón para ir al historial */}
             <div className="flex justify-end">
               <Button
-                onClick={() => navigate('/admin/pedidos/historial')}
+                onClick={() => navigate('/admin/orders/history')}
                 variant="outline"
                 className="gap-2"
               >

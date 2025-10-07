@@ -23,7 +23,7 @@ const AdminHeader: React.FC<AdminHeaderProps> = ({ title }) => {
       <div className="ml-auto flex items-center gap-1 md:gap-2">
         <NotificationsPopover />
         <Button variant="ghost" size="icon" className="relative h-8 w-8 md:h-10 md:w-10" asChild>
-          <Link to="/admin/perfil">
+          <Link to="/admin/profile">
             <User className="h-4 w-4 md:h-5 md:w-5" />
           </Link>
         </Button>
