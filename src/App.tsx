@@ -20,11 +20,11 @@ import Cart from "./pages/Cart";
 import Auth from "./pages/Auth";
 import Admin from "./pages/Admin";
 import AdminProducts from "./pages/AdminProducts";
-import AdminCategorias from "./pages/AdminCategorias";
-import AdminUsuarios from "./pages/AdminUsuarios";
+import AdminCategories from "./pages/AdminCategories";
+import AdminUsers from "./pages/AdminUsers";
 import AdminOrders from "./pages/AdminOrders";
 import AdminOrdersHistory from "./pages/AdminOrdersHistory";
-import AdminConfiguracion from "./pages/AdminConfiguracion";
+import AdminSettings from "./pages/AdminSettings";
 import AdminProfile from "./pages/AdminProfile";
 
 const queryClient = new QueryClient();
@@ -52,11 +52,11 @@ const App = () => (
                 <Route path="/cart" element={<Cart />} />
                 <Route path="/admin" element={<Admin />} />
                 <Route path="/admin/productos" element={<AdminProducts />} />
-                <Route path="/admin/categorias" element={<AdminCategorias />} />
-                <Route path="/admin/usuarios" element={<AdminUsuarios />} />
+                <Route path="/admin/categorias" element={<AdminCategories />} />
+                <Route path="/admin/usuarios" element={<AdminUsers />} />
                 <Route path="/admin/pedidos" element={<AdminOrders />} />
                 <Route path="/admin/pedidos/historial" element={<AdminOrdersHistory />} />
-                <Route path="/admin/configuracion" element={<AdminConfiguracion />} />
+                <Route path="/admin/configuracion" element={<AdminSettings />} />
                 <Route path="/admin/perfil" element={<AdminProfile />} />
                 <Route path="/new-arrivals" element={<CategoryPage />} />
                 <Route path="/limited-editions" element={<CategoryPage />} />
