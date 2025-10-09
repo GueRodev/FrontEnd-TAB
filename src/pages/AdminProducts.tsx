@@ -61,7 +61,7 @@ const AdminProducts = () => {
                 </div>
                 <div className="flex justify-center sm:justify-start">
                   <Button 
-                    className="bg-[#1E3A8A] hover:bg-[#1E3A8A]/90 text-white w-full max-w-xs sm:w-auto"
+                    className="bg-brand-orange hover:bg-brand-orange/90 text-white w-full max-w-xs sm:w-auto"
                     onClick={() => setIsAddDialogOpen(true)}
                   >
                     <Plus className="h-4 w-4 mr-2" />
