@@ -40,13 +40,13 @@ Notification system types:
 - `Notification` - Notification interface
 - `NotificationType` - Notification category enum
 
-### `common.types.ts`
-Utility and shared types:
+### API Types (`src/lib/api/types.ts`)
+API-specific types (located in `src/lib/api/`):
 - `ApiResponse<T>` - Generic API response wrapper
 - `PaginationParams` - Pagination parameters
 - `PaginatedResponse<T>` - Paginated API response
-- `LoadingState` - Common loading states
-- `FormState<T>` - Form state helper
+- `ApiError` - Standardized error format
+- `AuthToken` - Authentication token structure for Laravel
 
 ## 🎯 Purpose
 
@@ -89,7 +89,7 @@ export const ProductCard = ({ product, onAddToCart }: ProductCardProps) => {
 
 ```typescript
 import type { Product } from '@/types/product.types';
-import type { ApiResponse } from '@/types/common.types';
+import type { ApiResponse } from '@/lib/api/types';
 
 export const productsService = {
   async getAll(): Promise<Product[]> {

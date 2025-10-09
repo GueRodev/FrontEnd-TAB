@@ -63,7 +63,7 @@ export interface ApiRequestConfig {
 
 /**
  * Authentication token structure
- * @next-migration: Will be used with Supabase or custom auth
+ * Used with Laravel Sanctum/Passport JWT tokens
  */
 export interface AuthToken {
   accessToken: string;
