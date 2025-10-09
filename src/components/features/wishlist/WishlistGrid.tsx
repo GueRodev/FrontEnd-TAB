@@ -5,6 +5,7 @@
 
 import React from 'react';
 import ProductCard from '@/components/ProductCard';
+import { formatCurrency } from '@/lib/formatters';
 
 interface WishlistProduct {
   id: string;
@@ -33,7 +34,7 @@ export const WishlistGrid: React.FC<WishlistGridProps> = ({
           id={product.id}
           name={product.name}
           image={product.image}
-          price={product.price}
+          price={formatCurrency(product.price)}
           category={product.category}
           isWishlisted={true}
           onToggleWishlist={(e) => onToggleWishlist(product, e)}

@@ -6,6 +6,7 @@
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { User, Mail, Phone, Lock } from 'lucide-react';
+import { APP_CONFIG } from '@/data/constants';
 import type { AdminProfileFormData } from '@/lib/validations/user.validation';
 
 interface ProfileFormFieldsProps {
@@ -72,7 +73,7 @@ export const ProfileFormFields: React.FC<ProfileFormFieldsProps> = ({
           value={formData.phone}
           onChange={(e) => onChange('phone', e.target.value)}
           disabled={!isEditing}
-          placeholder="+506 1234-5678"
+          placeholder={`${APP_CONFIG.whatsapp.countryCode} 1234-5678`}
         />
         {errors.phone && (
           <p className="text-sm text-destructive">{errors.phone}</p>

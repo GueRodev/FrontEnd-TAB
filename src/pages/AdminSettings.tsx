@@ -9,7 +9,8 @@ import { Input } from '@/components/ui/input';
 import { Upload, X } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import Logo from '@/components/Logo';
-import { FILE_UPLOAD_CONFIG } from '@/data/constants';
+import { FILE_UPLOAD_CONFIG, APP_CONFIG } from '@/data/constants';
+import { formatCurrency } from '@/lib/formatters';
 
 const AdminConfiguracion = () => {
   const [logoPreview, setLogoPreview] = useState<string | null>(null);

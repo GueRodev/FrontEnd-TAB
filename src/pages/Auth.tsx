@@ -7,6 +7,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import Logo from '@/components/Logo';
 import { useAuth } from '@/contexts/AuthContext';
+import { APP_CONFIG } from '@/data/constants';
 
 const Auth: React.FC = () => {
   const navigate = useNavigate();
@@ -173,7 +174,7 @@ const Auth: React.FC = () => {
                     <Input
                       id="register-phone"
                       type="tel"
-                      placeholder="+506 8888 8888"
+                      placeholder={`${APP_CONFIG.whatsapp.countryCode} 8888 8888`}
                       value={registerData.phone}
                       onChange={(e) => setRegisterData({ ...registerData, phone: e.target.value })}
                       className="border-gray-300"

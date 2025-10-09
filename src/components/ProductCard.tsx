@@ -8,7 +8,7 @@ interface ProductCardProps {
   id: string;
   name: string;
   image: string;
-  price: number;
+  price: number | string; // Can accept both formatted string and number
   category?: string;
   badge?: 'new' | 'sale';
   isWishlisted?: boolean;
@@ -89,7 +89,9 @@ const ProductCard: React.FC<ProductCardProps> = ({
         </Link>
         
         <div className="flex justify-between items-center mt-4">
-          <span className="font-bold text-lg">₡{price.toFixed(2)}</span>
+          <span className="font-bold text-lg">
+            {typeof price === 'number' ? `₡${price.toFixed(2)}` : price}
+          </span>
           {onAddToCart && (
             <Button
               onClick={(e) => onAddToCart(e, id)}

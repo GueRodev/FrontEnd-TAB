@@ -236,7 +236,7 @@ const AdminOrdersHistory = () => {
                             <div className="grid grid-cols-2 gap-3">
                               <div className="space-y-1">
                                 <p className="text-xs text-muted-foreground">Total</p>
-                                <p className="text-sm font-bold">₡{order.total.toFixed(2)}</p>
+                                <p className="text-sm font-bold">{formatCurrency(order.total)}</p>
                               </div>
                               <div className="space-y-1">
                                 <p className="text-xs text-muted-foreground">Método de Pago</p>

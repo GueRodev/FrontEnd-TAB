@@ -5,6 +5,7 @@ import Footer from '@/components/Footer';
 import ProductCard from '@/components/ProductCard';
 import DecorativeBackground from '@/components/DecorativeBackground';
 import { useProductOperations } from '@/hooks/business';
+import { formatCurrency } from '@/lib/formatters';
 
 /**
  * CategoryPage Component
@@ -131,7 +132,7 @@ const CategoryPage: React.FC = () => {
                   key={product.id}
                   id={product.id}
                   name={product.name}
-                  price={product.price}
+                  price={formatCurrency(product.price)}
                   image={product.image}
                   category={currentCategory.name}
                   isWishlisted={isProductInWishlist(product.id)}
