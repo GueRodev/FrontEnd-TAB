@@ -13,17 +13,9 @@ export interface Product {
   stock: number;
   description: string;
   image: string;
-  status: 'active' | 'inactive';
+  status: "active" | "inactive";
   isFeatured: boolean;
   createdAt: string;
-}
-
-export interface Subcategory {
-  id: string;
-  name: string;
-  description?: string;
-  order: number;
-  slug: string;
 }
 
 export interface Category {
@@ -36,7 +28,15 @@ export interface Category {
   isExpanded?: boolean;
 }
 
-export type ProductStatus = 'active' | 'inactive';
+export interface Subcategory {
+  id: string;
+  name: string;
+  description?: string;
+  order: number;
+  slug: string;
+}
+
+export type ProductStatus = "active" | "inactive";
 
 // DTO types for API operations
 export interface CreateCategoryDto {
