@@ -82,6 +82,37 @@ export const authService = {
 
   /**
    * Get current authenticated user
+   * 
+   * 🔗 CONEXIÓN LARAVEL: GET /api/auth/me
+   * 
+   * ⚠️ SEGURIDAD: El backend DEBE retornar el rol desde user_roles table
+   * 
+   * Laravel debe:
+   * 1. Verificar token JWT/Sanctum válido
+   * 2. Hacer JOIN o relación con user_roles: $user->getRole()
+   * 3. NUNCA retornar rol desde columna users.role (si existe, eliminarla)
+   * 
+   * Ejemplo Laravel (AuthController):
+   * ```php
+   * public function me(Request $request)
+   * {
+   *     $user = $request->user();
+   *     return response()->json([
+   *         'data' => [
+   *             'id' => $user->id,
+   *             'name' => $user->name,
+   *             'email' => $user->email,
+   *             'phone' => $user->phone,
+   *             'role' => $user->getRole(), // ✅ Desde user_roles table
+   *             'created_at' => $user->created_at,
+   *             'updated_at' => $user->updated_at,
+   *         ]
+   *     ]);
+   * }
+   * ```
+   * 
+   * 📖 Ver SECURITY.md sección "Integración con Laravel Backend"
+   * 
    * TODO: Connect to Laravel endpoint: GET /api/auth/me
    * Requires: Authorization header with Bearer token
    */

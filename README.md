@@ -1,5 +1,25 @@
 # Welcome to your Lovable project
 
+---
+
+## ⚠️ SEGURIDAD CRÍTICA
+
+**IMPORTANTE**: Antes de desplegar a producción, **leer obligatoriamente** la documentación de seguridad:
+
+📖 **[SECURITY.md](SECURITY.md)** - Guía completa de gestión de roles en PostgreSQL + Laravel
+
+Esta guía cubre:
+- ✅ Arquitectura correcta de roles (tabla `user_roles` separada)
+- ✅ SQL completo para PostgreSQL con RLS policies
+- ✅ Código Laravel completo (modelos, middleware, controllers)
+- ✅ Prevención de ataques de escalada de privilegios
+- ✅ Tests de seguridad
+- ✅ Checklist pre-deploy
+
+**NO OMITIR**: La incorrecta gestión de roles es la vulnerabilidad #1 en aplicaciones web.
+
+---
+
 ## Project info
 
 **URL**: https://lovable.dev/projects/f8c5675f-30a7-4459-9779-64ed85864945

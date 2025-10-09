@@ -126,7 +126,64 @@ export const usersService = {
   },
 
   /**
-   * Assign role to user
+   * ⚠️ ENDPOINT CRÍTICO: Asignación de Roles
+   * 
+   * REQUISITOS DE SEGURIDAD (Backend Laravel):
+   * 
+   * 1. **Middleware**: Solo 'admin' puede ejecutar este endpoint
+   *    Route::middleware(['auth:sanctum', 'admin'])->post('/users/{userId}/assign-role', ...)
+   * 
+   * 2. **Validación**: Backend valida permisos antes de modificar
+   *    if (!auth()->user()->isAdmin()) { abort(403); }
+   * 
+   * 3. **Tabla correcta**: Actualizar user_roles (NO users.role)
+   *    UserRole::updateOrCreate(['user_id' => $userId], ['role' => $request->role]);
+   * 
+   * 4. **Audit Log**: Registrar quién hizo el cambio, cuándo y qué rol
+   *    Log::info("Admin {auth()->id()} changed role of user $userId to $role");
+   * 
+   * 5. **Rate Limiting**: Máximo 10 cambios/hora por admin
+   *    Route::middleware(['throttle:10,60'])->...
+   * 
+   * 6. **Validación de rol válido**: Verificar que el rol existe
+   *    if (!UserRole::isValidRole($request->role)) { abort(422); }
+   * 
+   * Ejemplo Laravel Controller completo:
+   * ```php
+   * public function assignRole(Request $request, $userId)
+   * {
+   *     // Verificar permisos
+   *     if (!auth()->user()->isAdmin()) {
+   *         abort(403, 'No autorizado');
+   *     }
+   *     
+   *     // Validar rol
+   *     $request->validate([
+   *         'role' => 'required|in:admin,cliente',
+   *     ]);
+   *     
+   *     // Actualizar en user_roles table
+   *     $targetUser = User::findOrFail($userId);
+   *     $targetUser->assignRole($request->role);
+   *     
+   *     // Audit log
+   *     Log::info('Role changed', [
+   *         'admin_id' => auth()->id(),
+   *         'admin_email' => auth()->user()->email,
+   *         'target_user_id' => $userId,
+   *         'new_role' => $request->role,
+   *         'ip' => $request->ip(),
+   *         'timestamp' => now(),
+   *     ]);
+   *     
+   *     return response()->json([
+   *         'message' => 'Rol asignado correctamente',
+   *     ]);
+   * }
+   * ```
+   * 
+   * 📖 Ver SECURITY.md para código SQL completo de user_roles table
+   * 
    * 🔗 CONEXIÓN LARAVEL:
    * 1. Descomentar: return apiClient.post(`/users/${userId}/roles`, { role });
    * 2. Eliminar líneas 147-153 (mock)

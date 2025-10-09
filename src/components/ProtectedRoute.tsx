@@ -1,4 +1,25 @@
 /**
+ * ⚠️ SEGURIDAD CRÍTICA: Route Protection (Frontend Only)
+ * 
+ * Este componente protege rutas en el FRONTEND únicamente.
+ * NO es suficiente para seguridad real.
+ * 
+ * REQUISITOS DE BACKEND (Laravel):
+ * - Middleware 'auth:sanctum' en todas las rutas protegidas
+ * - Middleware 'admin' verificando rol desde user_roles table
+ * - NUNCA confiar en que el usuario pasó esta validación client-side
+ * 
+ * Un atacante puede:
+ * - Bypassear React Router modificando la URL
+ * - Modificar localStorage para cambiar el rol
+ * - Llamar APIs directamente sin pasar por el frontend
+ * - Usar herramientas como Postman/curl para hacer requests
+ * 
+ * CORRECTO: Este componente mejora la UX (evita mostrar páginas innecesarias)
+ * INCORRECTO: Asumir que protege datos sensibles
+ * 
+ * 📖 Documentación completa: Ver SECURITY.md
+ * 
  * ProtectedRoute Component
  * Route protection based on authentication and role
  */

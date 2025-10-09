@@ -36,6 +36,127 @@ Configurar `config/cors.php`:
 
 ---
 
+## 🔒 Seguridad y Gestión de Roles
+
+### ⚠️ ADVERTENCIA CRÍTICA
+
+**NUNCA almacenes roles en la tabla `users` o `profiles`**.
+
+Los roles DEBEN estar en una tabla separada `user_roles` con Row-Level Security (RLS) en PostgreSQL. Almacenar roles en la tabla principal permite ataques de escalada de privilegios.
+
+📖 **Ver documentación completa**: [SECURITY.md](SECURITY.md)
+
+---
+
+### 🛡️ Checklist de Seguridad (Pre-Deploy)
+
+Antes de conectar con el backend Laravel, verificar obligatoriamente:
+
+#### **🗃️ Base de Datos PostgreSQL**
+
+- [ ] ✅ ENUM `app_role` creado (valores: 'admin', 'cliente')
+- [ ] ✅ Tabla `user_roles` creada con relación a `users`
+- [ ] ✅ Función `has_role()` implementada (SECURITY DEFINER)
+- [ ] ✅ Políticas RLS habilitadas en `user_roles`
+- [ ] ✅ Trigger `assign_default_role` para asignar 'cliente' por defecto
+- [ ] ✅ Índices creados para performance (user_id, role)
+
+**Comando SQL**: Ver SECURITY.md sección "SQL Completo para PostgreSQL"
+
+#### **🔧 Laravel Backend**
+
+- [ ] ✅ Modelo `User` con métodos: `getRole()`, `hasRole()`, `isAdmin()`
+- [ ] ✅ Modelo `UserRole` implementado
+- [ ] ✅ Middleware `EnsureUserIsAdmin` registrado y aplicado
+- [ ] ✅ Rutas admin protegidas: `Route::middleware(['auth:sanctum', 'admin'])`
+- [ ] ✅ `AuthController::me()` retorna rol desde `$user->getRole()`
+- [ ] ✅ `AuthController::updateProfile()` NO permite modificar rol
+- [ ] ✅ Tests de seguridad implementados y pasando
+- [ ] ✅ Rate limiting en endpoints críticos (10 requests/min)
+- [ ] ✅ Audit logging para cambios de roles
+
+**Código Laravel completo**: Ver SECURITY.md sección "Integración con Laravel"
+
+#### **⚛️ Frontend React**
+
+- [ ] ✅ `AuthContext` obtiene rol desde API (no localStorage)
+- [ ] ✅ `ProtectedRoute` es solo UX (backend valida permisos)
+- [ ] ✅ Comentarios de seguridad agregados en archivos críticos
+- [ ] ✅ No se almacena información sensible en localStorage
+- [ ] ✅ Tokens enviados en headers: `Authorization: Bearer {token}`
+- [ ] ✅ Validación client-side solo para UX (mostrar/ocultar componentes)
+
+#### **🔒 Auditoría y Prevención de Ataques**
+
+- [ ] ✅ CORS configurado correctamente en `config/cors.php`
+- [ ] ✅ HTTPS habilitado en producción
+- [ ] ✅ Tokens JWT con expiración (recomendado: 30 días)
+- [ ] ✅ CSRF protection habilitado en Laravel
+- [ ] ✅ Input validation con FormRequest
+- [ ] ✅ SQL injection prevenido (uso de Eloquent ORM)
+- [ ] ✅ XSS prevenido (sanitización de outputs)
+- [ ] ✅ Logs de errores y seguridad configurados
+- [ ] ✅ Secrets en archivo `.env` (no hardcoded)
+
+#### **📊 Monitoreo y Logs**
+
+- [ ] ✅ Audit log de cambios de roles (`Log::info()`)
+- [ ] ✅ Alertas para intentos fallidos (401, 403)
+- [ ] ✅ Monitoreo de requests sospechosos
+- [ ] ✅ Backups de base de datos configurados
+
+---
+
+### 🚨 Ataques Comunes a Prevenir
+
+| Ataque | Descripción | Prevención |
+|--------|-------------|------------|
+| **Escalada de Privilegios** | Usuario modifica su rol a 'admin' | Tabla `user_roles` separada con RLS |
+| **JWT Manipulation** | Modificar claims del token | Verificar rol contra DB, no confiar en JWT |
+| **IDOR** | Acceder a recursos de otros usuarios | Validar `user_id` en cada query |
+| **Session Hijacking** | Robar token de autenticación | HTTPS, tokens con expiración corta |
+| **CSRF** | Ejecutar acciones sin consentimiento | CSRF tokens, SameSite cookies |
+
+---
+
+### ✅ Verificación Rápida
+
+Después de implementar, ejecutar estos tests:
+
+```bash
+# Test 1: Usuario sin rol admin no puede crear productos
+curl -X POST http://localhost:8000/api/products \
+  -H "Authorization: Bearer {cliente_token}" \
+  -H "Content-Type: application/json" \
+  -d '{"name":"Test"}' \
+# Esperado: 403 Forbidden
+
+# Test 2: Usuario no puede auto-asignarse rol admin
+curl -X PATCH http://localhost:8000/api/auth/profile \
+  -H "Authorization: Bearer {cliente_token}" \
+  -H "Content-Type: application/json" \
+  -d '{"role":"admin"}' \
+# Esperado: Campo 'role' ignorado (no modificado en DB)
+
+# Test 3: Solo admin puede asignar roles
+curl -X POST http://localhost:8000/api/users/{userId}/assign-role \
+  -H "Authorization: Bearer {admin_token}" \
+  -H "Content-Type: application/json" \
+  -d '{"role":"admin"}' \
+# Esperado: 200 OK (si es admin) o 403 (si no lo es)
+```
+
+---
+
+### 📖 Recursos Adicionales
+
+- **Documentación completa**: [SECURITY.md](SECURITY.md)
+- **PostgreSQL RLS**: https://www.postgresql.org/docs/current/ddl-rowsecurity.html
+- **Laravel Authorization**: https://laravel.com/docs/11.x/authorization
+- **OWASP Top 10**: https://owasp.org/www-project-top-ten/
+
+---
+
 ## 🔐 Endpoints de Autenticación
 
 ### POST /api/auth/login

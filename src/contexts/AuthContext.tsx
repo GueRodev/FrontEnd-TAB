@@ -168,10 +168,35 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
+  /**
+   * ⚠️ SEGURIDAD: Role Check (Client-Side Only)
+   * 
+   * IMPORTANTE: Esta validación es SOLO para UX (mostrar/ocultar componentes en la UI).
+   * NUNCA confiar en esta función para decisiones de seguridad.
+   * 
+   * El backend DEBE:
+   * 1. Verificar rol en CADA endpoint protegido mediante middleware
+   * 2. Obtener rol desde tabla user_roles (NO desde users o profiles)
+   * 3. NUNCA confiar en headers, localStorage o claims del frontend
+   * 
+   * Un atacante puede:
+   * - Modificar localStorage
+   * - Bypassear React Router
+   * - Llamar APIs directamente con Postman/curl
+   * 
+   * 📖 Ver SECURITY.md para arquitectura completa
+   */
   const isAdmin = (): boolean => {
     return state.user?.role === 'admin';
   };
 
+  /**
+   * ⚠️ SEGURIDAD: Role Check (Client-Side Only)
+   * 
+   * Ver comentario en isAdmin() arriba. Esta función también es solo para UX.
+   * 
+   * 📖 Ver SECURITY.md para más detalles
+   */
   const isClient = (): boolean => {
     return state.user?.role === 'cliente';
   };
