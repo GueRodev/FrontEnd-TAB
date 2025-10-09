@@ -1,21 +1,28 @@
 import React, { useMemo } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { toast } from '@/hooks/use-toast';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import ProductCard from '@/components/ProductCard';
 import DecorativeBackground from '@/components/DecorativeBackground';
-import { useProducts } from '@/contexts/ProductsContext';
-import { useCategories } from '@/contexts/CategoriesContext';
-import { useCart } from '@/contexts/CartContext';
-import { useWishlist } from '@/contexts/WishlistContext';
+import { useProductOperations } from '@/hooks/business';
 
+/**
+ * CategoryPage Component
+ * Displays products filtered by category/subcategory
+ * @next-migration: Can be Server Component with data fetching
+ */
 const CategoryPage: React.FC = () => {
   const { category, subcategory } = useParams<{ category: string; subcategory?: string }>();
-  const { categories } = useCategories();
-  const { getProductsByCategory, getProductsBySubcategory } = useProducts();
-  const { addToCart } = useCart();
-  const { wishlist, addToWishlist, removeFromWishlist } = useWishlist();
+  
+  const {
+    categories,
+    getProductsByCategory,
+    getProductsBySubcategory,
+    handleAddToCart,
+    handleToggleWishlist,
+    isProductInWishlist,
+    findProductById,
+  } = useProductOperations();
 
   // Find the current category
   const currentCategory = useMemo(() => 
@@ -40,49 +47,17 @@ const CategoryPage: React.FC = () => {
     return getProductsByCategory(currentCategory.id);
   }, [currentCategory, currentSubcategory, getProductsByCategory, getProductsBySubcategory]);
 
-  const toggleWishlist = (e: React.MouseEvent, productId: string) => {
-    e.preventDefault();
-    e.stopPropagation();
-    
-    if (wishlist.some(item => item.id === productId)) {
-      removeFromWishlist(productId);
-      toast({
-        title: "Eliminado de favoritos",
-        description: "El producto ha sido eliminado de tus favoritos",
-      });
-    } else {
-      const product = products.find(p => p.id === productId);
-      if (product) {
-        addToWishlist({
-          id: product.id,
-          name: product.name,
-          price: product.price,
-          image: product.image,
-          category: currentCategory.name,
-        });
-        toast({
-          title: "Agregado a favoritos",
-          description: "El producto ha sido agregado a tus favoritos",
-        });
-      }
+  const handleWishlistToggle = (e: React.MouseEvent, productId: string) => {
+    const product = findProductById(productId);
+    if (product) {
+      handleToggleWishlist(product, e);
     }
   };
 
-  const handleAddToCart = (e: React.MouseEvent, productId: string) => {
-    e.preventDefault();
-    e.stopPropagation();
-    const product = products.find(p => p.id === productId);
+  const handleCartAdd = (e: React.MouseEvent, productId: string) => {
+    const product = findProductById(productId);
     if (product) {
-      addToCart({
-        id: product.id,
-        name: product.name,
-        price: product.price,
-        image: product.image,
-      });
-      toast({
-        title: "Agregado al carrito",
-        description: `${product.name} ha sido agregado a tu carrito`,
-      });
+      handleAddToCart(product, e);
     }
   };
 
@@ -159,9 +134,9 @@ const CategoryPage: React.FC = () => {
                   price={product.price}
                   image={product.image}
                   category={currentCategory.name}
-                  isWishlisted={wishlist.some(item => item.id === product.id)}
-                  onToggleWishlist={(e) => toggleWishlist(e, product.id)}
-                  onAddToCart={(e) => handleAddToCart(e, product.id)}
+                  isWishlisted={isProductInWishlist(product.id)}
+                  onToggleWishlist={handleWishlistToggle}
+                  onAddToCart={handleCartAdd}
                 />
               ))}
             </div>

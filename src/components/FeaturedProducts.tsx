@@ -1,55 +1,44 @@
-
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
-import { useWishlist } from '@/contexts/WishlistContext';
-import { useCart } from '@/contexts/CartContext';
-import { useProducts } from '@/contexts/ProductsContext';
-import { useCategories } from '@/contexts/CategoriesContext';
+import { useProductOperations } from '@/hooks/business';
 import ProductCard from './ProductCard';
 
+/**
+ * FeaturedProducts Component
+ * Displays featured products using business logic hook
+ * @next-migration: Can be Server Component if data passed as props
+ */
 const FeaturedProducts: React.FC = () => {
-  const { isInWishlist, toggleWishlist } = useWishlist();
-  const { addToCart } = useCart();
-  const { products } = useProducts();
-  const { categories } = useCategories();
+  const {
+    getFeaturedProducts,
+    handleAddToCart,
+    handleToggleWishlist,
+    isProductInWishlist,
+    getCategorySlug,
+    findProductById,
+  } = useProductOperations();
 
-  // Get only featured products
-  const featuredProducts = products.filter(product => product.isFeatured && product.status === 'active');
+  const featuredProducts = getFeaturedProducts();
 
-  const handleToggleWishlist = (e: React.MouseEvent, productId: string) => {
-    e.preventDefault();
-    e.stopPropagation();
-    const product = featuredProducts.find(p => p.id === productId);
-    if (product) {
-      toggleWishlist({
-        id: product.id,
-        name: product.name,
-        image: product.image,
-        price: product.price,
-        category: categories.find(c => c.id === product.categoryId)?.slug || '',
-      });
-    }
-  };
-
-  const handleAddToCart = (e: React.MouseEvent, productId: string) => {
-    e.preventDefault();
-    e.stopPropagation();
-    const product = featuredProducts.find(p => p.id === productId);
-    if (product) {
-      addToCart({
-        id: product.id,
-        name: product.name,
-        image: product.image,
-        price: product.price,
-      });
-    }
-  };
-
-  // Don't render the section if there are no featured products
+  // Don't render if no featured products
   if (featuredProducts.length === 0) {
     return null;
   }
+
+  const handleWishlistClick = (e: React.MouseEvent, productId: string) => {
+    const product = findProductById(productId);
+    if (product) {
+      handleToggleWishlist(product, e);
+    }
+  };
+
+  const handleCartClick = (e: React.MouseEvent, productId: string) => {
+    const product = findProductById(productId);
+    if (product) {
+      handleAddToCart(product, e);
+    }
+  };
 
   return (
     <section className="py-16 bg-white">
@@ -66,22 +55,19 @@ const FeaturedProducts: React.FC = () => {
         </div>
         
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mb-12">
-          {featuredProducts.map((product) => {
-            const category = categories.find(c => c.id === product.categoryId);
-            return (
-              <ProductCard
-                key={product.id}
-                id={product.id}
-                name={product.name}
-                image={product.image}
-                price={product.price}
-                category={category?.slug || ''}
-                isWishlisted={isInWishlist(product.id)}
-                onToggleWishlist={handleToggleWishlist}
-                onAddToCart={handleAddToCart}
-              />
-            );
-          })}
+          {featuredProducts.map((product) => (
+            <ProductCard
+              key={product.id}
+              id={product.id}
+              name={product.name}
+              image={product.image}
+              price={product.price}
+              category={getCategorySlug(product.categoryId)}
+              isWishlisted={isProductInWishlist(product.id)}
+              onToggleWishlist={handleWishlistClick}
+              onAddToCart={handleCartClick}
+            />
+          ))}
         </div>
         
         <div className="flex justify-center">

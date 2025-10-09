@@ -1,156 +1,41 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
 import { Trash2, Plus, Minus, ShoppingBag } from 'lucide-react';
-import { useCart } from '@/contexts/CartContext';
-import { useOrders } from '@/contexts/OrdersContext';
-import { useNotifications } from '@/contexts/NotificationsContext';
-import { useProducts } from '@/contexts/ProductsContext';
+import { useCartOperations, useOrderForm } from '@/hooks/business';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
-import { toast } from '@/hooks/use-toast';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 
+/**
+ * Cart Page
+ * Uses business logic hooks for cart operations and order submission
+ * @next-migration: Can be Server Component with Client islands for interactive parts
+ */
 const Cart = () => {
-  const { items, removeFromCart, updateQuantity, getTotalPrice, clearCart } = useCart();
-  const { addOrder } = useOrders();
-  const { addNotification } = useNotifications();
-  const [deliveryOption, setDeliveryOption] = useState<'pickup' | 'delivery'>('pickup');
-  const [paymentMethod, setPaymentMethod] = useState<string>('');
-  
-  const [formData, setFormData] = useState({
-    name: '',
-    phone: '',
-    province: '',
-    canton: '',
-    district: '',
-    address: '',
-  });
+  const {
+    items,
+    totalPrice,
+    isEmpty,
+    incrementQuantity,
+    decrementQuantity,
+    removeFromCart,
+  } = useCartOperations();
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value
-    });
-  };
+  const {
+    formData,
+    deliveryOption,
+    paymentMethod,
+    handleInputChange,
+    setDeliveryOption,
+    setPaymentMethod,
+    submitOrder,
+  } = useOrderForm();
 
   const handleFinalizarCompra = () => {
-    // Validar campos requeridos
-    if (!formData.name || !formData.phone) {
-      toast({
-        title: "Campos incompletos",
-        description: "Por favor completa todos los campos requeridos",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    if (deliveryOption === 'delivery' && (!formData.province || !formData.canton || !formData.district || !formData.address)) {
-      toast({
-        title: "Campos incompletos",
-        description: "Por favor completa todos los campos de dirección",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    if (!paymentMethod) {
-      toast({
-        title: "Método de pago no seleccionado",
-        description: "Por favor selecciona un método de pago",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    // Construir mensaje para WhatsApp
-    let message = `*NUEVO PEDIDO*\n\n`;
-    message += `*Productos:*\n`;
-    items.forEach(item => {
-      message += `• ${item.name} x${item.quantity} - ₡${(item.price * item.quantity).toFixed(2)}\n`;
-    });
-    message += `\n*Total: ₡${getTotalPrice().toFixed(2)}*\n\n`;
-    
-    message += `*Datos del cliente:*\n`;
-    message += `Nombre: ${formData.name}\n`;
-    message += `Teléfono: ${formData.phone}\n\n`;
-    
-    message += `*Tipo de entrega:*\n`;
-    if (deliveryOption === 'pickup') {
-      message += `Retiro en Tienda\n\n`;
-    } else {
-      message += `Envío a Domicilio\n`;
-      message += `Provincia: ${formData.province}\n`;
-      message += `Cantón: ${formData.canton}\n`;
-      message += `Distrito: ${formData.district}\n`;
-      message += `Dirección: ${formData.address}\n\n`;
-    }
-    
-    message += `*Método de pago:* ${paymentMethod}\n`;
-    
-    if (paymentMethod === 'SINPE Móvil' || paymentMethod === 'Transferencia bancaria') {
-      message += `\n_*Nota:* Recuerde enviar el comprobante de pago por este medio_`;
-    }
-
-    // Codificar mensaje para URL
-    const encodedMessage = encodeURIComponent(message);
-    const whatsappNumber = '50688888888'; // Cambiar por el número real
-    const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodedMessage}`;
-
-    // Guardar pedido en el contexto
-    const orderId = addOrder({
-      type: 'online',
-      status: 'pending',
-      items: items.map(item => ({
-        id: item.id,
-        name: item.name,
-        image: item.image,
-        price: item.price,
-        quantity: item.quantity,
-      })),
-      total: getTotalPrice(),
-      customerInfo: {
-        name: formData.name,
-        phone: formData.phone,
-        province: formData.province,
-        canton: formData.canton,
-        district: formData.district,
-        address: formData.address,
-      },
-      deliveryOption,
-      paymentMethod,
-    });
-
-    // Agregar notificación con orderId
-    addNotification({
-      type: 'order',
-      title: 'Nuevo pedido recibido',
-      message: `Pedido ${orderId} de ${formData.name} - Total: ₡${getTotalPrice().toFixed(2)}`,
-      time: 'Ahora',
-      orderId: orderId,
-    });
-
-    // Abrir WhatsApp
-    window.open(whatsappUrl, '_blank');
-
-    // Limpiar carrito y formulario
-    clearCart();
-    setFormData({
-      name: '',
-      phone: '',
-      province: '',
-      canton: '',
-      district: '',
-      address: '',
-    });
-    setPaymentMethod('');
-
-    toast({
-      title: "Pedido enviado",
-      description: "Tu pedido ha sido enviado por WhatsApp",
-    });
+    submitOrder();
   };
 
   const paymentOptions = deliveryOption === 'pickup' 
@@ -185,7 +70,7 @@ const Cart = () => {
         <div className="container mx-auto px-4 py-6 relative z-10">
           <h1 className="text-3xl font-bold mb-4 text-brand-darkBlue">Carrito de Compras</h1>
 
-          {items.length === 0 ? (
+          {isEmpty ? (
             <div className="text-center py-16">
               <ShoppingBag size={64} className="mx-auto text-gray-300 mb-4" />
               <h2 className="text-2xl font-semibold text-gray-600 mb-4">Tu carrito está vacío</h2>
@@ -214,14 +99,14 @@ const Cart = () => {
                       <div className="flex items-center gap-3 mt-3">
                         <div className="flex items-center gap-2 bg-gray-100 rounded-lg p-1">
                           <button
-                            onClick={() => updateQuantity(item.id, item.quantity - 1)}
+                            onClick={() => decrementQuantity(item.id)}
                             className="p-1 hover:bg-gray-200 rounded"
                           >
                             <Minus size={16} />
                           </button>
                           <span className="w-8 text-center font-medium">{item.quantity}</span>
                           <button
-                            onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                            onClick={() => incrementQuantity(item.id)}
                             className="p-1 hover:bg-gray-200 rounded"
                           >
                             <Plus size={16} />
@@ -246,11 +131,11 @@ const Cart = () => {
                   <h2 className="text-xl font-semibold mb-4">Resumen del pedido</h2>
                   <div className="flex justify-between mb-2 text-gray-600">
                     <span>Subtotal</span>
-                    <span>₡{getTotalPrice().toFixed(2)}</span>
+                    <span>₡{totalPrice.toFixed(2)}</span>
                   </div>
                   <div className="flex justify-between font-bold text-lg pt-2 border-t">
                     <span>Total</span>
-                    <span className="text-brand-orange">₡{getTotalPrice().toFixed(2)}</span>
+                    <span className="text-brand-orange">₡{totalPrice.toFixed(2)}</span>
                   </div>
                 </div>
 
