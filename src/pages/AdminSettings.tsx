@@ -35,8 +35,7 @@ const AdminConfiguracion = () => {
     if (!file) return;
 
     // Validate file type
-    const allowedTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
-    if (!allowedTypes.includes(file.type)) {
+    if (!([...FILE_UPLOAD_CONFIG.allowedTypes] as string[]).includes(file.type)) {
       toast({
         title: "Error",
         description: "Por favor selecciona un archivo de imagen válido",
