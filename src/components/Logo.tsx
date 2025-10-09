@@ -1,6 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { OptimizedImage } from '@/components/common';
 
 interface LogoProps {
   variant?: 'default' | 'white' | 'small';
@@ -42,10 +43,12 @@ const Logo: React.FC<LogoProps> = ({ variant = 'default', className = '' }) => {
         to="/" 
         className={`flex items-center transition-transform hover:scale-105 ${className}`}
       >
-        <img 
-          src={customLogo} 
-          alt="Logo" 
-          className={`object-contain ${variant === 'small' ? 'h-8' : 'h-10 md:h-12'}`}
+        <OptimizedImage
+          src={customLogo}
+          alt="Logo"
+          loading="eager"
+          objectFit="contain"
+          className={variant === 'small' ? 'h-8' : 'h-10 md:h-12'}
         />
       </Link>
     );

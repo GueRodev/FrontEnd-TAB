@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { Heart, ShoppingCart, Plus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { ProductImage } from '@/components/common';
 
 interface ProductCardProps {
   id: string;
@@ -44,10 +45,11 @@ const ProductCard: React.FC<ProductCardProps> = ({
     >
       <div className="relative">
         <Link to={`/product/${id}`} className="block aspect-square overflow-hidden">
-          <img 
-            src={image} 
+          <ProductImage
+            src={image}
             alt={name}
-            className="w-full h-full object-cover object-center transform group-hover:scale-105 transition-transform duration-500"
+            variant="card"
+            className="transform group-hover:scale-105 transition-transform duration-500"
           />
         </Link>
         {onToggleWishlist && (

@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { AdminSidebar } from '@/components/AdminSidebar';
 import { SidebarProvider, SidebarInset } from '@/components/ui/sidebar';
 import AdminHeader from '@/components/AdminHeader';
+import { ProductImage } from '@/components/common';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -221,7 +222,12 @@ const AdminOrders = () => {
         <div className="space-y-2">
           {order.items.map((item: any) => (
             <div key={item.id} className="flex gap-2 md:gap-3 items-center">
-              <img src={item.image} alt={item.name} className="w-10 h-10 md:w-12 md:h-12 object-cover rounded flex-shrink-0" />
+              <ProductImage
+                src={item.image}
+                alt={item.name}
+                variant="thumbnail"
+                className="w-10 h-10 md:w-12 md:h-12 flex-shrink-0"
+              />
               <div className="flex-1 min-w-0">
                 <p className="font-medium text-xs md:text-sm break-words">{item.name}</p>
                 <p className="text-xs text-muted-foreground">Cantidad: {item.quantity}</p>
