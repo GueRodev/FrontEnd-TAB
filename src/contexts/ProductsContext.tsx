@@ -1,5 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import type { Product } from '@/types/product.types';
+import { localStorageAdapter } from '@/lib/storage';
+import { STORAGE_KEYS } from '@/data/constants';
 
 // Re-export types for backward compatibility
 export type { Product, ProductStatus } from '@/types/product.types';
@@ -17,12 +19,11 @@ const ProductsContext = createContext<ProductsContextType | undefined>(undefined
 
 export const ProductsProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [products, setProducts] = useState<Product[]>(() => {
-    const stored = localStorage.getItem('products');
-    return stored ? JSON.parse(stored) : [];
+    return localStorageAdapter.getItem<Product[]>(STORAGE_KEYS.products) || [];
   });
 
   useEffect(() => {
-    localStorage.setItem('products', JSON.stringify(products));
+    localStorageAdapter.setItem(STORAGE_KEYS.products, products);
   }, [products]);
 
   const addProduct = (productData: Omit<Product, 'id' | 'createdAt'>) => {

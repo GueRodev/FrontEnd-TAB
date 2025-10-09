@@ -1,5 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import type { Order, OrderStatus, OrderType } from '@/types/order.types';
+import { localStorageAdapter } from '@/lib/storage';
+import { STORAGE_KEYS } from '@/data/constants';
 
 // Re-export types for backward compatibility
 export type { Order, OrderStatus, OrderType, OrderItem, CustomerInfo, DeliveryOption } from '@/types/order.types';
@@ -19,12 +21,11 @@ const OrdersContext = createContext<OrdersContextType | undefined>(undefined);
 
 export const OrdersProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [orders, setOrders] = useState<Order[]>(() => {
-    const saved = localStorage.getItem('orders');
-    return saved ? JSON.parse(saved) : [];
+    return localStorageAdapter.getItem<Order[]>(STORAGE_KEYS.orders) || [];
   });
 
   useEffect(() => {
-    localStorage.setItem('orders', JSON.stringify(orders));
+    localStorageAdapter.setItem(STORAGE_KEYS.orders, orders);
   }, [orders]);
 
   const addOrder = (order: Omit<Order, 'id' | 'createdAt'>) => {

@@ -1,6 +1,8 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { toast } from '@/hooks/use-toast';
 import type { CartItem } from '@/types/cart.types';
+import { localStorageAdapter } from '@/lib/storage';
+import { STORAGE_KEYS } from '@/data/constants';
 
 // Re-export types for backward compatibility
 export type { CartItem } from '@/types/cart.types';
@@ -19,12 +21,11 @@ const CartContext = createContext<CartContextType | undefined>(undefined);
 
 export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [items, setItems] = useState<CartItem[]>(() => {
-    const saved = localStorage.getItem('cart');
-    return saved ? JSON.parse(saved) : [];
+    return localStorageAdapter.getItem<CartItem[]>(STORAGE_KEYS.cart) || [];
   });
 
   useEffect(() => {
-    localStorage.setItem('cart', JSON.stringify(items));
+    localStorageAdapter.setItem(STORAGE_KEYS.cart, items);
   }, [items]);
 
   const addToCart = (product: Omit<CartItem, 'quantity'>) => {

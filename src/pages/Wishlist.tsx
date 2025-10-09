@@ -1,40 +1,41 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Heart, ShoppingBag } from 'lucide-react';
+import { Heart } from 'lucide-react';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
-import ProductCard from '@/components/ProductCard';
 import DecorativeBackground from '@/components/DecorativeBackground';
-import { useWishlist } from '@/contexts/WishlistContext';
+import { useWishlistOperations } from '@/hooks/business';
 import { useCart } from '@/contexts/CartContext';
-import { Button } from '@/components/ui/button';
-import { toast } from '@/hooks/use-toast';
+import { WishlistGrid, EmptyWishlist } from '@/components/features';
 
+/**
+ * Wishlist Page
+ * Uses business logic hooks and presentational components
+ * @next-migration: Can be Server Component with Client islands
+ */
 const Wishlist: React.FC = () => {
-  const { wishlist, toggleWishlist } = useWishlist();
+  const { wishlist, toggleWishlist, itemCount } = useWishlistOperations();
   const { addToCart } = useCart();
 
-  const handleToggleWishlist = (e: React.MouseEvent, productId: string) => {
-    e.preventDefault();
-    e.stopPropagation();
-    const product = wishlist.find(p => p.id === productId);
-    if (product) {
-      toggleWishlist(product);
+  const handleToggleWishlist = (product: any, e?: React.MouseEvent) => {
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
     }
+    toggleWishlist(product);
   };
 
-  const handleAddToCart = (e: React.MouseEvent, productId: string) => {
-    e.preventDefault();
-    e.stopPropagation();
-    const product = wishlist.find(p => p.id === productId);
-    if (product) {
-      addToCart({
-        id: product.id,
-        name: product.name,
-        image: product.image,
-        price: product.price,
-      });
+  const handleAddToCart = (product: any, e?: React.MouseEvent) => {
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
     }
+    addToCart({
+      id: product.id,
+      name: product.name,
+      image: product.image,
+      price: product.price,
+    });
   };
 
   return (
@@ -67,9 +68,9 @@ const Wishlist: React.FC = () => {
             </h1>
           </div>
           <p className="text-gray-600">
-            {wishlist.length === 0 
+            {itemCount === 0 
               ? 'Aún no tienes productos favoritos'
-              : `Tienes ${wishlist.length} ${wishlist.length === 1 ? 'producto' : 'productos'} en tu lista de favoritos`
+              : `Tienes ${itemCount} ${itemCount === 1 ? 'producto' : 'productos'} en tu lista de favoritos`
             }
           </p>
         </div>
@@ -78,38 +79,14 @@ const Wishlist: React.FC = () => {
       <main className="flex-grow">
         {/* Wishlist Content */}
         <div className="container mx-auto px-4 py-8 bg-white">
-          {wishlist.length === 0 ? (
-            <div className="text-center py-16 bg-gray-50 rounded-lg">
-              <Heart className="mx-auto mb-4 text-gray-300" size={64} />
-              <h3 className="text-xl font-semibold text-gray-700 mb-2">
-                Tu lista de favoritos está vacía
-              </h3>
-              <p className="text-gray-500 mb-6">
-                Explora nuestros productos y agrega tus favoritos
-              </p>
-              <Link to="/">
-                <Button className="bg-brand-darkBlue hover:bg-brand-orange">
-                  <ShoppingBag className="mr-2" size={18} />
-                  Ir a la tienda
-                </Button>
-              </Link>
-            </div>
+          {itemCount === 0 ? (
+            <EmptyWishlist />
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-              {wishlist.map((product) => (
-                <ProductCard
-                  key={product.id}
-                  id={product.id}
-                  name={product.name}
-                  image={product.image}
-                  price={product.price}
-                  category={product.category}
-                  isWishlisted={true}
-                  onToggleWishlist={handleToggleWishlist}
-                  onAddToCart={handleAddToCart}
-                />
-              ))}
-            </div>
+            <WishlistGrid
+              products={wishlist}
+              onAddToCart={handleAddToCart}
+              onToggleWishlist={handleToggleWishlist}
+            />
           )}
         </div>
       </main>

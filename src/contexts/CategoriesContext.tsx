@@ -1,5 +1,8 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import type { Category } from '@/types/product.types';
+import { localStorageAdapter } from '@/lib/storage';
+import { STORAGE_KEYS } from '@/data/constants';
+import { DEFAULT_CATEGORIES } from '@/data/categories.data';
 
 // Re-export types for backward compatibility
 export type { Category, Subcategory } from '@/types/product.types';
@@ -12,91 +15,14 @@ interface CategoriesContextType {
 
 const CategoriesContext = createContext<CategoriesContextType | undefined>(undefined);
 
-const defaultCategories: Category[] = [
-  {
-    id: '1',
-    name: 'Lego',
-    order: 1,
-    slug: 'lego',
-    isExpanded: false,
-    subcategories: [],
-  },
-  {
-    id: '2',
-    name: 'Funkos',
-    order: 2,
-    slug: 'funkos',
-    isExpanded: false,
-    subcategories: [],
-  },
-  {
-    id: '3',
-    name: 'Anime',
-    order: 3,
-    slug: 'anime',
-    isExpanded: false,
-    subcategories: [],
-  },
-  {
-    id: '4',
-    name: 'Coleccionables',
-    order: 4,
-    slug: 'coleccionables',
-    isExpanded: false,
-    subcategories: [],
-  },
-  {
-    id: '5',
-    name: 'Peluches',
-    order: 5,
-    slug: 'peluches',
-    isExpanded: false,
-    subcategories: [],
-  },
-  {
-    id: '6',
-    name: 'Starwars',
-    order: 6,
-    slug: 'starwars',
-    isExpanded: false,
-    subcategories: [],
-  },
-  {
-    id: '7',
-    name: 'HarryPotter',
-    order: 7,
-    slug: 'harrypotter',
-    isExpanded: false,
-    subcategories: [],
-  },
-  {
-    id: '8',
-    name: 'Otros',
-    order: 8,
-    slug: 'otros',
-    isExpanded: false,
-    subcategories: [],
-  },
-];
-
 export const CategoriesProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [categories, setCategories] = useState<Category[]>(() => {
-    const stored = localStorage.getItem('categories');
-    const parsedCategories = stored ? JSON.parse(stored) : defaultCategories;
-    
-    // Limpiar subcategorías de Lego si existen (migración de datos)
-    const cleanedCategories = parsedCategories.map((cat: Category) => {
-      if (cat.slug === 'lego' && cat.subcategories.length > 0) {
-        return { ...cat, subcategories: [] };
-      }
-      return cat;
-    });
-    
-    return cleanedCategories;
+    const stored = localStorageAdapter.getItem<Category[]>(STORAGE_KEYS.categories);
+    return stored || DEFAULT_CATEGORIES.map(cat => ({ ...cat, isExpanded: false }));
   });
 
   useEffect(() => {
-    localStorage.setItem('categories', JSON.stringify(categories));
+    localStorageAdapter.setItem(STORAGE_KEYS.categories, categories);
   }, [categories]);
 
   const updateCategoryOrder = (newCategories: Category[]) => {
