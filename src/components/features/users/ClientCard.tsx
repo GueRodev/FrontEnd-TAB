@@ -62,10 +62,10 @@ export const ClientCard: React.FC<ClientCardProps> = ({
       <Separator className="my-3" />
       
       <div className="grid grid-cols-2 gap-2 text-sm mb-3">
-        <div>
-          <span className="text-muted-foreground">Órdenes:</span>
-          <span className="ml-1 font-semibold text-primary">{client.ordenes}</span>
-        </div>
+          <div>
+            <span className="text-muted-foreground">Órdenes:</span>
+            <span className="ml-1 font-semibold text-brand-orange">{client.ordenes}</span>
+          </div>
         <div>
           <span className="text-muted-foreground">Registro:</span>
           <span className="ml-1">{client.fechaRegistro}</span>

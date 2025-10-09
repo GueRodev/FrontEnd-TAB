@@ -60,7 +60,7 @@ export const ClientsTable: React.FC<ClientsTableProps> = ({
               <TableCell className="font-medium">{client.nombre}</TableCell>
               <TableCell className="text-muted-foreground">{client.email}</TableCell>
               <TableCell className="text-muted-foreground">{client.telefono}</TableCell>
-              <TableCell className="text-center font-semibold text-primary">
+              <TableCell className="text-center font-semibold text-brand-orange">
                 {client.ordenes}
               </TableCell>
               <TableCell className="text-muted-foreground">{client.fechaRegistro}</TableCell>
