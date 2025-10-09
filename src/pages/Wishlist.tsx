@@ -4,8 +4,7 @@ import { Heart } from 'lucide-react';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import DecorativeBackground from '@/components/DecorativeBackground';
-import { useWishlistOperations } from '@/hooks/business';
-import { useCart } from '@/contexts/CartContext';
+import { useWishlistPage } from '@/hooks/business';
 import { WishlistGrid, EmptyWishlist } from '@/components/features';
 
 /**
@@ -14,29 +13,7 @@ import { WishlistGrid, EmptyWishlist } from '@/components/features';
  * @next-migration: Can be Server Component with Client islands
  */
 const Wishlist: React.FC = () => {
-  const { wishlist, toggleWishlist, itemCount } = useWishlistOperations();
-  const { addToCart } = useCart();
-
-  const handleToggleWishlist = (product: any, e?: React.MouseEvent) => {
-    if (e) {
-      e.preventDefault();
-      e.stopPropagation();
-    }
-    toggleWishlist(product);
-  };
-
-  const handleAddToCart = (product: any, e?: React.MouseEvent) => {
-    if (e) {
-      e.preventDefault();
-      e.stopPropagation();
-    }
-    addToCart({
-      id: product.id,
-      name: product.name,
-      image: product.image,
-      price: product.price,
-    });
-  };
+  const { wishlist, itemCount, handleToggleWishlist, handleAddToCart } = useWishlistPage();
 
   return (
     <div className="min-h-screen flex flex-col">
