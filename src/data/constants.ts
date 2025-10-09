@@ -3,34 +3,21 @@
  * Centralized configuration and storage keys
  */
 
-export const APP_CONFIG = {
-  name: "E-Commerce",
-  description: "Tu tienda online de confianza",
-  whatsapp: {
-    phoneNumber: "89176111",
-    countryCode: "+506",
-  },
-  currency: {
-    code: "CRC",
-    symbol: "₡",
-    locale: "es-CR",
-  },
-  pagination: {
-    defaultPageSize: 12,
-    maxPageSize: 100,
+// ============================================
+// API Configuration - Connection Settings
+// ============================================
+export const API_CONFIG = {
+  baseURL: "http://localhost:8000/api",
+  timeout: 30000,
+  headers: {
+    "Content-Type": "application/json",
+    "Accept": "application/json",
   },
 } as const;
 
-export const STORAGE_KEYS = {
-  products: "products",
-  categories: "categories",
-  cart: "cart",
-  wishlist: "wishlist",
-  orders: "orders",
-  notifications: "notifications",
-  user: "user",
-} as const;
-
+// ============================================
+// API Routes - Endpoint Definitions
+// ============================================
 export const API_ROUTES = {
   // Productos
   products: "/products",
@@ -57,11 +44,36 @@ export const API_ROUTES = {
   addresses: "/addresses",
 } as const;
 
-export const API_CONFIG = {
-  baseURL: "http://localhost:8000/api",
-  timeout: 30000,
-  headers: {
-    "Content-Type": "application/json",
-    "Accept": "application/json",
+// ============================================
+// Application Configuration - Business Settings
+// ============================================
+export const APP_CONFIG = {
+  name: "E-Commerce",
+  description: "Tu tienda online de confianza",
+  whatsapp: {
+    phoneNumber: "89176111",
+    countryCode: "+506",
   },
+  currency: {
+    code: "CRC",
+    symbol: "₡",
+    locale: "es-CR",
+  },
+  pagination: {
+    defaultPageSize: 12,
+    maxPageSize: 100,
+  },
+} as const;
+
+// ============================================
+// Storage Keys - LocalStorage Identifiers
+// ============================================
+export const STORAGE_KEYS = {
+  products: "products",
+  categories: "categories",
+  cart: "cart",
+  wishlist: "wishlist",
+  orders: "orders",
+  notifications: "notifications",
+  user: "user",
 } as const;
