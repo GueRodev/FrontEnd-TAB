@@ -16,3 +16,4 @@ export { useProductsAdmin } from './useProductsAdmin';
 export { useOrdersAdmin } from './useOrdersAdmin';
 export { useUsersAdmin } from './useUsersAdmin';
 export { useAdminProfile } from './useAdminProfile';
+export { useLogoSettings } from './useLogoSettings';

@@ -12,3 +12,4 @@ export * from './profile';
 export * from './users';
 export * from './wishlist';
 export * from './dashboard';
+export * from './settings';
