@@ -6,11 +6,10 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
-import { CartItem, EmptyCart, CartSummary, AddressList } from '@/components/features';
-import type { Address } from '@/types/user.types';
+import { CartItem, EmptyCart, CartSummary, AddressSelector, PaymentMethodSelector } from '@/components/features';
+import { DELIVERY_OPTIONS } from '@/data/constants';
 
 /**
  * Cart Page
@@ -38,20 +37,28 @@ const Cart = () => {
     submitOrder,
   } = useOrderForm();
 
-  // 🔗 INTEGRACIÓN CON DIRECCIONES GUARDADAS
-  const [useManualAddress, setUseManualAddress] = useState(false);
+  // 🔗 Address state management
   const [selectedAddressId, setSelectedAddressId] = useState<string>('');
+  const [manualAddress, setManualAddress] = useState({
+    province: '',
+    canton: '',
+    district: '',
+    address: '',
+  });
+  
   const userAddresses = (isAuthenticated && user?.role === 'cliente') 
     ? (user as any).addresses || [] 
     : [];
+  
+  const showManualInput = selectedAddressId === 'manual' || userAddresses.length === 0;
+  
+  const handleManualAddressChange = (field: string, value: string) => {
+    setManualAddress(prev => ({ ...prev, [field]: value }));
+  };
 
   const handleFinalizarCompra = () => {
     submitOrder();
   };
-
-  const paymentOptions = deliveryOption === 'pickup' 
-    ? ['Efectivo', 'Tarjeta', 'SINPE Móvil']
-    : ['SINPE Móvil', 'Transferencia bancaria'];
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -135,14 +142,14 @@ const Cart = () => {
                     <div>
                       <Label className="mb-3 block font-semibold">Tipo de entrega *</Label>
                       <RadioGroup value={deliveryOption} onValueChange={(value) => setDeliveryOption(value as 'pickup' | 'delivery')}>
-                        <div className="flex items-center space-x-2 mb-3">
-                          <RadioGroupItem value="pickup" id="pickup" />
-                          <Label htmlFor="pickup" className="cursor-pointer">Retiro en Tienda</Label>
-                        </div>
-                        <div className="flex items-center space-x-2">
-                          <RadioGroupItem value="delivery" id="delivery" />
-                          <Label htmlFor="delivery" className="cursor-pointer">Envío a Domicilio</Label>
-                        </div>
+                        {DELIVERY_OPTIONS.map((option) => (
+                          <div key={option.value} className="flex items-center space-x-2 mb-3">
+                            <RadioGroupItem value={option.value} id={option.value} />
+                            <Label htmlFor={option.value} className="cursor-pointer">
+                              {option.label}
+                            </Label>
+                          </div>
+                        ))}
                       </RadioGroup>
                     </div>
 
@@ -150,113 +157,27 @@ const Cart = () => {
                       <div className="space-y-4 pt-2 border-t">
                         <h3 className="font-semibold text-sm text-gray-700">Datos de envío</h3>
                         
-                        {/* 🔗 SELECTOR DE DIRECCIONES GUARDADAS */}
-                        {isAuthenticated && userAddresses.length > 0 && (
-                          <div className="space-y-3">
-                            <div className="flex items-center gap-2">
-                              <input
-                                type="checkbox"
-                                id="useManualAddress"
-                                checked={useManualAddress}
-                                onChange={(e) => setUseManualAddress(e.target.checked)}
-                                className="rounded"
-                              />
-                              <Label htmlFor="useManualAddress" className="cursor-pointer text-sm">
-                                Usar dirección diferente
-                              </Label>
-                            </div>
-
-                            {!useManualAddress && (
-                              <div>
-                                <Label>Selecciona una dirección guardada</Label>
-                                <Select value={selectedAddressId} onValueChange={setSelectedAddressId}>
-                                  <SelectTrigger>
-                                    <SelectValue placeholder="Elige una dirección" />
-                                  </SelectTrigger>
-                                  <SelectContent>
-                                    {userAddresses.map((addr) => (
-                                      <SelectItem key={addr.id} value={addr.id}>
-                                        {addr.label} - {addr.province}, {addr.canton}
-                                      </SelectItem>
-                                    ))}
-                                  </SelectContent>
-                                </Select>
-                              </div>
-                            )}
-                          </div>
-                        )}
-
-                        {/* Formulario manual de dirección */}
-                        {(!isAuthenticated || userAddresses.length === 0 || useManualAddress) && (
-                          <>
-                            <div>
-                              <Label htmlFor="province">Provincia *</Label>
-                              <Input
-                                id="province"
-                                name="province"
-                                value={formData.province}
-                                onChange={handleInputChange}
-                                placeholder="Provincia"
-                                required
-                              />
-                            </div>
-
-                            <div>
-                              <Label htmlFor="canton">Cantón *</Label>
-                              <Input
-                                id="canton"
-                                name="canton"
-                                value={formData.canton}
-                                onChange={handleInputChange}
-                                placeholder="Cantón"
-                                required
-                              />
-                            </div>
-
-                            <div>
-                              <Label htmlFor="district">Distrito *</Label>
-                              <Input
-                                id="district"
-                                name="district"
-                                value={formData.district}
-                                onChange={handleInputChange}
-                                placeholder="Distrito"
-                                required
-                              />
-                            </div>
-
-                            <div>
-                              <Label htmlFor="address">Dirección exacta *</Label>
-                              <Input
-                                id="address"
-                                name="address"
-                                value={formData.address}
-                                onChange={handleInputChange}
-                                placeholder="Dirección completa"
-                                required
-                              />
-                            </div>
-                          </>
-                        )}
+                        <AddressSelector
+                          savedAddresses={userAddresses}
+                          selectedAddressId={selectedAddressId}
+                          onSelectAddress={setSelectedAddressId}
+                          manualAddress={manualAddress}
+                          onManualAddressChange={handleManualAddressChange}
+                          showManualInput={showManualInput}
+                        />
                       </div>
                     )}
 
-                    <div>
-                      <Label className="mb-3 block font-semibold">Método de pago *</Label>
-                      <RadioGroup value={paymentMethod} onValueChange={setPaymentMethod}>
-                        {paymentOptions.map(option => (
-                          <div key={option} className="flex items-center space-x-2 mb-2">
-                            <RadioGroupItem value={option} id={option} />
-                            <Label htmlFor={option} className="cursor-pointer">{option}</Label>
-                          </div>
-                        ))}
-                      </RadioGroup>
-                      {(paymentMethod === 'SINPE Móvil' || paymentMethod === 'Transferencia bancaria') && (
-                        <p className="text-xs text-gray-500 mt-2">
-                          * Debe enviar el comprobante por WhatsApp
-                        </p>
-                      )}
-                    </div>
+                    <PaymentMethodSelector
+                      value={paymentMethod}
+                      onChange={setPaymentMethod}
+                    />
+
+                    {(paymentMethod === 'sinpe' || paymentMethod === 'transfer') && (
+                      <p className="text-xs text-muted-foreground">
+                        * Debe enviar el comprobante por WhatsApp
+                      </p>
+                    )}
 
                     <Button 
                       onClick={handleFinalizarCompra}

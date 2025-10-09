@@ -6,67 +6,40 @@ import { useOrders } from '@/contexts/OrdersContext';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { MetricCard } from '@/components/features/dashboard';
 import { 
   DollarSign, 
   TrendingUp, 
   ShoppingCart, 
   Package,
-  AlertTriangle,
   Clock,
   CheckCircle2,
-  XCircle
 } from 'lucide-react';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { Link } from 'react-router-dom';
+import { formatCurrency } from '@/lib/formatters';
+import { calculateOrderMetrics, getLastNDaysData, getTopProducts, getStatusLabel } from '@/lib/helpers/order.helpers';
 
 const Admin = () => {
   const { orders } = useOrders();
 
-  // Calcular métricas principales
-  const completedOrders = orders.filter(order => order.status === 'completed');
-  const pendingOrders = orders.filter(order => order.status === 'pending');
-  const totalRevenue = completedOrders.reduce((sum, order) => sum + order.total, 0);
-  
-  // Ventas del mes actual
-  const currentMonth = new Date().getMonth();
-  const currentYear = new Date().getFullYear();
-  const monthlyOrders = completedOrders.filter(order => {
-    const orderDate = new Date(order.createdAt);
-    return orderDate.getMonth() === currentMonth && orderDate.getFullYear() === currentYear;
-  });
-  const monthlyRevenue = monthlyOrders.reduce((sum, order) => sum + order.total, 0);
-
-  // Ventas del día
-  const today = new Date().toDateString();
-  const todayOrders = completedOrders.filter(order => 
-    new Date(order.createdAt).toDateString() === today
-  );
-  const todayRevenue = todayOrders.reduce((sum, order) => sum + order.total, 0);
+  // Calcular métricas usando helper
+  const metrics = useMemo(() => calculateOrderMetrics(orders), [orders]);
 
   // Datos para gráfico de últimos 7 días
   const last7DaysData = useMemo(() => {
-    const data = [];
-    for (let i = 6; i >= 0; i--) {
-      const date = new Date();
-      date.setDate(date.getDate() - i);
-      const dateString = date.toDateString();
-      
-      const dayOrders = completedOrders.filter(order => 
-        new Date(order.createdAt).toDateString() === dateString
-      );
-      
-      const revenue = dayOrders.reduce((sum, order) => sum + order.total, 0);
-      
-      data.push({
-        fecha: format(date, 'dd/MM', { locale: es }),
-        ingresos: parseFloat(revenue.toFixed(2)),
-        ventas: dayOrders.length
-      });
-    }
-    return data;
-  }, [completedOrders]);
+    const data = getLastNDaysData(orders, 7);
+    return data.map(item => ({
+      fecha: item.date,
+      ingresos: parseFloat(item.total.toFixed(2)),
+      ventas: orders.filter(o => 
+        new Date(o.createdAt).toISOString().split('T')[0] === 
+        new Date().toISOString().split('T')[0]
+      ).length
+    }));
+  }, [orders]);
 
   // Pedidos recientes (últimos 5)
   const recentOrders = [...orders]
@@ -74,30 +47,13 @@ const Admin = () => {
     .slice(0, 5);
 
   // Productos más vendidos
-  const topProducts = useMemo(() => {
-    const productSales: Record<string, { name: string; quantity: number; revenue: number }> = {};
-    
-    completedOrders.forEach(order => {
-      order.items.forEach(item => {
-        if (!productSales[item.id]) {
-          productSales[item.id] = {
-            name: item.name,
-            quantity: 0,
-            revenue: 0
-          };
-        }
-        productSales[item.id].quantity += item.quantity;
-        productSales[item.id].revenue += item.price * item.quantity;
-      });
-    });
-
-    return Object.values(productSales)
-      .sort((a, b) => b.quantity - a.quantity)
-      .slice(0, 5);
-  }, [completedOrders]);
+  const topProducts = useMemo(() => getTopProducts(orders, 5), [orders]);
 
   // Total de productos únicos
-  const uniqueProducts = new Set(completedOrders.flatMap(order => order.items.map(item => item.id))).size;
+  const uniqueProducts = useMemo(() => {
+    const completedOrders = orders.filter(o => o.status === 'completed');
+    return new Set(completedOrders.flatMap(order => order.items.map(item => item.id))).size;
+  }, [orders]);
 
   return (
     <SidebarProvider>
@@ -109,77 +65,34 @@ const Admin = () => {
           <main className="p-3 md:p-4 lg:p-6 space-y-4 md:space-y-6">
             {/* Cards de Métricas Principales */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
-              {/* Ingresos Totales */}
-              <Card>
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm md:text-base font-medium">
-                    Ingresos Totales
-                  </CardTitle>
-                  <DollarSign className="h-4 w-4 md:h-5 md:w-5 text-muted-foreground flex-shrink-0" />
-                </CardHeader>
-                <CardContent>
-                  <div className="text-lg md:text-xl lg:text-2xl font-bold break-all">
-                    ₡{totalRevenue.toFixed(2)}
-                  </div>
-                  <p className="text-xs text-muted-foreground mt-1">
-                    {completedOrders.length} ventas completadas
-                  </p>
-                </CardContent>
-              </Card>
-
-              {/* Ventas del Mes */}
-              <Card>
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm md:text-base font-medium">
-                    Ventas del Mes
-                  </CardTitle>
-                  <TrendingUp className="h-4 w-4 md:h-5 md:w-5 text-green-500 flex-shrink-0" />
-                </CardHeader>
-                <CardContent>
-                  <div className="text-lg md:text-xl lg:text-2xl font-bold break-all">
-                    ₡{monthlyRevenue.toFixed(2)}
-                  </div>
-                  <p className="text-xs text-muted-foreground mt-1">
-                    {monthlyOrders.length} pedidos en {format(new Date(), 'MMMM', { locale: es })}
-                  </p>
-                </CardContent>
-              </Card>
-
-              {/* Ventas de Hoy */}
-              <Card>
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm md:text-base font-medium">
-                    Ventas de Hoy
-                  </CardTitle>
-                  <Clock className="h-4 w-4 md:h-5 md:w-5 text-blue-500 flex-shrink-0" />
-                </CardHeader>
-                <CardContent>
-                  <div className="text-lg md:text-xl lg:text-2xl font-bold break-all">
-                    ₡{todayRevenue.toFixed(2)}
-                  </div>
-                  <p className="text-xs text-muted-foreground mt-1">
-                    {todayOrders.length} pedidos hoy
-                  </p>
-                </CardContent>
-              </Card>
-
-              {/* Pedidos Pendientes */}
-              <Card>
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm md:text-base font-medium">
-                    Pedidos Pendientes
-                  </CardTitle>
-                  <ShoppingCart className="h-4 w-4 md:h-5 md:w-5 text-orange-500 flex-shrink-0" />
-                </CardHeader>
-                <CardContent>
-                  <div className="text-lg md:text-xl lg:text-2xl font-bold">
-                    {pendingOrders.length}
-                  </div>
-                  <p className="text-xs text-muted-foreground mt-1">
-                    Requieren atención
-                  </p>
-                </CardContent>
-              </Card>
+              <MetricCard
+                title="Ingresos Totales"
+                value={formatCurrency(metrics.totalRevenue)}
+                icon={DollarSign}
+                description={`${metrics.completedOrders} ventas completadas`}
+                variant="default"
+              />
+              <MetricCard
+                title="Ventas del Mes"
+                value={formatCurrency(metrics.monthlyRevenue)}
+                icon={TrendingUp}
+                description={`Ventas en ${format(new Date(), 'MMMM', { locale: es })}`}
+                variant="success"
+              />
+              <MetricCard
+                title="Ventas de Hoy"
+                value={formatCurrency(metrics.dailyRevenue)}
+                icon={Clock}
+                description="Ingresos del día"
+                variant="info"
+              />
+              <MetricCard
+                title="Pedidos Pendientes"
+                value={metrics.pendingOrders}
+                icon={ShoppingCart}
+                description="Requieren atención"
+                variant="warning"
+              />
             </div>
 
             {/* Gráfico de Ventas de los Últimos 7 Días */}
@@ -211,7 +124,7 @@ const Admin = () => {
                           fontSize: '12px'
                         }}
                         formatter={(value: number, name: string) => {
-                          if (name === 'ingresos') return [`₡${value.toFixed(2)}`, 'Ingresos'];
+                          if (name === 'ingresos') return [formatCurrency(value), 'Ingresos'];
                           return [value, 'Ventas'];
                         }}
                       />
@@ -282,25 +195,12 @@ const Admin = () => {
                                 {order.customerInfo.name}
                               </TableCell>
                               <TableCell className="text-right font-semibold text-xs md:text-sm">
-                                ₡{order.total.toFixed(2)}
+                                {formatCurrency(order.total)}
                               </TableCell>
                               <TableCell>
-                                {order.status === 'completed' ? (
-                                  <Badge className="text-xs bg-green-500">
-                                    <CheckCircle2 className="h-3 w-3 mr-1" />
-                                    Completado
-                                  </Badge>
-                                ) : order.status === 'pending' ? (
-                                  <Badge className="text-xs bg-orange-500">
-                                    <Clock className="h-3 w-3 mr-1" />
-                                    Pendiente
-                                  </Badge>
-                                ) : (
-                                  <Badge className="text-xs bg-red-500">
-                                    <XCircle className="h-3 w-3 mr-1" />
-                                    Cancelado
-                                  </Badge>
-                                )}
+                                <Badge className="text-xs">
+                                  {getStatusLabel(order.status)}
+                                </Badge>
                               </TableCell>
                             </TableRow>
                           ))
@@ -360,7 +260,7 @@ const Admin = () => {
                                 {product.quantity}
                               </TableCell>
                               <TableCell className="text-right text-xs md:text-sm text-green-600">
-                                ₡{product.revenue.toFixed(2)}
+                                {formatCurrency(product.revenue)}
                               </TableCell>
                             </TableRow>
                           ))
@@ -392,14 +292,14 @@ const Admin = () => {
                     <CheckCircle2 className="h-8 w-8 text-green-500" />
                     <div>
                       <p className="text-xs text-muted-foreground">Completados</p>
-                      <p className="text-lg font-bold">{completedOrders.length}</p>
+                      <p className="text-lg font-bold">{metrics.completedOrders}</p>
                     </div>
                   </div>
                   <div className="flex items-center gap-3 p-3 bg-muted/50 rounded-lg">
                     <Clock className="h-8 w-8 text-orange-500" />
                     <div>
                       <p className="text-xs text-muted-foreground">Pendientes</p>
-                      <p className="text-lg font-bold">{pendingOrders.length}</p>
+                      <p className="text-lg font-bold">{metrics.pendingOrders}</p>
                     </div>
                   </div>
                   <div className="flex items-center gap-3 p-3 bg-muted/50 rounded-lg">
@@ -407,7 +307,7 @@ const Admin = () => {
                     <div>
                       <p className="text-xs text-muted-foreground">Promedio/Pedido</p>
                       <p className="text-lg font-bold">
-                        ₡{completedOrders.length > 0 ? (totalRevenue / completedOrders.length).toFixed(2) : '0.00'}
+                        {formatCurrency(metrics.averageOrderValue)}
                       </p>
                     </div>
                   </div>

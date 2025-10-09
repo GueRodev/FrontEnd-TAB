@@ -4,9 +4,7 @@ import AdminHeader from '@/components/AdminHeader';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { useOrders } from '@/contexts/OrdersContext';
-import type { OrderStatus } from '@/types/order.types';
 import { useNotifications } from '@/contexts/NotificationsContext';
 import { toast } from '@/hooks/use-toast';
 import { Archive, ArrowLeft, RotateCcw } from 'lucide-react';
@@ -15,25 +13,16 @@ import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import * as XLSX from 'xlsx';
 import ExportButton from '@/components/ExportButton';
+import { OrdersTable } from '@/components/features/orders';
+import { getStatusLabel, getTypeLabel } from '@/lib/helpers/order.helpers';
+import { formatCurrency, formatDateTime } from '@/lib/formatters';
+import { APP_CONFIG } from '@/data/constants';
 
 const AdminOrdersHistory = () => {
   const { getArchivedOrders, unarchiveOrder } = useOrders();
   const { addNotification } = useNotifications();
   const navigate = useNavigate();
   const archivedOrders = getArchivedOrders();
-
-  const getStatusLabel = (status: OrderStatus) => {
-    const labels = {
-      pending: 'Pendiente',
-      completed: 'Finalizado',
-      cancelled: 'Cancelado',
-    };
-    return labels[status];
-  };
-
-  const getTypeLabel = (type: 'online' | 'in-store') => {
-    return type === 'online' ? 'Online' : 'Tienda Física';
-  };
 
   const exportToPDF = () => {
     const doc = new jsPDF();
@@ -45,12 +34,12 @@ const AdminOrdersHistory = () => {
     // Preparar datos para la tabla
     const tableData = archivedOrders.map(order => [
       order.id,
-      new Date(order.createdAt).toLocaleDateString('es-ES'),
+      formatDateTime(order.createdAt),
       order.customerInfo.name,
       order.customerInfo.phone,
       getTypeLabel(order.type),
       getStatusLabel(order.status),
-      `₡${order.total.toFixed(2)}`,
+      formatCurrency(order.total),
       order.paymentMethod || 'N/A',
     ]);
 
@@ -89,8 +78,8 @@ const AdminOrdersHistory = () => {
     // Preparar datos
     const excelData = archivedOrders.map(order => ({
       'ID': order.id,
-      'Fecha Creación': new Date(order.createdAt).toLocaleString('es-ES'),
-      'Fecha Archivo': order.archivedAt ? new Date(order.archivedAt).toLocaleString('es-ES') : 'N/A',
+      'Fecha Creación': formatDateTime(order.createdAt),
+      'Fecha Archivo': order.archivedAt ? formatDateTime(order.archivedAt) : 'N/A',
       'Cliente': order.customerInfo.name,
       'Teléfono': order.customerInfo.phone,
       'Provincia': order.delivery_address?.province || 'N/A',
@@ -181,86 +170,13 @@ const AdminOrdersHistory = () => {
                   </div>
                 ) : (
                   <>
-                    {/* Vista Desktop/Tablet: Tabla */}
-                    <div className="hidden lg:block overflow-x-auto">
-                      <Table>
-                        <TableHeader>
-                          <TableRow>
-                            <TableHead className="min-w-[120px] text-xs lg:text-sm">ID Pedido</TableHead>
-                            <TableHead className="min-w-[100px] text-xs lg:text-sm">Fecha</TableHead>
-                            <TableHead className="min-w-[150px] text-xs lg:text-sm">Cliente</TableHead>
-                            <TableHead className="min-w-[120px] text-xs lg:text-sm">Teléfono</TableHead>
-                            <TableHead className="min-w-[100px] text-xs lg:text-sm">Tipo</TableHead>
-                            <TableHead className="min-w-[100px] text-xs lg:text-sm">Estado</TableHead>
-                            <TableHead className="min-w-[120px] text-xs lg:text-sm">Total</TableHead>
-                            <TableHead className="min-w-[120px] text-xs lg:text-sm">Método Pago</TableHead>
-                            <TableHead className="min-w-[200px] text-xs lg:text-sm">Productos</TableHead>
-                            <TableHead className="min-w-[100px] text-center text-xs lg:text-sm">Acciones</TableHead>
-                          </TableRow>
-                        </TableHeader>
-                        <TableBody>
-                          {archivedOrders.map((order) => (
-                            <TableRow key={order.id}>
-                              <TableCell className="font-medium text-xs lg:text-sm">{order.id}</TableCell>
-                              <TableCell className="text-xs lg:text-sm">
-                                {new Date(order.createdAt).toLocaleDateString('es-ES')}
-                              </TableCell>
-                              <TableCell className="text-xs lg:text-sm">{order.customerInfo.name}</TableCell>
-                              <TableCell className="text-xs lg:text-sm">{order.customerInfo.phone}</TableCell>
-                              <TableCell>
-                                <Badge variant="outline" className="text-xs">
-                                  {getTypeLabel(order.type)}
-                                </Badge>
-                              </TableCell>
-                              <TableCell>
-                                <Badge
-                                  variant={
-                                    order.status === 'completed'
-                                      ? 'default'
-                                      : order.status === 'cancelled'
-                                      ? 'destructive'
-                                      : 'secondary'
-                                  }
-                                  className="text-xs"
-                                >
-                                  {getStatusLabel(order.status)}
-                                </Badge>
-                              </TableCell>
-                              <TableCell className="font-semibold text-xs lg:text-sm">
-                                ₡{order.total.toFixed(2)}
-                              </TableCell>
-                              <TableCell className="text-xs lg:text-sm">{order.paymentMethod || 'N/A'}</TableCell>
-                              <TableCell>
-                                <div className="text-xs space-y-1">
-                                  {order.items.map((item, idx) => (
-                                    <div key={idx}>
-                                      {item.name} (x{item.quantity})
-                                    </div>
-                                  ))}
-                                </div>
-                              </TableCell>
-                              <TableCell className="text-center">
-                                {order.archived ? (
-                                  <Button
-                                    variant="outline"
-                                    size="sm"
-                                    onClick={() => handleRestoreOrder(order.id)}
-                                    className="gap-1 text-xs"
-                                    title="Restaurar pedido"
-                                  >
-                                    <RotateCcw className="h-3 w-3 lg:h-4 lg:w-4" />
-                                    <span className="hidden xl:inline">Restaurar</span>
-                                  </Button>
-                                ) : (
-                                  <Badge variant="secondary" className="text-xs">
-                                    Activo
-                                  </Badge>
-                                )}
-                              </TableCell>
-                            </TableRow>
-                          ))}
-                        </TableBody>
-                      </Table>
+                    {/* Vista Desktop/Tablet: OrdersTable */}
+                    <div className="hidden lg:block">
+                      <OrdersTable
+                        orders={archivedOrders.map(o => ({ ...o, archived: true }))}
+                        showActions={false}
+                        compact={false}
+                      />
                     </div>
 
                     {/* Vista Mobile/Tablet: Cards */}

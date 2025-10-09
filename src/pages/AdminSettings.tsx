@@ -7,8 +7,9 @@ import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Upload, X } from 'lucide-react';
-import { useToast } from '@/hooks/use-toast';
-import Logo from '@/components/Logo';
+import { formatCurrency } from '@/lib/formatters';
+import { APP_CONFIG } from '@/data/constants';
+import { FILE_UPLOAD_CONFIG } from '@/data/constants';
 
 const AdminConfiguracion = () => {
   const [logoPreview, setLogoPreview] = useState<string | null>(null);
@@ -33,7 +34,7 @@ const AdminConfiguracion = () => {
     if (!file) return;
 
     // Validate file type
-    if (!file.type.startsWith('image/')) {
+    if (!FILE_UPLOAD_CONFIG.allowedTypes.includes(file.type)) {
       toast({
         title: "Error",
         description: "Por favor selecciona un archivo de imagen válido",
@@ -42,11 +43,11 @@ const AdminConfiguracion = () => {
       return;
     }
 
-    // Validate file size (max 2MB)
-    if (file.size > 2 * 1024 * 1024) {
+    // Validate file size
+    if (file.size > FILE_UPLOAD_CONFIG.maxSize) {
       toast({
         title: "Error",
-        description: "La imagen debe ser menor a 2MB",
+        description: `La imagen debe ser menor a ${FILE_UPLOAD_CONFIG.maxSize / (1024 * 1024)}MB`,
         variant: "destructive",
       });
       return;
@@ -199,7 +200,7 @@ const AdminConfiguracion = () => {
                     </div>
 
                     <p className="text-xs text-muted-foreground">
-                      Formatos aceptados: PNG, JPG, WEBP. Tamaño máximo: 2MB
+                      Formatos aceptados: {FILE_UPLOAD_CONFIG.allowedExtensions.join(', ')}. Tamaño máximo: {FILE_UPLOAD_CONFIG.maxSize / (1024 * 1024)}MB
                     </p>
                   </div>
 
@@ -308,7 +309,7 @@ const AdminConfiguracion = () => {
                     </div>
 
                     <p className="text-xs text-muted-foreground">
-                      Formatos aceptados: PNG, JPG, WEBP. Tamaño máximo: 2MB
+                      Formatos aceptados: {FILE_UPLOAD_CONFIG.allowedExtensions.join(', ')}. Tamaño máximo: {FILE_UPLOAD_CONFIG.maxSize / (1024 * 1024)}MB
                     </p>
                   </div>
 

@@ -77,3 +77,27 @@ export const STORAGE_KEYS = {
   notifications: "notifications",
   user: "user",
 } as const;
+
+// ============================================
+// Payment & Delivery Options
+// ============================================
+export const PAYMENT_METHODS = [
+  { value: 'cash', label: 'Efectivo' },
+  { value: 'card', label: 'Tarjeta' },
+  { value: 'transfer', label: 'Transferencia' },
+  { value: 'sinpe', label: 'SINPE Móvil' },
+] as const;
+
+export const DELIVERY_OPTIONS = [
+  { value: 'pickup', label: 'Recoger en tienda' },
+  { value: 'delivery', label: 'Delivery' },
+] as const;
+
+// ============================================
+// File Upload Configuration
+// ============================================
+export const FILE_UPLOAD_CONFIG = {
+  maxSize: 5 * 1024 * 1024, // 5MB
+  allowedTypes: ['image/jpeg', 'image/png', 'image/webp', 'image/gif'],
+  allowedExtensions: ['.jpg', '.jpeg', '.png', '.webp', '.gif'],
+} as const;
