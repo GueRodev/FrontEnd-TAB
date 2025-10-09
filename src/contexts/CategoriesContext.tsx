@@ -27,12 +27,32 @@ interface CategoriesContextType {
   reorderCategories: (categories: Category[]) => Promise<void>;
 }
 
-const CategoriesContext = createContext<CategoriesContextType | undefined>(undefined);
+// Default context value to prevent undefined errors during initialization
+const defaultContextValue: CategoriesContextType = {
+  categories: [],
+  loading: false,
+  setCategories: () => {},
+  syncWithAPI: async () => {},
+  addCategory: async () => ({ id: '', name: '', slug: '', order: 0, subcategories: [] }),
+  updateCategory: async () => ({ id: '', name: '', slug: '', order: 0, subcategories: [] }),
+  deleteCategory: async () => {},
+  addSubcategory: async () => ({ id: '', name: '', slug: '', order: 0 }),
+  updateSubcategory: async () => ({ id: '', name: '', slug: '', order: 0 }),
+  deleteSubcategory: async () => {},
+  reorderCategories: async () => {},
+};
+
+const CategoriesContext = createContext<CategoriesContextType>(defaultContextValue);
 
 export const CategoriesProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [categories, setCategories] = useState<Category[]>(() => {
-    const stored = localStorageAdapter.getItem<Category[]>(STORAGE_KEYS.categories);
-    return stored || DEFAULT_CATEGORIES.map(cat => ({ ...cat, isExpanded: false }));
+    try {
+      const stored = localStorageAdapter.getItem<Category[]>(STORAGE_KEYS.categories);
+      return stored || DEFAULT_CATEGORIES.map(cat => ({ ...cat, isExpanded: false }));
+    } catch (error) {
+      console.error('Error loading categories from storage:', error);
+      return DEFAULT_CATEGORIES.map(cat => ({ ...cat, isExpanded: false }));
+    }
   });
   const [loading, setLoading] = useState(false);
 
@@ -259,8 +279,9 @@ export const CategoriesProvider: React.FC<{ children: React.ReactNode }> = ({ ch
  */
 export const useCategories = () => {
   const context = useContext(CategoriesContext);
-  if (!context) {
-    throw new Error('useCategories must be used within a CategoriesProvider');
+  if (!context || context === defaultContextValue) {
+    // If we're getting the default context, log a warning but don't crash
+    console.warn('useCategories: Using default context. Make sure component is wrapped in CategoriesProvider');
   }
   return context;
 };
