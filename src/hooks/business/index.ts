@@ -11,3 +11,4 @@ export { useCartOperations } from './useCartOperations';
 export { useOrderForm } from './useOrderForm';
 export { useWishlistOperations } from './useWishlistOperations';
 export { useProductFilters } from './useProductFilters';
+export { useCategoriesAdmin } from './useCategoriesAdmin';

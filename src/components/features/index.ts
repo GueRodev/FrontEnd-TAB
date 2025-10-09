@@ -20,3 +20,6 @@ export { EmptyWishlist } from './wishlist/EmptyWishlist';
 export { AddressCard } from './addresses/AddressCard';
 export { AddressForm } from './addresses/AddressForm';
 export { AddressList } from './addresses/AddressList';
+
+// Categories
+export * from './categories';
