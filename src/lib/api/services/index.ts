@@ -8,3 +8,4 @@ export { ordersService } from './orders.service';
 export { authService } from './auth.service';
 export { addressesService } from './addresses.service';
 export { categoriesService } from './categories.service';
+export { usersService } from './users.service';

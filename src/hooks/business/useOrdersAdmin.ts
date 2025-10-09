@@ -1,0 +1,254 @@
+/**
+ * Orders Admin Business Logic Hook
+ * Manages all business logic for admin orders page
+ */
+
+import { useState } from 'react';
+import { useOrders } from '@/contexts/OrdersContext';
+import { useProducts } from '@/contexts/ProductsContext';
+import { useCategories } from '@/contexts/CategoriesContext';
+import { useNotifications } from '@/contexts/NotificationsContext';
+import { toast } from '@/hooks/use-toast';
+import { Badge } from '@/components/ui/badge';
+import { Package, CheckCircle, XCircle } from 'lucide-react';
+import type { OrderStatus } from '@/types/order.types';
+
+interface UseOrdersAdminReturn {
+  // State
+  onlineOrders: any[];
+  inStoreOrders: any[];
+  selectedProduct: string;
+  quantity: number;
+  customerName: string;
+  customerPhone: string;
+  paymentMethod: string;
+  categoryFilter: string;
+  searchQuery: string;
+  openProductSearch: boolean;
+  activeProducts: any[];
+  filteredProducts: any[];
+  selectedProductData: any;
+  
+  // Setters
+  setSelectedProduct: (id: string) => void;
+  setQuantity: (qty: number) => void;
+  setCustomerName: (name: string) => void;
+  setCustomerPhone: (phone: string) => void;
+  setPaymentMethod: (method: string) => void;
+  setCategoryFilter: (filter: string) => void;
+  setSearchQuery: (query: string) => void;
+  setOpenProductSearch: (open: boolean) => void;
+  
+  // Handlers
+  handleCreateInStoreOrder: () => void;
+  handleDeleteOrder: (orderId: string, order: any) => void;
+  handleArchiveOrder: (orderId: string) => void;
+  handleCompleteOrder: (order: any) => void;
+  handleCancelOrder: (order: any) => void;
+}
+
+export const useOrdersAdmin = (): UseOrdersAdminReturn => {
+  const { addOrder, updateOrderStatus, deleteOrder, archiveOrder, getOrdersByType } = useOrders();
+  const { addNotification } = useNotifications();
+  const { categories } = useCategories();
+  const { products, updateProduct } = useProducts();
+  
+  const [selectedProduct, setSelectedProduct] = useState('');
+  const [quantity, setQuantity] = useState(1);
+  const [customerName, setCustomerName] = useState('');
+  const [customerPhone, setCustomerPhone] = useState('');
+  const [paymentMethod, setPaymentMethod] = useState('');
+  const [categoryFilter, setCategoryFilter] = useState('all');
+  const [searchQuery, setSearchQuery] = useState('');
+  const [openProductSearch, setOpenProductSearch] = useState(false);
+
+  const onlineOrders = getOrdersByType('online');
+  const inStoreOrders = getOrdersByType('in-store');
+
+  // Get only active products
+  const activeProducts = products.filter(p => p.status === 'active');
+
+  // Filter products by category and search
+  const filteredProducts = activeProducts.filter(product => {
+    const matchesCategory = categoryFilter === 'all' || product.categoryId === categoryFilter;
+    const matchesSearch = product.name.toLowerCase().includes(searchQuery.toLowerCase());
+    return matchesCategory && matchesSearch;
+  });
+
+  const selectedProductData = activeProducts.find(p => p.id === selectedProduct);
+
+  const handleCreateInStoreOrder = () => {
+    if (!selectedProduct || !customerName || !customerPhone || !paymentMethod) {
+      toast({
+        title: "Campos incompletos",
+        description: "Por favor completa todos los campos",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    const product = selectedProductData;
+    if (!product) return;
+
+    if (quantity > product.stock) {
+      toast({
+        title: "Stock insuficiente",
+        description: `Solo hay ${product.stock} unidades disponibles`,
+        variant: "destructive",
+      });
+      return;
+    }
+
+    const newOrder = {
+      type: 'in-store' as const,
+      status: 'pending' as OrderStatus,
+      items: [{
+        id: product.id,
+        name: product.name,
+        image: product.image,
+        price: product.price,
+        quantity: quantity,
+      }],
+      total: product.price * quantity,
+      customerInfo: {
+        name: customerName,
+        phone: customerPhone,
+      },
+      deliveryOption: 'pickup' as const,
+      paymentMethod: paymentMethod,
+    };
+
+    const orderId = addOrder(newOrder);
+
+    // Add notification
+    addNotification({
+      type: 'order',
+      title: 'Pedido en tienda creado',
+      message: `Pedido de ${customerName} - ${product.name} x${quantity}`,
+      time: 'Ahora',
+      orderId: orderId,
+    });
+    
+    // Clear form
+    setSelectedProduct('');
+    setQuantity(1);
+    setCustomerName('');
+    setCustomerPhone('');
+    setPaymentMethod('');
+    setSearchQuery('');
+    setCategoryFilter('all');
+
+    toast({
+      title: "Pedido creado",
+      description: "El pedido en tienda ha sido registrado exitosamente",
+    });
+  };
+
+  const handleDeleteOrder = (orderId: string, order: any) => {
+    if (confirm('¿Estás seguro de que deseas eliminar este pedido?')) {
+      // Restore stock if order was completed
+      if (order.status === 'completed') {
+        order.items.forEach((item: any) => {
+          const product = products.find(p => p.id === item.id);
+          if (product) {
+            updateProduct(product.id, {
+              stock: product.stock + item.quantity
+            });
+          }
+        });
+      }
+      
+      deleteOrder(orderId);
+      toast({
+        title: "Pedido eliminado",
+        description: order.status === 'completed' 
+          ? "El pedido ha sido eliminado y el stock ha sido restablecido"
+          : "El pedido ha sido eliminado exitosamente",
+      });
+    }
+  };
+
+  const handleArchiveOrder = (orderId: string) => {
+    archiveOrder(orderId);
+    addNotification({
+      type: 'order',
+      title: 'Pedido archivado',
+      message: `El pedido ${orderId} ha sido archivado`,
+      time: 'Ahora',
+      orderId: orderId,
+    });
+    toast({
+      title: "Pedido archivado",
+      description: "El pedido ha sido archivado exitosamente",
+    });
+  };
+
+  const handleCompleteOrder = (order: any) => {
+    // Update stock when completing order
+    order.items.forEach((item: any) => {
+      const product = products.find(p => p.id === item.id);
+      if (product) {
+        updateProduct(product.id, {
+          stock: product.stock - item.quantity
+        });
+      }
+    });
+
+    updateOrderStatus(order.id, 'completed');
+    addNotification({
+      type: 'order',
+      title: 'Pedido completado',
+      message: `Pedido ${order.id} ha sido marcado como finalizado`,
+      time: 'Ahora',
+      orderId: order.id,
+    });
+    toast({
+      title: "Pedido completado",
+      description: "El pedido ha sido marcado como finalizado y el stock actualizado",
+    });
+  };
+
+  const handleCancelOrder = (order: any) => {
+    updateOrderStatus(order.id, 'cancelled');
+    addNotification({
+      type: 'order',
+      title: 'Pedido cancelado',
+      message: `Pedido ${order.id} ha sido cancelado`,
+      time: 'Ahora',
+      orderId: order.id,
+    });
+    toast({
+      title: "Pedido cancelado",
+      description: "El pedido ha sido cancelado",
+    });
+  };
+
+  return {
+    onlineOrders,
+    inStoreOrders,
+    selectedProduct,
+    quantity,
+    customerName,
+    customerPhone,
+    paymentMethod,
+    categoryFilter,
+    searchQuery,
+    openProductSearch,
+    activeProducts,
+    filteredProducts,
+    selectedProductData,
+    setSelectedProduct,
+    setQuantity,
+    setCustomerName,
+    setCustomerPhone,
+    setPaymentMethod,
+    setCategoryFilter,
+    setSearchQuery,
+    setOpenProductSearch,
+    handleCreateInStoreOrder,
+    handleDeleteOrder,
+    handleArchiveOrder,
+    handleCompleteOrder,
+    handleCancelOrder,
+  };
+};

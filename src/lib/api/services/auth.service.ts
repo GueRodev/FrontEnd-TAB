@@ -129,4 +129,57 @@ export const authService = {
     
     throw new Error('No authenticated user');
   },
+
+  /**
+   * Update admin profile (includes avatar)
+   * 🔗 CONEXIÓN LARAVEL:
+   * 1. Descomentar: return apiClient.patch('/auth/admin/profile', data);
+   * 2. Laravel debe retornar: { data: UserProfile, message: string, timestamp: string }
+   */
+  async updateAdminProfile(data: Partial<UserProfile>): Promise<ApiResponse<UserProfile>> {
+    // TODO: Replace with Laravel endpoint
+    // return apiClient.patch('/auth/admin/profile', data);
+    
+    // Mock temporal
+    const savedProfile = localStorage.getItem('adminProfile');
+    if (savedProfile) {
+      const profile = JSON.parse(savedProfile);
+      const updatedProfile = { ...profile, ...data };
+      localStorage.setItem('adminProfile', JSON.stringify(updatedProfile));
+      
+      return Promise.resolve({
+        data: updatedProfile,
+        message: 'Perfil actualizado correctamente',
+        timestamp: new Date().toISOString(),
+      });
+    }
+    
+    throw new Error('No admin profile found');
+  },
+
+  /**
+   * Upload avatar
+   * 🔗 CONEXIÓN LARAVEL:
+   * 1. Descomentar: const formData = new FormData(); formData.append('avatar', file); return apiClient.post('/auth/avatar', formData);
+   * 2. Laravel debe retornar: { data: { avatarUrl: string }, message: string, timestamp: string }
+   */
+  async uploadAvatar(file: File): Promise<ApiResponse<{ avatarUrl: string }>> {
+    // TODO: Replace with Laravel endpoint
+    // const formData = new FormData();
+    // formData.append('avatar', file);
+    // return apiClient.post('/auth/avatar', formData);
+    
+    // Mock temporal - convert to base64
+    return new Promise((resolve) => {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        resolve({
+          data: { avatarUrl: reader.result as string },
+          message: 'Avatar actualizado correctamente',
+          timestamp: new Date().toISOString(),
+        });
+      };
+      reader.readAsDataURL(file);
+    });
+  },
 };

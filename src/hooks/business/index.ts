@@ -12,3 +12,6 @@ export { useOrderForm } from './useOrderForm';
 export { useWishlistOperations } from './useWishlistOperations';
 export { useProductFilters } from './useProductFilters';
 export { useCategoriesAdmin } from './useCategoriesAdmin';
+export { useProductsAdmin } from './useProductsAdmin';
+export { useOrdersAdmin } from './useOrdersAdmin';
+export { useUsersAdmin } from './useUsersAdmin';

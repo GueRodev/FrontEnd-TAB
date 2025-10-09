@@ -1099,6 +1099,8 @@ Eliminar todas las líneas que usan `localStorage` y `localStorageAdapter` en lo
 - [ ] Descomentar llamadas API en `orders.service.ts`
 - [ ] Descomentar llamadas API en `addresses.service.ts`
 - [ ] Descomentar llamadas API en `categories.service.ts`
+- [ ] Descomentar llamadas API en `users.service.ts`
+- [ ] Descomentar llamadas API de perfil admin en `auth.service.ts`
 - [ ] Eliminar mocks de `localStorage`
 - [ ] Probar login/logout
 - [ ] Probar CRUD de productos
@@ -1106,9 +1108,253 @@ Eliminar todas las líneas que usan `localStorage` y `localStorageAdapter` en lo
 - [ ] Probar CRUD de direcciones
 - [ ] Probar CRUD de categorías y subcategorías
 - [ ] Probar drag & drop para reordenar categorías
+- [ ] Probar gestión de usuarios y roles (admin)
 - [ ] Verificar manejo de errores (401, 403, 422, 500)
 
 ---
 
-**Última actualización:** 2024-01-01  
-**Versión:** 1.0.0
+## 👥 Endpoints de Usuarios (Admin)
+
+### GET /api/users/clients
+**Descripción:** Obtener todos los clientes (solo admin)
+
+**Headers:**
+```
+Authorization: Bearer {token}
+```
+
+**Response (200 OK):**
+```json
+{
+  "data": [
+    {
+      "id": "1",
+      "name": "Juan Pérez",
+      "email": "juan@example.com",
+      "phone": "88888888",
+      "role": "cliente",
+      "created_at": "2024-01-01T00:00:00.000Z",
+      "updated_at": "2024-01-01T00:00:00.000Z",
+      "addresses": []
+    }
+  ],
+  "timestamp": "2024-01-01T12:00:00.000Z"
+}
+```
+
+**Archivo Frontend:** `src/lib/api/services/users.service.ts` línea 18
+
+---
+
+### GET /api/users/admins
+**Descripción:** Obtener todos los administradores (solo super admin)
+
+**Headers:**
+```
+Authorization: Bearer {token}
+```
+
+**Response (200 OK):**
+```json
+{
+  "data": [
+    {
+      "id": "1",
+      "name": "Admin Principal",
+      "email": "admin@example.com",
+      "phone": "",
+      "role": "admin",
+      "created_at": "2024-01-01T00:00:00.000Z",
+      "updated_at": "2024-01-01T00:00:00.000Z"
+    }
+  ],
+  "timestamp": "2024-01-01T12:00:00.000Z"
+}
+```
+
+**Archivo Frontend:** `src/lib/api/services/users.service.ts` línea 35
+
+---
+
+### PATCH /api/users/{userId}/status
+**Descripción:** Activar/desactivar usuario (solo admin)
+
+**Headers:**
+```
+Authorization: Bearer {token}
+```
+
+**Request:**
+```json
+{
+  "active": true
+}
+```
+
+**Response (200 OK):**
+```json
+{
+  "data": {
+    "id": "1",
+    "name": "Juan Pérez",
+    "email": "juan@example.com",
+    "phone": "88888888",
+    "role": "cliente",
+    "active": true,
+    "created_at": "2024-01-01T00:00:00.000Z",
+    "updated_at": "2024-01-01T12:00:00.000Z"
+  },
+  "message": "Estado actualizado correctamente",
+  "timestamp": "2024-01-01T12:00:00.000Z"
+}
+```
+
+**Archivo Frontend:** `src/lib/api/services/users.service.ts` línea 52
+
+---
+
+### POST /api/users/admins
+**Descripción:** Crear nuevo administrador (solo super admin)
+
+**Headers:**
+```
+Authorization: Bearer {token}
+```
+
+**Request:**
+```json
+{
+  "name": "Nuevo Admin",
+  "email": "admin2@example.com",
+  "password": "password123",
+  "role": "moderador"
+}
+```
+
+**Response (201 Created):**
+```json
+{
+  "data": {
+    "id": "2",
+    "name": "Nuevo Admin",
+    "email": "admin2@example.com",
+    "role": "admin",
+    "created_at": "2024-01-01T12:00:00.000Z",
+    "updated_at": "2024-01-01T12:00:00.000Z"
+  },
+  "message": "Administrador creado correctamente",
+  "timestamp": "2024-01-01T12:00:00.000Z"
+}
+```
+
+**Archivo Frontend:** `src/lib/api/services/users.service.ts` línea 76
+
+---
+
+### POST /api/users/{userId}/roles
+**Descripción:** Asignar rol a usuario (solo super admin)
+
+**⚠️ SEGURIDAD CRÍTICA:** Debe usar tabla `user_roles` separada
+
+**Headers:**
+```
+Authorization: Bearer {token}
+```
+
+**Request:**
+```json
+{
+  "role": "admin"
+}
+```
+
+**Response (200 OK):**
+```json
+{
+  "data": {
+    "id": "1",
+    "name": "Usuario",
+    "email": "user@example.com",
+    "role": "admin",
+    "created_at": "2024-01-01T00:00:00.000Z",
+    "updated_at": "2024-01-01T12:00:00.000Z"
+  },
+  "message": "Rol asignado correctamente",
+  "timestamp": "2024-01-01T12:00:00.000Z"
+}
+```
+
+**Archivo Frontend:** `src/lib/api/services/users.service.ts` línea 145
+
+---
+
+### PATCH /api/auth/admin/profile
+**Descripción:** Actualizar perfil de administrador (incluye avatar)
+
+**Headers:**
+```
+Authorization: Bearer {token}
+```
+
+**Request:**
+```json
+{
+  "name": "Admin Actualizado",
+  "phone": "+506 1234-5678",
+  "avatarUrl": "data:image/png;base64,..."
+}
+```
+
+**Response (200 OK):**
+```json
+{
+  "data": {
+    "id": "1",
+    "name": "Admin Actualizado",
+    "email": "admin@example.com",
+    "phone": "+506 1234-5678",
+    "role": "admin",
+    "avatarUrl": "https://...",
+    "created_at": "2024-01-01T00:00:00.000Z",
+    "updated_at": "2024-01-01T12:00:00.000Z"
+  },
+  "message": "Perfil actualizado correctamente",
+  "timestamp": "2024-01-01T12:00:00.000Z"
+}
+```
+
+**Archivo Frontend:** `src/lib/api/services/auth.service.ts` línea 135
+
+---
+
+### POST /api/auth/avatar
+**Descripción:** Subir avatar de usuario
+
+**Headers:**
+```
+Authorization: Bearer {token}
+Content-Type: multipart/form-data
+```
+
+**Request:**
+```
+FormData con campo 'avatar' (imagen)
+```
+
+**Response (200 OK):**
+```json
+{
+  "data": {
+    "avatarUrl": "https://storage.example.com/avatars/user-1.jpg"
+  },
+  "message": "Avatar actualizado correctamente",
+  "timestamp": "2024-01-01T12:00:00.000Z"
+}
+```
+
+**Archivo Frontend:** `src/lib/api/services/auth.service.ts` línea 164
+
+---
+
+**Última actualización:** 2024-01-09  
+**Versión:** 2.0.0
