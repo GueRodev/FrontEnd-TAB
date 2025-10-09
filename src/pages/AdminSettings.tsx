@@ -7,8 +7,8 @@ import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Upload, X } from 'lucide-react';
-import { formatCurrency } from '@/lib/formatters';
-import { APP_CONFIG } from '@/data/constants';
+import { useToast } from '@/hooks/use-toast';
+import Logo from '@/components/Logo';
 import { FILE_UPLOAD_CONFIG } from '@/data/constants';
 
 const AdminConfiguracion = () => {
@@ -34,7 +34,8 @@ const AdminConfiguracion = () => {
     if (!file) return;
 
     // Validate file type
-    if (!FILE_UPLOAD_CONFIG.allowedTypes.includes(file.type)) {
+    const allowedTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
+    if (!allowedTypes.includes(file.type)) {
       toast({
         title: "Error",
         description: "Por favor selecciona un archivo de imagen válido",

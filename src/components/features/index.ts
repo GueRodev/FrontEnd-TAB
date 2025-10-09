@@ -3,26 +3,12 @@
  * Centralized exports for all feature components
  */
 
-// Products
-export { ProductGrid } from './products/ProductGrid';
-export { FeaturedProductsSection } from './products/FeaturedProductsSection';
-
-// Cart
-export { CartItem } from './cart/CartItem';
-export { CartSummary } from './cart/CartSummary';
-export { EmptyCart } from './cart/EmptyCart';
-
-// Wishlist
-export { WishlistGrid } from './wishlist/WishlistGrid';
-export { EmptyWishlist } from './wishlist/EmptyWishlist';
-
-// Addresses
-export { AddressCard } from './addresses/AddressCard';
-export { AddressForm } from './addresses/AddressForm';
-export { AddressList } from './addresses/AddressList';
-
-// Profile
-export * from './profile';
-
-// Categories
+export * from './addresses';
+export * from './cart';
 export * from './categories';
+export * from './orders';
+export * from './products';
+export * from './profile';
+export * from './users';
+export * from './wishlist';
+export * from './dashboard';
