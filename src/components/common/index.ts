@@ -4,3 +4,4 @@
  */
 
 export { OptimizedImage, ProductImage } from './OptimizedImage';
+export { EmptyState } from './EmptyState';
