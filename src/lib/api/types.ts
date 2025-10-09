@@ -1,11 +1,4 @@
 /**
- * API Layer Types
- * Common types for API responses, errors, and pagination
- * 
- * @next-migration: These types will be used for API Routes in Next.js
- */
-
-/**
  * Standard API Response wrapper
  * Provides consistent structure for all API responses
  */
@@ -33,7 +26,7 @@ export interface PaginationParams {
   page: number;
   limit: number;
   sortBy?: string;
-  sortOrder?: 'asc' | 'desc';
+  sortOrder?: "asc" | "desc";
 }
 
 /**
@@ -55,7 +48,7 @@ export interface PaginatedResponse<T> {
 /**
  * HTTP Methods for type safety
  */
-export type HttpMethod = 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
+export type HttpMethod = "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
 
 /**
  * API Request configuration
