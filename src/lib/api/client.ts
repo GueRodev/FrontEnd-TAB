@@ -13,7 +13,7 @@ import type { ApiRequestConfig, ApiClientConfig } from './types';
  * @next-migration: Update baseURL with actual backend endpoint
  */
 const defaultConfig: ApiClientConfig = {
-  baseURL: process.env.NEXT_PUBLIC_API_URL || '/api',
+  baseURL: import.meta.env.VITE_API_URL || '/api',
   timeout: 30000,
   headers: {
     'Content-Type': 'application/json',
