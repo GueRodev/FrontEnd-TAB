@@ -7,29 +7,35 @@ import { apiClient } from '../client';
 import type { AuthResponse, LoginCredentials, RegisterData } from '@/types/auth.types';
 import type { UserProfile } from '@/types/user.types';
 import type { ApiResponse } from '../types';
+import { validateCredentials } from '@/data/users.mock';
 
 export const authService = {
   /**
    * Login user
    * TODO: Connect to Laravel endpoint: POST /api/auth/login
+   * 
+   * CREDENCIALES DE PRUEBA:
+   * - Admin: admin@test.com / admin123
+   * - Cliente: cliente1@test.com / cliente123
    */
   async login(credentials: LoginCredentials): Promise<ApiResponse<AuthResponse>> {
     // TODO: Uncomment when Laravel is ready
     // return apiClient.post('/auth/login', credentials);
     
-    // Mock temporal - simula respuesta de Laravel
+    // Simular delay de red
+    await new Promise(resolve => setTimeout(resolve, 800));
+    
+    // Validar contra usuarios mock
+    const mockUser = validateCredentials(credentials.email, credentials.password);
+    
+    if (!mockUser) {
+      throw new Error('Credenciales inválidas');
+    }
+
     return Promise.resolve({
       data: {
-        user: { 
-          id: '1', 
-          name: 'Usuario Demo', 
-          email: credentials.email, 
-          phone: '', 
-          role: 'cliente' as const,
-          created_at: new Date().toISOString(), 
-          updated_at: new Date().toISOString() 
-        },
-        token: 'mock-token-123',
+        user: mockUser.profile,
+        token: 'mock-token-' + mockUser.id + '-' + Date.now(),
         expires_at: new Date(Date.now() + 86400000).toISOString(),
       },
       message: 'Login exitoso',
