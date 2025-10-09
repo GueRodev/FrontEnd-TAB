@@ -253,6 +253,10 @@ export const CategoriesProvider: React.FC<{ children: React.ReactNode }> = ({ ch
   );
 };
 
+/**
+ * Hook to access categories context
+ * Must be used within CategoriesProvider
+ */
 export const useCategories = () => {
   const context = useContext(CategoriesContext);
   if (!context) {
