@@ -1,7 +1,6 @@
 /**
  * useProductOperations
  * Business logic for product operations (add to cart, wishlist, filtering)
- * Next.js ready - can be used in Client Components
  */
 
 import { useProducts } from '@/contexts/ProductsContext';

@@ -1,7 +1,6 @@
 /**
  * Site Configuration
  * Centralized configuration for metadata, SEO, and business information
- * @next-migration: Will be used in app/layout.tsx for metadata generation
  */
 
 export const siteConfig = {

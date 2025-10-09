@@ -1,7 +1,6 @@
 /**
  * useCartOperations
  * Business logic for shopping cart operations
- * Next.js ready - can be used in Client Components
  */
 
 import { useCart } from '@/contexts/CartContext';

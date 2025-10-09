@@ -1,7 +1,6 @@
 /**
  * useWishlistOperations
  * Business logic for wishlist operations
- * Next.js ready - can be used in Client Components
  */
 
 import { useWishlist } from '@/contexts/WishlistContext';

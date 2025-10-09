@@ -1,8 +1,6 @@
 /**
  * Orders Service
  * API service for order operations
- * 
- * @next-migration: Replace localStorage with actual API calls
  */
 
 import type { Order, OrderStatus, OrderType } from '@/types/order.types';
@@ -13,7 +11,6 @@ import { STORAGE_KEYS } from '@/data/constants';
 export const ordersService = {
   /**
    * Get all orders
-   * @next-migration: return apiClient.get<Order[]>('/orders');
    */
   async getAll(): Promise<Order[]> {
     return localStorageAdapter.getItem<Order[]>(STORAGE_KEYS.orders) || [];
@@ -21,7 +18,6 @@ export const ordersService = {
 
   /**
    * Get order by ID
-   * @next-migration: return apiClient.get<Order>(`/orders/${id}`);
    */
   async getById(id: string): Promise<Order | null> {
     const orders = await this.getAll();
@@ -30,7 +26,6 @@ export const ordersService = {
 
   /**
    * Get orders by type
-   * @next-migration: return apiClient.get<Order[]>(`/orders?type=${type}`);
    */
   async getByType(type: OrderType): Promise<Order[]> {
     const orders = await this.getAll();
@@ -39,7 +34,6 @@ export const ordersService = {
 
   /**
    * Get archived orders
-   * @next-migration: return apiClient.get<Order[]>('/orders?archived=true');
    */
   async getArchived(): Promise<Order[]> {
     const orders = await this.getAll();
@@ -53,8 +47,6 @@ export const ordersService = {
    * 2. Eliminar líneas 56-67 (mock localStorage)
    * 3. Agregar user_id desde AuthContext si está autenticado
    * 4. Laravel debe retornar: { data: Order, message: string, timestamp: string }
-   * 
-   * @next-migration: return apiClient.post<Order>('/orders', data);
    */
   async create(data: Omit<Order, 'id' | 'createdAt'>): Promise<ApiResponse<Order>> {
     // TODO: When user is authenticated, include user_id:
@@ -78,7 +70,6 @@ export const ordersService = {
 
   /**
    * Update order status
-   * @next-migration: return apiClient.patch<Order>(`/orders/${id}/status`, { status });
    */
   async updateStatus(id: string, status: OrderStatus): Promise<ApiResponse<Order>> {
     const orders = await this.getAll();
@@ -99,7 +90,6 @@ export const ordersService = {
 
   /**
    * Archive order
-   * @next-migration: return apiClient.patch<Order>(`/orders/${id}/archive`);
    */
   async archive(id: string): Promise<ApiResponse<Order>> {
     const orders = await this.getAll();
@@ -122,7 +112,6 @@ export const ordersService = {
 
   /**
    * Unarchive order
-   * @next-migration: return apiClient.patch<Order>(`/orders/${id}/unarchive`);
    */
   async unarchive(id: string): Promise<ApiResponse<Order>> {
     const orders = await this.getAll();
@@ -143,7 +132,6 @@ export const ordersService = {
 
   /**
    * Delete order
-   * @next-migration: return apiClient.delete(`/orders/${id}`);
    */
   async delete(id: string): Promise<ApiResponse<void>> {
     const orders = await this.getAll();

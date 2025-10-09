@@ -1,7 +1,6 @@
 /**
  * useOrderForm
  * Business logic for order form validation and submission
- * Next.js ready - can be used in Client Components
  */
 
 import { useState } from 'react';

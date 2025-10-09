@@ -1,8 +1,6 @@
 /**
  * Authentication Context
  * Manages user authentication state and operations
- * 
- * @next-migration: Works as-is in Next.js (use in Client Components)
  */
 
 import React, { createContext, useContext, useState, useEffect } from 'react';

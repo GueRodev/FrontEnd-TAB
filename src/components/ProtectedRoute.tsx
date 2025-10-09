@@ -1,8 +1,6 @@
 /**
  * ProtectedRoute Component
  * Route protection based on authentication and role
- * 
- * @next-migration: Works as-is in Next.js (use with middleware)
  */
 
 import React from 'react';

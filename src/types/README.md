@@ -1,6 +1,6 @@
 # TypeScript Types
 
-This directory contains centralized TypeScript type definitions for the entire application. These types are organized by domain and designed to be reusable across both frontend components and future backend API routes (Next.js migration).
+This directory contains centralized TypeScript type definitions for the entire application. These types are organized by domain and designed to be reusable across the application.
 
 ## 📁 File Structure
 
@@ -27,6 +27,13 @@ Shopping cart types:
 ### `user.types.ts`
 User-related types:
 - `UserProfile` - User profile information
+- `Address` - User address information
+
+### `auth.types.ts`
+Authentication types:
+- `AuthResponse` - Authentication response
+- `LoginCredentials` - Login credentials
+- `RegisterData` - Registration data
 
 ### `notification.types.ts`
 Notification system types:
@@ -35,7 +42,7 @@ Notification system types:
 
 ### `common.types.ts`
 Utility and shared types:
-- `ApiResponse<T>` - Generic API response wrapper (ready for Next.js API routes)
+- `ApiResponse<T>` - Generic API response wrapper
 - `PaginationParams` - Pagination parameters
 - `PaginatedResponse<T>` - Paginated API response
 - `LoadingState` - Common loading states
@@ -48,12 +55,6 @@ Utility and shared types:
 2. **Better IntelliSense**: Improved autocomplete across the codebase
 3. **Type Safety**: Reduced runtime errors through compile-time checks
 4. **Easier Refactoring**: Change types in one place, affect everywhere
-
-### Next.js Migration Benefits
-1. **Shared Types**: Same types work in both frontend and API routes
-2. **Server Components Ready**: Types designed for Server/Client component split
-3. **API Route Compatibility**: Types structured for Next.js API patterns
-4. **SSR Compatible**: No client-side dependencies in type definitions
 
 ## 📝 Usage Examples
 
@@ -84,37 +85,35 @@ export const ProductCard = ({ product, onAddToCart }: ProductCardProps) => {
 };
 ```
 
-### Using in API Routes (Future Next.js)
+### Using in API Services
 
 ```typescript
-// app/api/products/route.ts
 import type { Product } from '@/types/product.types';
 import type { ApiResponse } from '@/types/common.types';
 
-export async function GET(): Promise<ApiResponse<Product[]>> {
-  const products = await db.products.findMany();
-  return {
-    data: products,
-    status: 200,
-  };
-}
+export const productsService = {
+  async getAll(): Promise<Product[]> {
+    const response = await apiClient.get<ApiResponse<Product[]>>('/products');
+    return response.data;
+  }
+};
 ```
 
-## 🔄 Migration Strategy
+## 🚀 Best Practices
 
-When migrating to Next.js:
+### ✅ DO
+- Import types using `import type` syntax
+- Keep types organized by domain
+- Document complex types with JSDoc comments
+- Use generic types for reusable patterns
+- Export types from centralized location
 
-1. **Types stay the same** - No changes needed to type definitions
-2. **Import paths stay the same** - `@/types/*` continues to work
-3. **Works in Server Components** - Types have no client-side dependencies
-4. **Works in API Routes** - Types designed for server-side validation
+### ❌ DON'T
+- Duplicate types across files
+- Mix business logic with type definitions
+- Use `any` type unless absolutely necessary
+- Create circular dependencies between type files
 
-## 🚀 Next Steps
+---
 
-After Phase 1 (Types centralization), the recommended next phases are:
-
-- **Phase 2**: Extract business logic into custom hooks
-- **Phase 3**: Create abstracted data layer with storage adapters
-- **Phase 4**: Refactor components to be purely presentational
-
-These phases will leverage these centralized types to build a fully migration-ready architecture.
+These centralized types provide the foundation for a type-safe, maintainable React application!

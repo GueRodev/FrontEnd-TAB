@@ -1,7 +1,6 @@
 /**
  * useProductFilters
  * Business logic for filtering and searching products
- * Next.js ready - can be used in Client Components or Server Components (with data passed as props)
  */
 
 import { useState, useMemo } from 'react';

@@ -1,8 +1,6 @@
 /**
  * Authentication Service
  * Handles user authentication operations
- * 
- * @next-migration: Replace localStorage mocks with Laravel API calls
  */
 
 import { apiClient } from '../client';

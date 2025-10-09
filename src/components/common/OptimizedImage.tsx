@@ -8,11 +8,6 @@ import { cn } from '@/lib/utils';
  * - Lazy loading by default
  * - Loading state with skeleton
  * - Error fallback
- * - Next.js migration ready
- * 
- * @next-migration: Easy to replace with next/image
- * - Just swap the component and adjust props
- * - Already using similar API to next/image
  */
 
 interface OptimizedImageProps extends Omit<ImgHTMLAttributes<HTMLImageElement>, 'loading'> {

@@ -1,17 +1,6 @@
 /**
  * Cart Context
  * Manages shopping cart state using localStorage
- * 
- * @next-migration: Will become Client Component in Next.js
- * - Mark with 'use client' directive
- * - Replace localStorage with API calls to backend
- * - Consider using React Query for cache management
- * 
- * Migration path:
- * 1. Keep Context for client-side state
- * 2. Replace localStorageAdapter with cartService from @/lib/api
- * 3. Add React Query for optimistic updates
- * 4. Cart items will be fetched from authenticated user session
  */
 
 import React, { createContext, useContext, useState, useEffect } from 'react';

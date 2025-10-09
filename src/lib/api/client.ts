@@ -1,8 +1,6 @@
 /**
  * API Client
  * HTTP client configuration for API requests
- * 
- * @next-migration: Will be configured with actual backend URL
  * Currently prepared but not active - data comes from localStorage
  */
 
@@ -10,7 +8,6 @@ import type { ApiRequestConfig, ApiClientConfig } from './types';
 
 /**
  * Default API client configuration
- * @next-migration: Update baseURL with actual backend endpoint
  */
 const defaultConfig: ApiClientConfig = {
   baseURL: import.meta.env.VITE_API_URL || '/api',
@@ -24,8 +21,6 @@ const defaultConfig: ApiClientConfig = {
 /**
  * Simple fetch-based API client
  * Replace with axios if needed for more features
- * 
- * @next-migration: Can use Next.js fetch with revalidation options
  */
 class ApiClient {
   private config: ApiClientConfig;
@@ -161,7 +156,6 @@ class ApiClient {
 
 /**
  * Export singleton instance
- * @next-migration: Will be configured with environment variables
  */
 export const apiClient = new ApiClient();
 

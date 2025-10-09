@@ -1,8 +1,6 @@
 /**
  * Addresses Service
  * Handles address CRUD operations for authenticated clients
- * 
- * @next-migration: Replace localStorage with Laravel API calls
  */
 
 import { apiClient } from '../client';

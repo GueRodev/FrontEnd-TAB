@@ -1,18 +1,6 @@
 /**
  * Orders Context
  * Manages order history and status using localStorage
- * 
- * @next-migration: Will be replaced with database queries in Next.js
- * - Orders will be stored in Supabase/database
- * - Server Components will fetch orders via ordersService
- * - Admin operations will use Server Actions
- * - Order creation will validate stock and process payment
- * 
- * Migration path:
- * 1. Replace localStorage with ordersService.create()
- * 2. Add authentication check (only authenticated users can create orders)
- * 3. Add payment processing integration
- * 4. Add email notifications via Edge Functions
  */
 
 import React, { createContext, useContext, useState, useEffect } from 'react';

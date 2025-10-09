@@ -1,17 +1,6 @@
 /**
  * Categories Context
  * Manages product categories and subcategories
- * 
- * @next-migration: Categories can be fetched at build time in Next.js
- * - Use Server Components to fetch categories
- * - Cache categories globally (rarely change)
- * - Admin category management via Server Actions
- * 
- * Migration path:
- * 1. Fetch categories in root layout (app/layout.tsx)
- * 2. Pass as props to Header component
- * 3. Use React Server Components for static categories
- * 4. Add revalidation on category updates
  */
 
 import React, { createContext, useContext, useState, useEffect } from 'react';

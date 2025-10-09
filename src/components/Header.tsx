@@ -1,19 +1,5 @@
 /**
  * Header Component (React Router version)
- * 
- * @next-migration: Convert to Client Component for Next.js
- * - Add 'use client' directive (uses useState, onClick)
- * - Replace useNavigate with Next.js router
- * - Replace Link from 'react-router-dom' with 'next/link'
- * - Categories will come from props (fetched in layout)
- * - Cart count will use Client Context or React Query
- * 
- * Example:
- * ```tsx
- * 'use client';
- * import Link from 'next/link';
- * import { useRouter } from 'next/navigation';
- * ```
  */
 
 import React, { useState, useEffect, useMemo } from 'react';

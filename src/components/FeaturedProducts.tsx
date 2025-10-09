@@ -5,7 +5,6 @@ import { FeaturedProductsSection } from '@/components/features';
 /**
  * FeaturedProducts Component
  * Smart component that connects business logic to presentational component
- * @next-migration: Can remain as Client Component
  */
 const FeaturedProducts: React.FC = () => {
   const {

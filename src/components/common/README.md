@@ -10,7 +10,6 @@ Componente de imagen optimizado con características integradas:
 - ✅ Lazy loading por defecto
 - ✅ Estado de carga con skeleton
 - ✅ Fallback de error automático
-- ✅ Listo para migración a Next.js
 
 ### Uso Básico
 
@@ -48,18 +47,3 @@ import { ProductImage } from '@/components/common';
 />
 ```
 
-## Migración a Next.js
-
-Estos componentes están diseñados para facilitar la migración a Next.js:
-
-```tsx
-// Actual (React + Vite)
-import { OptimizedImage } from '@/components/common';
-<OptimizedImage src="/image.jpg" alt="..." />
-
-// Futuro (Next.js)
-import Image from 'next/image';
-<Image src="/image.jpg" alt="..." width={500} height={500} />
-```
-
-Todos los componentes están marcados con `@next-migration` para identificar fácilmente los puntos de migración.

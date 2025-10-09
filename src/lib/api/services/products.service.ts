@@ -1,10 +1,6 @@
 /**
  * Products Service
  * API service for product operations
- * 
- * @next-migration: Replace localStorage with actual API calls
- * Current: Reads from localStorage adapter
- * Future: Fetches from Supabase/REST API
  */
 
 import type { Product } from '@/types/product.types';
@@ -14,15 +10,10 @@ import { STORAGE_KEYS } from '@/data/constants';
 
 /**
  * Products Service
- * 
- * @next-migration: Implementation will change to API calls
- * Interface will remain the same, ensuring no breaking changes in components
  */
 export const productsService = {
   /**
    * Get all products
-   * @next-migration: Replace with API call
-   * Example: return apiClient.get<Product[]>('/products');
    */
   async getAll(): Promise<Product[]> {
     // Current: Read from localStorage
@@ -31,7 +22,6 @@ export const productsService = {
 
   /**
    * Get paginated products
-   * @next-migration: Add actual pagination from backend
    */
   async getPaginated(params: PaginationParams): Promise<PaginatedResponse<Product>> {
     const allProducts = await this.getAll();
@@ -55,7 +45,6 @@ export const productsService = {
 
   /**
    * Get product by ID
-   * @next-migration: return apiClient.get<Product>(`/products/${id}`);
    */
   async getById(id: string): Promise<Product | null> {
     const products = await this.getAll();
@@ -64,7 +53,6 @@ export const productsService = {
 
   /**
    * Get products by category
-   * @next-migration: return apiClient.get<Product[]>(`/products/category/${categoryId}`);
    */
   async getByCategory(categoryId: string): Promise<Product[]> {
     const products = await this.getAll();
@@ -73,7 +61,6 @@ export const productsService = {
 
   /**
    * Get products by subcategory
-   * @next-migration: return apiClient.get<Product[]>(`/products/subcategory/${subcategoryId}`);
    */
   async getBySubcategory(subcategoryId: string): Promise<Product[]> {
     const products = await this.getAll();
@@ -82,7 +69,6 @@ export const productsService = {
 
   /**
    * Get featured products
-   * @next-migration: return apiClient.get<Product[]>('/products/featured');
    */
   async getFeatured(): Promise<Product[]> {
     const products = await this.getAll();
@@ -91,7 +77,6 @@ export const productsService = {
 
   /**
    * Search products
-   * @next-migration: return apiClient.get<Product[]>(`/products/search?q=${query}`);
    */
   async search(query: string): Promise<Product[]> {
     const products = await this.getAll();
@@ -105,7 +90,6 @@ export const productsService = {
 
   /**
    * Create product
-   * @next-migration: return apiClient.post<Product>('/products', data);
    */
   async create(data: Omit<Product, 'id' | 'createdAt'>): Promise<ApiResponse<Product>> {
     const products = await this.getAll();
@@ -126,7 +110,6 @@ export const productsService = {
 
   /**
    * Update product
-   * @next-migration: return apiClient.put<Product>(`/products/${id}`, data);
    */
   async update(id: string, data: Partial<Product>): Promise<ApiResponse<Product>> {
     const products = await this.getAll();
@@ -147,7 +130,6 @@ export const productsService = {
 
   /**
    * Delete product
-   * @next-migration: return apiClient.delete(`/products/${id}`);
    */
   async delete(id: string): Promise<ApiResponse<void>> {
     const products = await this.getAll();

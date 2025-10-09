@@ -2,7 +2,7 @@
 
 This directory contains the API abstraction layer for future backend integration.
 
-## Current State (Phase 8)
+## Current State
 
 The API layer is prepared but **not yet active**. Currently, all data is managed via:
 - `src/contexts/*` - React Context for state management
@@ -11,7 +11,7 @@ The API layer is prepared but **not yet active**. Currently, all data is managed
 
 ## Migration Strategy
 
-When integrating a backend (Supabase, REST API, GraphQL, etc.), replace the implementation while keeping the same interface:
+When integrating a backend (Laravel, REST API, GraphQL, etc.), replace the implementation while keeping the same interface:
 
 ```typescript
 // Before (localStorage)
@@ -26,18 +26,14 @@ const products = await productsService.getAll();
 ```
 src/lib/api/
 ├── README.md                  # This file
-├── client.ts                  # HTTP client configuration (axios/fetch)
+├── client.ts                  # HTTP client configuration (fetch-based)
 ├── types.ts                   # API-specific types (ApiResponse, ApiError, etc.)
 ├── services/
 │   ├── products.service.ts    # Product CRUD operations
 │   ├── orders.service.ts      # Order management
-│   ├── categories.service.ts  # Category operations
-│   ├── auth.service.ts        # Authentication (future)
+│   ├── auth.service.ts        # Authentication
+│   ├── addresses.service.ts   # Address management
 │   └── index.ts              # Service exports
-└── hooks/
-    ├── useQuery.ts           # Data fetching hook (React Query wrapper)
-    ├── useMutation.ts        # Data mutation hook
-    └── index.ts              # Hook exports
 ```
 
 ## Benefits of This Architecture
@@ -45,7 +41,7 @@ src/lib/api/
 ### 1. **Separation of Concerns**
 - Business logic in `/hooks/business/`
 - Data fetching in `/lib/api/services/`
-- State management in contexts (temporary) or React Query (future)
+- State management in contexts (temporary)
 
 ### 2. **Easy Migration**
 ```typescript
@@ -57,12 +53,13 @@ export const ProductsProvider = ({ children }) => {
   // ...
 }
 
-// React Query Provider (Future)
+// Future: Replace with API calls
 export const ProductsProvider = ({ children }) => {
-  const { data: products } = useQuery({
-    queryKey: ['products'],
-    queryFn: productsService.getAll
-  });
+  const [products, setProducts] = useState<Product[]>([]);
+  
+  useEffect(() => {
+    productsService.getAll().then(setProducts);
+  }, []);
   // ...
 }
 ```
@@ -81,56 +78,15 @@ jest.mock('@/lib/api/services/products.service', () => ({
 }));
 ```
 
-## Next.js Migration
-
-In Next.js, this structure will enable:
-
-### Server Components (Read-only data)
-```typescript
-// app/page.tsx (Server Component)
-import { productsService } from '@/lib/api/services';
-
-export default async function HomePage() {
-  const products = await productsService.getFeatured();
-  
-  return <FeaturedProductsSection products={products} />;
-}
-```
-
-### Client Components (Interactive)
-```typescript
-// app/cart/page.tsx (Client Component)
-'use client';
-import { useCartOperations } from '@/hooks/business';
-
-export default function CartPage() {
-  const { items, addToCart } = useCartOperations();
-  // Same business logic, different data source
-}
-```
-
-### API Routes
-```typescript
-// app/api/products/route.ts
-import { productsService } from '@/lib/api/services';
-
-export async function GET() {
-  const products = await productsService.getAll();
-  return Response.json(products);
-}
-```
-
 ## Implementation Checklist
 
-- [x] Phase 1-4: Centralized types, hooks, and components
-- [x] Phase 5-6: Next.js structure and optimized images
-- [x] Phase 7: Migration documentation
-- [x] Phase 8: API layer structure (this directory)
+- [x] Centralized types, hooks, and components
+- [x] API layer structure (this directory)
+- [x] Laravel connection comments (`🔗 CONEXIÓN LARAVEL`)
 - [ ] **Future**: Replace localStorage with actual API calls
-- [ ] **Future**: Integrate Supabase or REST API
-- [ ] **Future**: Add React Query for caching and optimistic updates
+- [ ] **Future**: Integrate Laravel backend
+- [ ] **Future**: Add error handling and retry logic
 - [ ] **Future**: Implement authentication service
-- [ ] **Future**: Add API error handling and retry logic
 
 ## Example Migration Path
 
@@ -169,4 +125,4 @@ Business logic hooks and components remain unchanged because they use the same i
 
 ---
 
-This architecture ensures a **smooth, low-risk migration** from localStorage → API → Next.js with minimal refactoring.
+This architecture ensures a **smooth, low-risk migration** from localStorage → API with minimal refactoring.
