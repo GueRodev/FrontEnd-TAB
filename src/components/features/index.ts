@@ -21,5 +21,8 @@ export { AddressCard } from './addresses/AddressCard';
 export { AddressForm } from './addresses/AddressForm';
 export { AddressList } from './addresses/AddressList';
 
+// Profile
+export * from './profile';
+
 // Categories
 export * from './categories';
