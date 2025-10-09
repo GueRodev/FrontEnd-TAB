@@ -5,14 +5,15 @@
 Tu arquitectura está **90% lista** para conectarse con Laravel. Necesitas:
 1. **Configurar la URL del backend** (5 minutos)
 2. **Reemplazar localStorage con llamadas API** en servicios (30 minutos)
-3. **Actualizar Contexts** para usar los servicios (15 minutos)
-4. **Agregar manejo de errores** de Laravel (15 minutos)
-5. **Implementar autenticación multi-rol** (30 minutos)
-6. **CRUD de usuarios admin** (20 minutos)
-7. **Gestión de categorías** (15 minutos)
-8. **Google OAuth y separación de rutas** (25 minutos)
+3. **Sistema de direcciones para clientes** (15 minutos)
+4. **Actualizar Contexts** para usar los servicios (15 minutos)
+5. **Agregar manejo de errores** de Laravel (15 minutos)
+6. **Implementar autenticación multi-rol** (30 minutos)
+7. **CRUD de usuarios admin** (20 minutos)
+8. **Gestión de categorías** (15 minutos)
+9. **Google OAuth y separación de rutas** (25 minutos)
 
-**Total estimado: 155 minutos de trabajo (2.5 horas)**
+**Total estimado: 170 minutos de trabajo (2.8 horas)**
 
 ---
 
@@ -148,6 +149,472 @@ export const productsService = {
 
 ---
 
+## 📍 FASE 2.5: Sistema de Direcciones para Clientes (15 min)
+
+### Arquitectura
+
+```
+┌───────────────────────────────────────────────┐
+│          SISTEMA DE DIRECCIONES               │
+├───────────────────────────────────────────────┤
+│  ✅ Clientes: Múltiples direcciones           │
+│  ❌ Admins: NO necesitan direcciones          │
+│                                                │
+│  📍 Tabla: addresses                          │
+│  ┌──────────┬─────────┬──────────────────┐   │
+│  │ user_id  │ label   │ is_default       │   │
+│  ├──────────┼─────────┼──────────────────┤   │
+│  │ uuid_1   │ Casa    │ true             │   │
+│  │ uuid_1   │ Trabajo │ false            │   │
+│  └──────────┴─────────┴──────────────────┘   │
+│                                                │
+│  📦 Órdenes guardan snapshot de dirección     │
+└───────────────────────────────────────────────┘
+```
+
+### Backend Laravel - Migración
+
+```php
+// database/migrations/xxxx_create_addresses_table.php
+public function up()
+{
+    Schema::create('addresses', function (Blueprint $table) {
+        $table->id();
+        $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
+        $table->string('label', 50); // "Casa", "Trabajo", "Oficina"
+        $table->string('province', 100);
+        $table->string('canton', 100);
+        $table->string('district', 100);
+        $table->text('address');
+        $table->boolean('is_default')->default(false);
+        $table->timestamps();
+        
+        $table->index('user_id');
+        $table->index(['user_id', 'is_default']);
+    });
+}
+```
+
+### Backend Laravel - Modelo Address
+
+```php
+// app/Models/Address.php
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+
+class Address extends Model
+{
+    protected $fillable = [
+        'user_id',
+        'label',
+        'province',
+        'canton',
+        'district',
+        'address',
+        'is_default'
+    ];
+
+    protected $casts = [
+        'is_default' => 'boolean',
+    ];
+
+    /**
+     * Relación: Una dirección pertenece a un usuario
+     */
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    /**
+     * Al marcar como predeterminada, desmarcar otras
+     */
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::saving(function ($address) {
+            if ($address->is_default) {
+                static::where('user_id', $address->user_id)
+                    ->where('id', '!=', $address->id)
+                    ->update(['is_default' => false]);
+            }
+        });
+    }
+}
+```
+
+### Backend Laravel - Actualizar Modelo User
+
+```php
+// app/Models/User.php
+class User extends Authenticatable
+{
+    // ... código existente
+
+    /**
+     * Relación: Un usuario tiene múltiples direcciones
+     */
+    public function addresses()
+    {
+        return $this->hasMany(Address::class);
+    }
+
+    /**
+     * Obtener dirección predeterminada
+     */
+    public function defaultAddress()
+    {
+        return $this->hasOne(Address::class)->where('is_default', true);
+    }
+}
+```
+
+### Backend Laravel - Controller
+
+```php
+// app/Http/Controllers/AddressController.php
+namespace App\Http\Controllers;
+
+use App\Models\Address;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+
+class AddressController extends Controller
+{
+    /**
+     * GET /api/client/addresses
+     * Obtener mis direcciones
+     */
+    public function index()
+    {
+        $addresses = Auth::user()->addresses()->latest()->get();
+
+        return response()->json(['data' => $addresses]);
+    }
+
+    /**
+     * POST /api/client/addresses
+     * Crear nueva dirección
+     */
+    public function store(Request $request)
+    {
+        $validated = $request->validate([
+            'label' => 'required|string|max:50',
+            'province' => 'required|string|max:100',
+            'canton' => 'required|string|max:100',
+            'district' => 'required|string|max:100',
+            'address' => 'required|string',
+            'is_default' => 'boolean',
+        ]);
+
+        $address = Auth::user()->addresses()->create($validated);
+
+        return response()->json([
+            'data' => $address,
+            'message' => 'Dirección creada exitosamente',
+        ], 201);
+    }
+
+    /**
+     * PUT /api/client/addresses/{id}
+     * Actualizar dirección
+     */
+    public function update(Request $request, $id)
+    {
+        $address = Auth::user()->addresses()->findOrFail($id);
+
+        $validated = $request->validate([
+            'label' => 'string|max:50',
+            'province' => 'string|max:100',
+            'canton' => 'string|max:100',
+            'district' => 'string|max:100',
+            'address' => 'string',
+            'is_default' => 'boolean',
+        ]);
+
+        $address->update($validated);
+
+        return response()->json([
+            'data' => $address,
+            'message' => 'Dirección actualizada',
+        ]);
+    }
+
+    /**
+     * DELETE /api/client/addresses/{id}
+     * Eliminar dirección
+     */
+    public function destroy($id)
+    {
+        $address = Auth::user()->addresses()->findOrFail($id);
+
+        // No permitir eliminar si es la única dirección
+        if (Auth::user()->addresses()->count() === 1) {
+            return response()->json([
+                'message' => 'No puedes eliminar tu única dirección',
+            ], 422);
+        }
+
+        $address->delete();
+
+        return response()->json([
+            'message' => 'Dirección eliminada',
+        ]);
+    }
+
+    /**
+     * PATCH /api/client/addresses/{id}/default
+     * Marcar como predeterminada
+     */
+    public function setDefault($id)
+    {
+        $address = Auth::user()->addresses()->findOrFail($id);
+        $address->update(['is_default' => true]);
+
+        return response()->json([
+            'data' => $address,
+            'message' => 'Dirección predeterminada actualizada',
+        ]);
+    }
+
+    /**
+     * GET /api/admin/users/{userId}/addresses
+     * Admin: Ver direcciones de un cliente
+     */
+    public function getUserAddresses($userId)
+    {
+        $addresses = Address::where('user_id', $userId)->get();
+
+        return response()->json(['data' => $addresses]);
+    }
+}
+```
+
+### Backend Laravel - Rutas
+
+```php
+// routes/api.php
+
+// Cliente autenticado - Gestión de direcciones
+Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/client/addresses', [AddressController::class, 'index']);
+    Route::post('/client/addresses', [AddressController::class, 'store']);
+    Route::put('/client/addresses/{id}', [AddressController::class, 'update']);
+    Route::delete('/client/addresses/{id}', [AddressController::class, 'destroy']);
+    Route::patch('/client/addresses/{id}/default', [AddressController::class, 'setDefault']);
+});
+
+// Admin - Ver direcciones de clientes
+Route::middleware(['auth:sanctum', 'admin'])->group(function () {
+    Route::get('/admin/users/{userId}/addresses', [AddressController::class, 'getUserAddresses']);
+});
+```
+
+### Frontend React - Actualizar Types
+
+#### Archivo: `src/types/user.types.ts`
+
+```typescript
+/**
+ * User-related types
+ * Centralized types for user profiles and authentication
+ */
+
+export interface Address {
+  id: string;
+  user_id: string;
+  label: string;
+  province: string;
+  canton: string;
+  district: string;
+  address: string;
+  is_default: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
+// Perfil base sin direcciones
+export interface UserProfile {
+  name: string;
+  email: string;
+  phone: string;
+}
+
+// Interfaz base de usuario con rol
+export interface UserWithRole {
+  id: string;
+  name: string;
+  email: string;
+  phone?: string;
+  role: 'admin' | 'cliente';
+  created_at: string;
+}
+
+// Cliente con direcciones
+export interface ClientProfile extends UserWithRole {
+  role: 'cliente';
+  addresses: Address[];
+  default_address?: Address;
+}
+
+// Admin sin direcciones
+export interface AdminProfile extends UserWithRole {
+  role: 'admin';
+}
+```
+
+#### Archivo: `src/types/order.types.ts`
+
+```typescript
+/**
+ * Order-related types
+ * Centralized types for orders and order items
+ */
+
+export type OrderStatus = 'pending' | 'completed' | 'cancelled';
+export type OrderType = 'online' | 'in-store';
+export type DeliveryOption = 'pickup' | 'delivery';
+
+export interface OrderItem {
+  id: string;
+  name: string;
+  image: string;
+  price: number;
+  quantity: number;
+}
+
+// Snapshot de dirección de entrega (no relacional)
+export interface DeliveryAddress {
+  label: string;
+  province: string;
+  canton: string;
+  district: string;
+  address: string;
+}
+
+// Información del cliente (solo datos básicos)
+export interface CustomerInfo {
+  name: string;
+  phone: string;
+}
+
+export interface Order {
+  id: string;
+  user_id?: string; // Opcional: Cliente autenticado
+  type: OrderType;
+  status: OrderStatus;
+  items: OrderItem[];
+  total: number;
+  createdAt: string;
+  customerInfo: CustomerInfo;
+  delivery_address?: DeliveryAddress; // Snapshot de dirección
+  deliveryOption?: DeliveryOption;
+  paymentMethod?: string;
+  archived?: boolean;
+  archivedAt?: string;
+}
+```
+
+### Frontend React - Service de Direcciones
+
+#### Crear archivo: `src/lib/api/services/addresses.service.ts`
+
+```typescript
+import type { Address } from '@/types/user.types';
+import type { ApiResponse } from '../types';
+import { apiClient } from '../client';
+
+export const addressesService = {
+  /**
+   * GET /api/client/addresses
+   * Obtener mis direcciones
+   */
+  async getMyAddresses(): Promise<Address[]> {
+    const response = await apiClient.get<{ data: Address[] }>('/client/addresses');
+    return response.data;
+  },
+
+  /**
+   * POST /api/client/addresses
+   * Crear nueva dirección
+   */
+  async create(data: Omit<Address, 'id' | 'user_id' | 'created_at' | 'updated_at'>): Promise<ApiResponse<Address>> {
+    return apiClient.post<ApiResponse<Address>>('/client/addresses', data);
+  },
+
+  /**
+   * PUT /api/client/addresses/{id}
+   * Actualizar dirección
+   */
+  async update(id: string, data: Partial<Omit<Address, 'id' | 'user_id' | 'created_at' | 'updated_at'>>): Promise<ApiResponse<Address>> {
+    return apiClient.put<ApiResponse<Address>>(`/client/addresses/${id}`, data);
+  },
+
+  /**
+   * DELETE /api/client/addresses/{id}
+   * Eliminar dirección
+   */
+  async delete(id: string): Promise<ApiResponse<void>> {
+    return apiClient.delete<ApiResponse<void>>(`/client/addresses/${id}`);
+  },
+
+  /**
+   * PATCH /api/client/addresses/{id}/default
+   * Marcar como predeterminada
+   */
+  async setAsDefault(id: string): Promise<ApiResponse<Address>> {
+    return apiClient.patch<ApiResponse<Address>>(`/client/addresses/${id}/default`);
+  },
+
+  /**
+   * GET /api/admin/users/{userId}/addresses
+   * Admin: Obtener direcciones de un cliente
+   */
+  async getUserAddresses(userId: string): Promise<Address[]> {
+    const response = await apiClient.get<{ data: Address[] }>(`/admin/users/${userId}/addresses`);
+    return response.data;
+  },
+};
+```
+
+#### Actualizar: `src/lib/api/services/index.ts`
+
+```typescript
+/**
+ * API Services Exports
+ * Centralized exports for all API services
+ * 
+ * @next-migration: Services ready for backend integration
+ */
+
+export { productsService } from './products.service';
+export { ordersService } from './orders.service';
+export { addressesService } from './addresses.service';
+```
+
+### Notas Importantes
+
+1. **Separación de Responsabilidades:**
+   - `addresses`: Tabla para gestionar direcciones guardadas
+   - `orders.delivery_address`: Snapshot inmutable de la dirección usada en la orden
+
+2. **¿Por qué snapshot en órdenes?**
+   - Si el cliente edita/elimina una dirección, las órdenes pasadas deben mantener la dirección original
+   - Cumple normativa de facturación y auditoría
+
+3. **Validación de Usuarios:**
+   - Admins NO tienen acceso a endpoints de direcciones de clientes (excepto para visualizar)
+   - Clientes solo pueden gestionar sus propias direcciones
+
+4. **Componentes Frontend a Actualizar:**
+   - Crear `AddressSelector` component para checkout
+   - Actualizar `Account.tsx` para gestionar direcciones
+   - Modificar `AdminUsers.tsx` para mostrar direcciones de clientes
+
+---
+
 ## 📦 FASE 3: Migrar Orders Service (15 min)
 
 ### Archivo: `src/lib/api/services/orders.service.ts`
@@ -185,6 +652,7 @@ export const ordersService = {
   },
 
   // POST /api/orders
+  // NOTA: delivery_address debe ser un snapshot, no un ID de address
   async create(data: Omit<Order, 'id' | 'createdAt'>): Promise<ApiResponse<Order>> {
     return apiClient.post<ApiResponse<Order>>('/orders', data);
   },
@@ -1357,18 +1825,18 @@ class UserController extends Controller
     {
         $user = User::with('roles')->findOrFail($id);
 
+        // ⚠️ NOTA: Los campos de dirección ahora están en la tabla 'addresses'
+        // Para obtener direcciones: GET /api/admin/users/{id}/addresses
         return response()->json([
             'data' => [
                 'id' => $user->id,
                 'name' => $user->name,
                 'email' => $user->email,
                 'phone' => $user->phone,
-                'province' => $user->province,
-                'canton' => $user->canton,
-                'district' => $user->district,
-                'address' => $user->address,
                 'roles' => $user->roles->pluck('name'),
                 'is_active' => $user->is_active ?? true,
+                // Incluir dirección predeterminada si existe
+                'default_address' => $user->defaultAddress,
             ],
         ]);
     }
@@ -2208,16 +2676,17 @@ import AuthAdmin from '@/pages/AuthAdmin';
 7. 🧪 **TESTING**: Probar órdenes (10 min)
 8. ✅ **FASE 6**: Mejorar manejo de errores (15 min)
 
-### **Ruta Completa (Con autenticación y roles) - 155 min**
+### **Ruta Completa (Con autenticación y roles) - 170 min**
 1. ✅ **FASE 1-7**: Completar ruta básica (70 min)
 2. ✅ **FASE 8**: Implementar autenticación multi-rol (30 min)
-3. 🧪 **TESTING**: Probar login cliente/admin (10 min)
-4. ✅ **FASE 9**: CRUD de usuarios admin (20 min)
-5. ✅ **FASE 10**: Gestión de categorías (15 min)
-6. ✅ **FASE 11**: Google OAuth y rutas separadas (25 min)
-7. 🧪 **TESTING**: Pruebas de seguridad (15 min)
+3. ✅ **FASE 2.5**: Sistema de direcciones para clientes (15 min)
+4. 🧪 **TESTING**: Probar login cliente/admin y direcciones (10 min)
+5. ✅ **FASE 9**: CRUD de usuarios admin (20 min)
+6. ✅ **FASE 10**: Gestión de categorías (15 min)
+7. ✅ **FASE 11**: Google OAuth y rutas separadas (25 min)
+8. 🧪 **TESTING**: Pruebas de seguridad (15 min)
 
-**Total: 155 minutos (2.5 horas)**
+**Total: 170 minutos (2.8 horas)**
 
 ---
 
