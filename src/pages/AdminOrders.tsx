@@ -150,6 +150,7 @@ const AdminOrders = () => {
                     <OrdersList
                       orders={inStoreOrders}
                       showDeliveryInfo={false}
+                      gridColumns="grid-cols-1 lg:grid-cols-2"
                       onArchive={handleArchiveOrder}
                       onDelete={handleDeleteOrder}
                       onComplete={handleCompleteOrder}

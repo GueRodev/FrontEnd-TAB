@@ -11,6 +11,7 @@ interface OrdersListProps {
   showDeliveryInfo?: boolean;
   emptyMessage?: string;
   emptyIcon?: React.ReactNode;
+  gridColumns?: string;
   onArchive: (orderId: string) => void;
   onDelete: (orderId: string, order: Order) => void;
   onComplete: (order: Order) => void;
@@ -22,6 +23,7 @@ export const OrdersList: React.FC<OrdersListProps> = ({
   showDeliveryInfo = false,
   emptyMessage = 'No hay pedidos',
   emptyIcon,
+  gridColumns = "grid-cols-1 lg:grid-cols-2 xl:grid-cols-3",
   onArchive,
   onDelete,
   onComplete,
@@ -37,7 +39,7 @@ export const OrdersList: React.FC<OrdersListProps> = ({
   }
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4">
+    <div className={`grid ${gridColumns} gap-4`}>
       {orders.map((order) => (
         <OrderCard
           key={order.id}
