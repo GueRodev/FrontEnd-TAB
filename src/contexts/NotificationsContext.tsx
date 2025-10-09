@@ -1,16 +1,8 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import type { Notification } from '@/types/notification.types';
 
-export interface Notification {
-  id: string;
-  type: 'order' | 'user' | 'product' | 'general';
-  title: string;
-  message: string;
-  time: string;
-  read: boolean;
-  createdAt: Date;
-  orderId?: string; // ID del pedido para redirección
-  link?: string; // URL opcional para redirección personalizada
-}
+// Re-export types for backward compatibility
+export type { Notification, NotificationType } from '@/types/notification.types';
 
 interface NotificationsContextType {
   notifications: Notification[];

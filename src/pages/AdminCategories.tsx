@@ -42,7 +42,8 @@ import {
   verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import { useCategories, Category, Subcategory } from '@/contexts/CategoriesContext';
+import { useCategories } from '@/contexts/CategoriesContext';
+import type { Category, Subcategory } from '@/types/product.types';
 import { toast } from '@/hooks/use-toast';
 import { z } from 'zod';
 

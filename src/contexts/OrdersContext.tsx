@@ -1,36 +1,8 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import type { Order, OrderStatus, OrderType } from '@/types/order.types';
 
-export type OrderStatus = 'pending' | 'completed' | 'cancelled';
-export type OrderType = 'online' | 'in-store';
-
-export interface OrderItem {
-  id: string;
-  name: string;
-  image: string;
-  price: number;
-  quantity: number;
-}
-
-export interface Order {
-  id: string;
-  type: OrderType;
-  status: OrderStatus;
-  items: OrderItem[];
-  total: number;
-  createdAt: string;
-  customerInfo: {
-    name: string;
-    phone: string;
-    province?: string;
-    canton?: string;
-    district?: string;
-    address?: string;
-  };
-  deliveryOption?: 'pickup' | 'delivery';
-  paymentMethod?: string;
-  archived?: boolean;
-  archivedAt?: string;
-}
+// Re-export types for backward compatibility
+export type { Order, OrderStatus, OrderType, OrderItem, CustomerInfo, DeliveryOption } from '@/types/order.types';
 
 interface OrdersContextType {
   orders: Order[];

@@ -1,19 +1,8 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import type { Product } from '@/types/product.types';
 
-export interface Product {
-  id: string;
-  name: string;
-  marca?: string;
-  categoryId: string;
-  subcategoryId?: string;
-  price: number;
-  stock: number;
-  description: string;
-  image: string;
-  status: 'active' | 'inactive';
-  isFeatured: boolean;
-  createdAt: string;
-}
+// Re-export types for backward compatibility
+export type { Product, ProductStatus } from '@/types/product.types';
 
 interface ProductsContextType {
   products: Product[];

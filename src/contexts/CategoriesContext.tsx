@@ -1,22 +1,8 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import type { Category } from '@/types/product.types';
 
-export interface Subcategory {
-  id: string;
-  name: string;
-  description?: string;
-  order: number;
-  slug: string;
-}
-
-export interface Category {
-  id: string;
-  name: string;
-  description?: string;
-  order: number;
-  slug: string;
-  subcategories: Subcategory[];
-  isExpanded?: boolean;
-}
+// Re-export types for backward compatibility
+export type { Category, Subcategory } from '@/types/product.types';
 
 interface CategoriesContextType {
   categories: Category[];

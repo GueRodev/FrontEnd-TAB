@@ -9,16 +9,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { toast } from '@/hooks/use-toast';
-
-interface UserProfile {
-  name: string;
-  email: string;
-  phone: string;
-  province: string;
-  canton: string;
-  district: string;
-  address: string;
-}
+import type { UserProfile } from '@/types/user.types';
 
 const Account: React.FC = () => {
   const [isEditing, setIsEditing] = useState(false);

@@ -1,13 +1,9 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { toast } from '@/hooks/use-toast';
+import type { CartItem } from '@/types/cart.types';
 
-export interface CartItem {
-  id: string;
-  name: string;
-  image: string;
-  price: number;
-  quantity: number;
-}
+// Re-export types for backward compatibility
+export type { CartItem } from '@/types/cart.types';
 
 interface CartContextType {
   items: CartItem[];
