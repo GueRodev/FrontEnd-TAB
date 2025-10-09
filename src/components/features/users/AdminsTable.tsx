@@ -46,7 +46,9 @@ export const AdminsTable: React.FC<AdminsTableProps> = ({
             <TableCell className="font-medium">{admin.nombre}</TableCell>
             <TableCell className="text-muted-foreground">{admin.email}</TableCell>
             <TableCell>
-              <Badge variant="secondary">{admin.rol}</Badge>
+              <Badge variant="outline" className="bg-purple-100 text-purple-700 border-purple-200">
+                {admin.rol}
+              </Badge>
             </TableCell>
             <TableCell className="text-muted-foreground">{admin.fechaCreacion}</TableCell>
             <TableCell className="text-muted-foreground">{admin.ultimoAcceso}</TableCell>
@@ -64,7 +66,7 @@ export const AdminsTable: React.FC<AdminsTableProps> = ({
                   variant="ghost"
                   size="sm"
                   onClick={() => onDelete(admin.id)}
-                  className="text-brand-orange hover:text-brand-orange hover:bg-brand-orange/10"
+                  className="text-destructive hover:text-destructive hover:bg-destructive/10"
                 >
                   <Trash2 className="h-4 w-4" />
                 </Button>

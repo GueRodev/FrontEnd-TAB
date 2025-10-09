@@ -35,7 +35,7 @@ export const AdminCard: React.FC<AdminCardProps> = ({
           <h4 className="font-semibold mb-1">{admin.nombre}</h4>
           <p className="text-sm text-muted-foreground break-all">{admin.email}</p>
         </div>
-        <Badge variant="secondary" className="ml-2">
+        <Badge variant="outline" className="ml-2 bg-purple-100 text-purple-700 border-purple-200">
           {admin.rol}
         </Badge>
       </div>
@@ -67,7 +67,7 @@ export const AdminCard: React.FC<AdminCardProps> = ({
           variant="outline"
           size="sm"
           onClick={() => onDelete(admin.id)}
-          className="flex-1 text-brand-orange border-brand-orange hover:bg-brand-orange/10"
+          className="flex-1 text-destructive border-destructive hover:bg-destructive/10"
         >
           <Trash2 className="h-4 w-4 mr-1" />
           Eliminar
