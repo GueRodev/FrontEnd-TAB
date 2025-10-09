@@ -15,6 +15,7 @@ interface FeaturedProductsSectionProps {
   onToggleWishlist: (product: Product, e?: React.MouseEvent) => void;
   isInWishlist: (productId: string) => boolean;
   getCategorySlug?: (categoryId: string) => string;
+  onProductClick?: (product: Product) => void;
 }
 
 export const FeaturedProductsSection: React.FC<FeaturedProductsSectionProps> = ({
@@ -23,6 +24,7 @@ export const FeaturedProductsSection: React.FC<FeaturedProductsSectionProps> = (
   onToggleWishlist,
   isInWishlist,
   getCategorySlug,
+  onProductClick,
 }) => {
   if (products.length === 0) {
     return null;
@@ -53,6 +55,7 @@ export const FeaturedProductsSection: React.FC<FeaturedProductsSectionProps> = (
           onToggleWishlist={onToggleWishlist}
           isInWishlist={isInWishlist}
           getCategorySlug={getCategorySlug}
+          onProductClick={onProductClick}
         />
       </div>
     </section>

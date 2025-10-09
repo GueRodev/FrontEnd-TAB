@@ -14,6 +14,7 @@ interface ProductCardProps {
   isWishlisted?: boolean;
   onToggleWishlist?: (e: React.MouseEvent, productId: string) => void;
   onAddToCart?: (e: React.MouseEvent, productId: string) => void;
+  onProductClick?: (productId: string) => void;
 }
 
 const ProductCard: React.FC<ProductCardProps> = ({
@@ -26,6 +27,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
   isWishlisted = false,
   onToggleWishlist,
   onAddToCart,
+  onProductClick,
 }) => {
   return (
     <div 
@@ -44,14 +46,17 @@ const ProductCard: React.FC<ProductCardProps> = ({
       }}
     >
       <div className="relative">
-        <Link to={`/product/${id}`} className="block aspect-square overflow-hidden">
+        <div 
+          onClick={() => onProductClick?.(id)}
+          className="block aspect-square overflow-hidden cursor-pointer"
+        >
           <ProductImage
             src={image}
             alt={name}
             variant="card"
             className="transform group-hover:scale-105 transition-transform duration-500"
           />
-        </Link>
+        </div>
         {onToggleWishlist && (
           <button
             onClick={(e) => onToggleWishlist(e, id)}
@@ -82,11 +87,14 @@ const ProductCard: React.FC<ProductCardProps> = ({
           </div>
         )}
         
-        <Link to={`/product/${id}`} className="block">
+        <div 
+          onClick={() => onProductClick?.(id)}
+          className="block cursor-pointer"
+        >
           <h3 className="font-semibold text-gray-900 hover:text-brand-orange transition-colors mb-3 line-clamp-2">
             {name}
           </h3>
-        </Link>
+        </div>
         
         <div className="flex justify-between items-center mt-4">
           <span className="font-bold text-lg">

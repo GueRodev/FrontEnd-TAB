@@ -16,6 +16,7 @@ interface ProductGridProps {
   getCategorySlug?: (categoryId: string) => string;
   emptyMessage?: string;
   className?: string;
+  onProductClick?: (product: Product) => void;
 }
 
 export const ProductGrid: React.FC<ProductGridProps> = ({
@@ -26,6 +27,7 @@ export const ProductGrid: React.FC<ProductGridProps> = ({
   getCategorySlug,
   emptyMessage = 'No hay productos disponibles',
   className = '',
+  onProductClick,
 }) => {
   if (products.length === 0) {
     return (
@@ -48,6 +50,7 @@ export const ProductGrid: React.FC<ProductGridProps> = ({
           isWishlisted={isInWishlist(product.id)}
           onToggleWishlist={(e) => onToggleWishlist(product, e)}
           onAddToCart={(e) => onAddToCart(product, e)}
+          onProductClick={() => onProductClick?.(product)}
         />
       ))}
     </div>

@@ -5,6 +5,8 @@ import Footer from '@/components/Footer';
 import ProductCard from '@/components/ProductCard';
 import DecorativeBackground from '@/components/DecorativeBackground';
 import { useCategoryPage } from '@/hooks/business';
+import { useProductModal } from '@/hooks/business/useProductModal';
+import { ProductDetailModal } from '@/components/features';
 import { formatCurrency } from '@/lib/formatters';
 
 /**
@@ -23,6 +25,22 @@ const CategoryPage: React.FC = () => {
     handleCartAdd,
     isProductInWishlist,
   } = useCategoryPage({ categorySlug: category, subcategorySlug: subcategory });
+
+  const {
+    isModalOpen,
+    selectedProduct,
+    quantity,
+    openProductModal,
+    closeProductModal,
+    setQuantity,
+    handleAddToCartFromModal,
+    handleToggleWishlistFromModal,
+    isProductInWishlist: isModalProductInWishlist,
+  } = useProductModal({ 
+    onAddToCart: (product) => handleCartAdd(undefined as any, product.id),
+    onToggleWishlist: (product) => handleWishlistToggle(undefined as any, product.id),
+    isInWishlist: isProductInWishlist,
+  });
 
   if (!currentCategory) {
     return (
@@ -100,6 +118,7 @@ const CategoryPage: React.FC = () => {
                   isWishlisted={isProductInWishlist(product.id)}
                   onToggleWishlist={handleWishlistToggle}
                   onAddToCart={handleCartAdd}
+                  onProductClick={() => openProductModal(product)}
                 />
               ))}
             </div>
@@ -114,6 +133,18 @@ const CategoryPage: React.FC = () => {
       </main>
       
       <Footer />
+
+      <ProductDetailModal
+        product={selectedProduct}
+        open={isModalOpen}
+        onOpenChange={closeProductModal}
+        onAddToCart={handleAddToCartFromModal}
+        onToggleWishlist={handleToggleWishlistFromModal}
+        isInWishlist={isModalProductInWishlist}
+        categoryName={currentCategory?.name}
+        quantity={quantity}
+        onQuantityChange={setQuantity}
+      />
     </>
   );
 };

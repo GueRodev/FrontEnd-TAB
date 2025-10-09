@@ -24,3 +24,4 @@ export { useDashboardMetrics } from './useDashboardMetrics';
 export { useCategoryPage } from './useCategoryPage';
 export { useAccountPage } from './useAccountPage';
 export { useWishlistPage } from './useWishlistPage';
+export { useProductModal } from './useProductModal';

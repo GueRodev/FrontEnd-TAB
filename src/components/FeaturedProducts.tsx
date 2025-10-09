@@ -1,6 +1,7 @@
 import React from 'react';
 import { useProductOperations } from '@/hooks/business';
-import { FeaturedProductsSection } from '@/components/features';
+import { useProductModal } from '@/hooks/business/useProductModal';
+import { FeaturedProductsSection, ProductDetailModal } from '@/components/features';
 
 /**
  * FeaturedProducts Component
@@ -13,27 +14,49 @@ const FeaturedProducts: React.FC = () => {
     handleToggleWishlist,
     isProductInWishlist,
     getCategorySlug,
-    findProductById,
   } = useProductOperations();
+
+  const {
+    isModalOpen,
+    selectedProduct,
+    quantity,
+    openProductModal,
+    closeProductModal,
+    setQuantity,
+    handleAddToCartFromModal,
+    handleToggleWishlistFromModal,
+    isProductInWishlist: isModalProductInWishlist,
+  } = useProductModal({ 
+    onAddToCart: handleAddToCart, 
+    onToggleWishlist: handleToggleWishlist,
+    isInWishlist: isProductInWishlist,
+  });
 
   const featuredProducts = getFeaturedProducts();
 
-  const handleWishlistClick = (product: any, e?: React.MouseEvent) => {
-    handleToggleWishlist(product, e);
-  };
-
-  const handleCartClick = (product: any, e?: React.MouseEvent) => {
-    handleAddToCart(product, e);
-  };
-
   return (
-    <FeaturedProductsSection
-      products={featuredProducts}
-      onAddToCart={handleCartClick}
-      onToggleWishlist={handleWishlistClick}
-      isInWishlist={isProductInWishlist}
-      getCategorySlug={getCategorySlug}
-    />
+    <>
+      <FeaturedProductsSection
+        products={featuredProducts}
+        onAddToCart={handleAddToCart}
+        onToggleWishlist={handleToggleWishlist}
+        isInWishlist={isProductInWishlist}
+        getCategorySlug={getCategorySlug}
+        onProductClick={openProductModal}
+      />
+      
+      <ProductDetailModal
+        product={selectedProduct}
+        open={isModalOpen}
+        onOpenChange={closeProductModal}
+        onAddToCart={handleAddToCartFromModal}
+        onToggleWishlist={handleToggleWishlistFromModal}
+        isInWishlist={isModalProductInWishlist}
+        categoryName={selectedProduct ? getCategorySlug(selectedProduct.categoryId) : undefined}
+        quantity={quantity}
+        onQuantityChange={setQuantity}
+      />
+    </>
   );
 };
 
