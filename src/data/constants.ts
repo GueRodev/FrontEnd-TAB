@@ -31,6 +31,7 @@ export const STORAGE_KEYS = {
   user: "user",
 } as const;
 
+//Agregar el resto de Rutas
 export const API_ROUTES = {
   products: "/api/products",
   categories: "/api/categories",
