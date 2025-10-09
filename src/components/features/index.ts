@@ -15,3 +15,8 @@ export { EmptyCart } from './cart/EmptyCart';
 // Wishlist
 export { WishlistGrid } from './wishlist/WishlistGrid';
 export { EmptyWishlist } from './wishlist/EmptyWishlist';
+
+// Addresses
+export { AddressCard } from './addresses/AddressCard';
+export { AddressForm } from './addresses/AddressForm';
+export { AddressList } from './addresses/AddressList';

@@ -6,10 +6,11 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import Logo from '@/components/Logo';
-import { toast } from '@/hooks/use-toast';
+import { useAuth } from '@/contexts/AuthContext';
 
 const Auth: React.FC = () => {
   const navigate = useNavigate();
+  const { login, register } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
 
   // Estados para Login
@@ -24,57 +25,46 @@ const Auth: React.FC = () => {
     email: '',
     password: '',
     confirmPassword: '',
+    phone: '',
   });
 
-  // TODO: Cuando se implemente backend/Lovable Cloud:
-  // 1. Conectar con Supabase Auth
-  // 2. Validar credenciales
-  // 3. Almacenar sesión
-  // 4. Implementar recuperación de contraseña
-  // 5. Agregar validación de email
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
 
-    // Simulación de inicio de sesión
-    setTimeout(() => {
-      toast({
-        title: "Inicio de sesión exitoso",
-        description: "Bienvenido de vuelta",
-      });
-      setIsLoading(false);
+    try {
+      await login(loginData);
       navigate('/');
-    }, 1000);
+    } catch (error) {
+      console.error('Login error:', error);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
-  // TODO: Cuando se implemente backend/Lovable Cloud:
-  // 1. Crear usuario en Supabase
-  // 2. Enviar email de verificación
-  // 3. Crear perfil de usuario
-  // 4. Validar contraseñas coincidan
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (registerData.password !== registerData.confirmPassword) {
-      toast({
-        title: "Error",
-        description: "Las contraseñas no coinciden",
-        variant: "destructive",
-      });
-      return;
+      return; // AuthContext will show error toast
     }
 
     setIsLoading(true);
 
-    // Simulación de registro
-    setTimeout(() => {
-      toast({
-        title: "Registro exitoso",
-        description: "Tu cuenta ha sido creada",
+    try {
+      await register({
+        name: registerData.name,
+        email: registerData.email,
+        password: registerData.password,
+        password_confirmation: registerData.confirmPassword,
+        phone: registerData.phone,
       });
-      setIsLoading(false);
       navigate('/');
-    }, 1000);
+    } catch (error) {
+      console.error('Register error:', error);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -175,6 +165,17 @@ const Auth: React.FC = () => {
                       value={registerData.email}
                       onChange={(e) => setRegisterData({ ...registerData, email: e.target.value })}
                       required
+                      className="border-gray-300"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="register-phone">Teléfono (opcional)</Label>
+                    <Input
+                      id="register-phone"
+                      type="tel"
+                      placeholder="+506 8888 8888"
+                      value={registerData.phone}
+                      onChange={(e) => setRegisterData({ ...registerData, phone: e.target.value })}
                       className="border-gray-300"
                     />
                   </div>

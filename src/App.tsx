@@ -4,6 +4,7 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { AuthProvider } from "./contexts/AuthContext";
 import { WishlistProvider } from "./contexts/WishlistContext";
 import { CartProvider } from "./contexts/CartContext";
 import { OrdersProvider } from "./contexts/OrdersContext";
@@ -31,13 +32,14 @@ const queryClient = new QueryClient();
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
-    <CategoriesProvider>
-      <ProductsProvider>
-        <CartProvider>
-          <OrdersProvider>
-            <WishlistProvider>
-              <NotificationsProvider>
-                <TooltipProvider>
+    <AuthProvider>
+      <CategoriesProvider>
+        <ProductsProvider>
+          <CartProvider>
+            <OrdersProvider>
+              <WishlistProvider>
+                <NotificationsProvider>
+                  <TooltipProvider>
                 <Toaster />
                 <Sonner />
                 <BrowserRouter>
@@ -65,13 +67,14 @@ const App = () => (
                 <Route path="*" element={<NotFound />} />
               </Routes>
               </BrowserRouter>
-              </TooltipProvider>
-            </NotificationsProvider>
-            </WishlistProvider>
-          </OrdersProvider>
-        </CartProvider>
-      </ProductsProvider>
-    </CategoriesProvider>
+                  </TooltipProvider>
+                </NotificationsProvider>
+              </WishlistProvider>
+            </OrdersProvider>
+          </CartProvider>
+        </ProductsProvider>
+      </CategoriesProvider>
+    </AuthProvider>
   </QueryClientProvider>
 );
 

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { User, Mail, Phone, MapPin, Edit2, Save, X } from 'lucide-react';
+import { User, Mail, Phone, Edit2, Save, X, LogOut } from 'lucide-react';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import DecorativeBackground from '@/components/DecorativeBackground';
@@ -8,45 +8,76 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { toast } from '@/hooks/use-toast';
-import type { UserProfile } from '@/types/user.types';
+import { Separator } from '@/components/ui/separator';
+import { AddressList } from '@/components/features';
+import { useAuth } from '@/contexts/AuthContext';
+import { useNavigate } from 'react-router-dom';
 
 const Account: React.FC = () => {
+  const navigate = useNavigate();
+  const { user, updateProfile, logout, isClient } = useAuth();
   const [isEditing, setIsEditing] = useState(false);
-  const [profile, setProfile] = useState<UserProfile>({
-    name: 'Usuario Demo',
-    email: 'usuario@toysandbricks.com',
-    phone: '+506 8888 8888',
-    province: 'San José',
-    canton: 'Central',
-    district: 'Carmen',
-    address: 'Calle Principal 123, Ciudad'
+  const [editedProfile, setEditedProfile] = useState({
+    name: user?.name || '',
+    email: user?.email || '',
+    phone: user?.phone || '',
   });
-
-  const [editedProfile, setEditedProfile] = useState<UserProfile>(profile);
 
   const handleEdit = () => {
     setIsEditing(true);
-    setEditedProfile(profile);
+    setEditedProfile({
+      name: user?.name || '',
+      email: user?.email || '',
+      phone: user?.phone || '',
+    });
   };
 
   const handleCancel = () => {
     setIsEditing(false);
-    setEditedProfile(profile);
-  };
-
-  const handleSave = () => {
-    setProfile(editedProfile);
-    setIsEditing(false);
-    toast({
-      title: "Perfil actualizado",
-      description: "Tus cambios han sido guardados exitosamente",
+    setEditedProfile({
+      name: user?.name || '',
+      email: user?.email || '',
+      phone: user?.phone || '',
     });
   };
 
-  const handleInputChange = (field: keyof UserProfile, value: string) => {
+  const handleSave = async () => {
+    await updateProfile(editedProfile);
+    setIsEditing(false);
+  };
+
+  const handleInputChange = (field: string, value: string) => {
     setEditedProfile({ ...editedProfile, [field]: value });
   };
+
+  const handleLogout = async () => {
+    await logout();
+    navigate('/');
+  };
+
+  if (!user) {
+    return (
+      <div className="min-h-screen flex flex-col">
+        <Header />
+        <div className="flex-1 flex items-center justify-center">
+          <Card className="max-w-md w-full mx-4">
+            <CardHeader>
+              <CardTitle>Acceso Requerido</CardTitle>
+              <CardDescription>
+                Debes iniciar sesión para ver tu perfil
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Button onClick={() => navigate('/auth')} className="w-full">
+                Iniciar Sesión
+              </Button>
+            </CardContent>
+          </Card>
+        </div>
+        <Footer />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -85,15 +116,25 @@ const Account: React.FC = () => {
                   <p className="text-gray-600">Administra tu información personal</p>
                 </div>
               </div>
-              {!isEditing && (
+              <div className="flex gap-2">
+                {!isEditing && (
+                  <Button
+                    onClick={handleEdit}
+                    className="bg-brand-darkBlue hover:bg-brand-orange"
+                  >
+                    <Edit2 className="mr-2" size={18} />
+                    Editar Perfil
+                  </Button>
+                )}
                 <Button
-                  onClick={handleEdit}
-                  className="bg-brand-darkBlue hover:bg-brand-orange"
+                  onClick={handleLogout}
+                  variant="outline"
+                  className="text-red-600 hover:text-red-700"
                 >
-                  <Edit2 className="mr-2" size={18} />
-                  Editar Perfil
+                  <LogOut className="mr-2" size={18} />
+                  Cerrar Sesión
                 </Button>
-              )}
+              </div>
             </div>
 
             {/* Profile Card */}
@@ -122,7 +163,7 @@ const Account: React.FC = () => {
                       className="border-gray-300 focus:border-brand-orange"
                     />
                   ) : (
-                    <p className="text-gray-700 py-2">{profile.name}</p>
+                    <p className="text-gray-700 py-2">{user.name}</p>
                   )}
                 </div>
 
@@ -141,7 +182,7 @@ const Account: React.FC = () => {
                       className="border-gray-300 focus:border-brand-orange"
                     />
                   ) : (
-                    <p className="text-gray-700 py-2">{profile.email}</p>
+                    <p className="text-gray-700 py-2">{user.email}</p>
                   )}
                 </div>
 
@@ -161,80 +202,7 @@ const Account: React.FC = () => {
                       placeholder="+506 8888 8888"
                     />
                   ) : (
-                    <p className="text-gray-700 py-2">{profile.phone}</p>
-                  )}
-                </div>
-
-                {/* Provincia */}
-                <div className="space-y-2">
-                  <Label htmlFor="province" className="flex items-center gap-2 text-brand-darkBlue">
-                    <MapPin size={18} />
-                    Provincia
-                  </Label>
-                  {isEditing ? (
-                    <Input
-                      id="province"
-                      value={editedProfile.province}
-                      onChange={(e) => handleInputChange('province', e.target.value)}
-                      className="border-gray-300 focus:border-brand-orange"
-                      placeholder="Provincia"
-                    />
-                  ) : (
-                    <p className="text-gray-700 py-2">{profile.province}</p>
-                  )}
-                </div>
-
-                {/* Canton */}
-                <div className="space-y-2">
-                  <Label htmlFor="canton" className="text-brand-darkBlue">
-                    Cantón
-                  </Label>
-                  {isEditing ? (
-                    <Input
-                      id="canton"
-                      value={editedProfile.canton}
-                      onChange={(e) => handleInputChange('canton', e.target.value)}
-                      className="border-gray-300 focus:border-brand-orange"
-                      placeholder="Cantón"
-                    />
-                  ) : (
-                    <p className="text-gray-700 py-2">{profile.canton}</p>
-                  )}
-                </div>
-
-                {/* Distrito */}
-                <div className="space-y-2">
-                  <Label htmlFor="district" className="text-brand-darkBlue">
-                    Distrito
-                  </Label>
-                  {isEditing ? (
-                    <Input
-                      id="district"
-                      value={editedProfile.district}
-                      onChange={(e) => handleInputChange('district', e.target.value)}
-                      className="border-gray-300 focus:border-brand-orange"
-                      placeholder="Distrito"
-                    />
-                  ) : (
-                    <p className="text-gray-700 py-2">{profile.district}</p>
-                  )}
-                </div>
-
-                {/* Address */}
-                <div className="space-y-2">
-                  <Label htmlFor="address" className="text-brand-darkBlue">
-                    Dirección Exacta
-                  </Label>
-                  {isEditing ? (
-                    <Input
-                      id="address"
-                      value={editedProfile.address}
-                      onChange={(e) => handleInputChange('address', e.target.value)}
-                      className="border-gray-300 focus:border-brand-orange"
-                      placeholder="Dirección completa"
-                    />
-                  ) : (
-                    <p className="text-gray-700 py-2">{profile.address}</p>
+                    <p className="text-gray-700 py-2">{user.phone}</p>
                   )}
                 </div>
 
@@ -260,6 +228,14 @@ const Account: React.FC = () => {
                 )}
               </CardContent>
             </Card>
+
+            {/* Address Management Section - Only for clients */}
+            {isClient() && (
+              <div className="mt-8">
+                <Separator className="mb-8" />
+                <AddressList />
+              </div>
+            )}
           </div>
         </div>
       </section>

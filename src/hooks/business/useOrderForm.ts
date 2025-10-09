@@ -156,11 +156,14 @@ export const useOrderForm = () => {
       customerInfo: {
         name: formData.name,
         phone: formData.phone,
+      },
+      delivery_address: deliveryOption === 'delivery' ? {
+        label: 'Dirección de envío',
         province: formData.province,
         canton: formData.canton,
         district: formData.district,
         address: formData.address,
-      },
+      } : undefined,
       deliveryOption,
       paymentMethod,
     });
