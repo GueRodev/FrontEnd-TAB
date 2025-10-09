@@ -207,7 +207,7 @@ export const ProductFormDialog = ({
             </Button>
             <Button
               type="submit"
-              className="bg-[#1E3A8A] hover:bg-[#1E3A8A]/90"
+              className="bg-brand-orange hover:bg-brand-orange/90"
             >
               {mode === 'add' ? 'Agregar Producto' : 'Guardar Cambios'}
             </Button>
