@@ -9,6 +9,7 @@
 export { useProductOperations } from './useProductOperations';
 export { useCartOperations } from './useCartOperations';
 export { useOrderForm } from './useOrderForm';
+export { useAddressSelection } from './useAddressSelection';
 export { useWishlistOperations } from './useWishlistOperations';
 export { useProductFilters } from './useProductFilters';
 export { useCategoriesAdmin } from './useCategoriesAdmin';

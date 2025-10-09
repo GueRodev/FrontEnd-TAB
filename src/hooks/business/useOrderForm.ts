@@ -8,24 +8,20 @@ import { useOrders } from '@/contexts/OrdersContext';
 import { useNotifications } from '@/contexts/NotificationsContext';
 import { useCartOperations } from './useCartOperations';
 import { toast } from '@/hooks/use-toast';
-import type { DeliveryOption } from '@/types/order.types';
+import { orderFormSchema } from '@/lib/validations/order.validation';
+import { formatCurrency } from '@/lib/formatters';
+import { APP_CONFIG } from '@/data/constants';
+import type { DeliveryOption, DeliveryAddress } from '@/types/order.types';
+import { z } from 'zod';
 
 interface OrderFormData {
   name: string;
   phone: string;
-  province: string;
-  canton: string;
-  district: string;
-  address: string;
 }
 
 const INITIAL_FORM_STATE: OrderFormData = {
   name: '',
   phone: '',
-  province: '',
-  canton: '',
-  district: '',
-  address: '',
 };
 
 export const useOrderForm = () => {
@@ -57,56 +53,51 @@ export const useOrderForm = () => {
   };
 
   /**
-   * Validate required fields
+   * Validate order form
    */
-  const validateForm = (): boolean => {
-    // Basic validation
-    if (!formData.name || !formData.phone) {
-      toast({
-        title: 'Campos incompletos',
-        description: 'Por favor completa nombre y teléfono',
-        variant: 'destructive',
+  const validateForm = (addressData?: DeliveryAddress): boolean => {
+    try {
+      orderFormSchema.parse({
+        customerName: formData.name,
+        customerPhone: formData.phone,
+        deliveryType: deliveryOption,
+        paymentMethod: paymentMethod,
+        savedAddressId: undefined,
+        manualAddress: deliveryOption === 'delivery' && addressData ? {
+          province: addressData.province,
+          canton: addressData.canton,
+          district: addressData.district,
+          address: addressData.address,
+        } : undefined,
       });
-      return false;
-    }
-
-    // Delivery validation
-    if (deliveryOption === 'delivery') {
-      if (!formData.province || !formData.canton || !formData.district || !formData.address) {
+      return true;
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        const firstError = error.errors[0];
         toast({
-          title: 'Campos incompletos',
-          description: 'Por favor completa todos los campos de dirección',
+          title: 'Error de validación',
+          description: firstError.message,
           variant: 'destructive',
         });
-        return false;
       }
-    }
-
-    // Payment method validation
-    if (!paymentMethod) {
-      toast({
-        title: 'Método de pago no seleccionado',
-        description: 'Por favor selecciona un método de pago',
-        variant: 'destructive',
-      });
       return false;
     }
-
-    return true;
   };
 
   /**
    * Build WhatsApp message
    */
-  const buildWhatsAppMessage = (): string => {
+  const buildWhatsAppMessage = (addressData?: DeliveryAddress): string => {
     let message = `*NUEVO PEDIDO*\n\n`;
     message += `*Productos:*\n`;
     
     items.forEach(item => {
-      message += `• ${item.name} x${item.quantity} - ₡${(item.price * item.quantity).toFixed(2)}\n`;
+      const itemTotal = formatCurrency(item.price * item.quantity);
+      message += `• ${item.name} x${item.quantity} - ${itemTotal}\n`;
     });
     
-    message += `\n*Total: ₡${totalPrice.toFixed(2)}*\n\n`;
+    const total = formatCurrency(totalPrice);
+    message += `\n*Total: ${total}*\n\n`;
     message += `*Datos del cliente:*\n`;
     message += `Nombre: ${formData.name}\n`;
     message += `Teléfono: ${formData.phone}\n\n`;
@@ -114,17 +105,17 @@ export const useOrderForm = () => {
     
     if (deliveryOption === 'pickup') {
       message += `Retiro en Tienda\n\n`;
-    } else {
+    } else if (addressData) {
       message += `Envío a Domicilio\n`;
-      message += `Provincia: ${formData.province}\n`;
-      message += `Cantón: ${formData.canton}\n`;
-      message += `Distrito: ${formData.district}\n`;
-      message += `Dirección: ${formData.address}\n\n`;
+      message += `Provincia: ${addressData.province}\n`;
+      message += `Cantón: ${addressData.canton}\n`;
+      message += `Distrito: ${addressData.district}\n`;
+      message += `Dirección: ${addressData.address}\n\n`;
     }
     
     message += `*Método de pago:* ${paymentMethod}\n`;
     
-    if (paymentMethod === 'SINPE Móvil' || paymentMethod === 'Transferencia bancaria') {
+    if (paymentMethod === 'sinpe' || paymentMethod === 'transfer') {
       message += `\n_*Nota:* Recuerde enviar el comprobante de pago por este medio_`;
     }
 
@@ -134,9 +125,9 @@ export const useOrderForm = () => {
   /**
    * Submit order
    */
-  const submitOrder = (): boolean => {
+  const submitOrder = (addressData?: DeliveryAddress): boolean => {
     // Validate form
-    if (!validateForm()) {
+    if (!validateForm(addressData)) {
       return false;
     }
 
@@ -156,31 +147,25 @@ export const useOrderForm = () => {
         name: formData.name,
         phone: formData.phone,
       },
-      delivery_address: deliveryOption === 'delivery' ? {
-        label: 'Dirección de envío',
-        province: formData.province,
-        canton: formData.canton,
-        district: formData.district,
-        address: formData.address,
-      } : undefined,
+      delivery_address: deliveryOption === 'delivery' && addressData ? addressData : undefined,
       deliveryOption,
       paymentMethod,
     });
 
     // Add notification
+    const total = formatCurrency(totalPrice);
     addNotification({
       type: 'order',
       title: 'Nuevo pedido recibido',
-      message: `Pedido ${orderId} de ${formData.name} - Total: ₡${totalPrice.toFixed(2)}`,
+      message: `Pedido ${orderId} de ${formData.name} - Total: ${total}`,
       time: 'Ahora',
       orderId: orderId,
     });
 
     // Build WhatsApp message
-    const message = buildWhatsAppMessage();
+    const message = buildWhatsAppMessage(addressData);
     const encodedMessage = encodeURIComponent(message);
-    // 🔧 WhatsApp configuration from environment variables
-    const whatsappNumber = import.meta.env.VITE_WHATSAPP_NUMBER || '50688888888';
+    const whatsappNumber = `${APP_CONFIG.whatsapp.countryCode}${APP_CONFIG.whatsapp.phoneNumber}`;
     const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodedMessage}`;
 
     // Open WhatsApp

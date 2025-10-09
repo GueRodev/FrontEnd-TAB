@@ -1,20 +1,15 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
-import { useCartOperations, useOrderForm } from '@/hooks/business';
+import { useCartOperations, useOrderForm, useAddressSelection } from '@/hooks/business';
 import { useAuth } from '@/contexts/AuthContext';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
-import { CartItem, EmptyCart, CartSummary, AddressSelector, PaymentMethodSelector } from '@/components/features';
-import { DELIVERY_OPTIONS } from '@/data/constants';
+import { CartItemsList, EmptyCart, CartSummary, OrderForm } from '@/components/features/cart';
+import { AddressSelector } from '@/components/features/orders';
 
 /**
  * Cart Page
- * Uses business logic hooks for cart operations and order submission
- * @next-migration: Can be Server Component with Client islands for interactive parts
+ * Checkout page with cart items and order form
  */
 const Cart = () => {
   const { user, isAuthenticated } = useAuth();
@@ -37,27 +32,19 @@ const Cart = () => {
     submitOrder,
   } = useOrderForm();
 
-  // 🔗 Address state management
-  const [selectedAddressId, setSelectedAddressId] = useState<string>('');
-  const [manualAddress, setManualAddress] = useState({
-    province: '',
-    canton: '',
-    district: '',
-    address: '',
-  });
-  
-  const userAddresses = (isAuthenticated && user?.role === 'cliente') 
-    ? (user as any).addresses || [] 
-    : [];
-  
-  const showManualInput = selectedAddressId === 'manual' || userAddresses.length === 0;
-  
-  const handleManualAddressChange = (field: string, value: string) => {
-    setManualAddress(prev => ({ ...prev, [field]: value }));
-  };
+  const {
+    selectedAddressId,
+    manualAddress,
+    userAddresses,
+    showManualInput,
+    handleSelectAddress,
+    handleManualAddressChange,
+    getSelectedAddress,
+  } = useAddressSelection(user, isAuthenticated);
 
-  const handleFinalizarCompra = () => {
-    submitOrder();
+  const handleSubmit = () => {
+    const addressData = deliveryOption === 'delivery' ? getSelectedAddress() : undefined;
+    submitOrder(addressData);
   };
 
   return (
@@ -92,101 +79,36 @@ const Cart = () => {
             <EmptyCart />
           ) : (
             <div className="grid lg:grid-cols-3 gap-8">
-              {/* Lista de productos */}
-              <div className="lg:col-span-2 space-y-4">
-                <h2 className="text-xl font-semibold mb-4">Productos ({items.length})</h2>
-                {items.map(item => (
-                  <div key={item.id} className="bg-white p-4 rounded-lg shadow-sm">
-                    <CartItem
-                      item={item}
-                      onIncrement={incrementQuantity}
-                      onDecrement={decrementQuantity}
-                      onRemove={removeFromCart}
-                    />
-                  </div>
-                ))}
-              </div>
+              <CartItemsList
+                items={items}
+                onIncrement={incrementQuantity}
+                onDecrement={decrementQuantity}
+                onRemove={removeFromCart}
+              />
 
-              {/* Formulario de pedido */}
               <div className="space-y-6">
                 <CartSummary totalItems={items.length} totalPrice={totalPrice} />
 
-                <div className="bg-white p-6 rounded-lg shadow-sm">
-                  <h2 className="text-xl font-semibold mb-4">Formulario de Pedido</h2>
-                  
-                  <div className="space-y-4">
-                    <div>
-                      <Label htmlFor="name">Nombre *</Label>
-                      <Input
-                        id="name"
-                        name="name"
-                        value={formData.name}
-                        onChange={handleInputChange}
-                        placeholder="Tu nombre completo"
-                        required
-                      />
-                    </div>
-
-                    <div>
-                      <Label htmlFor="phone">Teléfono *</Label>
-                      <Input
-                        id="phone"
-                        name="phone"
-                        value={formData.phone}
-                        onChange={handleInputChange}
-                        placeholder="Tu número de teléfono"
-                        required
-                      />
-                    </div>
-
-                    <div>
-                      <Label className="mb-3 block font-semibold">Tipo de entrega *</Label>
-                      <RadioGroup value={deliveryOption} onValueChange={(value) => setDeliveryOption(value as 'pickup' | 'delivery')}>
-                        {DELIVERY_OPTIONS.map((option) => (
-                          <div key={option.value} className="flex items-center space-x-2 mb-3">
-                            <RadioGroupItem value={option.value} id={option.value} />
-                            <Label htmlFor={option.value} className="cursor-pointer">
-                              {option.label}
-                            </Label>
-                          </div>
-                        ))}
-                      </RadioGroup>
-                    </div>
-
-                    {deliveryOption === 'delivery' && (
-                      <div className="space-y-4 pt-2 border-t">
-                        <h3 className="font-semibold text-sm text-gray-700">Datos de envío</h3>
-                        
-                        <AddressSelector
-                          savedAddresses={userAddresses}
-                          selectedAddressId={selectedAddressId}
-                          onSelectAddress={setSelectedAddressId}
-                          manualAddress={manualAddress}
-                          onManualAddressChange={handleManualAddressChange}
-                          showManualInput={showManualInput}
-                        />
-                      </div>
-                    )}
-
-                    <PaymentMethodSelector
-                      value={paymentMethod}
-                      onChange={setPaymentMethod}
+                <OrderForm
+                  formData={formData}
+                  deliveryOption={deliveryOption}
+                  paymentMethod={paymentMethod}
+                  onInputChange={handleInputChange}
+                  onDeliveryOptionChange={setDeliveryOption}
+                  onPaymentMethodChange={setPaymentMethod}
+                  onSubmit={handleSubmit}
+                >
+                  {deliveryOption === 'delivery' && (
+                    <AddressSelector
+                      savedAddresses={userAddresses}
+                      selectedAddressId={selectedAddressId}
+                      onSelectAddress={handleSelectAddress}
+                      manualAddress={manualAddress}
+                      onManualAddressChange={handleManualAddressChange}
+                      showManualInput={showManualInput}
                     />
-
-                    {(paymentMethod === 'sinpe' || paymentMethod === 'transfer') && (
-                      <p className="text-xs text-muted-foreground">
-                        * Debe enviar el comprobante por WhatsApp
-                      </p>
-                    )}
-
-                    <Button 
-                      onClick={handleFinalizarCompra}
-                      className="w-full bg-brand-darkBlue hover:bg-brand-orange text-white"
-                    >
-                      Finalizar Compra
-                    </Button>
-                  </div>
-                </div>
+                  )}
+                </OrderForm>
               </div>
             </div>
           )}
