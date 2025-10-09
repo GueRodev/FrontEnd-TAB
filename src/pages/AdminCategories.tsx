@@ -298,7 +298,18 @@ const SortableCard: React.FC<SortableRowProps> = ({
 };
 
 const AdminCategorias: React.FC = () => {
-  const { categories, setCategories, updateCategoryOrder } = useCategories();
+  const { 
+    categories, 
+    loading,
+    setCategories, 
+    addCategory,
+    updateCategory,
+    deleteCategory,
+    addSubcategory,
+    updateSubcategory,
+    deleteSubcategory,
+    reorderCategories,
+  } = useCategories();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalType, setModalType] = useState<'category' | 'subcategory'>('category');
   const [selectedCategoryId, setSelectedCategoryId] = useState<string>('');
@@ -361,14 +372,22 @@ const AdminCategorias: React.FC = () => {
     }
   };
 
-  const handleSaveChanges = () => {
-    updateCategoryOrder(pendingCategories);
-    setHasUnsavedChanges(false);
-    
-    toast({
-      title: "Cambios guardados",
-      description: "El orden de las categorías se ha actualizado en el sitio web",
-    });
+  const handleSaveChanges = async () => {
+    try {
+      await reorderCategories(pendingCategories);
+      setHasUnsavedChanges(false);
+      
+      toast({
+        title: "Cambios guardados",
+        description: "El orden de las categorías se ha actualizado correctamente",
+      });
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "No se pudo guardar el orden de las categorías",
+        variant: "destructive",
+      });
+    }
   };
 
   const handleCancelChanges = () => {
@@ -406,7 +425,7 @@ const AdminCategorias: React.FC = () => {
   };
 
   // Función para agregar categoría o subcategoría
-  const handleAddItem = (e: React.FormEvent) => {
+  const handleAddItem = async (e: React.FormEvent) => {
     e.preventDefault();
 
     try {
@@ -414,18 +433,7 @@ const AdminCategorias: React.FC = () => {
         // Validar datos de categoría
         const validatedData = categorySchema.parse(addFormData);
         
-        const newCategory: Category = {
-          id: `cat-${Date.now()}`,
-          name: validatedData.name,
-          order: categories.length + 1,
-          slug: generateSlug(validatedData.name),
-          subcategories: [],
-          isExpanded: false,
-        };
-
-        const updatedCategories = [...categories, newCategory];
-        setCategories(updatedCategories);
-        setPendingCategories(updatedCategories);
+        await addCategory({ name: validatedData.name });
 
         toast({
           title: "Categoría creada",
@@ -438,36 +446,7 @@ const AdminCategorias: React.FC = () => {
           categoryId: selectedCategoryId,
         });
 
-        const parentCategory = categories.find(cat => cat.id === selectedCategoryId);
-        
-        if (!parentCategory) {
-          toast({
-            title: "Error",
-            description: "No se encontró la categoría padre",
-            variant: "destructive",
-          });
-          return;
-        }
-
-        const newSubcategory: Subcategory = {
-          id: `sub-${Date.now()}`,
-          name: validatedData.name,
-          order: parentCategory.subcategories.length + 1,
-          slug: generateSlug(validatedData.name, parentCategory.slug),
-        };
-
-        const updatedCategories = categories.map(cat => {
-          if (cat.id === selectedCategoryId) {
-            return {
-              ...cat,
-              subcategories: [...cat.subcategories, newSubcategory],
-            };
-          }
-          return cat;
-        });
-
-        setCategories(updatedCategories);
-        setPendingCategories(updatedCategories);
+        await addSubcategory(selectedCategoryId, { name: validatedData.name });
 
         toast({
           title: "Subcategoría creada",
@@ -484,6 +463,14 @@ const AdminCategorias: React.FC = () => {
         toast({
           title: "Error de validación",
           description: firstError.message,
+          variant: "destructive",
+        });
+      } else {
+        toast({
+          title: "Error",
+          description: modalType === 'category' 
+            ? "No se pudo crear la categoría" 
+            : "No se pudo crear la subcategoría",
           variant: "destructive",
         });
       }
@@ -506,8 +493,21 @@ const AdminCategorias: React.FC = () => {
     setIsEditCategoryOpen(true);
   };
 
-  const handleDelete = (id: string) => {
-    console.log('Delete category:', id);
+  const handleDelete = async (id: string) => {
+    try {
+      await deleteCategory(id);
+      setPendingCategories(pendingCategories.filter(cat => cat.id !== id));
+      toast({
+        title: "Categoría eliminada",
+        description: "La categoría se ha eliminado exitosamente",
+      });
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "No se pudo eliminar la categoría",
+        variant: "destructive",
+      });
+    }
   };
 
   const handleEditSubcategory = (categoryId: string, subcategory: Subcategory) => {
@@ -543,63 +543,133 @@ const AdminCategorias: React.FC = () => {
   };
 
   // Confirmar eliminación de subcategoría
-  // NOTA: Cuando se conecte a base de datos, aquí se debe:
-  // 1. Verificar si hay productos asociados a esta subcategoría
-  // 2. Si hay productos, mostrar mensaje de error o reasignarlos
-  // 3. Hacer la llamada a la API/Supabase para eliminar de la BD
-  // 4. Actualizar el estado local solo después de confirmar eliminación exitosa
-  const confirmDeleteSubcategory = () => {
+  const confirmDeleteSubcategory = async () => {
     const { categoryId, subcategoryId, subcategoryName } = deleteSubcategoryDialog;
 
-    // TODO: Cuando se conecte a base de datos, agregar aquí:
-    // - Validación de productos asociados
-    // - Llamada a API/Supabase para eliminar
-    // - Manejo de errores de base de datos
+    try {
+      await deleteSubcategory(categoryId, subcategoryId);
+      
+      setPendingCategories(pendingCategories.map(cat => 
+        cat.id === categoryId
+          ? { ...cat, subcategories: cat.subcategories.filter(sub => sub.id !== subcategoryId) }
+          : cat
+      ));
+
+      // Cerrar el diálogo
+      setDeleteSubcategoryDialog({
+        open: false,
+        categoryId: '',
+        subcategoryId: '',
+        subcategoryName: '',
+      });
+
+      toast({
+        title: "Subcategoría eliminada",
+        description: `La subcategoría "${subcategoryName}" se ha eliminado exitosamente`,
+      });
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "No se pudo eliminar la subcategoría",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handleUpdateCategory = async (e: React.FormEvent) => {
+    e.preventDefault();
     
-    // Eliminar la subcategoría del estado local
-    const updatedCategories = categories.map(cat => {
-      if (cat.id === categoryId) {
-        return {
-          ...cat,
-          subcategories: cat.subcategories.filter(sub => sub.id !== subcategoryId),
-        };
+    if (!editingCategory) return;
+
+    try {
+      const validatedData = categorySchema.parse(editFormData);
+      
+      await updateCategory(editingCategory.id, { name: validatedData.name });
+
+      setPendingCategories(pendingCategories.map(cat => 
+        cat.id === editingCategory.id 
+          ? { ...cat, name: validatedData.name }
+          : cat
+      ));
+
+      toast({
+        title: "Categoría actualizada",
+        description: "Los cambios se han guardado exitosamente",
+      });
+
+      setIsEditCategoryOpen(false);
+      setEditingCategory(null);
+      setEditFormData({ name: '' });
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        const firstError = error.errors[0];
+        toast({
+          title: "Error de validación",
+          description: firstError.message,
+          variant: "destructive",
+        });
+      } else {
+        toast({
+          title: "Error",
+          description: "No se pudo actualizar la categoría",
+          variant: "destructive",
+        });
       }
-      return cat;
-    });
-
-    setCategories(updatedCategories);
-    setPendingCategories(updatedCategories);
-
-    // Cerrar el diálogo
-    setDeleteSubcategoryDialog({
-      open: false,
-      categoryId: '',
-      subcategoryId: '',
-      subcategoryName: '',
-    });
-
-    toast({
-      title: "Subcategoría eliminada",
-      description: `La subcategoría "${subcategoryName}" se ha eliminado exitosamente`,
-    });
+    }
   };
 
-  const handleUpdateCategory = (e: React.FormEvent) => {
+  const handleUpdateSubcategory = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Aquí implementarás la lógica para actualizar la categoría
-    console.log('Updating category:', editingCategory?.id, editFormData);
-    setIsEditCategoryOpen(false);
-    setEditingCategory(null);
-    setEditFormData({ name: '' });
-  };
+    
+    if (!editingSubcategory) return;
 
-  const handleUpdateSubcategory = (e: React.FormEvent) => {
-    e.preventDefault();
-    // Aquí implementarás la lógica para actualizar la subcategoría
-    console.log('Updating subcategory:', editingSubcategory?.id, editFormData);
-    setIsEditSubcategoryOpen(false);
-    setEditingSubcategory(null);
-    setEditFormData({ name: '' });
+    try {
+      const validatedData = subcategorySchema.parse({
+        name: editFormData.name,
+        categoryId: selectedCategoryId,
+      });
+
+      const currentCategory = categories.find(cat => 
+        cat.subcategories.some(sub => sub.id === editingSubcategory.id)
+      );
+
+      if (!currentCategory) {
+        throw new Error('Category not found');
+      }
+
+      await updateSubcategory(
+        currentCategory.id, 
+        editingSubcategory.id, 
+        { 
+          name: validatedData.name,
+          newCategoryId: selectedCategoryId !== currentCategory.id ? selectedCategoryId : undefined,
+        }
+      );
+
+      toast({
+        title: "Subcategoría actualizada",
+        description: "Los cambios se han guardado exitosamente",
+      });
+
+      setIsEditSubcategoryOpen(false);
+      setEditingSubcategory(null);
+      setEditFormData({ name: '' });
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        const firstError = error.errors[0];
+        toast({
+          title: "Error de validación",
+          description: firstError.message,
+          variant: "destructive",
+        });
+      } else {
+        toast({
+          title: "Error",
+          description: "No se pudo actualizar la subcategoría",
+          variant: "destructive",
+        });
+      }
+    }
   };
 
   return (
@@ -628,6 +698,7 @@ const AdminCategorias: React.FC = () => {
                 <Button 
                   onClick={() => handleOpenModal('category')}
                   className="w-full sm:w-auto"
+                  disabled={loading}
                 >
                   <Plus className="h-4 w-4 mr-2" />
                   Agregar Categoría
@@ -798,9 +869,9 @@ const AdminCategorias: React.FC = () => {
             <Button 
               onClick={handleAddItem} 
               className="w-full sm:w-auto"
-              disabled={!addFormData.name.trim() || (modalType === 'subcategory' && !selectedCategoryId)}
+              disabled={!addFormData.name.trim() || (modalType === 'subcategory' && !selectedCategoryId) || loading}
             >
-              Guardar
+              {loading ? 'Guardando...' : 'Guardar'}
             </Button>
           </div>
         </DialogContent>

@@ -37,3 +37,30 @@ export interface Category {
 }
 
 export type ProductStatus = 'active' | 'inactive';
+
+// DTO types for API operations
+export interface CreateCategoryDto {
+  name: string;
+  description?: string;
+}
+
+export interface UpdateCategoryDto {
+  name?: string;
+  description?: string;
+  order?: number;
+}
+
+export interface CreateSubcategoryDto {
+  name: string;
+  description?: string;
+}
+
+export interface UpdateSubcategoryDto {
+  name?: string;
+  description?: string;
+  order?: number;
+}
+
+export interface ReorderCategoriesDto {
+  order: string[]; // Array of category IDs in the new order
+}

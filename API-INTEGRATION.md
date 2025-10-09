@@ -708,6 +708,289 @@ Authorization: Bearer {token}
 
 ---
 
+## 📂 Endpoints de Categorías y Subcategorías
+
+### GET /api/categories
+**Descripción:** Listar todas las categorías con sus subcategorías
+
+**Response (200 OK):**
+```json
+{
+  "data": [
+    {
+      "id": "cat-1",
+      "name": "Sets de Construcción",
+      "description": "Descripción opcional",
+      "order": 1,
+      "slug": "sets-de-construccion",
+      "subcategories": [
+        {
+          "id": "sub-1",
+          "name": "Star Wars",
+          "description": "Descripción opcional",
+          "order": 1,
+          "slug": "sets-de-construccion/star-wars"
+        }
+      ]
+    }
+  ],
+  "timestamp": "2024-01-01T12:00:00.000Z"
+}
+```
+
+**Archivo Frontend:** `src/lib/api/services/categories.service.ts` línea 36
+
+---
+
+### GET /api/categories/{id}
+**Descripción:** Obtener una categoría específica con sus subcategorías
+
+**Response (200 OK):**
+```json
+{
+  "data": {
+    "id": "cat-1",
+    "name": "Sets de Construcción",
+    "description": "Descripción opcional",
+    "order": 1,
+    "slug": "sets-de-construccion",
+    "subcategories": [...]
+  },
+  "timestamp": "2024-01-01T12:00:00.000Z"
+}
+```
+
+**Archivo Frontend:** `src/lib/api/services/categories.service.ts` línea 59
+
+---
+
+### POST /api/categories
+**Descripción:** Crear nueva categoría (solo admin)
+
+**Headers:**
+```
+Authorization: Bearer {token}
+```
+
+**Request:**
+```json
+{
+  "name": "Nueva Categoría",
+  "description": "Descripción opcional"
+}
+```
+
+**Response (201 Created):**
+```json
+{
+  "data": {
+    "id": "cat-2",
+    "name": "Nueva Categoría",
+    "description": "Descripción opcional",
+    "order": 2,
+    "slug": "nueva-categoria",
+    "subcategories": []
+  },
+  "message": "Category created successfully",
+  "timestamp": "2024-01-01T12:00:00.000Z"
+}
+```
+
+**Archivo Frontend:** `src/lib/api/services/categories.service.ts` línea 94
+
+---
+
+### PUT /api/categories/{id}
+**Descripción:** Actualizar categoría existente (solo admin)
+
+**Headers:**
+```
+Authorization: Bearer {token}
+```
+
+**Request:**
+```json
+{
+  "name": "Categoría Actualizada",
+  "description": "Nueva descripción",
+  "order": 1
+}
+```
+
+**Response (200 OK):**
+```json
+{
+  "data": {
+    "id": "cat-1",
+    "name": "Categoría Actualizada",
+    "description": "Nueva descripción",
+    "order": 1,
+    "slug": "categoria-actualizada",
+    "subcategories": [...]
+  },
+  "message": "Category updated successfully",
+  "timestamp": "2024-01-01T12:00:00.000Z"
+}
+```
+
+**Archivo Frontend:** `src/lib/api/services/categories.service.ts` línea 141
+
+---
+
+### DELETE /api/categories/{id}
+**Descripción:** Eliminar categoría (solo admin)
+
+**Headers:**
+```
+Authorization: Bearer {token}
+```
+
+**Response (200 OK):**
+```json
+{
+  "message": "Category deleted successfully",
+  "timestamp": "2024-01-01T12:00:00.000Z"
+}
+```
+
+**Archivo Frontend:** `src/lib/api/services/categories.service.ts` línea 199
+
+---
+
+### POST /api/categories/reorder
+**Descripción:** Reordenar categorías mediante drag & drop (solo admin)
+
+**Headers:**
+```
+Authorization: Bearer {token}
+```
+
+**Request:**
+```json
+{
+  "order": ["cat-3", "cat-1", "cat-2"]
+}
+```
+
+**Response (200 OK):**
+```json
+{
+  "data": [
+    {
+      "id": "cat-3",
+      "name": "Categoría 3",
+      "order": 1,
+      ...
+    },
+    {
+      "id": "cat-1",
+      "name": "Categoría 1",
+      "order": 2,
+      ...
+    }
+  ],
+  "message": "Categories reordered successfully",
+  "timestamp": "2024-01-01T12:00:00.000Z"
+}
+```
+
+**Archivo Frontend:** `src/lib/api/services/categories.service.ts` línea 225
+
+---
+
+### POST /api/subcategories
+**Descripción:** Crear nueva subcategoría (solo admin)
+
+**Headers:**
+```
+Authorization: Bearer {token}
+```
+
+**Request:**
+```json
+{
+  "name": "Nueva Subcategoría",
+  "description": "Descripción opcional",
+  "category_id": "cat-1"
+}
+```
+
+**Response (201 Created):**
+```json
+{
+  "data": {
+    "id": "sub-2",
+    "name": "Nueva Subcategoría",
+    "description": "Descripción opcional",
+    "order": 2,
+    "slug": "categoria-padre/nueva-subcategoria"
+  },
+  "message": "Subcategory created successfully",
+  "timestamp": "2024-01-01T12:00:00.000Z"
+}
+```
+
+**Archivo Frontend:** `src/lib/api/services/categories.service.ts` línea 266
+
+---
+
+### PUT /api/subcategories/{id}
+**Descripción:** Actualizar subcategoría existente (solo admin)
+
+**Headers:**
+```
+Authorization: Bearer {token}
+```
+
+**Request:**
+```json
+{
+  "name": "Subcategoría Actualizada",
+  "description": "Nueva descripción",
+  "category_id": "cat-2",
+  "order": 1
+}
+```
+
+**Response (200 OK):**
+```json
+{
+  "data": {
+    "id": "sub-1",
+    "name": "Subcategoría Actualizada",
+    "description": "Nueva descripción",
+    "order": 1,
+    "slug": "nueva-categoria/subcategoria-actualizada"
+  },
+  "message": "Subcategory updated successfully",
+  "timestamp": "2024-01-01T12:00:00.000Z"
+}
+```
+
+**Archivo Frontend:** `src/lib/api/services/categories.service.ts` línea 320
+
+---
+
+### DELETE /api/subcategories/{id}
+**Descripción:** Eliminar subcategoría (solo admin)
+
+**Headers:**
+```
+Authorization: Bearer {token}
+```
+
+**Response (200 OK):**
+```json
+{
+  "message": "Subcategory deleted successfully",
+  "timestamp": "2024-01-01T12:00:00.000Z"
+}
+```
+
+**Archivo Frontend:** `src/lib/api/services/categories.service.ts` línea 406
+
+---
+
 ## ⚠️ Manejo de Errores
 
 ### Códigos de Estado HTTP
@@ -778,8 +1061,9 @@ Ver archivos:
 - `src/lib/api/services/products.service.ts`
 - `src/lib/api/services/orders.service.ts`
 - `src/lib/api/services/addresses.service.ts`
+- `src/lib/api/services/categories.service.ts`
 
-Buscar líneas marcadas con `// TODO: Uncomment when Laravel is ready` y descomentar.
+Buscar líneas marcadas con `// TODO: Descomentar cuando Laravel esté listo` y descomentar.
 
 ### 4. Eliminar mocks de localStorage
 Eliminar todas las líneas que usan `localStorage` y `localStorageAdapter` en los servicios.
@@ -809,15 +1093,19 @@ Eliminar todas las líneas que usan `localStorage` y `localStorageAdapter` en lo
 - [ ] Implementar endpoints de productos en Laravel
 - [ ] Implementar endpoints de pedidos en Laravel
 - [ ] Implementar endpoints de direcciones en Laravel
+- [ ] Implementar endpoints de categorías en Laravel
 - [ ] Descomentar llamadas API en `auth.service.ts`
 - [ ] Descomentar llamadas API en `products.service.ts`
 - [ ] Descomentar llamadas API en `orders.service.ts`
 - [ ] Descomentar llamadas API en `addresses.service.ts`
+- [ ] Descomentar llamadas API en `categories.service.ts`
 - [ ] Eliminar mocks de `localStorage`
 - [ ] Probar login/logout
 - [ ] Probar CRUD de productos
 - [ ] Probar creación de pedidos
 - [ ] Probar CRUD de direcciones
+- [ ] Probar CRUD de categorías y subcategorías
+- [ ] Probar drag & drop para reordenar categorías
 - [ ] Verificar manejo de errores (401, 403, 422, 500)
 
 ---
