@@ -560,6 +560,26 @@ fetch('http://localhost:8000/api/products')
 
 ### Backend Laravel - Implementación
 
+#### 0. Instalación y Configuración de Sanctum (Laravel 12)
+
+**IMPORTANTE: Laravel 12 ya no usa `app/Http/Kernel.php`**
+
+```bash
+# Instalar API scaffolding con Sanctum (Laravel 12)
+php artisan install:api
+
+# Esto automáticamente:
+# ✅ Instala Laravel Sanctum (si no está instalado)
+# ✅ Publica la configuración (config/sanctum.php)
+# ✅ Crea la migración de personal_access_tokens
+# ✅ Configura las rutas API en routes/api.php
+```
+
+**Ejecutar migraciones:**
+```bash
+php artisan migrate
+```
+
 #### 1. Migración de Roles
 ```php
 // database/migrations/xxxx_create_roles_tables.php
@@ -652,23 +672,115 @@ class User extends Authenticatable
 ```
 
 #### 4. Middleware de Admin
+
+**Crear middleware:**
 ```php
 // app/Http/Middleware/EnsureUserIsAdmin.php
-public function handle(Request $request, Closure $next)
+namespace App\Http\Middleware;
+
+use Closure;
+use Illuminate\Http\Request;
+
+class EnsureUserIsAdmin
 {
-    if (!$request->user() || !$request->user()->isAdmin()) {
-        return response()->json([
-            'message' => 'No tienes permisos de administrador'
-        ], 403);
+    public function handle(Request $request, Closure $next)
+    {
+        if (!$request->user() || !$request->user()->isAdmin()) {
+            return response()->json([
+                'message' => 'No tienes permisos de administrador'
+            ], 403);
+        }
+
+        return $next($request);
     }
-
-    return $next($request);
 }
+```
 
-// Registrar en app/Http/Kernel.php
-protected $middlewareAliases = [
-    'admin' => \App\Http\Middleware\EnsureUserIsAdmin::class,
+**Registrar en `bootstrap/app.php` (Laravel 12):**
+```php
+// bootstrap/app.php
+use Illuminate\Foundation\Application;
+use Illuminate\Foundation\Configuration\Exceptions;
+use Illuminate\Foundation\Configuration\Middleware;
+use App\Http\Middleware\EnsureUserIsAdmin;
+
+return Application::configure(basePath: dirname(__DIR__))
+    ->withRouting(
+        web: __DIR__.'/../routes/web.php',
+        api: __DIR__.'/../routes/api.php',
+        commands: __DIR__.'/../routes/console.php',
+        health: '/up',
+    )
+    ->withMiddleware(function (Middleware $middleware) {
+        // Registrar alias de middleware personalizado
+        $middleware->alias([
+            'admin' => EnsureUserIsAdmin::class,
+        ]);
+        
+        // Configurar stateful API para SPA en mismo dominio
+        $middleware->statefulApi();
+    })
+    ->withExceptions(function (Exceptions $exceptions) {
+        //
+    })->create();
+```
+
+**Configurar variables de entorno (.env):**
+```env
+# Sanctum Configuration
+SANCTUM_STATEFUL_DOMAINS=localhost:5173,127.0.0.1:5173
+SESSION_DOMAIN=localhost
+
+# CORS Configuration  
+FRONTEND_URL=http://localhost:5173
+
+# Session Configuration
+SESSION_DRIVER=cookie
+SESSION_LIFETIME=120
+```
+
+**Configurar CORS (`config/cors.php`):**
+```php
+<?php
+
+return [
+    'paths' => ['api/*', 'sanctum/csrf-cookie'],
+    'allowed_methods' => ['*'],
+    'allowed_origins' => [env('FRONTEND_URL', 'http://localhost:5173')],
+    'allowed_origins_patterns' => [],
+    'allowed_headers' => ['*'],
+    'exposed_headers' => [],
+    'max_age' => 0,
+    'supports_credentials' => true,
 ];
+```
+
+**Verificación Post-Instalación:**
+```bash
+# Verificar que las migraciones se ejecutaron
+php artisan migrate:status
+# Debe mostrar: ✅ xxxx_create_personal_access_tokens_table
+
+# Limpiar y cachear configuración
+php artisan config:clear
+php artisan config:cache
+
+# Verificar rutas API
+php artisan route:list --path=api
+
+# Verificar middleware registrado
+php artisan route:list --path=admin
+```
+
+**Tabla Comparativa: Laravel 10 vs Laravel 12**
+
+| Aspecto | Laravel 10 | Laravel 12 |
+|---------|-----------|-----------|
+| **Instalación Sanctum** | `composer require laravel/sanctum`<br>`php artisan vendor:publish` | `php artisan install:api` |
+| **Middleware** | `app/Http/Kernel.php` | `bootstrap/app.php` |
+| **Alias Middleware** | `$middlewareAliases` array | `$middleware->alias([])` |
+| **Stateful API** | Configuración manual | `$middleware->statefulApi()` |
+| **Configuración** | Manual en múltiples archivos | Centralizada en `bootstrap/app.php` |
 ```
 
 #### 5. Rutas de Autenticación
