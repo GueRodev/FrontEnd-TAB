@@ -40,7 +40,7 @@ export const AdminsList: React.FC<AdminsListProps> = ({
     <section>
       <div className="mb-6">
         <div className="flex items-center gap-2 mb-2">
-          <Shield className="h-6 w-6 text-primary" />
+          <Shield className="h-6 w-6 text-brand-orange" />
           <h1 className="text-2xl sm:text-3xl font-bold">Administradores</h1>
         </div>
         <p className="text-muted-foreground">Gestiona los usuarios administradores del sistema</p>
@@ -61,7 +61,7 @@ export const AdminsList: React.FC<AdminsListProps> = ({
             </div>
             <Button 
               onClick={onAdd}
-              className="w-full sm:w-auto"
+              className="w-full sm:w-auto bg-brand-orange hover:bg-brand-orange/90 text-white"
             >
               <Plus className="h-4 w-4 mr-2" />
               Nuevo Admin

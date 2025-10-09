@@ -76,7 +76,7 @@ export const ClientCard: React.FC<ClientCardProps> = ({
         variant="outline"
         size="sm"
         onClick={() => onExpand(client.id)}
-        className="w-full"
+        className="w-full text-brand-orange border-brand-orange hover:bg-brand-orange/10"
       >
         <MapPin className="h-4 w-4 mr-1" />
         {isExpanded ? 'Ocultar' : 'Ver'} Dirección

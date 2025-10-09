@@ -56,6 +56,7 @@ export const AdminsTable: React.FC<AdminsTableProps> = ({
                   variant="ghost"
                   size="sm"
                   onClick={() => onEdit(admin)}
+                  className="text-brand-orange hover:text-brand-orange hover:bg-brand-orange/10"
                 >
                   <Pencil className="h-4 w-4" />
                 </Button>
@@ -63,7 +64,7 @@ export const AdminsTable: React.FC<AdminsTableProps> = ({
                   variant="ghost"
                   size="sm"
                   onClick={() => onDelete(admin.id)}
-                  className="text-destructive hover:text-destructive"
+                  className="text-brand-orange hover:text-brand-orange hover:bg-brand-orange/10"
                 >
                   <Trash2 className="h-4 w-4" />
                 </Button>

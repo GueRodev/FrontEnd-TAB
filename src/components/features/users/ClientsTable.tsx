@@ -75,6 +75,7 @@ export const ClientsTable: React.FC<ClientsTableProps> = ({
                   variant="ghost"
                   size="sm"
                   onClick={() => onExpand(client.id)}
+                  className="text-brand-orange hover:text-brand-orange hover:bg-brand-orange/10"
                 >
                   <MapPin className="h-4 w-4 mr-1" />
                   {expandedClient === client.id ? 'Ocultar' : 'Ver'} Dirección

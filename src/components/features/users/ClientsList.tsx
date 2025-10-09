@@ -48,7 +48,7 @@ export const ClientsList: React.FC<ClientsListProps> = ({
     <section>
       <div className="mb-6">
         <div className="flex items-center gap-2 mb-2">
-          <User className="h-6 w-6 text-primary" />
+          <User className="h-6 w-6 text-brand-orange" />
           <h1 className="text-2xl sm:text-3xl font-bold">Clientes</h1>
         </div>
         <p className="text-muted-foreground">Gestiona los usuarios clientes de tu tienda</p>

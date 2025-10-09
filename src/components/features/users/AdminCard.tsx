@@ -58,16 +58,16 @@ export const AdminCard: React.FC<AdminCardProps> = ({
           variant="outline"
           size="sm"
           onClick={() => onEdit(admin)}
-          className="flex-1"
+          className="flex-1 text-brand-orange border-brand-orange hover:bg-brand-orange/10"
         >
           <Pencil className="h-4 w-4 mr-1" />
           Editar
         </Button>
         <Button
-          variant="destructive"
+          variant="outline"
           size="sm"
           onClick={() => onDelete(admin.id)}
-          className="flex-1"
+          className="flex-1 text-brand-orange border-brand-orange hover:bg-brand-orange/10"
         >
           <Trash2 className="h-4 w-4 mr-1" />
           Eliminar
