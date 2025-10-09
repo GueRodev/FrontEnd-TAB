@@ -147,16 +147,14 @@ const AdminOrders = () => {
                       </CardContent>
                     </Card>
                   ) : (
-                    <div className="grid gap-3 md:gap-4 2xl:grid-cols-2">
-                      <OrdersList
-                        orders={inStoreOrders}
-                        showDeliveryInfo={false}
-                        onArchive={handleArchiveOrder}
-                        onDelete={handleDeleteOrder}
-                        onComplete={handleCompleteOrder}
-                        onCancel={handleCancelOrder}
-                      />
-                    </div>
+                    <OrdersList
+                      orders={inStoreOrders}
+                      showDeliveryInfo={false}
+                      onArchive={handleArchiveOrder}
+                      onDelete={handleDeleteOrder}
+                      onComplete={handleCompleteOrder}
+                      onCancel={handleCancelOrder}
+                    />
                   )}
                 </div>
               </div>
