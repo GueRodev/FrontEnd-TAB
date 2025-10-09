@@ -89,6 +89,7 @@ export const OrderForm: React.FC<OrderFormProps> = ({
         <PaymentMethodSelector
           value={paymentMethod}
           onChange={onPaymentMethodChange}
+          deliveryOption={deliveryOption}
         />
 
         {(paymentMethod === 'sinpe' || paymentMethod === 'transfer') && (

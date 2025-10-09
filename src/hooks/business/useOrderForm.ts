@@ -3,7 +3,7 @@
  * Business logic for order form validation and submission
  */
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useOrders } from '@/contexts/OrdersContext';
 import { useNotifications } from '@/contexts/NotificationsContext';
 import { useCartOperations } from './useCartOperations';
@@ -32,6 +32,16 @@ export const useOrderForm = () => {
   const [formData, setFormData] = useState<OrderFormData>(INITIAL_FORM_STATE);
   const [deliveryOption, setDeliveryOption] = useState<DeliveryOption>('pickup');
   const [paymentMethod, setPaymentMethod] = useState<string>('');
+
+  /**
+   * Auto-reset payment method if delivery option changes to 'delivery' 
+   * and current method is cash or card (not allowed for delivery)
+   */
+  useEffect(() => {
+    if (deliveryOption === 'delivery' && (paymentMethod === 'cash' || paymentMethod === 'card')) {
+      setPaymentMethod('transfer'); // Default to transfer for delivery
+    }
+  }, [deliveryOption, paymentMethod]);
 
   /**
    * Handle form input changes

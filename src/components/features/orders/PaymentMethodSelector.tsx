@@ -8,10 +8,12 @@ import { Label } from '@/components/ui/label';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { CreditCard, Banknote, Building2, Smartphone } from 'lucide-react';
 import { PAYMENT_METHODS } from '@/data/constants';
+import type { DeliveryOption } from '@/types/order.types';
 
 interface PaymentMethodSelectorProps {
   value: string;
   onChange: (value: string) => void;
+  deliveryOption?: DeliveryOption;
 }
 
 const paymentIcons: Record<string, React.ReactNode> = {
@@ -24,12 +26,28 @@ const paymentIcons: Record<string, React.ReactNode> = {
 export const PaymentMethodSelector: React.FC<PaymentMethodSelectorProps> = ({
   value,
   onChange,
+  deliveryOption,
 }) => {
+  /**
+   * Filter payment methods based on delivery option
+   * Delivery only allows transfer and sinpe
+   */
+  const getFilteredPaymentMethods = () => {
+    if (deliveryOption === 'delivery') {
+      return PAYMENT_METHODS.filter(method => 
+        method.value === 'transfer' || method.value === 'sinpe'
+      );
+    }
+    return PAYMENT_METHODS;
+  };
+
+  const filteredMethods = getFilteredPaymentMethods();
+
   return (
     <div className="space-y-3">
       <Label>Método de Pago</Label>
       <RadioGroup value={value} onValueChange={onChange}>
-        {PAYMENT_METHODS.map((method) => (
+        {filteredMethods.map((method) => (
           <div
             key={method.value}
             className="flex items-center space-x-3 border rounded-lg p-4 hover:bg-accent transition-colors"
