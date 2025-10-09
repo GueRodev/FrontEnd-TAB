@@ -1,6 +1,7 @@
 # 🔗 Guía de Integración con Laravel API
 
 ## 📋 Índice
+
 1. [Configuración Inicial](#configuración-inicial)
 2. [Endpoints de Autenticación](#endpoints-de-autenticación)
 3. [Endpoints de Productos](#endpoints-de-productos)
@@ -14,6 +15,7 @@
 ## 🚀 Configuración Inicial
 
 ### 1. Variables de Entorno
+
 Crear archivo `.env` en la raíz del proyecto:
 
 ```env
@@ -22,6 +24,7 @@ VITE_WHATSAPP_NUMBER=50688888888
 ```
 
 ### 2. CORS en Laravel
+
 Configurar `config/cors.php`:
 
 ```php
@@ -109,13 +112,13 @@ Antes de conectar con el backend Laravel, verificar obligatoriamente:
 
 ### 🚨 Ataques Comunes a Prevenir
 
-| Ataque | Descripción | Prevención |
-|--------|-------------|------------|
-| **Escalada de Privilegios** | Usuario modifica su rol a 'admin' | Tabla `user_roles` separada con RLS |
-| **JWT Manipulation** | Modificar claims del token | Verificar rol contra DB, no confiar en JWT |
-| **IDOR** | Acceder a recursos de otros usuarios | Validar `user_id` en cada query |
-| **Session Hijacking** | Robar token de autenticación | HTTPS, tokens con expiración corta |
-| **CSRF** | Ejecutar acciones sin consentimiento | CSRF tokens, SameSite cookies |
+| Ataque                      | Descripción                          | Prevención                                 |
+| --------------------------- | ------------------------------------ | ------------------------------------------ |
+| **Escalada de Privilegios** | Usuario modifica su rol a 'admin'    | Tabla `user_roles` separada con RLS        |
+| **JWT Manipulation**        | Modificar claims del token           | Verificar rol contra DB, no confiar en JWT |
+| **IDOR**                    | Acceder a recursos de otros usuarios | Validar `user_id` en cada query            |
+| **Session Hijacking**       | Robar token de autenticación         | HTTPS, tokens con expiración corta         |
+| **CSRF**                    | Ejecutar acciones sin consentimiento | CSRF tokens, SameSite cookies              |
 
 ---
 
@@ -152,7 +155,7 @@ curl -X POST http://localhost:8000/api/users/{userId}/assign-role \
 
 - **Documentación completa**: [SECURITY.md](SECURITY.md)
 - **PostgreSQL RLS**: https://www.postgresql.org/docs/current/ddl-rowsecurity.html
-- **Laravel Authorization**: https://laravel.com/docs/11.x/authorization
+- **Laravel Authorization**: https://laravel.com/docs/12.x/authorization
 - **OWASP Top 10**: https://owasp.org/www-project-top-ten/
 
 ---
@@ -160,9 +163,11 @@ curl -X POST http://localhost:8000/api/users/{userId}/assign-role \
 ## 🔐 Endpoints de Autenticación
 
 ### POST /api/auth/login
+
 **Descripción:** Iniciar sesión de usuario
 
 **Request:**
+
 ```json
 {
   "email": "user@example.com",
@@ -171,6 +176,7 @@ curl -X POST http://localhost:8000/api/users/{userId}/assign-role \
 ```
 
 **Response (200 OK):**
+
 ```json
 {
   "data": {
@@ -196,9 +202,11 @@ curl -X POST http://localhost:8000/api/users/{userId}/assign-role \
 ---
 
 ### POST /api/auth/register
+
 **Descripción:** Registrar nuevo usuario
 
 **Request:**
+
 ```json
 {
   "name": "Juan Pérez",
@@ -210,6 +218,7 @@ curl -X POST http://localhost:8000/api/users/{userId}/assign-role \
 ```
 
 **Response (201 Created):**
+
 ```json
 {
   "data": {
@@ -235,14 +244,17 @@ curl -X POST http://localhost:8000/api/users/{userId}/assign-role \
 ---
 
 ### POST /api/auth/logout
+
 **Descripción:** Cerrar sesión de usuario
 
 **Headers:**
+
 ```
 Authorization: Bearer {token}
 ```
 
 **Response (200 OK):**
+
 ```json
 {
   "message": "Logout exitoso",
@@ -255,14 +267,17 @@ Authorization: Bearer {token}
 ---
 
 ### GET /api/auth/me
+
 **Descripción:** Obtener perfil del usuario autenticado
 
 **Headers:**
+
 ```
 Authorization: Bearer {token}
 ```
 
 **Response (200 OK):**
+
 ```json
 {
   "data": {
@@ -283,14 +298,17 @@ Authorization: Bearer {token}
 ---
 
 ### PATCH /api/auth/profile
+
 **Descripción:** Actualizar perfil del usuario autenticado
 
 **Headers:**
+
 ```
 Authorization: Bearer {token}
 ```
 
 **Request:**
+
 ```json
 {
   "name": "Juan Pérez García",
@@ -299,6 +317,7 @@ Authorization: Bearer {token}
 ```
 
 **Response (200 OK):**
+
 ```json
 {
   "data": {
@@ -322,13 +341,16 @@ Authorization: Bearer {token}
 ## 📦 Endpoints de Productos
 
 ### GET /api/products
+
 **Descripción:** Listar todos los productos
 
 **Query Parameters:**
+
 - `category` (opcional): Filtrar por categoría
 - `featured` (opcional): Solo productos destacados
 
 **Response (200 OK):**
+
 ```json
 {
   "data": [
@@ -354,9 +376,11 @@ Authorization: Bearer {token}
 ---
 
 ### GET /api/products/{id}
+
 **Descripción:** Obtener un producto específico
 
 **Response (200 OK):**
+
 ```json
 {
   "data": {
@@ -380,14 +404,17 @@ Authorization: Bearer {token}
 ---
 
 ### POST /api/products
+
 **Descripción:** Crear nuevo producto (solo admin)
 
 **Headers:**
+
 ```
 Authorization: Bearer {token}
 ```
 
 **Request:**
+
 ```json
 {
   "name": "Producto Nuevo",
@@ -402,6 +429,7 @@ Authorization: Bearer {token}
 ```
 
 **Response (201 Created):**
+
 ```json
 {
   "data": {
@@ -426,9 +454,11 @@ Authorization: Bearer {token}
 ---
 
 ### PUT /api/products/{id}
+
 **Descripción:** Actualizar producto existente (solo admin)
 
 **Headers:**
+
 ```
 Authorization: Bearer {token}
 ```
@@ -442,14 +472,17 @@ Authorization: Bearer {token}
 ---
 
 ### DELETE /api/products/{id}
+
 **Descripción:** Eliminar producto (solo admin)
 
 **Headers:**
+
 ```
 Authorization: Bearer {token}
 ```
 
 **Response (200 OK):**
+
 ```json
 {
   "message": "Producto eliminado correctamente",
@@ -464,18 +497,22 @@ Authorization: Bearer {token}
 ## 🛒 Endpoints de Pedidos
 
 ### GET /api/orders
+
 **Descripción:** Listar pedidos del usuario autenticado
 
 **Headers:**
+
 ```
 Authorization: Bearer {token}
 ```
 
 **Query Parameters:**
+
 - `type` (opcional): 'online' | 'instore' | 'phone'
 - `archived` (opcional): 'true' | 'false'
 
 **Response (200 OK):**
+
 ```json
 {
   "data": [
@@ -520,9 +557,11 @@ Authorization: Bearer {token}
 ---
 
 ### GET /api/orders/{id}
+
 **Descripción:** Obtener un pedido específico
 
 **Headers:**
+
 ```
 Authorization: Bearer {token}
 ```
@@ -534,15 +573,18 @@ Authorization: Bearer {token}
 ---
 
 ### POST /api/orders
+
 **Descripción:** Crear nuevo pedido
 
 **Headers:**
+
 ```
 Authorization: Bearer {token}
 Content-Type: application/json
 ```
 
 **Request:**
+
 ```json
 {
   "type": "online",
@@ -575,6 +617,7 @@ Content-Type: application/json
 ```
 
 **Response (201 Created):**
+
 ```json
 {
   "data": {
@@ -601,14 +644,17 @@ Content-Type: application/json
 ---
 
 ### PATCH /api/orders/{id}/status
+
 **Descripción:** Actualizar estado de un pedido (solo admin)
 
 **Headers:**
+
 ```
 Authorization: Bearer {token}
 ```
 
 **Request:**
+
 ```json
 {
   "status": "processing"
@@ -616,6 +662,7 @@ Authorization: Bearer {token}
 ```
 
 **Response (200 OK):**
+
 ```json
 {
   "data": {
@@ -633,14 +680,17 @@ Authorization: Bearer {token}
 ---
 
 ### PATCH /api/orders/{id}/archive
+
 **Descripción:** Archivar un pedido
 
 **Headers:**
+
 ```
 Authorization: Bearer {token}
 ```
 
 **Response (200 OK):**
+
 ```json
 {
   "data": {
@@ -659,9 +709,11 @@ Authorization: Bearer {token}
 ---
 
 ### PATCH /api/orders/{id}/unarchive
+
 **Descripción:** Desarchivar un pedido
 
 **Headers:**
+
 ```
 Authorization: Bearer {token}
 ```
@@ -673,14 +725,17 @@ Authorization: Bearer {token}
 ---
 
 ### DELETE /api/orders/{id}
+
 **Descripción:** Eliminar un pedido
 
 **Headers:**
+
 ```
 Authorization: Bearer {token}
 ```
 
 **Response (200 OK):**
+
 ```json
 {
   "message": "Pedido eliminado correctamente",
@@ -695,14 +750,17 @@ Authorization: Bearer {token}
 ## 📍 Endpoints de Direcciones
 
 ### GET /api/addresses
+
 **Descripción:** Obtener direcciones del usuario autenticado
 
 **Headers:**
+
 ```
 Authorization: Bearer {token}
 ```
 
 **Response (200 OK):**
+
 ```json
 {
   "data": [
@@ -726,14 +784,17 @@ Authorization: Bearer {token}
 ---
 
 ### POST /api/addresses
+
 **Descripción:** Crear nueva dirección
 
 **Headers:**
+
 ```
 Authorization: Bearer {token}
 ```
 
 **Request:**
+
 ```json
 {
   "label": "Oficina",
@@ -746,6 +807,7 @@ Authorization: Bearer {token}
 ```
 
 **Response (201 Created):**
+
 ```json
 {
   "data": {
@@ -768,9 +830,11 @@ Authorization: Bearer {token}
 ---
 
 ### PUT /api/addresses/{id}
+
 **Descripción:** Actualizar dirección existente
 
 **Headers:**
+
 ```
 Authorization: Bearer {token}
 ```
@@ -784,14 +848,17 @@ Authorization: Bearer {token}
 ---
 
 ### DELETE /api/addresses/{id}
+
 **Descripción:** Eliminar dirección
 
 **Headers:**
+
 ```
 Authorization: Bearer {token}
 ```
 
 **Response (200 OK):**
+
 ```json
 {
   "message": "Dirección eliminada correctamente",
@@ -804,14 +871,17 @@ Authorization: Bearer {token}
 ---
 
 ### PATCH /api/addresses/{id}/default
+
 **Descripción:** Establecer dirección como predeterminada
 
 **Headers:**
+
 ```
 Authorization: Bearer {token}
 ```
 
 **Response (200 OK):**
+
 ```json
 {
   "data": {
@@ -832,9 +902,11 @@ Authorization: Bearer {token}
 ## 📂 Endpoints de Categorías y Subcategorías
 
 ### GET /api/categories
+
 **Descripción:** Listar todas las categorías con sus subcategorías
 
 **Response (200 OK):**
+
 ```json
 {
   "data": [
@@ -864,9 +936,11 @@ Authorization: Bearer {token}
 ---
 
 ### GET /api/categories/{id}
+
 **Descripción:** Obtener una categoría específica con sus subcategorías
 
 **Response (200 OK):**
+
 ```json
 {
   "data": {
@@ -886,14 +960,17 @@ Authorization: Bearer {token}
 ---
 
 ### POST /api/categories
+
 **Descripción:** Crear nueva categoría (solo admin)
 
 **Headers:**
+
 ```
 Authorization: Bearer {token}
 ```
 
 **Request:**
+
 ```json
 {
   "name": "Nueva Categoría",
@@ -902,6 +979,7 @@ Authorization: Bearer {token}
 ```
 
 **Response (201 Created):**
+
 ```json
 {
   "data": {
@@ -922,14 +1000,17 @@ Authorization: Bearer {token}
 ---
 
 ### PUT /api/categories/{id}
+
 **Descripción:** Actualizar categoría existente (solo admin)
 
 **Headers:**
+
 ```
 Authorization: Bearer {token}
 ```
 
 **Request:**
+
 ```json
 {
   "name": "Categoría Actualizada",
@@ -939,6 +1020,7 @@ Authorization: Bearer {token}
 ```
 
 **Response (200 OK):**
+
 ```json
 {
   "data": {
@@ -959,14 +1041,17 @@ Authorization: Bearer {token}
 ---
 
 ### DELETE /api/categories/{id}
+
 **Descripción:** Eliminar categoría (solo admin)
 
 **Headers:**
+
 ```
 Authorization: Bearer {token}
 ```
 
 **Response (200 OK):**
+
 ```json
 {
   "message": "Category deleted successfully",
@@ -979,14 +1064,17 @@ Authorization: Bearer {token}
 ---
 
 ### POST /api/categories/reorder
+
 **Descripción:** Reordenar categorías mediante drag & drop (solo admin)
 
 **Headers:**
+
 ```
 Authorization: Bearer {token}
 ```
 
 **Request:**
+
 ```json
 {
   "order": ["cat-3", "cat-1", "cat-2"]
@@ -994,6 +1082,7 @@ Authorization: Bearer {token}
 ```
 
 **Response (200 OK):**
+
 ```json
 {
   "data": [
@@ -1020,14 +1109,17 @@ Authorization: Bearer {token}
 ---
 
 ### POST /api/subcategories
+
 **Descripción:** Crear nueva subcategoría (solo admin)
 
 **Headers:**
+
 ```
 Authorization: Bearer {token}
 ```
 
 **Request:**
+
 ```json
 {
   "name": "Nueva Subcategoría",
@@ -1037,6 +1129,7 @@ Authorization: Bearer {token}
 ```
 
 **Response (201 Created):**
+
 ```json
 {
   "data": {
@@ -1056,14 +1149,17 @@ Authorization: Bearer {token}
 ---
 
 ### PUT /api/subcategories/{id}
+
 **Descripción:** Actualizar subcategoría existente (solo admin)
 
 **Headers:**
+
 ```
 Authorization: Bearer {token}
 ```
 
 **Request:**
+
 ```json
 {
   "name": "Subcategoría Actualizada",
@@ -1074,6 +1170,7 @@ Authorization: Bearer {token}
 ```
 
 **Response (200 OK):**
+
 ```json
 {
   "data": {
@@ -1093,14 +1190,17 @@ Authorization: Bearer {token}
 ---
 
 ### DELETE /api/subcategories/{id}
+
 **Descripción:** Eliminar subcategoría (solo admin)
 
 **Headers:**
+
 ```
 Authorization: Bearer {token}
 ```
 
 **Response (200 OK):**
+
 ```json
 {
   "message": "Subcategory deleted successfully",
@@ -1116,13 +1216,13 @@ Authorization: Bearer {token}
 
 ### Códigos de Estado HTTP
 
-| Código | Significado | Acción Frontend |
-|--------|-------------|----------------|
-| **401** | No autorizado | Limpiar sesión, redirigir a `/auth` |
-| **403** | Sin permisos | Mostrar error, no redirigir |
-| **404** | No encontrado | Mostrar mensaje "Recurso no encontrado" |
-| **422** | Error de validación (Laravel) | Mostrar errores de validación |
-| **500** | Error del servidor | Mostrar "Error del servidor" |
+| Código  | Significado                   | Acción Frontend                         |
+| ------- | ----------------------------- | --------------------------------------- |
+| **401** | No autorizado                 | Limpiar sesión, redirigir a `/auth`     |
+| **403** | Sin permisos                  | Mostrar error, no redirigir             |
+| **404** | No encontrado                 | Mostrar mensaje "Recurso no encontrado" |
+| **422** | Error de validación (Laravel) | Mostrar errores de validación           |
+| **500** | Error del servidor            | Mostrar "Error del servidor"            |
 
 ### Formato de Respuestas de Error
 
@@ -1144,12 +1244,14 @@ Authorization: Bearer {token}
 ## 🔑 Headers Requeridos
 
 ### Para todas las peticiones:
+
 ```
 Content-Type: application/json
 Accept: application/json
 ```
 
 ### Para rutas protegidas (autenticadas):
+
 ```
 Authorization: Bearer {token}
 ```
@@ -1157,6 +1259,7 @@ Authorization: Bearer {token}
 El token se obtiene del response de `/auth/login` o `/auth/register` y se guarda en `localStorage` con la key `auth_token`.
 
 El cliente HTTP (`src/lib/api/client.ts`) maneja automáticamente el token usando los métodos:
+
 - `apiClient.setAuthToken(token)` - Al hacer login
 - `apiClient.removeAuthToken()` - Al hacer logout
 
@@ -1165,19 +1268,24 @@ El cliente HTTP (`src/lib/api/client.ts`) maneja automáticamente el token usand
 ## 🚀 Pasos para Activar la Integración
 
 ### 1. Configurar Variables de Entorno
+
 Copiar `.env.example` a `.env` y configurar:
+
 ```bash
 cp .env.example .env
 ```
 
 ### 2. Verificar que Laravel está corriendo
+
 ```bash
 php artisan serve
 # Laravel debe estar en http://localhost:8000
 ```
 
 ### 3. Descomentar llamadas API en servicios
+
 Ver archivos:
+
 - `src/lib/api/services/auth.service.ts`
 - `src/lib/api/services/products.service.ts`
 - `src/lib/api/services/orders.service.ts`
@@ -1187,9 +1295,11 @@ Ver archivos:
 Buscar líneas marcadas con `// TODO: Descomentar cuando Laravel esté listo` y descomentar.
 
 ### 4. Eliminar mocks de localStorage
+
 Eliminar todas las líneas que usan `localStorage` y `localStorageAdapter` en los servicios.
 
 ### 5. Probar la conexión
+
 1. Iniciar el frontend: `npm run dev`
 2. Ir a `/auth` y hacer login
 3. Verificar en Network DevTools que se hacen las peticiones a `http://localhost:8000/api`
@@ -1237,14 +1347,17 @@ Eliminar todas las líneas que usan `localStorage` y `localStorageAdapter` en lo
 ## 👥 Endpoints de Usuarios (Admin)
 
 ### GET /api/users/clients
+
 **Descripción:** Obtener todos los clientes (solo admin)
 
 **Headers:**
+
 ```
 Authorization: Bearer {token}
 ```
 
 **Response (200 OK):**
+
 ```json
 {
   "data": [
@@ -1268,14 +1381,17 @@ Authorization: Bearer {token}
 ---
 
 ### GET /api/users/admins
+
 **Descripción:** Obtener todos los administradores (solo super admin)
 
 **Headers:**
+
 ```
 Authorization: Bearer {token}
 ```
 
 **Response (200 OK):**
+
 ```json
 {
   "data": [
@@ -1298,14 +1414,17 @@ Authorization: Bearer {token}
 ---
 
 ### PATCH /api/users/{userId}/status
+
 **Descripción:** Activar/desactivar usuario (solo admin)
 
 **Headers:**
+
 ```
 Authorization: Bearer {token}
 ```
 
 **Request:**
+
 ```json
 {
   "active": true
@@ -1313,6 +1432,7 @@ Authorization: Bearer {token}
 ```
 
 **Response (200 OK):**
+
 ```json
 {
   "data": {
@@ -1335,14 +1455,17 @@ Authorization: Bearer {token}
 ---
 
 ### POST /api/users/admins
+
 **Descripción:** Crear nuevo administrador (solo super admin)
 
 **Headers:**
+
 ```
 Authorization: Bearer {token}
 ```
 
 **Request:**
+
 ```json
 {
   "name": "Nuevo Admin",
@@ -1353,6 +1476,7 @@ Authorization: Bearer {token}
 ```
 
 **Response (201 Created):**
+
 ```json
 {
   "data": {
@@ -1373,16 +1497,19 @@ Authorization: Bearer {token}
 ---
 
 ### POST /api/users/{userId}/roles
+
 **Descripción:** Asignar rol a usuario (solo super admin)
 
 **⚠️ SEGURIDAD CRÍTICA:** Debe usar tabla `user_roles` separada
 
 **Headers:**
+
 ```
 Authorization: Bearer {token}
 ```
 
 **Request:**
+
 ```json
 {
   "role": "admin"
@@ -1390,6 +1517,7 @@ Authorization: Bearer {token}
 ```
 
 **Response (200 OK):**
+
 ```json
 {
   "data": {
@@ -1410,14 +1538,17 @@ Authorization: Bearer {token}
 ---
 
 ### PATCH /api/auth/admin/profile
+
 **Descripción:** Actualizar perfil de administrador (incluye avatar)
 
 **Headers:**
+
 ```
 Authorization: Bearer {token}
 ```
 
 **Request:**
+
 ```json
 {
   "name": "Admin Actualizado",
@@ -1427,6 +1558,7 @@ Authorization: Bearer {token}
 ```
 
 **Response (200 OK):**
+
 ```json
 {
   "data": {
@@ -1449,20 +1581,24 @@ Authorization: Bearer {token}
 ---
 
 ### POST /api/auth/avatar
+
 **Descripción:** Subir avatar de usuario
 
 **Headers:**
+
 ```
 Authorization: Bearer {token}
 Content-Type: multipart/form-data
 ```
 
 **Request:**
+
 ```
 FormData con campo 'avatar' (imagen)
 ```
 
 **Response (200 OK):**
+
 ```json
 {
   "data": {
