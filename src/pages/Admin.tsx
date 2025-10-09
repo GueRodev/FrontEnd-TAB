@@ -1,8 +1,6 @@
-import { useMemo } from 'react';
 import { SidebarProvider, SidebarInset } from '@/components/ui/sidebar';
 import { AdminSidebar } from '@/components/AdminSidebar';
 import AdminHeader from '@/components/AdminHeader';
-import { useOrders } from '@/contexts/OrdersContext';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
@@ -20,40 +18,11 @@ import { es } from 'date-fns/locale';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { Link } from 'react-router-dom';
 import { formatCurrency } from '@/lib/formatters';
-import { calculateOrderMetrics, getLastNDaysData, getTopProducts, getStatusLabel } from '@/lib/helpers/order.helpers';
+import { getStatusLabel } from '@/lib/helpers/order.helpers';
+import { useDashboardMetrics } from '@/hooks/business';
 
 const Admin = () => {
-  const { orders } = useOrders();
-
-  // Calcular métricas usando helper
-  const metrics = useMemo(() => calculateOrderMetrics(orders), [orders]);
-
-  // Datos para gráfico de últimos 7 días
-  const last7DaysData = useMemo(() => {
-    const data = getLastNDaysData(orders, 7);
-    return data.map(item => ({
-      fecha: item.date,
-      ingresos: parseFloat(item.total.toFixed(2)),
-      ventas: orders.filter(o => 
-        new Date(o.createdAt).toISOString().split('T')[0] === 
-        new Date().toISOString().split('T')[0]
-      ).length
-    }));
-  }, [orders]);
-
-  // Pedidos recientes (últimos 5)
-  const recentOrders = [...orders]
-    .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
-    .slice(0, 5);
-
-  // Productos más vendidos
-  const topProducts = useMemo(() => getTopProducts(orders, 5), [orders]);
-
-  // Total de productos únicos
-  const uniqueProducts = useMemo(() => {
-    const completedOrders = orders.filter(o => o.status === 'completed');
-    return new Set(completedOrders.flatMap(order => order.items.map(item => item.id))).size;
-  }, [orders]);
+  const { metrics, chartData, recentOrders, topProducts, uniqueProducts } = useDashboardMetrics();
 
   return (
     <SidebarProvider>
@@ -106,9 +75,9 @@ const Admin = () => {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="h-[250px] sm:h-[300px] w-full">
+            <div className="h-[250px] sm:h-[300px] w-full">
                   <ResponsiveContainer width="100%" height="100%">
-                    <LineChart data={last7DaysData} margin={{ bottom: 20, left: 0, right: 10, top: 10 }}>
+                    <LineChart data={chartData} margin={{ bottom: 20, left: 0, right: 10, top: 10 }}>
                       <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
                       <XAxis 
                         dataKey="fecha" 

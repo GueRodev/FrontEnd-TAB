@@ -144,3 +144,56 @@ export const getTopProducts = (orders: Order[], limit: number = 5) => {
     .sort((a, b) => b.revenue - a.revenue)
     .slice(0, limit);
 };
+
+/**
+ * Get count of unique products sold
+ */
+export const getUniqueProductsCount = (orders: Order[]): number => {
+  const completedOrders = orders.filter((o) => o.status === 'completed');
+  const uniqueProductIds = new Set(
+    completedOrders.flatMap((order) => order.items.map((item) => item.id))
+  );
+  return uniqueProductIds.size;
+};
+
+/**
+ * Get recent orders sorted by creation date
+ */
+export const getRecentOrders = (orders: Order[], limit: number = 5): Order[] => {
+  return [...orders]
+    .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+    .slice(0, limit);
+};
+
+/**
+ * Prepare chart data for dashboard with sales count per day
+ */
+export interface ChartDataPoint {
+  fecha: string;
+  ingresos: number;
+  ventas: number;
+}
+
+export const prepareChartData = (orders: Order[], days: number = 7): ChartDataPoint[] => {
+  const dailyData = getLastNDaysData(orders, days);
+  const now = new Date();
+
+  return dailyData.map((item, index) => {
+    // Calculate date for this data point
+    const date = new Date(now);
+    date.setDate(date.getDate() - (days - 1 - index));
+    const dateStr = date.toISOString().split('T')[0];
+
+    // Count sales for this specific day
+    const salesCount = orders.filter((o) => {
+      const orderDate = new Date(o.createdAt).toISOString().split('T')[0];
+      return orderDate === dateStr && o.status === 'completed';
+    }).length;
+
+    return {
+      fecha: item.date,
+      ingresos: parseFloat(item.total.toFixed(2)),
+      ventas: salesCount,
+    };
+  });
+};
