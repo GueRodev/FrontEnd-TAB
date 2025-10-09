@@ -63,8 +63,39 @@ class ApiClient {
     try {
       const response = await fetch(urlWithParams, requestInit);
 
+      // 🔗 CONEXIÓN LARAVEL: Manejo de errores HTTP
       if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+        const errorData = await response.json().catch(() => ({}));
+        
+        // Handle specific HTTP errors
+        switch (response.status) {
+          case 401:
+            // Unauthorized - Clear session and redirect to auth
+            localStorage.removeItem('auth_user');
+            localStorage.removeItem('auth_token');
+            this.removeAuthToken();
+            window.location.href = '/auth';
+            throw new Error(errorData.message || 'No autorizado. Por favor inicia sesión.');
+          
+          case 403:
+            // Forbidden - No permissions
+            throw new Error(errorData.message || 'No tienes permisos para realizar esta acción.');
+          
+          case 404:
+            // Not found
+            throw new Error(errorData.message || 'Recurso no encontrado.');
+          
+          case 422:
+            // Validation error (Laravel)
+            throw new Error(errorData.message || 'Error de validación. Verifica los datos enviados.');
+          
+          case 500:
+            // Server error
+            throw new Error(errorData.message || 'Error del servidor. Por favor intenta más tarde.');
+          
+          default:
+            throw new Error(errorData.message || `Error HTTP: ${response.status}`);
+        }
       }
 
       return await response.json();

@@ -1,13 +1,16 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useCartOperations, useOrderForm } from '@/hooks/business';
+import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
-import { CartItem, EmptyCart, CartSummary } from '@/components/features';
+import { CartItem, EmptyCart, CartSummary, AddressList } from '@/components/features';
+import type { Address } from '@/types/user.types';
 
 /**
  * Cart Page
@@ -15,6 +18,7 @@ import { CartItem, EmptyCart, CartSummary } from '@/components/features';
  * @next-migration: Can be Server Component with Client islands for interactive parts
  */
 const Cart = () => {
+  const { user, isAuthenticated } = useAuth();
   const {
     items,
     totalPrice,
@@ -33,6 +37,13 @@ const Cart = () => {
     setPaymentMethod,
     submitOrder,
   } = useOrderForm();
+
+  // 🔗 INTEGRACIÓN CON DIRECCIONES GUARDADAS
+  const [useManualAddress, setUseManualAddress] = useState(false);
+  const [selectedAddressId, setSelectedAddressId] = useState<string>('');
+  const userAddresses = (isAuthenticated && user?.role === 'cliente') 
+    ? (user as any).addresses || [] 
+    : [];
 
   const handleFinalizarCompra = () => {
     submitOrder();
@@ -139,53 +150,94 @@ const Cart = () => {
                       <div className="space-y-4 pt-2 border-t">
                         <h3 className="font-semibold text-sm text-gray-700">Datos de envío</h3>
                         
-                        <div>
-                          <Label htmlFor="province">Provincia *</Label>
-                          <Input
-                            id="province"
-                            name="province"
-                            value={formData.province}
-                            onChange={handleInputChange}
-                            placeholder="Provincia"
-                            required
-                          />
-                        </div>
+                        {/* 🔗 SELECTOR DE DIRECCIONES GUARDADAS */}
+                        {isAuthenticated && userAddresses.length > 0 && (
+                          <div className="space-y-3">
+                            <div className="flex items-center gap-2">
+                              <input
+                                type="checkbox"
+                                id="useManualAddress"
+                                checked={useManualAddress}
+                                onChange={(e) => setUseManualAddress(e.target.checked)}
+                                className="rounded"
+                              />
+                              <Label htmlFor="useManualAddress" className="cursor-pointer text-sm">
+                                Usar dirección diferente
+                              </Label>
+                            </div>
 
-                        <div>
-                          <Label htmlFor="canton">Cantón *</Label>
-                          <Input
-                            id="canton"
-                            name="canton"
-                            value={formData.canton}
-                            onChange={handleInputChange}
-                            placeholder="Cantón"
-                            required
-                          />
-                        </div>
+                            {!useManualAddress && (
+                              <div>
+                                <Label>Selecciona una dirección guardada</Label>
+                                <Select value={selectedAddressId} onValueChange={setSelectedAddressId}>
+                                  <SelectTrigger>
+                                    <SelectValue placeholder="Elige una dirección" />
+                                  </SelectTrigger>
+                                  <SelectContent>
+                                    {userAddresses.map((addr) => (
+                                      <SelectItem key={addr.id} value={addr.id}>
+                                        {addr.label} - {addr.province}, {addr.canton}
+                                      </SelectItem>
+                                    ))}
+                                  </SelectContent>
+                                </Select>
+                              </div>
+                            )}
+                          </div>
+                        )}
 
-                        <div>
-                          <Label htmlFor="district">Distrito *</Label>
-                          <Input
-                            id="district"
-                            name="district"
-                            value={formData.district}
-                            onChange={handleInputChange}
-                            placeholder="Distrito"
-                            required
-                          />
-                        </div>
+                        {/* Formulario manual de dirección */}
+                        {(!isAuthenticated || userAddresses.length === 0 || useManualAddress) && (
+                          <>
+                            <div>
+                              <Label htmlFor="province">Provincia *</Label>
+                              <Input
+                                id="province"
+                                name="province"
+                                value={formData.province}
+                                onChange={handleInputChange}
+                                placeholder="Provincia"
+                                required
+                              />
+                            </div>
 
-                        <div>
-                          <Label htmlFor="address">Dirección exacta *</Label>
-                          <Input
-                            id="address"
-                            name="address"
-                            value={formData.address}
-                            onChange={handleInputChange}
-                            placeholder="Dirección completa"
-                            required
-                          />
-                        </div>
+                            <div>
+                              <Label htmlFor="canton">Cantón *</Label>
+                              <Input
+                                id="canton"
+                                name="canton"
+                                value={formData.canton}
+                                onChange={handleInputChange}
+                                placeholder="Cantón"
+                                required
+                              />
+                            </div>
+
+                            <div>
+                              <Label htmlFor="district">Distrito *</Label>
+                              <Input
+                                id="district"
+                                name="district"
+                                value={formData.district}
+                                onChange={handleInputChange}
+                                placeholder="Distrito"
+                                required
+                              />
+                            </div>
+
+                            <div>
+                              <Label htmlFor="address">Dirección exacta *</Label>
+                              <Input
+                                id="address"
+                                name="address"
+                                value={formData.address}
+                                onChange={handleInputChange}
+                                placeholder="Dirección completa"
+                                required
+                              />
+                            </div>
+                          </>
+                        )}
                       </div>
                     )}
 

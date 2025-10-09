@@ -11,6 +11,7 @@ import { OrdersProvider } from "./contexts/OrdersContext";
 import { NotificationsProvider } from "./contexts/NotificationsContext";
 import { CategoriesProvider } from "./contexts/CategoriesContext";
 import { ProductsProvider } from "./contexts/ProductsContext";
+import { ProtectedRoute } from "./components/ProtectedRoute";
 import ScrollToTop from "./components/ScrollToTop";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
@@ -50,16 +51,17 @@ const App = () => (
                 <Route path="/category/:category" element={<CategoryPage />} />
                 <Route path="/category/:category/:subcategory" element={<CategoryPage />} />
                 <Route path="/wishlist" element={<Wishlist />} />
-                <Route path="/account" element={<Account />} />
+                <Route path="/account" element={<ProtectedRoute><Account /></ProtectedRoute>} />
                 <Route path="/cart" element={<Cart />} />
-                <Route path="/admin" element={<Admin />} />
-                <Route path="/admin/products" element={<AdminProducts />} />
-                <Route path="/admin/categories" element={<AdminCategories />} />
-                <Route path="/admin/users" element={<AdminUsers />} />
-                <Route path="/admin/orders" element={<AdminOrders />} />
-                <Route path="/admin/orders/history" element={<AdminOrdersHistory />} />
-                <Route path="/admin/settings" element={<AdminSettings />} />
-                <Route path="/admin/profile" element={<AdminProfile />} />
+                {/* 🔒 PROTECTED ADMIN ROUTES - Require authentication & admin role */}
+                <Route path="/admin" element={<ProtectedRoute requireAdmin><Admin /></ProtectedRoute>} />
+                <Route path="/admin/products" element={<ProtectedRoute requireAdmin><AdminProducts /></ProtectedRoute>} />
+                <Route path="/admin/categories" element={<ProtectedRoute requireAdmin><AdminCategories /></ProtectedRoute>} />
+                <Route path="/admin/users" element={<ProtectedRoute requireAdmin><AdminUsers /></ProtectedRoute>} />
+                <Route path="/admin/orders" element={<ProtectedRoute requireAdmin><AdminOrders /></ProtectedRoute>} />
+                <Route path="/admin/orders/history" element={<ProtectedRoute requireAdmin><AdminOrdersHistory /></ProtectedRoute>} />
+                <Route path="/admin/settings" element={<ProtectedRoute requireAdmin><AdminSettings /></ProtectedRoute>} />
+                <Route path="/admin/profile" element={<ProtectedRoute requireAdmin><AdminProfile /></ProtectedRoute>} />
                 <Route path="/new-arrivals" element={<CategoryPage />} />
                 <Route path="/limited-editions" element={<CategoryPage />} />
                 <Route path="/on-sale" element={<CategoryPage />} />

@@ -48,9 +48,18 @@ export const ordersService = {
 
   /**
    * Create order
+   * 🔗 CONEXIÓN LARAVEL:
+   * 1. Descomentar: return apiClient.post('/orders', data);
+   * 2. Eliminar líneas 56-67 (mock localStorage)
+   * 3. Agregar user_id desde AuthContext si está autenticado
+   * 4. Laravel debe retornar: { data: Order, message: string, timestamp: string }
+   * 
    * @next-migration: return apiClient.post<Order>('/orders', data);
    */
   async create(data: Omit<Order, 'id' | 'createdAt'>): Promise<ApiResponse<Order>> {
+    // TODO: When user is authenticated, include user_id:
+    // const user = JSON.parse(localStorage.getItem('auth_user') || '{}');
+    // const orderData = { ...data, user_id: user?.id };
     const orders = await this.getAll();
     const newOrder: Order = {
       ...data,

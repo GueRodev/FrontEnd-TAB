@@ -146,18 +146,28 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
-  const updateProfile = async (data: Partial<UserProfile>) => {
-    if (!state.user) return;
-    
-    // TODO: Connect to backend API when ready
-    const updatedUser = { ...state.user, ...data };
-    localStorage.setItem('auth_user', JSON.stringify(updatedUser));
-    setState(prev => ({ ...prev, user: updatedUser }));
-    
-    toast({
-      title: 'Perfil actualizado',
-      description: 'Los cambios han sido guardados',
-    });
+  const updateProfile = async (updates: Partial<UserProfile>) => {
+    if (state.user) {
+      try {
+        // 🔗 CONEXIÓN LARAVEL: Call backend API
+        const response = await authService.updateProfile(updates);
+        const updatedUser = response.data;
+        
+        setState(prev => ({ ...prev, user: updatedUser }));
+        localStorage.setItem('auth_user', JSON.stringify(updatedUser));
+        
+        toast({
+          title: 'Perfil actualizado',
+          description: 'Tu perfil ha sido actualizado correctamente',
+        });
+      } catch (error) {
+        toast({
+          title: 'Error',
+          description: 'No se pudo actualizar el perfil',
+          variant: 'destructive',
+        });
+      }
+    }
   };
 
   const isAdmin = (): boolean => {

@@ -180,7 +180,8 @@ export const useOrderForm = () => {
     // Build WhatsApp message
     const message = buildWhatsAppMessage();
     const encodedMessage = encodeURIComponent(message);
-    const whatsappNumber = '50688888888'; // TODO: Move to config
+    // 🔧 WhatsApp configuration from environment variables
+    const whatsappNumber = import.meta.env.VITE_WHATSAPP_NUMBER || '50688888888';
     const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodedMessage}`;
 
     // Open WhatsApp

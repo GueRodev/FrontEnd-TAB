@@ -101,4 +101,34 @@ export const authService = {
     
     throw new Error('No authenticated user');
   },
+
+  /**
+   * Update user profile
+   * 🔗 CONEXIÓN LARAVEL:
+   * 1. Descomentar: return apiClient.patch('/auth/profile', data);
+   * 2. Laravel debe retornar: { data: UserProfile, message: string, timestamp: string }
+   * 
+   * TODO: Connect to Laravel endpoint: PATCH /api/auth/profile
+   * Requires: Authorization header with Bearer token
+   */
+  async updateProfile(data: Partial<UserProfile>): Promise<ApiResponse<UserProfile>> {
+    // TODO: Uncomment when Laravel is ready
+    // return apiClient.patch('/auth/profile', data);
+    
+    // Mock temporal - actualiza localStorage
+    const userStr = localStorage.getItem('auth_user');
+    if (userStr) {
+      const user = JSON.parse(userStr);
+      const updatedUser = { ...user, ...data };
+      localStorage.setItem('auth_user', JSON.stringify(updatedUser));
+      
+      return Promise.resolve({
+        data: updatedUser,
+        message: 'Perfil actualizado correctamente',
+        timestamp: new Date().toISOString(),
+      });
+    }
+    
+    throw new Error('No authenticated user');
+  },
 };
