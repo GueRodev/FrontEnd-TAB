@@ -1,10 +1,10 @@
-import React, { useMemo } from 'react';
+import React from 'react';
 import { useParams, Link } from 'react-router-dom';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import ProductCard from '@/components/ProductCard';
 import DecorativeBackground from '@/components/DecorativeBackground';
-import { useProductOperations } from '@/hooks/business';
+import { useCategoryPage } from '@/hooks/business';
 import { formatCurrency } from '@/lib/formatters';
 
 /**
@@ -16,51 +16,13 @@ const CategoryPage: React.FC = () => {
   const { category, subcategory } = useParams<{ category: string; subcategory?: string }>();
   
   const {
-    categories,
-    getProductsByCategory,
-    getProductsBySubcategory,
-    handleAddToCart,
-    handleToggleWishlist,
+    currentCategory,
+    currentSubcategory,
+    products,
+    handleWishlistToggle,
+    handleCartAdd,
     isProductInWishlist,
-    findProductById,
-  } = useProductOperations();
-
-  // Find the current category
-  const currentCategory = useMemo(() => 
-    categories.find(cat => cat.slug === category),
-    [categories, category]
-  );
-
-  // Find the current subcategory if provided
-  const currentSubcategory = useMemo(() => {
-    if (!subcategory || !currentCategory) return undefined;
-    return currentCategory.subcategories.find(sub => sub.slug === subcategory);
-  }, [currentCategory, subcategory]);
-
-  // Get products based on category or subcategory
-  const products = useMemo(() => {
-    if (!currentCategory) return [];
-    
-    if (currentSubcategory) {
-      return getProductsBySubcategory(currentSubcategory.id);
-    }
-    
-    return getProductsByCategory(currentCategory.id);
-  }, [currentCategory, currentSubcategory, getProductsByCategory, getProductsBySubcategory]);
-
-  const handleWishlistToggle = (e: React.MouseEvent, productId: string) => {
-    const product = findProductById(productId);
-    if (product) {
-      handleToggleWishlist(product, e);
-    }
-  };
-
-  const handleCartAdd = (e: React.MouseEvent, productId: string) => {
-    const product = findProductById(productId);
-    if (product) {
-      handleAddToCart(product, e);
-    }
-  };
+  } = useCategoryPage({ categorySlug: category, subcategorySlug: subcategory });
 
   if (!currentCategory) {
     return (
