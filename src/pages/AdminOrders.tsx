@@ -110,9 +110,9 @@ const AdminOrders = () => {
                 </p>
               </div>
 
-              <div className="grid gap-4 md:gap-6 xl:grid-cols-3">
+              <div className="grid gap-4 md:gap-6 lg:grid-cols-2 xl:grid-cols-3">
                 {/* In-Store Order Form */}
-                <div className="xl:col-span-1">
+                <div className="lg:col-span-1">
                   <InStoreOrderForm
                     selectedProduct={selectedProduct}
                     setSelectedProduct={setSelectedProduct}
@@ -138,7 +138,7 @@ const AdminOrders = () => {
                 </div>
 
                 {/* In-Store Orders List */}
-                <div className="xl:col-span-2">
+                <div className="lg:col-span-1 xl:col-span-2">
                   {inStoreOrders.length === 0 ? (
                     <Card>
                       <CardContent className="py-8 md:py-12 text-center text-muted-foreground">

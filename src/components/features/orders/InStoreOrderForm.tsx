@@ -68,19 +68,21 @@ export const InStoreOrderForm: React.FC<InStoreOrderFormProps> = ({
       </CardHeader>
       <CardContent className="space-y-4">
         {/* Product Selection */}
-        <ProductSelector
-          selectedProduct={selectedProduct}
-          onSelectProduct={setSelectedProduct}
-          categoryFilter={categoryFilter}
-          onCategoryFilterChange={setCategoryFilter}
-          searchQuery={searchQuery}
-          onSearchQueryChange={setSearchQuery}
-          open={openProductSearch}
-          onOpenChange={setOpenProductSearch}
-          filteredProducts={filteredProducts}
-          selectedProductData={selectedProductData}
-          categories={categories}
-        />
+        <div className="w-full">
+          <ProductSelector
+            selectedProduct={selectedProduct}
+            onSelectProduct={setSelectedProduct}
+            categoryFilter={categoryFilter}
+            onCategoryFilterChange={setCategoryFilter}
+            searchQuery={searchQuery}
+            onSearchQueryChange={setSearchQuery}
+            open={openProductSearch}
+            onOpenChange={setOpenProductSearch}
+            filteredProducts={filteredProducts}
+            selectedProductData={selectedProductData}
+            categories={categories}
+          />
+        </div>
 
         {/* Quantity */}
         <div className="space-y-2">
@@ -97,7 +99,7 @@ export const InStoreOrderForm: React.FC<InStoreOrderFormProps> = ({
         </div>
 
         {/* Customer Info */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div className="space-y-2">
             <Label htmlFor="customerName">Nombre del Cliente</Label>
             <Input

@@ -41,7 +41,7 @@ export const ProductSelector: React.FC<ProductSelectorProps> = ({
 }) => {
   return (
     <div className="space-y-3">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         {/* Category Filter */}
         <div className="space-y-2">
           <label className="text-sm font-medium">Categoría</label>
