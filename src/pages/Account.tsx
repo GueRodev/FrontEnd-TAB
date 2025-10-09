@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { User, Edit2, LogOut } from 'lucide-react';
 import Header from '@/components/Header';
@@ -8,26 +8,19 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import { AddressList, ProfileForm } from '@/components/features';
-import { useAuth } from '@/contexts/AuthContext';
-import type { ProfileFormData } from '@/lib/validations';
+import { useAccountPage } from '@/hooks/business';
 
 const Account: React.FC = () => {
   const navigate = useNavigate();
-  const { user, updateProfile, logout, isClient } = useAuth();
-  const [isEditing, setIsEditing] = useState(false);
-
-  const handleEdit = () => setIsEditing(true);
-  const handleCancel = () => setIsEditing(false);
-
-  const handleSave = async (data: ProfileFormData) => {
-    await updateProfile(data);
-    setIsEditing(false);
-  };
-
-  const handleLogout = async () => {
-    await logout();
-    navigate('/');
-  };
+  const {
+    user,
+    isClient,
+    isEditing,
+    handleEdit,
+    handleCancel,
+    handleSave,
+    handleLogout,
+  } = useAccountPage();
 
   if (!user) {
     return (
