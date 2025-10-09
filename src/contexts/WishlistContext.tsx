@@ -1,3 +1,14 @@
+/**
+ * Wishlist Context
+ * Manages user wishlist/favorites using localStorage
+ * 
+ * @next-migration: Will become Client Component in Next.js
+ * - Mark with 'use client' directive
+ * - Replace localStorage with API calls (wishlistService)
+ * - Wishlist will be tied to authenticated user account
+ * - Use React Query for real-time sync across devices
+ */
+
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { toast } from '@/hooks/use-toast';
 import { localStorageAdapter } from '@/lib/storage';

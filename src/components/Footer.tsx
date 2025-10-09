@@ -1,3 +1,17 @@
+/**
+ * Footer Component
+ * 
+ * @next-migration: Mostly Server Component compatible
+ * - Replace Link from 'react-router-dom' with 'next/link'
+ * - Can remain as Server Component (no client interactivity)
+ * - Contact info can come from siteConfig
+ * 
+ * Example:
+ * ```tsx
+ * import Link from 'next/link';
+ * import { siteConfig } from '@/config/site';
+ * ```
+ */
 
 import React from 'react';
 import { Link } from 'react-router-dom';

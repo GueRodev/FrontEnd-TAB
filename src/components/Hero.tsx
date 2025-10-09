@@ -1,3 +1,13 @@
+/**
+ * Hero Component
+ * 
+ * @next-migration: Server Component compatible
+ * - No client interactivity (no state, no events)
+ * - Can be rendered on server for better SEO
+ * - Hero content can come from CMS or siteConfig
+ * 
+ * Perfect candidate for Server Component in Next.js
+ */
 
 import React from 'react';
 import DecorativeBackground from './DecorativeBackground';

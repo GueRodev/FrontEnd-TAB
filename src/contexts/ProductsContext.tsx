@@ -1,3 +1,28 @@
+/**
+ * Products Context
+ * Manages product catalog using localStorage
+ * 
+ * @next-migration: IMPORTANT - This Context will be REMOVED in Next.js
+ * - Products will be fetched via Server Components (app/page.tsx)
+ * - Use productsService from @/lib/api/services for data fetching
+ * - Admin product management will use Server Actions or API Routes
+ * 
+ * Migration path:
+ * 1. Server Components fetch products directly (no Context needed)
+ * 2. Client Components receive products as props
+ * 3. Admin mutations use Server Actions or API Routes
+ * 
+ * Example (Next.js Server Component):
+ * ```tsx
+ * import { productsService } from '@/lib/api/services';
+ * 
+ * export default async function ProductsPage() {
+ *   const products = await productsService.getAll();
+ *   return <ProductGrid products={products} />;
+ * }
+ * ```
+ */
+
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import type { Product } from '@/types/product.types';
 import { localStorageAdapter } from '@/lib/storage';

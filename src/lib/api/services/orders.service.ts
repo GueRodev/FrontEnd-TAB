@@ -1,0 +1,151 @@
+/**
+ * Orders Service
+ * API service for order operations
+ * 
+ * @next-migration: Replace localStorage with actual API calls
+ */
+
+import type { Order, OrderStatus, OrderType } from '@/types/order.types';
+import type { ApiResponse } from '../types';
+import { localStorageAdapter } from '@/lib/storage';
+import { STORAGE_KEYS } from '@/data/constants';
+
+export const ordersService = {
+  /**
+   * Get all orders
+   * @next-migration: return apiClient.get<Order[]>('/orders');
+   */
+  async getAll(): Promise<Order[]> {
+    return localStorageAdapter.getItem<Order[]>(STORAGE_KEYS.orders) || [];
+  },
+
+  /**
+   * Get order by ID
+   * @next-migration: return apiClient.get<Order>(`/orders/${id}`);
+   */
+  async getById(id: string): Promise<Order | null> {
+    const orders = await this.getAll();
+    return orders.find(o => o.id === id) || null;
+  },
+
+  /**
+   * Get orders by type
+   * @next-migration: return apiClient.get<Order[]>(`/orders?type=${type}`);
+   */
+  async getByType(type: OrderType): Promise<Order[]> {
+    const orders = await this.getAll();
+    return orders.filter(o => o.type === type && !o.archived);
+  },
+
+  /**
+   * Get archived orders
+   * @next-migration: return apiClient.get<Order[]>('/orders?archived=true');
+   */
+  async getArchived(): Promise<Order[]> {
+    const orders = await this.getAll();
+    return orders.filter(o => o.archivedAt);
+  },
+
+  /**
+   * Create order
+   * @next-migration: return apiClient.post<Order>('/orders', data);
+   */
+  async create(data: Omit<Order, 'id' | 'createdAt'>): Promise<ApiResponse<Order>> {
+    const orders = await this.getAll();
+    const newOrder: Order = {
+      ...data,
+      id: `ORD-${Date.now()}`,
+      createdAt: new Date().toISOString(),
+    };
+    
+    localStorageAdapter.setItem(STORAGE_KEYS.orders, [newOrder, ...orders]);
+    
+    return {
+      data: newOrder,
+      message: 'Order created successfully',
+      timestamp: new Date().toISOString(),
+    };
+  },
+
+  /**
+   * Update order status
+   * @next-migration: return apiClient.patch<Order>(`/orders/${id}/status`, { status });
+   */
+  async updateStatus(id: string, status: OrderStatus): Promise<ApiResponse<Order>> {
+    const orders = await this.getAll();
+    const updatedOrders = orders.map(o => 
+      o.id === id ? { ...o, status } : o
+    );
+    
+    localStorageAdapter.setItem(STORAGE_KEYS.orders, updatedOrders);
+    
+    const updatedOrder = updatedOrders.find(o => o.id === id)!;
+    
+    return {
+      data: updatedOrder,
+      message: 'Order status updated successfully',
+      timestamp: new Date().toISOString(),
+    };
+  },
+
+  /**
+   * Archive order
+   * @next-migration: return apiClient.patch<Order>(`/orders/${id}/archive`);
+   */
+  async archive(id: string): Promise<ApiResponse<Order>> {
+    const orders = await this.getAll();
+    const updatedOrders = orders.map(o =>
+      o.id === id 
+        ? { ...o, archived: true, archivedAt: new Date().toISOString() } 
+        : o
+    );
+    
+    localStorageAdapter.setItem(STORAGE_KEYS.orders, updatedOrders);
+    
+    const archivedOrder = updatedOrders.find(o => o.id === id)!;
+    
+    return {
+      data: archivedOrder,
+      message: 'Order archived successfully',
+      timestamp: new Date().toISOString(),
+    };
+  },
+
+  /**
+   * Unarchive order
+   * @next-migration: return apiClient.patch<Order>(`/orders/${id}/unarchive`);
+   */
+  async unarchive(id: string): Promise<ApiResponse<Order>> {
+    const orders = await this.getAll();
+    const updatedOrders = orders.map(o =>
+      o.id === id ? { ...o, archived: false } : o
+    );
+    
+    localStorageAdapter.setItem(STORAGE_KEYS.orders, updatedOrders);
+    
+    const unarchivedOrder = updatedOrders.find(o => o.id === id)!;
+    
+    return {
+      data: unarchivedOrder,
+      message: 'Order unarchived successfully',
+      timestamp: new Date().toISOString(),
+    };
+  },
+
+  /**
+   * Delete order
+   * @next-migration: return apiClient.delete(`/orders/${id}`);
+   */
+  async delete(id: string): Promise<ApiResponse<void>> {
+    const orders = await this.getAll();
+    const filteredOrders = orders.filter(o => o.id !== id);
+    
+    localStorageAdapter.setItem(STORAGE_KEYS.orders, filteredOrders);
+    
+    return {
+      data: undefined as void,
+      message: 'Order deleted successfully',
+      timestamp: new Date().toISOString(),
+    };
+  },
+};

@@ -1,3 +1,20 @@
+/**
+ * Notifications Context
+ * Manages admin notifications using localStorage
+ * 
+ * @next-migration: Will use real-time subscriptions in Next.js
+ * - Replace localStorage with Supabase Realtime
+ * - Subscribe to database changes (new orders, low stock, etc.)
+ * - Add push notifications support
+ * - Store notifications in database for persistence
+ * 
+ * Migration path:
+ * 1. Create notifications table in Supabase
+ * 2. Use Supabase Realtime for live updates
+ * 3. Add notification preferences per user
+ * 4. Implement push notifications via Edge Functions
+ */
+
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import type { Notification } from '@/types/notification.types';
 import { localStorageAdapter } from '@/lib/storage';
