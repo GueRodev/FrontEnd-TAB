@@ -11,6 +11,12 @@ import { toast } from '@/hooks/use-toast';
 import { productSchema, type ProductFormData } from '@/lib/validations/product.validation';
 import type { Product } from '@/types/product.types';
 
+interface DeleteProductDialog {
+  open: boolean;
+  productId: string;
+  productName: string;
+}
+
 interface UseProductsAdminReturn {
   // State
   products: Product[];
@@ -21,6 +27,7 @@ interface UseProductsAdminReturn {
   selectedProduct: Product | null;
   formData: ProductFormData;
   availableSubcategories: any[];
+  deleteProductDialog: DeleteProductDialog;
   
   // Handlers
   setSearchQuery: (query: string) => void;
@@ -28,12 +35,14 @@ interface UseProductsAdminReturn {
   setIsEditDialogOpen: (open: boolean) => void;
   setSelectedImage: (image: string | null) => void;
   setFormData: (data: ProductFormData) => void;
+  setDeleteProductDialog: (dialog: DeleteProductDialog) => void;
   handleImageUpload: (e: React.ChangeEvent<HTMLInputElement>) => void;
   handleRemoveImage: () => void;
   handleEditProduct: (product: Product) => void;
   handleSubmit: (e: React.FormEvent) => void;
   handleUpdateProduct: (e: React.FormEvent) => void;
-  handleDeleteProduct: (productId: string) => void;
+  openDeleteProductDialog: (productId: string) => void;
+  confirmDeleteProduct: () => void;
   handleToggleFeatured: (productId: string, isFeatured: boolean) => void;
 }
 
@@ -47,6 +56,11 @@ export const useProductsAdmin = (): UseProductsAdminReturn => {
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+  const [deleteProductDialog, setDeleteProductDialog] = useState<DeleteProductDialog>({
+    open: false,
+    productId: '',
+    productName: '',
+  });
   const [formData, setFormData] = useState<ProductFormData>({
     name: '',
     marca: '',
@@ -221,15 +235,32 @@ export const useProductsAdmin = (): UseProductsAdminReturn => {
     setSelectedProduct(null);
   };
 
-  const handleDeleteProduct = (productId: string) => {
+  const openDeleteProductDialog = (productId: string) => {
     const product = products.find(p => p.id === productId);
     if (product) {
-      deleteProduct(productId);
-      toast({
-        title: "Producto eliminado",
-        description: `${product.name} ha sido eliminado del inventario`,
+      setDeleteProductDialog({
+        open: true,
+        productId: product.id,
+        productName: product.name,
       });
     }
+  };
+
+  const confirmDeleteProduct = () => {
+    const { productId, productName } = deleteProductDialog;
+    
+    deleteProduct(productId);
+    
+    toast({
+      title: "Producto eliminado",
+      description: `${productName} ha sido eliminado del inventario`,
+    });
+
+    setDeleteProductDialog({
+      open: false,
+      productId: '',
+      productName: '',
+    });
   };
 
   const handleToggleFeatured = (productId: string, isFeatured: boolean) => {
@@ -252,17 +283,20 @@ export const useProductsAdmin = (): UseProductsAdminReturn => {
     selectedProduct,
     formData,
     availableSubcategories,
+    deleteProductDialog,
     setSearchQuery,
     setIsAddDialogOpen,
     setIsEditDialogOpen,
     setSelectedImage,
     setFormData,
+    setDeleteProductDialog,
     handleImageUpload,
     handleRemoveImage,
     handleEditProduct,
     handleSubmit,
     handleUpdateProduct,
-    handleDeleteProduct,
+    openDeleteProductDialog,
+    confirmDeleteProduct,
     handleToggleFeatured,
   };
 };

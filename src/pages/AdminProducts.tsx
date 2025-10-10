@@ -13,6 +13,7 @@ import { Search, Plus, Filter } from 'lucide-react';
 import { useProductsAdmin } from '@/hooks/business';
 import { useCategories } from '@/contexts/CategoriesContext';
 import { ProductsListAdmin, ProductFormDialog } from '@/components/features/products';
+import { DeleteConfirmDialog } from '@/components/features/categories/DeleteConfirmDialog';
 
 const AdminProducts = () => {
   const {
@@ -28,12 +29,15 @@ const AdminProducts = () => {
     formData,
     setFormData,
     availableSubcategories,
+    deleteProductDialog,
+    setDeleteProductDialog,
     handleImageUpload,
     handleRemoveImage,
     handleEditProduct,
     handleSubmit,
     handleUpdateProduct,
-    handleDeleteProduct,
+    openDeleteProductDialog,
+    confirmDeleteProduct,
     handleToggleFeatured,
   } = useProductsAdmin();
 
@@ -104,7 +108,7 @@ const AdminProducts = () => {
                     products={products}
                     categories={categories}
                     onEdit={handleEditProduct}
-                    onDelete={handleDeleteProduct}
+                    onDelete={openDeleteProductDialog}
                     onToggleFeatured={handleToggleFeatured}
                   />
                 </CardContent>
@@ -144,6 +148,15 @@ const AdminProducts = () => {
         onSubmit={handleUpdateProduct}
         onImageUpload={handleImageUpload}
         onRemoveImage={handleRemoveImage}
+      />
+
+      {/* Delete Product Confirmation Dialog */}
+      <DeleteConfirmDialog
+        open={deleteProductDialog.open}
+        onOpenChange={(open) => setDeleteProductDialog({ ...deleteProductDialog, open })}
+        itemName={deleteProductDialog.productName}
+        itemType="product"
+        onConfirm={confirmDeleteProduct}
       />
     </SidebarProvider>
   );
