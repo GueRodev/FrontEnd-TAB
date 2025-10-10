@@ -6,7 +6,7 @@
 import type { Category, Subcategory, CreateCategoryDto, UpdateCategoryDto, CreateSubcategoryDto, UpdateSubcategoryDto, ReorderCategoriesDto } from '@/types/product.types';
 import type { ApiResponse } from '../types';
 import { localStorageAdapter } from '@/lib/storage';
-import { STORAGE_KEYS } from '@/data/constants';
+import { STORAGE_KEYS } from '@/config/app.config';
 
 /**
  * 🔗 CONEXIÓN LARAVEL:

@@ -7,7 +7,7 @@ import React from 'react';
 import { Label } from '@/components/ui/label';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { CreditCard, Banknote, Building2, Smartphone } from 'lucide-react';
-import { PAYMENT_METHODS } from '@/data/constants';
+import { PAYMENT_METHODS } from '@/config/app.config';
 import type { DeliveryOption } from '@/types/order.types';
 
 interface PaymentMethodSelectorProps {

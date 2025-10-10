@@ -6,7 +6,7 @@
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { User, Mail, Phone, Lock } from 'lucide-react';
-import { APP_CONFIG } from '@/data/constants';
+import { APP_CONFIG } from '@/config/app.config';
 import type { AdminProfileFormData } from '@/lib/validations/user.validation';
 
 interface ProfileFormFieldsProps {

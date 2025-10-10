@@ -8,7 +8,7 @@ import { useToast } from '@/hooks/use-toast';
 import { localStorageAdapter } from '@/lib/storage';
 import { validateFileType, validateFileSize, readFileAsBase64 } from '@/lib/helpers/fileValidation';
 import { formatFileSize } from '@/lib/formatters';
-import { FILE_UPLOAD_CONFIG, STORAGE_KEYS } from '@/data/constants';
+import { FILE_UPLOAD_CONFIG, STORAGE_KEYS } from '@/config/app.config';
 
 const LOGO_UPDATED_EVENT = 'logoUpdated';
 const ADMIN_LOGO_UPDATED_EVENT = 'adminLogoUpdated';

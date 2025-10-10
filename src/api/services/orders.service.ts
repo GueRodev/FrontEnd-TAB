@@ -6,7 +6,7 @@
 import type { Order, OrderStatus, OrderType } from '@/types/order.types';
 import type { ApiResponse } from '../types';
 import { localStorageAdapter } from '@/lib/storage';
-import { STORAGE_KEYS } from '@/data/constants';
+import { STORAGE_KEYS } from '@/config/app.config';
 
 export const ordersService = {
   /**

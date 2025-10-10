@@ -3,7 +3,7 @@
  * Centralized functions for consistent data formatting
  */
 
-import { APP_CONFIG } from '@/data/constants';
+import { APP_CONFIG } from '@/config/app.config';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
 

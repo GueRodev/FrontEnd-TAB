@@ -6,7 +6,7 @@
 import type { Product } from '@/types/product.types';
 import type { ApiResponse, PaginatedResponse, PaginationParams } from '../types';
 import { localStorageAdapter } from '@/lib/storage';
-import { STORAGE_KEYS } from '@/data/constants';
+import { STORAGE_KEYS } from '@/config/app.config';
 
 /**
  * Products Service

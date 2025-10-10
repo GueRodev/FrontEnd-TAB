@@ -6,7 +6,7 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import type { Order, OrderStatus, OrderType } from '@/types/order.types';
 import { localStorageAdapter } from '@/lib/storage';
-import { STORAGE_KEYS } from '@/data/constants';
+import { STORAGE_KEYS } from '@/config/app.config';
 
 // Re-export types for backward compatibility
 export type { Order, OrderStatus, OrderType, OrderItem, CustomerInfo, DeliveryOption } from '@/types/order.types';

@@ -3,7 +3,7 @@
  * Reusable utilities for file validation and processing
  */
 
-import { FILE_UPLOAD_CONFIG } from '@/data/constants';
+import { FILE_UPLOAD_CONFIG } from '@/config/app.config';
 
 /**
  * Validate file type against allowed types

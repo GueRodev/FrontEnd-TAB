@@ -10,7 +10,7 @@ import { useCartOperations } from './useCartOperations';
 import { toast } from '@/hooks/use-toast';
 import { orderFormSchema } from '@/lib/validations/order.validation';
 import { formatCurrency } from '@/lib/formatters';
-import { APP_CONFIG } from '@/data/constants';
+import { APP_CONFIG } from '@/config/app.config';
 import type { DeliveryOption, DeliveryAddress } from '@/types/order.types';
 import { z } from 'zod';
 

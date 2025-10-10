@@ -6,7 +6,7 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import type { Notification } from '@/types/notification.types';
 import { localStorageAdapter } from '@/lib/storage';
-import { STORAGE_KEYS } from '@/data/constants';
+import { STORAGE_KEYS } from '@/config/app.config';
 
 // Re-export types for backward compatibility
 export type { Notification, NotificationType } from '@/types/notification.types';

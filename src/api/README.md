@@ -1,6 +1,9 @@
 # API Layer Architecture
 
-This directory contains the API abstraction layer for future backend integration.
+This directory contains the API abstraction layer for Laravel backend integration.
+
+> **📍 Nueva ubicación**: Ahora en `/src/api/` (antes en `/src/lib/api/`)
+> Esta carpeta está visible a nivel raíz para facilitar la configuración del backend.
 
 ## Current State
 
@@ -24,8 +27,9 @@ const products = await productsService.getAll();
 ## Directory Structure
 
 ```
-src/lib/api/
+src/api/
 ├── README.md                  # This file
+├── config.ts                  # API configuration and routes (Laravel endpoints)
 ├── client.ts                  # HTTP client configuration (fetch-based)
 ├── types.ts                   # API-specific types (ApiResponse, ApiError, etc.)
 ├── services/
@@ -33,7 +37,10 @@ src/lib/api/
 │   ├── orders.service.ts      # Order management
 │   ├── auth.service.ts        # Authentication
 │   ├── addresses.service.ts   # Address management
+│   ├── categories.service.ts  # Category management
+│   ├── users.service.ts       # User management
 │   └── index.ts              # Service exports
+└── index.ts                  # Main exports
 ```
 
 ## Benefits of This Architecture
