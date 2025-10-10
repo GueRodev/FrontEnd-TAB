@@ -19,7 +19,7 @@ interface DeleteConfirmDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   itemName: string;
-  itemType?: 'category' | 'subcategory';
+  itemType?: 'category' | 'subcategory' | 'order';
   onConfirm: () => void;
 }
 
@@ -30,7 +30,10 @@ export const DeleteConfirmDialog: React.FC<DeleteConfirmDialogProps> = ({
   itemType = 'subcategory',
   onConfirm,
 }) => {
-  const itemLabel = itemType === 'category' ? 'categoría' : 'subcategoría';
+  const itemLabel = 
+    itemType === 'category' ? 'categoría' : 
+    itemType === 'order' ? 'pedido' : 
+    'subcategoría';
   
   return (
     <AlertDialog open={open} onOpenChange={onOpenChange}>

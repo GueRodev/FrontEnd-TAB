@@ -11,6 +11,7 @@ import { Button } from '@/components/ui/button';
 import { useOrdersAdmin } from '@/hooks/business/useOrdersAdmin';
 import { useCategories } from '@/contexts/CategoriesContext';
 import { OrdersList, InStoreOrderForm } from '@/components/features/orders';
+import { DeleteConfirmDialog } from '@/components/features/categories';
 import { ShoppingCart, Store, History } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
@@ -39,8 +40,11 @@ const AdminOrders = () => {
     setOpenProductSearch,
     filteredProducts,
     selectedProductData,
+    deleteOrderDialog,
+    setDeleteOrderDialog,
     handleCreateInStoreOrder,
-    handleDeleteOrder,
+    openDeleteOrderDialog,
+    confirmDeleteOrder,
     handleArchiveOrder,
     handleCompleteOrder,
     handleCancelOrder,
@@ -88,7 +92,7 @@ const AdminOrders = () => {
                     emptyMessage="No hay pedidos online aún"
                     emptyIcon={<ShoppingCart className="h-10 w-10 md:h-12 md:w-12 opacity-30" />}
                     onArchive={handleArchiveOrder}
-                    onDelete={handleDeleteOrder}
+                    onDelete={openDeleteOrderDialog}
                     onComplete={handleCompleteOrder}
                     onCancel={handleCancelOrder}
                   />
@@ -152,7 +156,7 @@ const AdminOrders = () => {
                       showDeliveryInfo={false}
                       gridColumns="grid-cols-1 lg:grid-cols-2"
                       onArchive={handleArchiveOrder}
-                      onDelete={handleDeleteOrder}
+                      onDelete={openDeleteOrderDialog}
                       onComplete={handleCompleteOrder}
                       onCancel={handleCancelOrder}
                     />
@@ -163,6 +167,17 @@ const AdminOrders = () => {
           </main>
         </SidebarInset>
       </div>
+
+      {/* Delete Order Confirmation */}
+      <DeleteConfirmDialog
+        open={deleteOrderDialog.open}
+        onOpenChange={(open) =>
+          setDeleteOrderDialog({ ...deleteOrderDialog, open })
+        }
+        itemName={deleteOrderDialog.order?.id || ''}
+        itemType="order"
+        onConfirm={confirmDeleteOrder}
+      />
     </SidebarProvider>
   );
 };

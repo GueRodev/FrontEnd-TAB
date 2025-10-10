@@ -13,6 +13,12 @@ import { Badge } from '@/components/ui/badge';
 import { Package, CheckCircle, XCircle } from 'lucide-react';
 import type { OrderStatus } from '@/types/order.types';
 
+interface DeleteOrderDialog {
+  open: boolean;
+  orderId: string;
+  order: any;
+}
+
 interface UseOrdersAdminReturn {
   // State
   onlineOrders: any[];
@@ -28,6 +34,7 @@ interface UseOrdersAdminReturn {
   activeProducts: any[];
   filteredProducts: any[];
   selectedProductData: any;
+  deleteOrderDialog: DeleteOrderDialog;
   
   // Setters
   setSelectedProduct: (id: string) => void;
@@ -38,10 +45,12 @@ interface UseOrdersAdminReturn {
   setCategoryFilter: (filter: string) => void;
   setSearchQuery: (query: string) => void;
   setOpenProductSearch: (open: boolean) => void;
+  setDeleteOrderDialog: (dialog: DeleteOrderDialog) => void;
   
   // Handlers
   handleCreateInStoreOrder: () => void;
-  handleDeleteOrder: (orderId: string, order: any) => void;
+  openDeleteOrderDialog: (orderId: string, order: any) => void;
+  confirmDeleteOrder: () => void;
   handleArchiveOrder: (orderId: string) => void;
   handleCompleteOrder: (order: any) => void;
   handleCancelOrder: (order: any) => void;
@@ -61,6 +70,12 @@ export const useOrdersAdmin = (): UseOrdersAdminReturn => {
   const [categoryFilter, setCategoryFilter] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [openProductSearch, setOpenProductSearch] = useState(false);
+  
+  const [deleteOrderDialog, setDeleteOrderDialog] = useState<DeleteOrderDialog>({
+    open: false,
+    orderId: '',
+    order: null,
+  });
 
   const onlineOrders = getOrdersByType('online');
   const inStoreOrders = getOrdersByType('in-store');
@@ -144,28 +159,45 @@ export const useOrdersAdmin = (): UseOrdersAdminReturn => {
     });
   };
 
-  const handleDeleteOrder = (orderId: string, order: any) => {
-    if (confirm('¿Estás seguro de que deseas eliminar este pedido?')) {
-      // Restore stock if order was completed
-      if (order.status === 'completed') {
-        order.items.forEach((item: any) => {
-          const product = products.find(p => p.id === item.id);
-          if (product) {
-            updateProduct(product.id, {
-              stock: product.stock + item.quantity
-            });
-          }
-        });
-      }
-      
-      deleteOrder(orderId);
-      toast({
-        title: "Pedido eliminado",
-        description: order.status === 'completed' 
-          ? "El pedido ha sido eliminado y el stock ha sido restablecido"
-          : "El pedido ha sido eliminado exitosamente",
+  const openDeleteOrderDialog = (orderId: string, order: any) => {
+    setDeleteOrderDialog({
+      open: true,
+      orderId,
+      order,
+    });
+  };
+
+  const confirmDeleteOrder = () => {
+    const { orderId, order } = deleteOrderDialog;
+    
+    if (!order) return;
+
+    // Restore stock if order was completed
+    if (order.status === 'completed') {
+      order.items.forEach((item: any) => {
+        const product = products.find(p => p.id === item.id);
+        if (product) {
+          updateProduct(product.id, {
+            stock: product.stock + item.quantity
+          });
+        }
       });
     }
+    
+    deleteOrder(orderId);
+    
+    setDeleteOrderDialog({
+      open: false,
+      orderId: '',
+      order: null,
+    });
+    
+    toast({
+      title: "Pedido eliminado",
+      description: order.status === 'completed' 
+        ? "El pedido ha sido eliminado y el stock ha sido restablecido"
+        : "El pedido ha sido eliminado exitosamente",
+    });
   };
 
   const handleArchiveOrder = (orderId: string) => {
@@ -237,6 +269,7 @@ export const useOrdersAdmin = (): UseOrdersAdminReturn => {
     activeProducts,
     filteredProducts,
     selectedProductData,
+    deleteOrderDialog,
     setSelectedProduct,
     setQuantity,
     setCustomerName,
@@ -245,8 +278,10 @@ export const useOrdersAdmin = (): UseOrdersAdminReturn => {
     setCategoryFilter,
     setSearchQuery,
     setOpenProductSearch,
+    setDeleteOrderDialog,
     handleCreateInStoreOrder,
-    handleDeleteOrder,
+    openDeleteOrderDialog,
+    confirmDeleteOrder,
     handleArchiveOrder,
     handleCompleteOrder,
     handleCancelOrder,
