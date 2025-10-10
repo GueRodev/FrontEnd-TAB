@@ -30,9 +30,30 @@ class ApiClient {
   }
 
   /**
+   * Get CSRF token from Laravel Sanctum (required for mutations)
+   */
+  private async getCsrfToken(): Promise<void> {
+    try {
+      const baseUrl = this.config.baseURL.replace('/api', '');
+      await fetch(`${baseUrl}/sanctum/csrf-cookie`, {
+        method: 'GET',
+        credentials: 'include',
+      });
+    } catch (error) {
+      console.warn('Failed to fetch CSRF token:', error);
+    }
+  }
+
+  /**
    * Make HTTP request
    */
   async request<T>(config: ApiRequestConfig): Promise<T> {
+    // Get CSRF token for mutative requests (Laravel Sanctum requirement)
+    const isMutativeRequest = ['POST', 'PUT', 'PATCH', 'DELETE'].includes(config.method);
+    if (isMutativeRequest && this.config.withCredentials) {
+      await this.getCsrfToken();
+    }
+
     const url = `${this.config.baseURL}${config.url}`;
     
     const requestInit: RequestInit = {
@@ -82,7 +103,18 @@ class ApiClient {
           
           case 422:
             // Validation error (Laravel)
-            throw new Error(errorData.message || 'Error de validación. Verifica los datos enviados.');
+            const validationErrors = errorData.errors || {};
+            const errorMessages = Object.values(validationErrors)
+              .flat()
+              .filter(Boolean)
+              .join(', ');
+            
+            const validationError = new Error(
+              errorMessages || errorData.message || 'Error de validación. Verifica los datos enviados.'
+            ) as any;
+            validationError.errors = validationErrors;
+            validationError.status = 422;
+            throw validationError;
           
           case 500:
             // Server error

@@ -20,6 +20,14 @@ export interface ApiError {
 }
 
 /**
+ * Laravel Validation Error structure (422)
+ */
+export interface ValidationError extends Error {
+  status: 422;
+  errors: Record<string, string[]>;
+}
+
+/**
  * Pagination parameters for list requests
  */
 export interface PaginationParams {
