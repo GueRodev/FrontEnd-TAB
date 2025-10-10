@@ -9,7 +9,9 @@ import AdminHeader from '@/components/AdminHeader';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent } from '@/components/ui/card';
-import { Search, Plus, Filter } from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Search, Plus, Filter, X } from 'lucide-react';
 import { useProductsAdmin } from '@/hooks/business';
 import { useCategories } from '@/contexts/CategoriesContext';
 import { ProductsListAdmin, ProductFormDialog } from '@/components/features/products';
@@ -17,9 +19,13 @@ import { DeleteConfirmDialog } from '@/components/features/categories/DeleteConf
 
 const AdminProducts = () => {
   const {
-    products,
+    filteredProducts,
     searchQuery,
+    selectedCategoryFilter,
+    isFilterOpen,
     setSearchQuery,
+    setSelectedCategoryFilter,
+    setIsFilterOpen,
     isAddDialogOpen,
     setIsAddDialogOpen,
     isEditDialogOpen,
@@ -39,6 +45,7 @@ const AdminProducts = () => {
     openDeleteProductDialog,
     confirmDeleteProduct,
     handleToggleFeatured,
+    clearFilters,
   } = useProductsAdmin();
 
   const { categories } = useCategories();
@@ -87,10 +94,82 @@ const AdminProducts = () => {
                         className="pl-9 h-10 border-gray-300 w-full"
                       />
                     </div>
-                    <Button variant="outline" className="h-10 px-4 border-gray-300 w-full">
-                      <Filter className="h-4 w-4 mr-2" />
-                      Filtros
-                    </Button>
+                    
+                    <div className="flex gap-2">
+                      <Popover open={isFilterOpen} onOpenChange={setIsFilterOpen}>
+                        <PopoverTrigger asChild>
+                          <Button variant="outline" className="h-10 px-4 border-gray-300 flex-1">
+                            <Filter className="h-4 w-4 mr-2" />
+                            Filtros
+                            {selectedCategoryFilter && (
+                              <Badge variant="secondary" className="ml-2">1</Badge>
+                            )}
+                          </Button>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-80 p-0" align="start">
+                          <div className="p-4 space-y-4">
+                            <div className="flex items-center justify-between">
+                              <h3 className="font-semibold">Filtrar por categoría</h3>
+                              {selectedCategoryFilter && (
+                                <Button 
+                                  variant="ghost" 
+                                  size="sm"
+                                  onClick={() => {
+                                    clearFilters();
+                                    setIsFilterOpen(false);
+                                  }}
+                                >
+                                  Limpiar
+                                </Button>
+                              )}
+                            </div>
+                            
+                            <div className="space-y-2">
+                              <Button
+                                variant={!selectedCategoryFilter ? "default" : "ghost"}
+                                className="w-full justify-start"
+                                onClick={() => {
+                                  setSelectedCategoryFilter('');
+                                  setIsFilterOpen(false);
+                                }}
+                              >
+                                Todas las categorías
+                              </Button>
+                              
+                              {categories.map((category) => (
+                                <Button
+                                  key={category.id}
+                                  variant={selectedCategoryFilter === category.id ? "default" : "ghost"}
+                                  className="w-full justify-start"
+                                  onClick={() => {
+                                    setSelectedCategoryFilter(category.id);
+                                    setIsFilterOpen(false);
+                                  }}
+                                >
+                                  {category.name}
+                                </Button>
+                              ))}
+                            </div>
+                          </div>
+                        </PopoverContent>
+                      </Popover>
+                    </div>
+
+                    {/* Active Filters */}
+                    {selectedCategoryFilter && (
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <span className="text-sm text-muted-foreground">Filtros activos:</span>
+                        <Badge variant="secondary" className="gap-1">
+                          {categories.find(c => c.id === selectedCategoryFilter)?.name}
+                          <button
+                            onClick={() => setSelectedCategoryFilter('')}
+                            className="ml-1 hover:bg-muted rounded-full"
+                          >
+                            <X className="h-3 w-3" />
+                          </button>
+                        </Badge>
+                      </div>
+                    )}
                   </div>
                 </CardContent>
               </Card>
@@ -100,12 +179,12 @@ const AdminProducts = () => {
                 <CardContent className="p-4 md:p-6">
                   <div className="mb-4">
                     <h3 className="text-base md:text-lg font-semibold text-gray-900">
-                      Productos ({products.length})
+                      Productos ({filteredProducts.length})
                     </h3>
                   </div>
                   
                   <ProductsListAdmin
-                    products={products}
+                    products={filteredProducts}
                     categories={categories}
                     onEdit={handleEditProduct}
                     onDelete={openDeleteProductDialog}

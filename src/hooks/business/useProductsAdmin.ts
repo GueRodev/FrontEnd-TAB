@@ -20,7 +20,10 @@ interface DeleteProductDialog {
 interface UseProductsAdminReturn {
   // State
   products: Product[];
+  filteredProducts: Product[];
   searchQuery: string;
+  selectedCategoryFilter: string;
+  isFilterOpen: boolean;
   isAddDialogOpen: boolean;
   isEditDialogOpen: boolean;
   selectedImage: string | null;
@@ -31,6 +34,8 @@ interface UseProductsAdminReturn {
   
   // Handlers
   setSearchQuery: (query: string) => void;
+  setSelectedCategoryFilter: (categoryId: string) => void;
+  setIsFilterOpen: (open: boolean) => void;
   setIsAddDialogOpen: (open: boolean) => void;
   setIsEditDialogOpen: (open: boolean) => void;
   setSelectedImage: (image: string | null) => void;
@@ -44,6 +49,7 @@ interface UseProductsAdminReturn {
   openDeleteProductDialog: (productId: string) => void;
   confirmDeleteProduct: () => void;
   handleToggleFeatured: (productId: string, isFeatured: boolean) => void;
+  clearFilters: () => void;
 }
 
 export const useProductsAdmin = (): UseProductsAdminReturn => {
@@ -52,6 +58,8 @@ export const useProductsAdmin = (): UseProductsAdminReturn => {
   const { addNotification } = useNotifications();
   
   const [searchQuery, setSearchQuery] = useState('');
+  const [selectedCategoryFilter, setSelectedCategoryFilter] = useState('');
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
@@ -78,6 +86,28 @@ export const useProductsAdmin = (): UseProductsAdminReturn => {
     const category = categories.find(cat => cat.id === formData.category);
     return category?.subcategories || [];
   }, [formData.category, categories]);
+
+  // Filter products based on search query and category
+  const filteredProducts = useMemo(() => {
+    let filtered = products;
+
+    // Filter by category
+    if (selectedCategoryFilter) {
+      filtered = filtered.filter(p => p.categoryId === selectedCategoryFilter);
+    }
+
+    // Filter by search query
+    if (searchQuery) {
+      const lowercaseQuery = searchQuery.toLowerCase();
+      filtered = filtered.filter(p => 
+        p.name.toLowerCase().includes(lowercaseQuery) ||
+        p.marca?.toLowerCase().includes(lowercaseQuery) ||
+        p.description?.toLowerCase().includes(lowercaseQuery)
+      );
+    }
+
+    return filtered;
+  }, [products, selectedCategoryFilter, searchQuery]);
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -274,9 +304,17 @@ export const useProductsAdmin = (): UseProductsAdminReturn => {
     }
   };
 
+  const clearFilters = () => {
+    setSelectedCategoryFilter('');
+    setSearchQuery('');
+  };
+
   return {
     products,
+    filteredProducts,
     searchQuery,
+    selectedCategoryFilter,
+    isFilterOpen,
     isAddDialogOpen,
     isEditDialogOpen,
     selectedImage,
@@ -285,6 +323,8 @@ export const useProductsAdmin = (): UseProductsAdminReturn => {
     availableSubcategories,
     deleteProductDialog,
     setSearchQuery,
+    setSelectedCategoryFilter,
+    setIsFilterOpen,
     setIsAddDialogOpen,
     setIsEditDialogOpen,
     setSelectedImage,
@@ -298,5 +338,6 @@ export const useProductsAdmin = (): UseProductsAdminReturn => {
     openDeleteProductDialog,
     confirmDeleteProduct,
     handleToggleFeatured,
+    clearFilters,
   };
 };
