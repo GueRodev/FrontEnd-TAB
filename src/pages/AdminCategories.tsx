@@ -219,6 +219,7 @@ const AdminCategories: React.FC = () => {
           setDeleteCategoryDialog({ ...deleteCategoryDialog, open })
         }
         itemName={deleteCategoryDialog.categoryName}
+        itemType="category"
         onConfirm={confirmDeleteCategory}
       />
 
@@ -229,6 +230,7 @@ const AdminCategories: React.FC = () => {
           setDeleteSubcategoryDialog({ ...deleteSubcategoryDialog, open })
         }
         itemName={deleteSubcategoryDialog.subcategoryName}
+        itemType="subcategory"
         onConfirm={confirmDeleteSubcategory}
       />
     </SidebarProvider>

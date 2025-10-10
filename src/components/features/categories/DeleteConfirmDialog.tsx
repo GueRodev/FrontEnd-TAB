@@ -19,6 +19,7 @@ interface DeleteConfirmDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   itemName: string;
+  itemType?: 'category' | 'subcategory';
   onConfirm: () => void;
 }
 
@@ -26,15 +27,18 @@ export const DeleteConfirmDialog: React.FC<DeleteConfirmDialogProps> = ({
   open,
   onOpenChange,
   itemName,
+  itemType = 'subcategory',
   onConfirm,
 }) => {
+  const itemLabel = itemType === 'category' ? 'categoría' : 'subcategoría';
+  
   return (
     <AlertDialog open={open} onOpenChange={onOpenChange}>
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>¿Estás seguro?</AlertDialogTitle>
           <AlertDialogDescription>
-            Esta acción eliminará la subcategoría <strong>"{itemName}"</strong>.
+            Esta acción eliminará la {itemLabel} <strong>"{itemName}"</strong>.
             Esta acción no se puede deshacer.
           </AlertDialogDescription>
         </AlertDialogHeader>
