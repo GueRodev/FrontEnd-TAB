@@ -11,3 +11,4 @@ export { ProductCardAdmin } from './ProductCardAdmin';
 export { ProductFormDialog } from './ProductFormDialog';
 export { ProductImageUpload } from './ProductImageUpload';
 export { ProductsListAdmin } from './ProductsListAdmin';
+export { ProductFilters } from './ProductFilters';

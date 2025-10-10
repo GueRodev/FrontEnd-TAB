@@ -8,9 +8,13 @@ import type { Product } from '@/types/product.types';
 
 interface UseProductFiltersProps {
   products: Product[];
+  includeInactive?: boolean; // For admin views
 }
 
-export const useProductFilters = ({ products }: UseProductFiltersProps) => {
+export const useProductFilters = ({ 
+  products, 
+  includeInactive = false 
+}: UseProductFiltersProps) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string>('');
   const [priceRange, setPriceRange] = useState<{ min: number; max: number }>({
@@ -81,7 +85,10 @@ export const useProductFilters = ({ products }: UseProductFiltersProps) => {
    * Apply all filters and sorting
    */
   const filteredProducts = useMemo(() => {
-    let result = products.filter(p => p.status === 'active');
+    // For admin views, include all products. For public views, only active ones.
+    let result = includeInactive 
+      ? products 
+      : products.filter(p => p.status === 'active');
     
     result = filterBySearch(result);
     result = filterByCategory(result);
@@ -89,7 +96,7 @@ export const useProductFilters = ({ products }: UseProductFiltersProps) => {
     result = sortProducts(result);
 
     return result;
-  }, [products, searchQuery, selectedCategory, priceRange, sortBy]);
+  }, [products, searchQuery, selectedCategory, priceRange, sortBy, includeInactive]);
 
   /**
    * Reset all filters

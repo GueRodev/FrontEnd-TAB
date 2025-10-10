@@ -3,12 +3,13 @@
  * Manages all business logic for admin products page
  */
 
-import { useState, useMemo } from 'react';
+import { useState } from 'react';
 import { useProducts } from '@/contexts/ProductsContext';
 import { useCategories } from '@/contexts/CategoriesContext';
 import { useNotifications } from '@/contexts/NotificationsContext';
 import { toast } from '@/hooks/use-toast';
 import { productSchema, type ProductFormData } from '@/lib/validations/product.validation';
+import { useProductFilters } from './useProductFilters';
 import type { Product } from '@/types/product.types';
 
 interface DeleteProductDialog {
@@ -18,24 +19,35 @@ interface DeleteProductDialog {
 }
 
 interface UseProductsAdminReturn {
-  // State
+  // Products data
   products: Product[];
-  filteredProducts: Product[];
+  categories: ReturnType<typeof useCategories>['categories'];
+  
+  // Filters (delegated to useProductFilters)
   searchQuery: string;
-  selectedCategoryFilter: string;
-  isFilterOpen: boolean;
+  setSearchQuery: (query: string) => void;
+  selectedCategory: string;
+  setSelectedCategory: (categoryId: string) => void;
+  filteredProducts: Product[];
+  resetFilters: () => void;
+  filterSummary: {
+    hasActiveFilters: boolean;
+    resultCount: number;
+    totalCount: number;
+  };
+
+  // Dialog states
   isAddDialogOpen: boolean;
   isEditDialogOpen: boolean;
+  deleteProductDialog: DeleteProductDialog;
+  
+  // Form state
   selectedImage: string | null;
   selectedProduct: Product | null;
   formData: ProductFormData;
   availableSubcategories: any[];
-  deleteProductDialog: DeleteProductDialog;
   
   // Handlers
-  setSearchQuery: (query: string) => void;
-  setSelectedCategoryFilter: (categoryId: string) => void;
-  setIsFilterOpen: (open: boolean) => void;
   setIsAddDialogOpen: (open: boolean) => void;
   setIsEditDialogOpen: (open: boolean) => void;
   setSelectedImage: (image: string | null) => void;
@@ -49,26 +61,40 @@ interface UseProductsAdminReturn {
   openDeleteProductDialog: (productId: string) => void;
   confirmDeleteProduct: () => void;
   handleToggleFeatured: (productId: string, isFeatured: boolean) => void;
-  clearFilters: () => void;
+  handleOpenAddDialog: () => void;
 }
 
 export const useProductsAdmin = (): UseProductsAdminReturn => {
   const { products, addProduct, updateProduct, deleteProduct } = useProducts();
   const { categories } = useCategories();
   const { addNotification } = useNotifications();
-  
-  const [searchQuery, setSearchQuery] = useState('');
-  const [selectedCategoryFilter, setSelectedCategoryFilter] = useState('');
-  const [isFilterOpen, setIsFilterOpen] = useState(false);
+
+  // Product filtering logic (delegated to useProductFilters)
+  const {
+    searchQuery,
+    setSearchQuery,
+    selectedCategory,
+    setSelectedCategory,
+    filteredProducts,
+    resetFilters,
+    getFilterSummary,
+  } = useProductFilters({ 
+    products, 
+    includeInactive: true // Admin sees all products
+  });
+
+  // Dialog states
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
-  const [selectedImage, setSelectedImage] = useState<string | null>(null);
-  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [deleteProductDialog, setDeleteProductDialog] = useState<DeleteProductDialog>({
     open: false,
     productId: '',
     productName: '',
   });
+
+  // Form state
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [formData, setFormData] = useState<ProductFormData>({
     name: '',
     marca: '',
@@ -80,34 +106,10 @@ export const useProductsAdmin = (): UseProductsAdminReturn => {
     status: 'active'
   });
 
-  // Get subcategories based on selected category
-  const availableSubcategories = useMemo(() => {
-    if (!formData.category) return [];
-    const category = categories.find(cat => cat.id === formData.category);
-    return category?.subcategories || [];
-  }, [formData.category, categories]);
-
-  // Filter products based on search query and category
-  const filteredProducts = useMemo(() => {
-    let filtered = products;
-
-    // Filter by category
-    if (selectedCategoryFilter) {
-      filtered = filtered.filter(p => p.categoryId === selectedCategoryFilter);
-    }
-
-    // Filter by search query
-    if (searchQuery) {
-      const lowercaseQuery = searchQuery.toLowerCase();
-      filtered = filtered.filter(p => 
-        p.name.toLowerCase().includes(lowercaseQuery) ||
-        p.marca?.toLowerCase().includes(lowercaseQuery) ||
-        p.description?.toLowerCase().includes(lowercaseQuery)
-      );
-    }
-
-    return filtered;
-  }, [products, selectedCategoryFilter, searchQuery]);
+  // Derived state - subcategories for form
+  const availableSubcategories = categories.find(
+    c => c.id === formData.category
+  )?.subcategories || [];
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -304,27 +306,36 @@ export const useProductsAdmin = (): UseProductsAdminReturn => {
     }
   };
 
-  const clearFilters = () => {
-    setSelectedCategoryFilter('');
-    setSearchQuery('');
+  const handleOpenAddDialog = () => {
+    setIsAddDialogOpen(true);
   };
 
   return {
+    // Products data
     products,
-    filteredProducts,
+    categories,
+    
+    // Filters (delegated to useProductFilters)
     searchQuery,
-    selectedCategoryFilter,
-    isFilterOpen,
+    setSearchQuery,
+    selectedCategory,
+    setSelectedCategory,
+    filteredProducts,
+    resetFilters,
+    filterSummary: getFilterSummary(),
+
+    // Dialog states
     isAddDialogOpen,
     isEditDialogOpen,
+    deleteProductDialog,
+    
+    // Form state
     selectedImage,
     selectedProduct,
     formData,
     availableSubcategories,
-    deleteProductDialog,
-    setSearchQuery,
-    setSelectedCategoryFilter,
-    setIsFilterOpen,
+    
+    // Handlers
     setIsAddDialogOpen,
     setIsEditDialogOpen,
     setSelectedImage,
@@ -338,6 +349,6 @@ export const useProductsAdmin = (): UseProductsAdminReturn => {
     openDeleteProductDialog,
     confirmDeleteProduct,
     handleToggleFeatured,
-    clearFilters,
+    handleOpenAddDialog,
   };
 };

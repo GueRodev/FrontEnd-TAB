@@ -7,36 +7,46 @@ import { SidebarProvider, SidebarInset } from '@/components/ui/sidebar';
 import { AdminSidebar } from '@/components/AdminSidebar';
 import AdminHeader from '@/components/AdminHeader';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import { Card, CardContent } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { Search, Plus, Filter, X } from 'lucide-react';
+import { Plus } from 'lucide-react';
 import { useProductsAdmin } from '@/hooks/business';
-import { useCategories } from '@/contexts/CategoriesContext';
-import { ProductsListAdmin, ProductFormDialog } from '@/components/features/products';
+import {
+  ProductsListAdmin,
+  ProductFormDialog,
+  ProductFilters,
+} from '@/components/features/products';
 import { DeleteConfirmDialog } from '@/components/features/categories/DeleteConfirmDialog';
 
 const AdminProducts = () => {
   const {
+    // Products data
+    categories,
     filteredProducts,
+    filterSummary,
+
+    // Filters
     searchQuery,
-    selectedCategoryFilter,
-    isFilterOpen,
     setSearchQuery,
-    setSelectedCategoryFilter,
-    setIsFilterOpen,
+    selectedCategory,
+    setSelectedCategory,
+    resetFilters,
+
+    // Dialog states
     isAddDialogOpen,
     setIsAddDialogOpen,
     isEditDialogOpen,
     setIsEditDialogOpen,
+    deleteProductDialog,
+    setDeleteProductDialog,
+
+    // Form state
     selectedImage,
     setSelectedImage,
     formData,
     setFormData,
     availableSubcategories,
-    deleteProductDialog,
-    setDeleteProductDialog,
+
+    // Handlers
     handleImageUpload,
     handleRemoveImage,
     handleEditProduct,
@@ -45,10 +55,10 @@ const AdminProducts = () => {
     openDeleteProductDialog,
     confirmDeleteProduct,
     handleToggleFeatured,
-    clearFilters,
+    handleOpenAddDialog,
   } = useProductsAdmin();
 
-  const { categories } = useCategories();
+  const filterCount = [searchQuery, selectedCategory].filter(Boolean).length;
 
   return (
     <SidebarProvider>
@@ -67,13 +77,13 @@ const AdminProducts = () => {
                     Gestión de Productos
                   </h1>
                   <p className="text-gray-600 text-sm md:text-base lg:text-lg">
-                    Administra tu inventario de juguetes y LEGO
+                    {filterSummary.resultCount} de {filterSummary.totalCount} productos
                   </p>
                 </div>
                 <div className="flex justify-center sm:justify-start">
                   <Button 
                     className="bg-brand-orange hover:bg-brand-orange/90 text-white w-full max-w-xs sm:w-auto"
-                    onClick={() => setIsAddDialogOpen(true)}
+                    onClick={handleOpenAddDialog}
                   >
                     <Plus className="h-4 w-4 mr-2" />
                     Agregar Producto
@@ -81,96 +91,18 @@ const AdminProducts = () => {
                 </div>
               </div>
 
-              {/* Search and Filters */}
+              {/* Filters Component */}
               <Card className="mx-auto w-full">
                 <CardContent className="p-4 md:p-6">
-                  <div className="flex flex-col gap-3">
-                    <div className="relative w-full">
-                      <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
-                      <Input
-                        placeholder="Buscar productos..."
-                        value={searchQuery}
-                        onChange={(e) => setSearchQuery(e.target.value)}
-                        className="pl-9 h-10 border-gray-300 w-full"
-                      />
-                    </div>
-                    
-                    <div className="flex gap-2">
-                      <Popover open={isFilterOpen} onOpenChange={setIsFilterOpen}>
-                        <PopoverTrigger asChild>
-                          <Button variant="outline" className="h-10 px-4 border-gray-300 flex-1">
-                            <Filter className="h-4 w-4 mr-2" />
-                            Filtros
-                            {selectedCategoryFilter && (
-                              <Badge variant="secondary" className="ml-2">1</Badge>
-                            )}
-                          </Button>
-                        </PopoverTrigger>
-                        <PopoverContent className="w-80 p-0" align="start">
-                          <div className="p-4 space-y-4">
-                            <div className="flex items-center justify-between">
-                              <h3 className="font-semibold">Filtrar por categoría</h3>
-                              {selectedCategoryFilter && (
-                                <Button 
-                                  variant="ghost" 
-                                  size="sm"
-                                  onClick={() => {
-                                    clearFilters();
-                                    setIsFilterOpen(false);
-                                  }}
-                                >
-                                  Limpiar
-                                </Button>
-                              )}
-                            </div>
-                            
-                            <div className="space-y-2">
-                              <Button
-                                variant={!selectedCategoryFilter ? "default" : "ghost"}
-                                className="w-full justify-start"
-                                onClick={() => {
-                                  setSelectedCategoryFilter('');
-                                  setIsFilterOpen(false);
-                                }}
-                              >
-                                Todas las categorías
-                              </Button>
-                              
-                              {categories.map((category) => (
-                                <Button
-                                  key={category.id}
-                                  variant={selectedCategoryFilter === category.id ? "default" : "ghost"}
-                                  className="w-full justify-start"
-                                  onClick={() => {
-                                    setSelectedCategoryFilter(category.id);
-                                    setIsFilterOpen(false);
-                                  }}
-                                >
-                                  {category.name}
-                                </Button>
-                              ))}
-                            </div>
-                          </div>
-                        </PopoverContent>
-                      </Popover>
-                    </div>
-
-                    {/* Active Filters */}
-                    {selectedCategoryFilter && (
-                      <div className="flex items-center gap-2 flex-wrap">
-                        <span className="text-sm text-muted-foreground">Filtros activos:</span>
-                        <Badge variant="secondary" className="gap-1">
-                          {categories.find(c => c.id === selectedCategoryFilter)?.name}
-                          <button
-                            onClick={() => setSelectedCategoryFilter('')}
-                            className="ml-1 hover:bg-muted rounded-full"
-                          >
-                            <X className="h-3 w-3" />
-                          </button>
-                        </Badge>
-                      </div>
-                    )}
-                  </div>
+                  <ProductFilters
+                    searchQuery={searchQuery}
+                    onSearchChange={setSearchQuery}
+                    selectedCategory={selectedCategory}
+                    onCategoryChange={setSelectedCategory}
+                    categories={categories}
+                    onClearFilters={resetFilters}
+                    filterCount={filterCount}
+                  />
                 </CardContent>
               </Card>
 
