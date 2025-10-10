@@ -23,6 +23,9 @@ export const ProductImageUpload = ({
   return (
     <div className="space-y-2">
       <Label htmlFor={id}>Imagen del Producto *</Label>
+      <p className="text-xs text-muted-foreground">
+        Dimensiones recomendadas: 1000x1000px (formato cuadrado)
+      </p>
       {!selectedImage ? (
         <div className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center hover:border-gray-400 transition-colors">
           <Upload className="h-8 w-8 text-gray-400 mx-auto mb-2" />
@@ -43,11 +46,11 @@ export const ProductImageUpload = ({
           </label>
         </div>
       ) : (
-        <div className="relative">
+        <div className="relative bg-muted rounded-lg">
           <img
             src={selectedImage}
             alt="Preview"
-            className="w-full h-48 object-cover rounded-lg"
+            className="w-full h-64 object-contain rounded-lg"
           />
           <Button
             variant="destructive"
