@@ -10,6 +10,7 @@ import { useNotifications } from '@/contexts/NotificationsContext';
 import { toast } from '@/hooks/use-toast';
 import { productSchema, type ProductFormData } from '@/lib/validations/product.validation';
 import { useProductFilters } from './useProductFilters';
+import { useApi } from '@/hooks/useApi';
 import type { Product } from '@/types/product.types';
 
 interface DeleteProductDialog {
@@ -68,6 +69,7 @@ export const useProductsAdmin = (): UseProductsAdminReturn => {
   const { products, addProduct, updateProduct, deleteProduct } = useProducts();
   const { categories } = useCategories();
   const { addNotification } = useNotifications();
+  const { execute } = useApi();
 
   // Product filtering logic (delegated to useProductFilters)
   const {
@@ -142,7 +144,7 @@ export const useProductsAdmin = (): UseProductsAdminReturn => {
     setIsEditDialogOpen(true);
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
     // Validate
@@ -166,49 +168,51 @@ export const useProductsAdmin = (): UseProductsAdminReturn => {
       return;
     }
 
-    // Create product
-    addProduct({
-      name: formData.name,
-      marca: formData.marca || undefined,
-      categoryId: formData.category,
-      subcategoryId: formData.subcategory || undefined,
-      price: parseFloat(formData.price),
-      stock: parseInt(formData.stock) || 0,
-      description: formData.description || '',
-      image: selectedImage,
-      status: formData.status as 'active' | 'inactive',
-      isFeatured: false,
-    });
-    
-    // Add notification
-    addNotification({
-      type: 'product',
-      title: 'Producto creado',
-      message: `${formData.name} ha sido agregado al inventario`,
-      time: 'Ahora',
-    });
+    await execute(
+      async () => {
+        addProduct({
+          name: formData.name,
+          marca: formData.marca || undefined,
+          categoryId: formData.category,
+          subcategoryId: formData.subcategory || undefined,
+          price: parseFloat(formData.price),
+          stock: parseInt(formData.stock) || 0,
+          description: formData.description || '',
+          image: selectedImage,
+          status: formData.status as 'active' | 'inactive',
+          isFeatured: false,
+        });
+        
+        return formData.name;
+      },
+      {
+        successMessage: `${formData.name} ha sido agregado exitosamente`,
+        onSuccess: (productName) => {
+          addNotification({
+            type: 'product',
+            title: 'Producto creado',
+            message: `${productName} ha sido agregado al inventario`,
+            time: 'Ahora',
+          });
 
-    toast({
-      title: "Producto creado",
-      description: `${formData.name} ha sido agregado exitosamente`,
-    });
-
-    // Reset form
-    setIsAddDialogOpen(false);
-    setFormData({
-      name: '',
-      marca: '',
-      category: '',
-      subcategory: '',
-      price: '',
-      stock: '',
-      description: '',
-      status: 'active'
-    });
-    setSelectedImage(null);
+          setIsAddDialogOpen(false);
+          setFormData({
+            name: '',
+            marca: '',
+            category: '',
+            subcategory: '',
+            price: '',
+            stock: '',
+            description: '',
+            status: 'active'
+          });
+          setSelectedImage(null);
+        }
+      }
+    );
   };
 
-  const handleUpdateProduct = (e: React.FormEvent) => {
+  const handleUpdateProduct = async (e: React.FormEvent) => {
     e.preventDefault();
     
     if (!selectedProduct) return;
@@ -225,46 +229,48 @@ export const useProductsAdmin = (): UseProductsAdminReturn => {
       return;
     }
 
-    // Update product
-    updateProduct(selectedProduct.id, {
-      name: formData.name,
-      marca: formData.marca || undefined,
-      categoryId: formData.category,
-      subcategoryId: formData.subcategory || undefined,
-      price: parseFloat(formData.price),
-      stock: parseInt(formData.stock) || 0,
-      description: formData.description || '',
-      image: selectedImage || selectedProduct.image,
-      status: formData.status as 'active' | 'inactive',
-    });
-    
-    // Add notification
-    addNotification({
-      type: 'product',
-      title: 'Producto actualizado',
-      message: `${formData.name} ha sido modificado`,
-      time: 'Ahora',
-    });
+    await execute(
+      async () => {
+        updateProduct(selectedProduct.id, {
+          name: formData.name,
+          marca: formData.marca || undefined,
+          categoryId: formData.category,
+          subcategoryId: formData.subcategory || undefined,
+          price: parseFloat(formData.price),
+          stock: parseInt(formData.stock) || 0,
+          description: formData.description || '',
+          image: selectedImage || selectedProduct.image,
+          status: formData.status as 'active' | 'inactive',
+        });
+        
+        return formData.name;
+      },
+      {
+        successMessage: `${formData.name} ha sido actualizado exitosamente`,
+        onSuccess: (productName) => {
+          addNotification({
+            type: 'product',
+            title: 'Producto actualizado',
+            message: `${productName} ha sido modificado`,
+            time: 'Ahora',
+          });
 
-    toast({
-      title: "Producto actualizado",
-      description: `${formData.name} ha sido actualizado exitosamente`,
-    });
-
-    // Reset form
-    setIsEditDialogOpen(false);
-    setFormData({
-      name: '',
-      marca: '',
-      category: '',
-      subcategory: '',
-      price: '',
-      stock: '',
-      description: '',
-      status: 'active'
-    });
-    setSelectedImage(null);
-    setSelectedProduct(null);
+          setIsEditDialogOpen(false);
+          setFormData({
+            name: '',
+            marca: '',
+            category: '',
+            subcategory: '',
+            price: '',
+            stock: '',
+            description: '',
+            status: 'active'
+          });
+          setSelectedImage(null);
+          setSelectedProduct(null);
+        }
+      }
+    );
   };
 
   const openDeleteProductDialog = (productId: string) => {

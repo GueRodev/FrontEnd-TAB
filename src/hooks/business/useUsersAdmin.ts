@@ -6,6 +6,7 @@
 import { useState } from 'react';
 import { useNotifications } from '@/contexts/NotificationsContext';
 import { toast } from '@/hooks/use-toast';
+import { useApi } from '@/hooks/useApi';
 import { adminSchema, type AdminFormData } from '@/lib/validations/user.validation';
 
 // Mock data - will be replaced with API calls
@@ -105,6 +106,7 @@ interface UseUsersAdminReturn {
 
 export const useUsersAdmin = (): UseUsersAdminReturn => {
   const { addNotification } = useNotifications();
+  const { execute } = useApi();
   
   const [clientes, setClientes] = useState(mockClientes);
   const [searchClientes, setSearchClientes] = useState('');
@@ -177,7 +179,7 @@ export const useUsersAdmin = (): UseUsersAdminReturn => {
     setEditingAdmin(null);
   };
 
-  const handleSubmitAdmin = (e: React.FormEvent) => {
+  const handleSubmitAdmin = async (e: React.FormEvent) => {
     e.preventDefault();
     
     // Validate
@@ -192,13 +194,18 @@ export const useUsersAdmin = (): UseUsersAdminReturn => {
       return;
     }
     
-    // TODO: Call usersService.createAdmin or updateAdmin
-    toast({
-      title: editingAdmin ? "Administrador actualizado" : "Administrador creado",
-      description: `${adminFormData.name} ha sido ${editingAdmin ? 'actualizado' : 'creado'} exitosamente`,
-    });
-    
-    setIsAdminDialogOpen(false);
+    await execute(
+      async () => {
+        // TODO: Call usersService.createAdmin or updateAdmin when API is ready
+        return adminFormData.name;
+      },
+      {
+        successMessage: `${adminFormData.name} ha sido ${editingAdmin ? 'actualizado' : 'creado'} exitosamente`,
+        onSuccess: () => {
+          setIsAdminDialogOpen(false);
+        }
+      }
+    );
   };
 
   const handleDeleteAdmin = (id: number) => {

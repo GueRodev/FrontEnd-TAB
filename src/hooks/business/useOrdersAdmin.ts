@@ -9,6 +9,7 @@ import { useProducts } from '@/contexts/ProductsContext';
 import { useCategories } from '@/contexts/CategoriesContext';
 import { useNotifications } from '@/contexts/NotificationsContext';
 import { toast } from '@/hooks/use-toast';
+import { useApi } from '@/hooks/useApi';
 import { Badge } from '@/components/ui/badge';
 import { Package, CheckCircle, XCircle } from 'lucide-react';
 import type { OrderStatus } from '@/types/order.types';
@@ -61,6 +62,7 @@ export const useOrdersAdmin = (): UseOrdersAdminReturn => {
   const { addNotification } = useNotifications();
   const { categories } = useCategories();
   const { products, updateProduct } = useProducts();
+  const { execute } = useApi();
   
   const [selectedProduct, setSelectedProduct] = useState('');
   const [quantity, setQuantity] = useState(1);
@@ -92,7 +94,7 @@ export const useOrdersAdmin = (): UseOrdersAdminReturn => {
 
   const selectedProductData = activeProducts.find(p => p.id === selectedProduct);
 
-  const handleCreateInStoreOrder = () => {
+  const handleCreateInStoreOrder = async () => {
     if (!selectedProduct || !customerName || !customerPhone || !paymentMethod) {
       toast({
         title: "Campos incompletos",
@@ -133,30 +135,32 @@ export const useOrdersAdmin = (): UseOrdersAdminReturn => {
       paymentMethod: paymentMethod,
     };
 
-    const orderId = addOrder(newOrder);
-
-    // Add notification
-    addNotification({
-      type: 'order',
-      title: 'Pedido en tienda creado',
-      message: `Pedido de ${customerName} - ${product.name} x${quantity}`,
-      time: 'Ahora',
-      orderId: orderId,
-    });
-    
-    // Clear form
-    setSelectedProduct('');
-    setQuantity(1);
-    setCustomerName('');
-    setCustomerPhone('');
-    setPaymentMethod('');
-    setSearchQuery('');
-    setCategoryFilter('all');
-
-    toast({
-      title: "Pedido creado",
-      description: "El pedido en tienda ha sido registrado exitosamente",
-    });
+    await execute(
+      async () => {
+        const orderId = addOrder(newOrder);
+        return { orderId, customerName: customerName, productName: product.name, quantity };
+      },
+      {
+        successMessage: "El pedido en tienda ha sido registrado exitosamente",
+        onSuccess: (data) => {
+          addNotification({
+            type: 'order',
+            title: 'Pedido en tienda creado',
+            message: `Pedido de ${data.customerName} - ${data.productName} x${data.quantity}`,
+            time: 'Ahora',
+            orderId: data.orderId,
+          });
+          
+          setSelectedProduct('');
+          setQuantity(1);
+          setCustomerName('');
+          setCustomerPhone('');
+          setPaymentMethod('');
+          setSearchQuery('');
+          setCategoryFilter('all');
+        }
+      }
+    );
   };
 
   const openDeleteOrderDialog = (orderId: string, order: any) => {

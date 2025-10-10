@@ -5,6 +5,7 @@
 
 import { useState, useEffect } from 'react';
 import { useToast } from '@/hooks/use-toast';
+import { useApi } from '@/hooks/useApi';
 import { authService } from '@/api/services/auth.service';
 import { adminProfileSchema, type AdminProfileFormData } from '@/lib/validations/user.validation';
 import type { UserProfile } from '@/types/user.types';
@@ -25,10 +26,10 @@ interface UseAdminProfileReturn {
 
 export const useAdminProfile = (user: UserProfile | null): UseAdminProfileReturn => {
   const { toast } = useToast();
+  const { isLoading: isUploading, execute } = useApi();
   const [isEditing, setIsEditing] = useState(false);
   const [avatarFile, setAvatarFile] = useState<File | null>(null);
   const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
-  const [isUploading, setIsUploading] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
   
   const [formData, setFormData] = useState<AdminProfileFormData>({
@@ -120,64 +121,55 @@ export const useAdminProfile = (user: UserProfile | null): UseAdminProfileReturn
   };
 
   const handleSave = async () => {
-    try {
-      setIsUploading(true);
-      setErrors({});
+    setErrors({});
 
-      // Validate form data
-      const result = adminProfileSchema.safeParse(formData);
-      
-      if (!result.success) {
-        const fieldErrors: Record<string, string> = {};
-        result.error.errors.forEach((error) => {
-          if (error.path[0]) {
-            fieldErrors[error.path[0] as string] = error.message;
-          }
-        });
-        setErrors(fieldErrors);
-        toast({
-          title: 'Error de validación',
-          description: 'Por favor corrige los errores en el formulario',
-          variant: 'destructive',
-        });
-        return;
-      }
-
-      // Upload avatar if changed
-      let avatarUrl: string | undefined;
-      if (avatarFile) {
-        const avatarResponse = await authService.uploadAvatar(avatarFile);
-        avatarUrl = avatarResponse.data.avatarUrl;
-      }
-
-      // Update profile
-      const updateData: Partial<UserProfile> = {
-        name: formData.name,
-        email: formData.email,
-        phone: formData.phone || '',
-      };
-
-      await authService.updateAdminProfile(updateData);
-
-      toast({
-        title: 'Éxito',
-        description: 'Perfil actualizado correctamente',
+    // Validate form data
+    const result = adminProfileSchema.safeParse(formData);
+    
+    if (!result.success) {
+      const fieldErrors: Record<string, string> = {};
+      result.error.errors.forEach((error) => {
+        if (error.path[0]) {
+          fieldErrors[error.path[0] as string] = error.message;
+        }
       });
-
-      setIsEditing(false);
-      setAvatarFile(null);
-      setAvatarPreview(null);
-      setFormData(prev => ({ ...prev, password: '' }));
-    } catch (error) {
-      console.error('Error updating profile:', error);
+      setErrors(fieldErrors);
       toast({
-        title: 'Error',
-        description: error instanceof Error ? error.message : 'Error al actualizar el perfil',
+        title: 'Error de validación',
+        description: 'Por favor corrige los errores en el formulario',
         variant: 'destructive',
       });
-    } finally {
-      setIsUploading(false);
+      return;
     }
+
+    await execute(
+      async () => {
+        // Upload avatar if changed
+        let avatarUrl: string | undefined;
+        if (avatarFile) {
+          const avatarResponse = await authService.uploadAvatar(avatarFile);
+          avatarUrl = avatarResponse.data.avatarUrl;
+        }
+
+        // Update profile
+        const updateData: Partial<UserProfile> = {
+          name: formData.name,
+          email: formData.email,
+          phone: formData.phone || '',
+        };
+
+        return authService.updateAdminProfile(updateData);
+      },
+      {
+        successMessage: 'Perfil actualizado correctamente',
+        onSuccess: () => {
+          setIsEditing(false);
+          setAvatarFile(null);
+          setAvatarPreview(null);
+          setFormData(prev => ({ ...prev, password: '' }));
+        }
+      }
+    );
   };
 
   return {

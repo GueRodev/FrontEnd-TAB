@@ -8,6 +8,7 @@ import { useOrders } from '@/contexts/OrdersContext';
 import { useNotifications } from '@/contexts/NotificationsContext';
 import { useCartOperations } from './useCartOperations';
 import { toast } from '@/hooks/use-toast';
+import { useApi } from '@/hooks/useApi';
 import { orderFormSchema } from '@/lib/validations/order.validation';
 import { formatCurrency } from '@/lib/formatters';
 import { APP_CONFIG } from '@/config/app.config';
@@ -28,6 +29,7 @@ export const useOrderForm = () => {
   const { addOrder } = useOrders();
   const { addNotification } = useNotifications();
   const { items, totalPrice, clearCart } = useCartOperations();
+  const { execute } = useApi();
   
   const [formData, setFormData] = useState<OrderFormData>(INITIAL_FORM_STATE);
   const [deliveryOption, setDeliveryOption] = useState<DeliveryOption>('pickup');
@@ -135,62 +137,65 @@ export const useOrderForm = () => {
   /**
    * Submit order
    */
-  const submitOrder = (addressData?: DeliveryAddress): boolean => {
+  const submitOrder = async (addressData?: DeliveryAddress): Promise<boolean> => {
     // Validate form
     if (!validateForm(addressData)) {
       return false;
     }
 
-    // Create order
-    const orderId = addOrder({
-      type: 'online',
-      status: 'pending',
-      items: items.map(item => ({
-        id: item.id,
-        name: item.name,
-        image: item.image,
-        price: item.price,
-        quantity: item.quantity,
-      })),
-      total: totalPrice,
-      customerInfo: {
-        name: formData.name,
-        phone: formData.phone,
+    const success = await execute(
+      async () => {
+        const orderId = addOrder({
+          type: 'online',
+          status: 'pending',
+          items: items.map(item => ({
+            id: item.id,
+            name: item.name,
+            image: item.image,
+            price: item.price,
+            quantity: item.quantity,
+          })),
+          total: totalPrice,
+          customerInfo: {
+            name: formData.name,
+            phone: formData.phone,
+          },
+          delivery_address: deliveryOption === 'delivery' && addressData ? addressData : undefined,
+          deliveryOption,
+          paymentMethod,
+        });
+
+        return { orderId, customerName: formData.name };
       },
-      delivery_address: deliveryOption === 'delivery' && addressData ? addressData : undefined,
-      deliveryOption,
-      paymentMethod,
-    });
+      {
+        successMessage: 'Tu pedido ha sido procesado correctamente',
+        onSuccess: (data) => {
+          const total = formatCurrency(totalPrice);
+          addNotification({
+            type: 'order',
+            title: 'Nuevo pedido recibido',
+            message: `Pedido ${data.orderId} de ${data.customerName} - Total: ${total}`,
+            time: 'Ahora',
+            orderId: data.orderId,
+          });
 
-    // Add notification
-    const total = formatCurrency(totalPrice);
-    addNotification({
-      type: 'order',
-      title: 'Nuevo pedido recibido',
-      message: `Pedido ${orderId} de ${formData.name} - Total: ${total}`,
-      time: 'Ahora',
-      orderId: orderId,
-    });
+          // Build WhatsApp message
+          const message = buildWhatsAppMessage(addressData);
+          const encodedMessage = encodeURIComponent(message);
+          const whatsappNumber = `${APP_CONFIG.whatsapp.countryCode}${APP_CONFIG.whatsapp.phoneNumber}`;
+          const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodedMessage}`;
 
-    // Build WhatsApp message
-    const message = buildWhatsAppMessage(addressData);
-    const encodedMessage = encodeURIComponent(message);
-    const whatsappNumber = `${APP_CONFIG.whatsapp.countryCode}${APP_CONFIG.whatsapp.phoneNumber}`;
-    const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodedMessage}`;
+          // Open WhatsApp
+          window.open(whatsappUrl, '_blank');
 
-    // Open WhatsApp
-    window.open(whatsappUrl, '_blank');
+          // Clear cart and reset form
+          clearCart();
+          resetForm();
+        }
+      }
+    );
 
-    // Clear cart and reset form
-    clearCart();
-    resetForm();
-
-    toast({
-      title: 'Pedido enviado',
-      description: 'Tu pedido ha sido procesado correctamente',
-    });
-
-    return true;
+    return !!success;
   };
 
   return {

@@ -7,6 +7,7 @@ import { useState, useEffect } from 'react';
 import { useCategories } from '@/contexts/CategoriesContext';
 import type { Category, Subcategory } from '@/types/product.types';
 import { toast } from '@/hooks/use-toast';
+import { useApi } from '@/hooks/useApi';
 import { DragEndEvent } from '@dnd-kit/core';
 import { arrayMove } from '@dnd-kit/sortable';
 import { z } from 'zod';
@@ -45,6 +46,7 @@ export const useCategoriesAdmin = () => {
     reorderCategories,
     setCategories,
   } = useCategories();
+  const { execute } = useApi();
 
   // Modal states
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
@@ -148,41 +150,34 @@ export const useCategoriesAdmin = () => {
     try {
       if (modalType === 'category') {
         const validatedData = categorySchema.parse(addFormData);
-        await addCategory({ name: validatedData.name });
-
-        toast({
-          title: "Categoría creada",
-          description: `La categoría "${validatedData.name}" se ha creado exitosamente`,
-        });
+        
+        await execute(
+          () => addCategory({ name: validatedData.name }),
+          {
+            successMessage: `La categoría "${validatedData.name}" se ha creado exitosamente`,
+            onSuccess: () => closeAddModal()
+          }
+        );
       } else {
         const validatedData = subcategorySchema.parse({
           ...addFormData,
           categoryId: selectedCategoryId,
         });
 
-        await addSubcategory(selectedCategoryId, { name: validatedData.name });
-
-        toast({
-          title: "Subcategoría creada",
-          description: `La subcategoría "${validatedData.name}" se ha creado exitosamente`,
-        });
+        await execute(
+          () => addSubcategory(selectedCategoryId, { name: validatedData.name }),
+          {
+            successMessage: `La subcategoría "${validatedData.name}" se ha creado exitosamente`,
+            onSuccess: () => closeAddModal()
+          }
+        );
       }
-
-      closeAddModal();
     } catch (error) {
       if (error instanceof z.ZodError) {
         const firstError = error.errors[0];
         toast({
           title: "Error de validación",
           description: firstError.message,
-          variant: "destructive",
-        });
-      } else {
-        toast({
-          title: "Error",
-          description: modalType === 'category'
-            ? "No se pudo crear la categoría"
-            : "No se pudo crear la subcategoría",
           variant: "destructive",
         });
       }
@@ -211,34 +206,32 @@ export const useCategoriesAdmin = () => {
     try {
       const validatedData = categorySchema.parse(editFormData);
 
-      await updateCategory(editingCategory.id, { name: validatedData.name });
+      await execute(
+        async () => {
+          await updateCategory(editingCategory.id, { name: validatedData.name });
+          return validatedData.name;
+        },
+        {
+          successMessage: "Los cambios se han guardado exitosamente",
+          onSuccess: () => {
+            setPendingCategories(pendingCategories.map(cat =>
+              cat.id === editingCategory.id
+                ? { ...cat, name: validatedData.name }
+                : cat
+            ));
 
-      setPendingCategories(pendingCategories.map(cat =>
-        cat.id === editingCategory.id
-          ? { ...cat, name: validatedData.name }
-          : cat
-      ));
-
-      toast({
-        title: "Categoría actualizada",
-        description: "Los cambios se han guardado exitosamente",
-      });
-
-      setIsEditCategoryOpen(false);
-      setEditingCategory(null);
-      setEditFormData({ name: '' });
+            setIsEditCategoryOpen(false);
+            setEditingCategory(null);
+            setEditFormData({ name: '' });
+          }
+        }
+      );
     } catch (error) {
       if (error instanceof z.ZodError) {
         const firstError = error.errors[0];
         toast({
           title: "Error de validación",
           description: firstError.message,
-          variant: "destructive",
-        });
-      } else {
-        toast({
-          title: "Error",
-          description: "No se pudo actualizar la categoría",
           variant: "destructive",
         });
       }
@@ -264,35 +257,30 @@ export const useCategoriesAdmin = () => {
         throw new Error('Category not found');
       }
 
-      await updateSubcategory(
-        currentCategory.id,
-        editingSubcategory.id,
+      await execute(
+        () => updateSubcategory(
+          currentCategory.id,
+          editingSubcategory.id,
+          {
+            name: validatedData.name,
+            newCategoryId: selectedCategoryId !== currentCategory.id ? selectedCategoryId : undefined,
+          }
+        ),
         {
-          name: validatedData.name,
-          newCategoryId: selectedCategoryId !== currentCategory.id ? selectedCategoryId : undefined,
+          successMessage: "Los cambios se han guardado exitosamente",
+          onSuccess: () => {
+            setIsEditSubcategoryOpen(false);
+            setEditingSubcategory(null);
+            setEditFormData({ name: '' });
+          }
         }
       );
-
-      toast({
-        title: "Subcategoría actualizada",
-        description: "Los cambios se han guardado exitosamente",
-      });
-
-      setIsEditSubcategoryOpen(false);
-      setEditingSubcategory(null);
-      setEditFormData({ name: '' });
     } catch (error) {
       if (error instanceof z.ZodError) {
         const firstError = error.errors[0];
         toast({
           title: "Error de validación",
           description: firstError.message,
-          variant: "destructive",
-        });
-      } else {
-        toast({
-          title: "Error",
-          description: "No se pudo actualizar la subcategoría",
           variant: "destructive",
         });
       }
