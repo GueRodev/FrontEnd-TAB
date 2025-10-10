@@ -73,7 +73,7 @@ export const CategoryFormDialog: React.FC<CategoryFormDialogProps> = ({
             </Button>
             <Button
               type="submit"
-              className="w-full sm:w-auto"
+              className="w-full sm:w-auto bg-brand-orange hover:bg-brand-orange/90"
               disabled={!formData.name.trim() || loading}
             >
               {loading ? 'Guardando...' : mode === 'add' ? 'Guardar' : 'Actualizar'}
