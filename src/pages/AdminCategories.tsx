@@ -47,6 +47,8 @@ const AdminCategories: React.FC = () => {
     // Delete dialog
     deleteSubcategoryDialog,
     setDeleteSubcategoryDialog,
+    deleteCategoryDialog,
+    setDeleteCategoryDialog,
 
     // Handlers
     handleDragEnd,
@@ -59,7 +61,8 @@ const AdminCategories: React.FC = () => {
     openEditSubcategory,
     handleUpdateCategory,
     handleUpdateSubcategory,
-    handleDeleteCategory,
+    openDeleteCategoryDialog,
+    confirmDeleteCategory,
     openDeleteSubcategoryDialog,
     confirmDeleteSubcategory,
     handleToggleExpand,
@@ -137,7 +140,7 @@ const AdminCategories: React.FC = () => {
                   categories={pendingCategories}
                   onDragEnd={handleDragEnd}
                   onEdit={openEditCategory}
-                  onDelete={handleDeleteCategory}
+                  onDelete={openDeleteCategoryDialog}
                   onToggleExpand={handleToggleExpand}
                   onEditSubcategory={openEditSubcategory}
                   onDeleteSubcategory={openDeleteSubcategoryDialog}
@@ -147,7 +150,7 @@ const AdminCategories: React.FC = () => {
                   categories={pendingCategories}
                   onDragEnd={handleDragEnd}
                   onEdit={openEditCategory}
-                  onDelete={handleDeleteCategory}
+                  onDelete={openDeleteCategoryDialog}
                   onToggleExpand={handleToggleExpand}
                   onEditSubcategory={openEditSubcategory}
                   onDeleteSubcategory={openDeleteSubcategoryDialog}
@@ -207,6 +210,16 @@ const AdminCategories: React.FC = () => {
         onCategoryChange={setSelectedCategoryId}
         onSubmit={handleUpdateSubcategory}
         loading={loading}
+      />
+
+      {/* Delete Category Confirmation */}
+      <DeleteConfirmDialog
+        open={deleteCategoryDialog.open}
+        onOpenChange={(open) =>
+          setDeleteCategoryDialog({ ...deleteCategoryDialog, open })
+        }
+        itemName={deleteCategoryDialog.categoryName}
+        onConfirm={confirmDeleteCategory}
       />
 
       {/* Delete Subcategory Confirmation */}

@@ -26,6 +26,12 @@ interface DeleteSubcategoryDialog {
   subcategoryName: string;
 }
 
+interface DeleteCategoryDialog {
+  open: boolean;
+  categoryId: string;
+  categoryName: string;
+}
+
 export const useCategoriesAdmin = () => {
   const {
     categories,
@@ -65,6 +71,12 @@ export const useCategoriesAdmin = () => {
     categoryId: '',
     subcategoryId: '',
     subcategoryName: '',
+  });
+
+  const [deleteCategoryDialog, setDeleteCategoryDialog] = useState<DeleteCategoryDialog>({
+    open: false,
+    categoryId: '',
+    categoryName: '',
   });
 
   // Sync pending categories when categories change
@@ -288,14 +300,41 @@ export const useCategoriesAdmin = () => {
   };
 
   // Delete handlers
-  const handleDeleteCategory = async (id: string) => {
+  const openDeleteCategoryDialog = (categoryId: string) => {
+    const category = categories.find(cat => cat.id === categoryId);
+
+    if (!category) {
+      toast({
+        title: "Error",
+        description: "No se encontró la categoría",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setDeleteCategoryDialog({
+      open: true,
+      categoryId,
+      categoryName: category.name,
+    });
+  };
+
+  const confirmDeleteCategory = async () => {
+    const { categoryId, categoryName } = deleteCategoryDialog;
+
     try {
-      await deleteCategory(id);
-      setPendingCategories(pendingCategories.filter(cat => cat.id !== id));
+      await deleteCategory(categoryId);
+      setPendingCategories(pendingCategories.filter(cat => cat.id !== categoryId));
+
+      setDeleteCategoryDialog({
+        open: false,
+        categoryId: '',
+        categoryName: '',
+      });
 
       toast({
         title: "Categoría eliminada",
-        description: "La categoría se ha eliminado exitosamente",
+        description: `La categoría "${categoryName}" se ha eliminado exitosamente`,
       });
     } catch (error) {
       toast({
@@ -398,6 +437,8 @@ export const useCategoriesAdmin = () => {
     // Delete dialog
     deleteSubcategoryDialog,
     setDeleteSubcategoryDialog,
+    deleteCategoryDialog,
+    setDeleteCategoryDialog,
 
     // Handlers
     handleDragEnd,
@@ -410,7 +451,8 @@ export const useCategoriesAdmin = () => {
     openEditSubcategory,
     handleUpdateCategory,
     handleUpdateSubcategory,
-    handleDeleteCategory,
+    openDeleteCategoryDialog,
+    confirmDeleteCategory,
     openDeleteSubcategoryDialog,
     confirmDeleteSubcategory,
     handleToggleExpand,
