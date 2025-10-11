@@ -11,3 +11,4 @@ export { AddressSelector } from './AddressSelector';
 export { PaymentMethodSelector } from './PaymentMethodSelector';
 export { OrdersTable } from './OrdersTable';
 export { ArchivedOrderCard } from './ArchivedOrderCard';
+export { PaymentConfirmationDialog } from './PaymentConfirmationDialog';

@@ -17,6 +17,7 @@ interface OrderCardProps {
   onDelete: (orderId: string, order: Order) => void;
   onComplete: (order: Order) => void;
   onCancel: (order: Order) => void;
+  onCompleteWithConfirmation?: (order: Order) => void;
 }
 
 export const OrderCard: React.FC<OrderCardProps> = ({
@@ -26,7 +27,17 @@ export const OrderCard: React.FC<OrderCardProps> = ({
   onDelete,
   onComplete,
   onCancel,
+  onCompleteWithConfirmation,
 }) => {
+  const handleComplete = () => {
+    // For online orders, use confirmation dialog if provided
+    if (order.type === 'online' && onCompleteWithConfirmation) {
+      onCompleteWithConfirmation(order);
+    } else {
+      // For in-store orders, complete directly
+      onComplete(order);
+    }
+  };
   return (
     <Card className="overflow-hidden hover:shadow-md transition-shadow">
       <CardHeader className="bg-muted/50 pb-3">
@@ -127,7 +138,7 @@ export const OrderCard: React.FC<OrderCardProps> = ({
               <Button
                 size="sm"
                 variant="default"
-                onClick={() => onComplete(order)}
+                onClick={handleComplete}
                 className="flex-1 sm:flex-none"
               >
                 <CheckCircle className="h-4 w-4 mr-1" />

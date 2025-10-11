@@ -16,6 +16,7 @@ interface OrdersListProps {
   onDelete: (orderId: string, order: Order) => void;
   onComplete: (order: Order) => void;
   onCancel: (order: Order) => void;
+  onCompleteWithConfirmation?: (order: Order) => void;
 }
 
 export const OrdersList: React.FC<OrdersListProps> = ({
@@ -28,6 +29,7 @@ export const OrdersList: React.FC<OrdersListProps> = ({
   onDelete,
   onComplete,
   onCancel,
+  onCompleteWithConfirmation,
 }) => {
   if (orders.length === 0) {
     return (
@@ -49,6 +51,7 @@ export const OrdersList: React.FC<OrdersListProps> = ({
           onDelete={onDelete}
           onComplete={onComplete}
           onCancel={onCancel}
+          onCompleteWithConfirmation={onCompleteWithConfirmation}
         />
       ))}
     </div>

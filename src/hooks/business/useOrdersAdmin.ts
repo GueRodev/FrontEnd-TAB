@@ -20,6 +20,11 @@ interface DeleteOrderDialog {
   order: any;
 }
 
+interface PaymentConfirmationDialog {
+  open: boolean;
+  order: any;
+}
+
 interface UseOrdersAdminReturn {
   // State
   onlineOrders: any[];
@@ -36,6 +41,7 @@ interface UseOrdersAdminReturn {
   filteredProducts: any[];
   selectedProductData: any;
   deleteOrderDialog: DeleteOrderDialog;
+  paymentConfirmDialog: PaymentConfirmationDialog;
   
   // Setters
   setSelectedProduct: (id: string) => void;
@@ -47,6 +53,7 @@ interface UseOrdersAdminReturn {
   setSearchQuery: (query: string) => void;
   setOpenProductSearch: (open: boolean) => void;
   setDeleteOrderDialog: (dialog: DeleteOrderDialog) => void;
+  setPaymentConfirmDialog: (dialog: PaymentConfirmationDialog) => void;
   
   // Handlers
   handleCreateInStoreOrder: () => void;
@@ -55,6 +62,8 @@ interface UseOrdersAdminReturn {
   handleArchiveOrder: (orderId: string) => void;
   handleCompleteOrder: (order: any) => void;
   handleCancelOrder: (order: any) => void;
+  openPaymentConfirmDialog: (order: any) => void;
+  confirmCompleteOrder: () => void;
 }
 
 export const useOrdersAdmin = (): UseOrdersAdminReturn => {
@@ -76,6 +85,11 @@ export const useOrdersAdmin = (): UseOrdersAdminReturn => {
   const [deleteOrderDialog, setDeleteOrderDialog] = useState<DeleteOrderDialog>({
     open: false,
     orderId: '',
+    order: null,
+  });
+
+  const [paymentConfirmDialog, setPaymentConfirmDialog] = useState<PaymentConfirmationDialog>({
+    open: false,
     order: null,
   });
 
@@ -219,6 +233,25 @@ export const useOrdersAdmin = (): UseOrdersAdminReturn => {
     });
   };
 
+  const openPaymentConfirmDialog = (order: any) => {
+    setPaymentConfirmDialog({
+      open: true,
+      order,
+    });
+  };
+
+  const confirmCompleteOrder = () => {
+    const { order } = paymentConfirmDialog;
+    if (!order) return;
+
+    handleCompleteOrder(order);
+    
+    setPaymentConfirmDialog({
+      open: false,
+      order: null,
+    });
+  };
+
   const handleCompleteOrder = (order: any) => {
     // Update stock when completing order
     order.items.forEach((item: any) => {
@@ -274,6 +307,7 @@ export const useOrdersAdmin = (): UseOrdersAdminReturn => {
     filteredProducts,
     selectedProductData,
     deleteOrderDialog,
+    paymentConfirmDialog,
     setSelectedProduct,
     setQuantity,
     setCustomerName,
@@ -283,11 +317,14 @@ export const useOrdersAdmin = (): UseOrdersAdminReturn => {
     setSearchQuery,
     setOpenProductSearch,
     setDeleteOrderDialog,
+    setPaymentConfirmDialog,
     handleCreateInStoreOrder,
     openDeleteOrderDialog,
     confirmDeleteOrder,
     handleArchiveOrder,
     handleCompleteOrder,
     handleCancelOrder,
+    openPaymentConfirmDialog,
+    confirmCompleteOrder,
   };
 };

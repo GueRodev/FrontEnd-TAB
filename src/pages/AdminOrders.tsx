@@ -10,7 +10,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { useOrdersAdmin } from '@/hooks/business/useOrdersAdmin';
 import { useCategories } from '@/contexts/CategoriesContext';
-import { OrdersList, InStoreOrderForm } from '@/components/features/orders';
+import { OrdersList, InStoreOrderForm, PaymentConfirmationDialog } from '@/components/features/orders';
 import { DeleteConfirmDialog } from '@/components/features/categories';
 import { ShoppingCart, Store, History } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
@@ -41,13 +41,17 @@ const AdminOrders = () => {
     filteredProducts,
     selectedProductData,
     deleteOrderDialog,
+    paymentConfirmDialog,
     setDeleteOrderDialog,
+    setPaymentConfirmDialog,
     handleCreateInStoreOrder,
     openDeleteOrderDialog,
     confirmDeleteOrder,
     handleArchiveOrder,
     handleCompleteOrder,
     handleCancelOrder,
+    openPaymentConfirmDialog,
+    confirmCompleteOrder,
   } = useOrdersAdmin();
 
   return (
@@ -95,6 +99,7 @@ const AdminOrders = () => {
                     onDelete={openDeleteOrderDialog}
                     onComplete={handleCompleteOrder}
                     onCancel={handleCancelOrder}
+                    onCompleteWithConfirmation={openPaymentConfirmDialog}
                   />
                 </CardContent>
               </Card>
@@ -177,6 +182,17 @@ const AdminOrders = () => {
         itemName={deleteOrderDialog.order?.id || ''}
         itemType="order"
         onConfirm={confirmDeleteOrder}
+      />
+
+      {/* Payment Confirmation Dialog */}
+      <PaymentConfirmationDialog
+        open={paymentConfirmDialog.open}
+        onOpenChange={(open) =>
+          setPaymentConfirmDialog({ ...paymentConfirmDialog, open })
+        }
+        onConfirm={confirmCompleteOrder}
+        customerName={paymentConfirmDialog.order?.customerInfo?.name}
+        orderTotal={paymentConfirmDialog.order?.total}
       />
     </SidebarProvider>
   );
