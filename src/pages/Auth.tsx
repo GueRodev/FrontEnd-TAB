@@ -5,7 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import Logo from '@/components/Logo';
 import { useAuthForm } from '@/hooks/business';
-import { LoginForm, RegisterForm } from '@/components/features/auth';
+import { LoginForm, RegisterForm, DevCredentials } from '@/components/features/auth';
 
 const Auth: React.FC = () => {
   const navigate = useNavigate();
@@ -64,6 +64,9 @@ const Auth: React.FC = () => {
                 />
               </TabsContent>
             </Tabs>
+
+            {/* Credenciales de desarrollo */}
+            <DevCredentials />
 
             {/* Botón provisional para volver al home */}
             <div className="mt-6 pt-6 border-t">
