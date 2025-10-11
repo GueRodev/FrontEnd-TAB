@@ -1,11 +1,12 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useCartOperations, useOrderForm, useAddressSelection } from '@/hooks/business';
 import { useAuth } from '@/contexts/AuthContext';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
-import { CartItemsList, EmptyCart, CartSummary, OrderForm } from '@/components/features/cart';
+import { CartItemsList, EmptyCart, CartSummary, OrderForm, AddressConfirmationDialog } from '@/components/features/cart';
 import { AddressSelector } from '@/components/features/orders';
+import type { DeliveryAddress } from '@/types/order.types';
 
 /**
  * Cart Page
@@ -42,9 +43,25 @@ const Cart = () => {
     getSelectedAddress,
   } = useAddressSelection(user, isAuthenticated);
 
+  const [showConfirmation, setShowConfirmation] = useState(false);
+  const [pendingAddressData, setPendingAddressData] = useState<DeliveryAddress | undefined>();
+
   const handleSubmit = () => {
     const addressData = deliveryOption === 'delivery' ? getSelectedAddress() : undefined;
-    submitOrder(addressData);
+    
+    // Si es envío a domicilio, mostrar confirmación primero
+    if (deliveryOption === 'delivery') {
+      setPendingAddressData(addressData);
+      setShowConfirmation(true);
+    } else {
+      // Si es pickup, procesar directamente
+      submitOrder(addressData);
+    }
+  };
+
+  const handleConfirmAddress = () => {
+    setShowConfirmation(false);
+    submitOrder(pendingAddressData);
   };
 
   return (
@@ -114,6 +131,13 @@ const Cart = () => {
           )}
         </div>
       </section>
+
+      <AddressConfirmationDialog
+        open={showConfirmation}
+        onOpenChange={setShowConfirmation}
+        address={pendingAddressData}
+        onConfirm={handleConfirmAddress}
+      />
 
       <Footer />
     </div>

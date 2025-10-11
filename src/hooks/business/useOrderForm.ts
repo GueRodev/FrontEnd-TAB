@@ -100,6 +100,9 @@ export const useOrderForm = () => {
    * Build WhatsApp message
    */
   const buildWhatsAppMessage = (addressData?: DeliveryAddress): string => {
+    // Sanitizar datos antes de enviar (prevenir inyección)
+    const sanitize = (str: string) => str.trim().slice(0, 200);
+    
     let message = `*NUEVO PEDIDO*\n\n`;
     message += `*Productos:*\n`;
     
@@ -111,18 +114,18 @@ export const useOrderForm = () => {
     const total = formatCurrency(totalPrice);
     message += `\n*Total: ${total}*\n\n`;
     message += `*Datos del cliente:*\n`;
-    message += `Nombre: ${formData.name}\n`;
-    message += `Teléfono: ${formData.phone}\n\n`;
+    message += `Nombre: ${sanitize(formData.name)}\n`;
+    message += `Teléfono: ${sanitize(formData.phone)}\n\n`;
     message += `*Tipo de entrega:*\n`;
     
     if (deliveryOption === 'pickup') {
       message += `Retiro en Tienda\n\n`;
     } else if (addressData) {
       message += `Envío a Domicilio\n`;
-      message += `Provincia: ${addressData.province}\n`;
-      message += `Cantón: ${addressData.canton}\n`;
-      message += `Distrito: ${addressData.district}\n`;
-      message += `Dirección: ${addressData.address}\n\n`;
+      message += `Provincia: ${sanitize(addressData.province)}\n`;
+      message += `Cantón: ${sanitize(addressData.canton)}\n`;
+      message += `Distrito: ${sanitize(addressData.district)}\n`;
+      message += `Dirección: ${sanitize(addressData.address)}\n\n`;
     }
     
     message += `*Método de pago:* ${paymentMethod}\n`;
