@@ -24,6 +24,31 @@ import { STORAGE_KEYS } from '@/config/app.config';
  * - POST   /api/subcategories           - Crear subcategoría (admin)
  * - PUT    /api/subcategories/{id}      - Actualizar subcategoría (admin)
  * - DELETE /api/subcategories/{id}      - Eliminar subcategoría (admin)
+ * 
+ * 📦 TODO: FUTURE RECYCLE BIN ENDPOINTS (Soft Delete Implementation)
+ * 
+ * ENDPOINTS PARA PAPELERA DE RECICLAJE:
+ * - GET    /api/categories/recycle-bin        - List soft-deleted categories/subcategories
+ *                                               Response: { data: { categories: Category[], subcategories: Subcategory[] } }
+ * 
+ * - POST   /api/categories/{id}/restore       - Restore category from recycle bin
+ *                                               Response: { data: Category, message: string }
+ * 
+ * - DELETE /api/categories/{id}/force-delete  - Permanently delete category (hard delete)
+ *                                               Response: { message: string }
+ * 
+ * - POST   /api/subcategories/{id}/restore    - Restore subcategory from recycle bin
+ *                                               Response: { data: Subcategory, message: string }
+ * 
+ * - DELETE /api/subcategories/{id}/force-delete - Permanently delete subcategory (hard delete)
+ *                                                 Response: { message: string }
+ * 
+ * BUSINESS RULES FOR SOFT DELETE:
+ * 1. Categories deleted are sent to recycle bin for 30 days
+ * 2. Associated products are automatically reassigned to "Otros" category
+ * 3. "Otros" category is default and cannot be deleted (validation in backend)
+ * 4. After 30 days, automatic permanent deletion via Laravel Scheduler
+ * 5. Same rules apply to subcategories
  */
 
 export const categoriesService = {
