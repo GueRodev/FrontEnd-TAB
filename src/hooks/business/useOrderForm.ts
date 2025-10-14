@@ -11,7 +11,7 @@ import { toast } from '@/hooks/use-toast';
 import { useApi } from '@/hooks/useApi';
 import { orderFormSchema } from '@/lib/validations/order.validation';
 import { formatCurrency } from '@/lib/formatters';
-import { APP_CONFIG } from '@/config/app.config';
+import { buildWhatsAppUrl } from '@/lib/helpers/url.helpers';
 import type { DeliveryOption, DeliveryAddress } from '@/types/order.types';
 import { z } from 'zod';
 
@@ -182,13 +182,9 @@ export const useOrderForm = () => {
             orderId: data.orderId,
           });
 
-          // Build WhatsApp message
+          // Build WhatsApp message and open
           const message = buildWhatsAppMessage(addressData);
-          const encodedMessage = encodeURIComponent(message);
-          const whatsappNumber = `${APP_CONFIG.whatsapp.countryCode}${APP_CONFIG.whatsapp.phoneNumber}`;
-          const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodedMessage}`;
-
-          // Open WhatsApp
+          const whatsappUrl = buildWhatsAppUrl(message);
           window.open(whatsappUrl, '_blank');
 
           // Clear cart and reset form

@@ -5,13 +5,14 @@
  */
 
 import type { ApiRequestConfig, ApiClientConfig } from './types';
+import { API_CONFIG, STORAGE_KEYS } from '@/config';
 
 /**
  * Default API client configuration
  */
 const defaultConfig: ApiClientConfig = {
-  baseURL: import.meta.env.VITE_API_URL || '/api',
-  timeout: 30000,
+  baseURL: API_CONFIG.baseURL,
+  timeout: API_CONFIG.timeout,
   headers: {
     'Content-Type': 'application/json',
   },
@@ -87,8 +88,8 @@ class ApiClient {
         switch (response.status) {
           case 401:
             // Unauthorized - Clear session and redirect to auth
-            localStorage.removeItem('auth_user');
-            localStorage.removeItem('auth_token');
+            localStorage.removeItem(STORAGE_KEYS.authUser);
+            localStorage.removeItem(STORAGE_KEYS.authToken);
             this.removeAuthToken();
             window.location.href = '/auth';
             throw new Error(errorData.message || 'No autorizado. Por favor inicia sesión.');

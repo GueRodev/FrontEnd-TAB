@@ -6,6 +6,7 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { authService } from '@/api/services';
 import { apiClient } from '@/api/client';
+import { STORAGE_KEYS } from '@/config';
 import type { UserProfile } from '@/types/user.types';
 import type { AuthState, LoginCredentials, RegisterData } from '@/types/auth.types';
 import { toast } from '@/hooks/use-toast';
@@ -32,8 +33,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   // Load user from localStorage on mount
   useEffect(() => {
     const loadUser = async () => {
-      const token = localStorage.getItem('auth_token');
-      const userStr = localStorage.getItem('auth_user');
+      const token = localStorage.getItem(STORAGE_KEYS.authToken);
+      const userStr = localStorage.getItem(STORAGE_KEYS.authUser);
       
       if (token && userStr) {
         try {
@@ -63,8 +64,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       const { user, token } = response.data;
       
       // Save to localStorage
-      localStorage.setItem('auth_token', token);
-      localStorage.setItem('auth_user', JSON.stringify(user));
+      localStorage.setItem(STORAGE_KEYS.authToken, token);
+      localStorage.setItem(STORAGE_KEYS.authUser, JSON.stringify(user));
       
       // Set token in apiClient
       apiClient.setAuthToken(token);
@@ -95,8 +96,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       const response = await authService.register(data);
       const { user, token } = response.data;
       
-      localStorage.setItem('auth_token', token);
-      localStorage.setItem('auth_user', JSON.stringify(user));
+      localStorage.setItem(STORAGE_KEYS.authToken, token);
+      localStorage.setItem(STORAGE_KEYS.authUser, JSON.stringify(user));
       apiClient.setAuthToken(token);
       
       setState({
@@ -126,8 +127,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     } catch (error) {
       console.error('Logout error:', error);
     } finally {
-      localStorage.removeItem('auth_token');
-      localStorage.removeItem('auth_user');
+      localStorage.removeItem(STORAGE_KEYS.authToken);
+      localStorage.removeItem(STORAGE_KEYS.authUser);
       apiClient.removeAuthToken();
       
       setState({
@@ -152,7 +153,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         const updatedUser = response.data;
         
         setState(prev => ({ ...prev, user: updatedUser }));
-        localStorage.setItem('auth_user', JSON.stringify(updatedUser));
+        localStorage.setItem(STORAGE_KEYS.authUser, JSON.stringify(updatedUser));
         
         toast({
           title: 'Perfil actualizado',
