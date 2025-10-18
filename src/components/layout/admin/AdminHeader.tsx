@@ -2,7 +2,7 @@ import React from 'react';
 import { User } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import NotificationsPopover from './NotificationsPopover';
+import { NotificationsPopover } from '@/components/shared';
 import { SidebarTrigger } from '@/components/ui/sidebar';
 
 interface AdminHeaderProps {

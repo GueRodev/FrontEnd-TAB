@@ -3,9 +3,8 @@
  * Orchestrates orders management using business logic hook and UI components
  */
 
-import { AdminSidebar } from '@/components/AdminSidebar';
 import { SidebarProvider, SidebarInset } from '@/components/ui/sidebar';
-import AdminHeader from '@/components/AdminHeader';
+import { AdminSidebar, AdminHeader } from '@/components/layout';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { useOrdersAdmin } from '@/hooks/business/useOrdersAdmin';

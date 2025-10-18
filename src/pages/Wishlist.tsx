@@ -1,9 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { Heart } from "lucide-react";
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
-import DecorativeBackground from "@/components/DecorativeBackground";
+import { Header, Footer, DecorativeBackground } from '@/components/layout';
 import { useWishlistPage } from "@/hooks/business";
 import { WishlistGrid, EmptyWishlist } from "@/components/features";
 

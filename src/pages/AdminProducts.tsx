@@ -4,8 +4,7 @@
  */
 
 import { SidebarProvider, SidebarInset } from '@/components/ui/sidebar';
-import { AdminSidebar } from '@/components/AdminSidebar';
-import AdminHeader from '@/components/AdminHeader';
+import { AdminSidebar, AdminHeader } from '@/components/layout';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Plus } from 'lucide-react';

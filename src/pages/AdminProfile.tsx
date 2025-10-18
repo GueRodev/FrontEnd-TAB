@@ -5,9 +5,8 @@
 
 import { useAuth } from '@/contexts/AuthContext';
 import { useAdminProfile } from '@/hooks/business/useAdminProfile';
-import { AdminSidebar } from '@/components/AdminSidebar';
-import AdminHeader from '@/components/AdminHeader';
 import { SidebarProvider, SidebarInset } from '@/components/ui/sidebar';
+import { AdminSidebar, AdminHeader } from '@/components/layout';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';

@@ -4,7 +4,7 @@
 
 import React from 'react';
 import { Link } from 'react-router-dom';
-import Logo from './Logo';
+import { Logo } from '../shared';
 import { Facebook, Instagram, Mail, Phone, MapPin, CreditCard, Truck } from 'lucide-react';
 
 const Footer: React.FC = () => {

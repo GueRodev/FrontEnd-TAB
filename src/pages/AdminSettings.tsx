@@ -1,7 +1,5 @@
 import { SidebarProvider } from '@/components/ui/sidebar';
-import { AdminSidebar } from '@/components/AdminSidebar';
-import AdminHeader from '@/components/AdminHeader';
-import Logo from '@/components/Logo';
+import { AdminSidebar, AdminHeader, Logo } from '@/components/layout';
 import { LogoUploadCard } from '@/components/features/settings';
 import { useLogoSettings } from '@/hooks/business';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';

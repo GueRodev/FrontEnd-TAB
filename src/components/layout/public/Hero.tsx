@@ -3,7 +3,7 @@
  */
 
 import React from 'react';
-import DecorativeBackground from './DecorativeBackground';
+import { DecorativeBackground } from '../shared';
 
 const Hero: React.FC = () => {
   return (

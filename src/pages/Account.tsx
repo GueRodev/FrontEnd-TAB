@@ -1,9 +1,7 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { User, Edit2, LogOut } from 'lucide-react';
-import Header from '@/components/Header';
-import Footer from '@/components/Footer';
-import DecorativeBackground from '@/components/DecorativeBackground';
+import { Header, Footer, DecorativeBackground } from '@/components/layout';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';

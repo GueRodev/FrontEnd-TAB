@@ -4,8 +4,7 @@
  */
 
 import { SidebarProvider, SidebarInset } from '@/components/ui/sidebar';
-import { AdminSidebar } from '@/components/AdminSidebar';
-import AdminHeader from '@/components/AdminHeader';
+import { AdminSidebar, AdminHeader } from '@/components/layout';
 import { Separator } from '@/components/ui/separator';
 import { useUsersAdmin } from '@/hooks/business/useUsersAdmin';
 import { ClientsList, AdminsList, AdminFormDialog } from '@/components/features/users';

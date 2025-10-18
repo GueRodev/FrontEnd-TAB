@@ -5,8 +5,8 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Menu, X, ShoppingCart, Search, User, Heart, Shield, LogOut } from 'lucide-react';
-import Logo from './Logo';
-import SearchDialog from './SearchDialog';
+import { Logo } from '../shared';
+import { SearchDialog } from '@/components/shared';
 import { cn } from '@/lib/utils';
 import { useCart } from '@/contexts/CartContext';
 import { useCategories } from '@/contexts/CategoriesContext';

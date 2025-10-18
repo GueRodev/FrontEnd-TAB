@@ -3,7 +3,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import Logo from '@/components/Logo';
+import { Logo } from '@/components/layout';
 import { useAuthForm } from '@/hooks/business';
 import { LoginForm, RegisterForm, DevCredentials } from '@/components/features/auth';
 

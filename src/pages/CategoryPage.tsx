@@ -1,9 +1,7 @@
 import React from "react";
 import { useParams, Link } from "react-router-dom";
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
-import ProductCard from "@/components/ProductCard";
-import DecorativeBackground from "@/components/DecorativeBackground";
+import { Header, Footer, DecorativeBackground } from '@/components/layout';
+import { ProductCard } from '@/components/shared';
 import { useCategoryPage } from "@/hooks/business";
 import { useProductModal } from "@/hooks/business/useProductModal";
 import { ProductDetailModal } from "@/components/features";
