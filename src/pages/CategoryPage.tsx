@@ -1,30 +1,24 @@
-import React from 'react';
-import { useParams, Link } from 'react-router-dom';
-import Header from '@/components/Header';
-import Footer from '@/components/Footer';
-import ProductCard from '@/components/ProductCard';
-import DecorativeBackground from '@/components/DecorativeBackground';
-import { useCategoryPage } from '@/hooks/business';
-import { useProductModal } from '@/hooks/business/useProductModal';
-import { ProductDetailModal } from '@/components/features';
-import { formatCurrency } from '@/lib/formatters';
+import React from "react";
+import { useParams, Link } from "react-router-dom";
+import Header from "@/components/Header";
+import Footer from "@/components/Footer";
+import ProductCard from "@/components/ProductCard";
+import DecorativeBackground from "@/components/DecorativeBackground";
+import { useCategoryPage } from "@/hooks/business";
+import { useProductModal } from "@/hooks/business/useProductModal";
+import { ProductDetailModal } from "@/components/features";
+import { formatCurrency } from "@/lib/formatters";
 
 /**
  * CategoryPage Component
  * Displays products filtered by category/subcategory
- * @next-migration: Can be Server Component with data fetching
+ *
  */
 const CategoryPage: React.FC = () => {
   const { category, subcategory } = useParams<{ category: string; subcategory?: string }>();
-  
-  const {
-    currentCategory,
-    currentSubcategory,
-    products,
-    handleWishlistToggle,
-    handleCartAdd,
-    isProductInWishlist,
-  } = useCategoryPage({ categorySlug: category, subcategorySlug: subcategory });
+
+  const { currentCategory, currentSubcategory, products, handleWishlistToggle, handleCartAdd, isProductInWishlist } =
+    useCategoryPage({ categorySlug: category, subcategorySlug: subcategory });
 
   const {
     isModalOpen,
@@ -36,7 +30,7 @@ const CategoryPage: React.FC = () => {
     handleAddToCartFromModal,
     handleToggleWishlistFromModal,
     isProductInWishlist: isModalProductInWishlist,
-  } = useProductModal({ 
+  } = useProductModal({
     onAddToCart: (product) => handleCartAdd(undefined as any, product.id),
     onToggleWishlist: (product) => handleWishlistToggle(undefined as any, product.id),
     isInWishlist: isProductInWishlist,
@@ -62,11 +56,11 @@ const CategoryPage: React.FC = () => {
   return (
     <>
       <Header />
-      
+
       {/* Hero-style background section */}
       <section className="pt-24 md:pt-32 pb-8 bg-gradient-to-b from-brand-yellow to-white relative overflow-hidden">
         <DecorativeBackground />
-        
+
         {/* Breadcrumb */}
         <div className="container mx-auto px-4 relative z-10">
           <div className="bg-brand-darkBlue text-white py-3 px-6 rounded-lg inline-block mb-6">
@@ -75,10 +69,7 @@ const CategoryPage: React.FC = () => {
                 INICIO
               </Link>
               <span>/</span>
-              <Link 
-                to={`/category/${currentCategory.slug}`} 
-                className="hover:text-brand-orange transition-colors"
-              >
+              <Link to={`/category/${currentCategory.slug}`} className="hover:text-brand-orange transition-colors">
                 {currentCategory.name.toUpperCase()}
               </Link>
               {currentSubcategory && (
@@ -90,7 +81,7 @@ const CategoryPage: React.FC = () => {
             </div>
           </div>
         </div>
-        
+
         {/* Category Header */}
         <div className="container mx-auto px-4 py-6 relative z-10">
           <h1 className="text-3xl md:text-4xl font-display font-bold text-brand-darkBlue mb-2">
@@ -124,14 +115,12 @@ const CategoryPage: React.FC = () => {
             </div>
           ) : (
             <div className="text-center py-12">
-              <p className="text-gray-500 text-lg">
-                No hay productos disponibles en esta categoría
-              </p>
+              <p className="text-gray-500 text-lg">No hay productos disponibles en esta categoría</p>
             </div>
           )}
         </div>
       </main>
-      
+
       <Footer />
 
       <ProductDetailModal
