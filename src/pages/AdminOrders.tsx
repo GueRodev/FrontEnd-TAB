@@ -11,7 +11,7 @@ import { Button } from '@/components/ui/button';
 import { useOrdersAdmin } from '@/hooks/business/useOrdersAdmin';
 import { useCategories } from '@/contexts/CategoriesContext';
 import { OrdersList, InStoreOrderForm, PaymentConfirmationDialog } from '@/components/features/orders';
-import { DeleteConfirmDialog } from '@/components/features/categories';
+import { DeleteConfirmDialog } from '@/components/shared';
 import { ShoppingCart, Store, History } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 

@@ -9,4 +9,3 @@ export { CategoriesTable } from './CategoriesTable';
 export { CategoriesList } from './CategoriesList';
 export { CategoryFormDialog } from './CategoryFormDialog';
 export { SubcategoryFormDialog } from './SubcategoryFormDialog';
-export { DeleteConfirmDialog } from './DeleteConfirmDialog';

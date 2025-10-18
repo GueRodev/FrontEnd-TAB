@@ -15,7 +15,7 @@ import {
   ProductFormDialog,
   ProductFilters,
 } from '@/components/features/products';
-import { DeleteConfirmDialog } from '@/components/features/categories/DeleteConfirmDialog';
+import { DeleteConfirmDialog } from '@/components/shared';
 
 const AdminProducts = () => {
   const {
