@@ -80,13 +80,12 @@ const Header: React.FC = () => {
           ? "bg-white py-2" 
           : "bg-transparent py-4"
       )}
-      style={isScrolled ? {
-        // Aquí puedes personalizar el color del efecto de animación en el header
-        // Cambia los valores RGB en rgba() para modificar el color del neón
-        // Formato: rgba(R, G, B, transparencia)
-        // Azul actual: rgba(0, 51, 102, ...)
-        boxShadow: '0 0 30px rgba(0, 51, 102, 0.4), 0 0 15px rgba(0, 51, 102, 0.3), 0 4px 20px rgba(0, 51, 102, 0.25)'
-      } : undefined}
+      style={{
+        paddingRight: 'var(--removed-body-scroll-bar-size, 0px)',
+        ...(isScrolled ? {
+          boxShadow: '0 0 30px rgba(0, 51, 102, 0.4), 0 0 15px rgba(0, 51, 102, 0.3), 0 4px 20px rgba(0, 51, 102, 0.25)'
+        } : {})
+      }}
     >
       <div className="container mx-auto px-4 flex items-center justify-between">
         {/* Logo */}

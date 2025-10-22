@@ -12,7 +12,6 @@ import { Input } from '@/components/ui/input';
 import { useProducts } from '@/contexts/ProductsContext';
 import { useCategories } from '@/contexts/CategoriesContext';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { useScrollLock } from '@/hooks/useScrollLock';
 
 interface SearchDialogProps {
   open: boolean;
@@ -23,9 +22,6 @@ const SearchDialog: React.FC<SearchDialogProps> = ({ open, onOpenChange }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const { products } = useProducts();
   const { categories } = useCategories();
-
-  // Bloquear scroll y compensar header cuando el modal está abierto
-  useScrollLock(open);
 
   // Reset search when dialog closes
   useEffect(() => {

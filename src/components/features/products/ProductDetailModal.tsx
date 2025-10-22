@@ -15,7 +15,6 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { ProductImage } from '@/components/common';
 import { formatCurrency } from '@/lib/formatters';
-import { useScrollLock } from '@/hooks/useScrollLock';
 import type { Product } from '@/types/product.types';
 
 interface ProductDetailModalProps {
@@ -41,9 +40,6 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
   quantity,
   onQuantityChange,
 }) => {
-  // Bloquear scroll y compensar header cuando el modal está abierto
-  useScrollLock(open);
-
   if (!product) return null;
 
   const handleIncrement = () => {
