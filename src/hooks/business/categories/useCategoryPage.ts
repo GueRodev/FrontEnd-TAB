@@ -4,7 +4,7 @@
  */
 
 import { useMemo } from 'react';
-import { useProductOperations } from './useProductOperations';
+import { useProductOperations } from '../products/useProductOperations';
 
 interface UseCategoryPageParams {
   categorySlug?: string;

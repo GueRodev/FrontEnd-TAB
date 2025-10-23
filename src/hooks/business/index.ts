@@ -1,27 +1,21 @@
 /**
  * Business Logic Hooks
- * Centralized exports for all business logic hooks
+ * Centralized exports organized by feature
  * 
  * These hooks separate business logic from presentation,
  * making components purely presentational
+ * 
+ * Structure mirrors src/components/features/
  */
 
-export { useProductOperations } from './useProductOperations';
-export { useCartOperations } from './useCartOperations';
-export { useOrderForm } from './useOrderForm';
-export { useAddressSelection } from './useAddressSelection';
-export { useWishlistOperations } from './useWishlistOperations';
-export { useProductFilters } from './useProductFilters';
-export { useCategoriesAdmin } from './useCategoriesAdmin';
-export { useProductsAdmin } from './useProductsAdmin';
-export { useOrdersAdmin } from './useOrdersAdmin';
-export { useUsersAdmin } from './useUsersAdmin';
-export { useAdminProfile } from './useAdminProfile';
-export { useLogoSettings } from './useLogoSettings';
-export { useOrdersHistory } from './useOrdersHistory';
-export { useAuthForm } from './useAuthForm';
-export { useDashboardMetrics } from './useDashboardMetrics';
-export { useCategoryPage } from './useCategoryPage';
-export { useAccountPage } from './useAccountPage';
-export { useWishlistPage } from './useWishlistPage';
-export { useProductModal } from './useProductModal';
+export * from './addresses';
+export * from './auth';
+export * from './cart';
+export * from './categories';
+export * from './dashboard';
+export * from './orders';
+export * from './products';
+export * from './profile';
+export * from './settings';
+export * from './users';
+export * from './wishlist';

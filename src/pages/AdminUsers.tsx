@@ -6,7 +6,7 @@
 import { SidebarProvider, SidebarInset } from '@/components/ui/sidebar';
 import { AdminSidebar, AdminHeader } from '@/components/layout';
 import { Separator } from '@/components/ui/separator';
-import { useUsersAdmin } from '@/hooks/business/useUsersAdmin';
+import { useUsersAdmin } from '@/hooks/business';
 import { ClientsList, AdminsList, AdminFormDialog } from '@/components/features/users';
 
 const AdminUsuarios: React.FC = () => {

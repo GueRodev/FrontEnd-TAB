@@ -4,7 +4,7 @@
  */
 
 import { useAuth } from '@/contexts/AuthContext';
-import { useAdminProfile } from '@/hooks/business/useAdminProfile';
+import { useAdminProfile } from '@/hooks/business';
 import { SidebarProvider, SidebarInset } from '@/components/ui/sidebar';
 import { AdminSidebar, AdminHeader } from '@/components/layout';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';

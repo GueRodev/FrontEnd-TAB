@@ -7,7 +7,7 @@ import { SidebarProvider, SidebarInset } from '@/components/ui/sidebar';
 import { AdminSidebar, AdminHeader } from '@/components/layout';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { useOrdersAdmin } from '@/hooks/business/useOrdersAdmin';
+import { useOrdersAdmin } from '@/hooks/business';
 import { useCategories } from '@/contexts/CategoriesContext';
 import { OrdersList, InStoreOrderForm, PaymentConfirmationDialog } from '@/components/features/orders';
 import { DeleteConfirmDialog } from '@/components/shared';
