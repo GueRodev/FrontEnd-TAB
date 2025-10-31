@@ -48,6 +48,14 @@ export const profileSchema = z.object({
     ),
 });
 
+/**
+ * Forgot Password Schema
+ */
+export const forgotPasswordSchema = z.object({
+  email: z.string().email('Email inválido'),
+});
+
 export type LoginFormData = z.infer<typeof loginSchema>;
 export type RegisterFormData = z.infer<typeof registerSchema>;
 export type ProfileFormData = z.infer<typeof profileSchema>;
+export type ForgotPasswordFormData = z.infer<typeof forgotPasswordSchema>;

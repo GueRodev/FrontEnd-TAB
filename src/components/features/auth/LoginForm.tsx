@@ -19,12 +19,14 @@ import type { LoginFormData } from '@/lib/validations';
 interface LoginFormProps {
   form: UseFormReturn<LoginFormData>;
   onSubmit: (data: LoginFormData) => Promise<void>;
+  onForgotPassword?: () => void;
   isLoading: boolean;
 }
 
 export const LoginForm: React.FC<LoginFormProps> = ({
   form,
   onSubmit,
+  onForgotPassword,
   isLoading,
 }) => {
   return (
@@ -69,6 +71,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({
         <div className="flex items-center justify-between">
           <button
             type="button"
+            onClick={onForgotPassword}
             className="text-sm text-brand-darkBlue hover:text-brand-orange transition-colors"
           >
             ¿Olvidaste tu contraseña?

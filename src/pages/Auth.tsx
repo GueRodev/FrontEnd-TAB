@@ -5,7 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Logo } from '@/components/layout';
 import { useAuthForm } from '@/hooks/business';
-import { LoginForm, RegisterForm, DevCredentials } from '@/components/features/auth';
+import { LoginForm, RegisterForm, DevCredentials, ForgotPasswordDialog } from '@/components/features/auth';
 
 const Auth: React.FC = () => {
   const navigate = useNavigate();
@@ -14,6 +14,10 @@ const Auth: React.FC = () => {
     registerForm,
     handleLogin,
     handleRegister,
+    showForgotPassword,
+    handleForgotPassword,
+    handleCloseForgotPassword,
+    handleForgotPasswordSubmit,
     isLoading,
   } = useAuthForm();
 
@@ -51,6 +55,7 @@ const Auth: React.FC = () => {
                 <LoginForm
                   form={loginForm}
                   onSubmit={handleLogin}
+                  onForgotPassword={handleForgotPassword}
                   isLoading={isLoading}
                 />
               </TabsContent>
@@ -84,6 +89,13 @@ const Auth: React.FC = () => {
           </CardContent>
         </Card>
       </div>
+
+      {/* Forgot Password Dialog */}
+      <ForgotPasswordDialog
+        open={showForgotPassword}
+        onClose={handleCloseForgotPassword}
+        onSubmit={handleForgotPasswordSubmit}
+      />
 
       {/* Footer */}
       <footer className="py-6 text-center text-sm text-gray-600">

@@ -3,6 +3,7 @@
  * Business logic for authentication forms using react-hook-form and Zod
  */
 
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useNavigate } from 'react-router-dom';
@@ -10,6 +11,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { loginSchema, registerSchema } from '@/lib/validations';
 import type { LoginFormData, RegisterFormData } from '@/lib/validations';
 import { useApi } from '@/hooks/useApi';
+import { toast } from '@/hooks/use-toast';
 
 export interface UseAuthFormReturn {
   // Login
@@ -20,6 +22,12 @@ export interface UseAuthFormReturn {
   registerForm: ReturnType<typeof useForm<RegisterFormData>>;
   handleRegister: (data: RegisterFormData) => Promise<void>;
   
+  // Forgot Password
+  showForgotPassword: boolean;
+  handleForgotPassword: () => void;
+  handleCloseForgotPassword: () => void;
+  handleForgotPasswordSubmit: (email: string) => Promise<void>;
+  
   // Shared state
   isLoading: boolean;
 }
@@ -28,6 +36,7 @@ export const useAuthForm = (): UseAuthFormReturn => {
   const navigate = useNavigate();
   const { login, register } = useAuth();
   const { isLoading, execute } = useApi();
+  const [showForgotPassword, setShowForgotPassword] = useState(false);
 
   // Login form
   const loginForm = useForm<LoginFormData>({
@@ -83,11 +92,33 @@ export const useAuthForm = (): UseAuthFormReturn => {
     );
   };
 
+  // Forgot password handlers
+  const handleForgotPassword = () => {
+    setShowForgotPassword(true);
+  };
+
+  const handleCloseForgotPassword = () => {
+    setShowForgotPassword(false);
+  };
+
+  const handleForgotPasswordSubmit = async (email: string) => {
+    // Temporary implementation - will be replaced with real API call
+    toast({
+      title: 'Funcionalidad en desarrollo',
+      description: 'La recuperación de contraseña estará disponible próximamente.',
+    });
+    setShowForgotPassword(false);
+  };
+
   return {
     loginForm,
     handleLogin,
     registerForm,
     handleRegister,
+    showForgotPassword,
+    handleForgotPassword,
+    handleCloseForgotPassword,
+    handleForgotPasswordSubmit,
     isLoading,
   };
 };
