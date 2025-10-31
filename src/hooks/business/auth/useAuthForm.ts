@@ -101,13 +101,22 @@ export const useAuthForm = (): UseAuthFormReturn => {
     setShowForgotPassword(false);
   };
 
-  const handleForgotPasswordSubmit = async (email: string) => {
-    // Temporary implementation - will be replaced with real API call
-    toast({
-      title: 'Funcionalidad en desarrollo',
-      description: 'La recuperación de contraseña estará disponible próximamente.',
-    });
-    setShowForgotPassword(false);
+  const handleForgotPasswordSubmit = async (email: string, code?: string) => {
+    if (!code) {
+      // Step 1: Simulate sending verification code
+      toast({
+        title: 'Código enviado',
+        description: `Enviamos un código de verificación a ${email}`,
+      });
+      // Dialog stays open, user moves to verification step
+    } else {
+      // Step 2: Validate code (temporary implementation)
+      toast({
+        title: 'Funcionalidad en desarrollo',
+        description: 'La verificación del código estará disponible próximamente.',
+      });
+      setShowForgotPassword(false);
+    }
   };
 
   return {

@@ -55,7 +55,18 @@ export const forgotPasswordSchema = z.object({
   email: z.string().email('Email inválido'),
 });
 
+/**
+ * Verification Code Schema
+ */
+export const verificationCodeSchema = z.object({
+  code: z
+    .string()
+    .length(6, 'El código debe tener 6 dígitos')
+    .regex(/^\d+$/, 'El código solo debe contener números'),
+});
+
 export type LoginFormData = z.infer<typeof loginSchema>;
 export type RegisterFormData = z.infer<typeof registerSchema>;
 export type ProfileFormData = z.infer<typeof profileSchema>;
 export type ForgotPasswordFormData = z.infer<typeof forgotPasswordSchema>;
+export type VerificationCodeFormData = z.infer<typeof verificationCodeSchema>;
