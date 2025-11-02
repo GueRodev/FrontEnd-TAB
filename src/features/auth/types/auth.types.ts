@@ -3,7 +3,7 @@
  * Type definitions for authentication-related data
  */
 
-import type { UserProfile } from './user.types';
+import type { UserProfile } from '@/types/user.types';
 
 export interface LoginCredentials {
   email: string;

@@ -10,7 +10,7 @@ import {
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { useProducts } from '@/contexts/ProductsContext';
-import { useCategories } from '@/contexts/CategoriesContext';
+import { useCategories } from '@/features/categories';
 import { ScrollArea } from '@/components/ui/scroll-area';
 
 interface SearchDialogProps {

@@ -4,7 +4,7 @@
  */
 
 import { useProducts } from '@/contexts/ProductsContext';
-import { useCategories } from '@/contexts/CategoriesContext';
+import { useCategories } from '@/features/categories';
 import { useCart } from '@/contexts/CartContext';
 import { useWishlist } from '@/contexts/WishlistContext';
 import { toast } from '@/hooks/use-toast';

@@ -4,14 +4,14 @@
  */
 
 import { useState, useEffect } from 'react';
-import { useCategories } from '@/contexts/CategoriesContext';
+import { useCategories } from '../contexts';
 import type { Category, Subcategory } from '@/types/product.types';
 import { toast } from '@/hooks/use-toast';
 import { useApi } from '@/hooks/useApi';
 import { DragEndEvent } from '@dnd-kit/core';
 import { arrayMove } from '@dnd-kit/sortable';
 import { z } from 'zod';
-import { categorySchema, subcategorySchema } from '@/lib/validations/category.validation';
+import { categorySchema, subcategorySchema } from '../validations/category.validation';
 
 export type ModalType = 'category' | 'subcategory';
 export type DialogMode = 'add' | 'edit';

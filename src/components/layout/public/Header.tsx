@@ -9,7 +9,7 @@ import { Logo } from '../shared';
 import { SearchDialog } from '@/components/shared';
 import { cn } from '@/lib/utils';
 import { useCart } from '@/contexts/CartContext';
-import { useCategories } from '@/contexts/CategoriesContext';
+import { useCategories } from '@/features/categories';
 import {
   NavigationMenu,
   NavigationMenuContent,

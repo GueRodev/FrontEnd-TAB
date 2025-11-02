@@ -8,7 +8,7 @@ import { AdminSidebar, AdminHeader } from '@/components/layout';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { useOrdersAdmin } from '@/hooks/business';
-import { useCategories } from '@/contexts/CategoriesContext';
+import { useCategories } from '@/features/categories';
 import { OrdersList, InStoreOrderForm, PaymentConfirmationDialog } from '@/components/features/orders';
 import { DeleteConfirmDialog } from '@/components/shared';
 import { ShoppingCart, Store, History } from 'lucide-react';

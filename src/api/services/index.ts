@@ -5,7 +5,7 @@
 
 export { productsService } from './products.service';
 export { ordersService } from './orders.service';
-export { authService } from './auth.service';
+export { authService } from '@/features/auth/services';
 export { addressesService } from './addresses.service';
-export { categoriesService } from './categories.service';
+export { categoriesService } from '@/features/categories/services';
 export { usersService } from './users.service';

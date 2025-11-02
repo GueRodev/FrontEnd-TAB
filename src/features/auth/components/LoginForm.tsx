@@ -14,7 +14,7 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form';
-import type { LoginFormData } from '@/lib/validations';
+import type { LoginFormData } from '@/features/auth/validations/auth.validation';
 
 interface LoginFormProps {
   form: UseFormReturn<LoginFormData>;

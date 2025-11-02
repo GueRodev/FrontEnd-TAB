@@ -7,9 +7,9 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '@/contexts/AuthContext';
-import { loginSchema, registerSchema } from '@/lib/validations';
-import type { LoginFormData, RegisterFormData } from '@/lib/validations';
+import { useAuth } from '../contexts';
+import { loginSchema, registerSchema } from '../validations/auth.validation';
+import type { LoginFormData, RegisterFormData } from '../validations/auth.validation';
 import { useApi } from '@/hooks/useApi';
 import { toast } from '@/hooks/use-toast';
 

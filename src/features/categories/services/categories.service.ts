@@ -3,8 +3,8 @@
  * API service for category and subcategory operations
  */
 
-import type { Category, Subcategory, CreateCategoryDto, UpdateCategoryDto, CreateSubcategoryDto, UpdateSubcategoryDto, ReorderCategoriesDto } from '@/types/product.types';
-import type { ApiResponse } from '../types';
+import type { Category, Subcategory, CreateCategoryDto, UpdateCategoryDto, CreateSubcategoryDto, UpdateSubcategoryDto, ReorderCategoriesDto } from '../types';
+import type { ApiResponse } from '@/api/types';
 import { localStorageAdapter } from '@/lib/storage';
 import { STORAGE_KEYS } from '@/config/app.config';
 

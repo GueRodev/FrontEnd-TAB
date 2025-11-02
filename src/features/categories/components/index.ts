@@ -1,6 +1,5 @@
 /**
- * Categories Feature Components Exports
- * Centralized exports for category management components
+ * Categories Components Exports
  */
 
 export { CategoryRow } from './CategoryRow';

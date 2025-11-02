@@ -11,7 +11,7 @@
 export * from './addresses';
 export * from './auth';
 export * from './cart';
-export * from './categories';
+// categories moved to src/features/categories
 export * from './dashboard';
 export * from './orders';
 export * from './products';

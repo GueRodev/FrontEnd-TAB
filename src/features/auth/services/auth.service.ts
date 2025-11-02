@@ -3,10 +3,10 @@
  * Handles user authentication operations
  */
 
-import { apiClient } from '../client';
-import type { AuthResponse, LoginCredentials, RegisterData } from '@/types/auth.types';
+import { apiClient } from '@/api/client';
+import type { AuthResponse, LoginCredentials, RegisterData } from '../types/auth.types';
 import type { UserProfile } from '@/types/user.types';
-import type { ApiResponse } from '../types';
+import type { ApiResponse } from '@/api/types';
 import { validateCredentials } from '@/data/users.mock';
 
 export const authService = {

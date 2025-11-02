@@ -13,9 +13,9 @@ import {
   CategoriesList,
   CategoryFormDialog,
   SubcategoryFormDialog,
-} from '@/components/features/categories';
+} from '@/features/categories';
 import { DeleteConfirmDialog } from '@/components/shared';
-import { useCategoriesAdmin } from '@/hooks/business';
+import { useCategoriesAdmin } from '@/features/categories';
 
 const AdminCategories: React.FC = () => {
   const {

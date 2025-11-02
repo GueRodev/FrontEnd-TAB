@@ -1,5 +1,5 @@
 /**
- * Categories Hooks
+ * Categories Hooks Exports
  */
 
 export { useCategoriesAdmin } from './useCategoriesAdmin';
