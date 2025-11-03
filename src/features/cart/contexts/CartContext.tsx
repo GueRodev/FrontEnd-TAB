@@ -5,12 +5,12 @@
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { toast } from '@/hooks/use-toast';
-import type { CartItem } from '@/types/cart.types';
+import type { CartItem } from '../types';
 import { localStorageAdapter } from '@/lib/storage';
 import { STORAGE_KEYS } from '@/config/app.config';
 
 // Re-export types for backward compatibility
-export type { CartItem } from '@/types/cart.types';
+export type { CartItem } from '../types';
 
 interface CartContextType {
   items: CartItem[];

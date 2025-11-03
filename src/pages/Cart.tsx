@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { useCartOperations, useOrderForm, useAddressSelection } from '@/hooks/business';
+import { useOrderForm, useAddressSelection } from '@/hooks/business';
 import { useAuth } from '@/features/auth';
+import { useCartOperations, CartItemsList, EmptyCart, CartSummary, OrderForm, AddressConfirmationDialog } from '@/features/cart';
 import { Header, Footer } from '@/components/layout';
-import { CartItemsList, EmptyCart, CartSummary, OrderForm, AddressConfirmationDialog } from '@/components/features/cart';
 import { AddressSelector } from '@/components/features/orders';
 import type { DeliveryAddress } from '@/types/order.types';
 

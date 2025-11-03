@@ -8,7 +8,7 @@ import { Menu, X, ShoppingCart, Search, User, Heart, Shield, LogOut } from 'luci
 import { Logo } from '../shared';
 import { SearchDialog } from '@/components/shared';
 import { cn } from '@/lib/utils';
-import { useCart } from '@/contexts/CartContext';
+import { useCart } from '@/features/cart';
 import { useCategories } from '@/features/categories';
 import {
   NavigationMenu,

@@ -3,7 +3,7 @@
  * Handles wishlist operations and cart integration for the wishlist page
  */
 
-import { useCart } from '@/contexts/CartContext';
+import { useCart } from '@/features/cart';
 import { useWishlistOperations } from './useWishlistOperations';
 
 export const useWishlistPage = () => {

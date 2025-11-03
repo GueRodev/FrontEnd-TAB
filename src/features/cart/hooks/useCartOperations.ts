@@ -3,8 +3,8 @@
  * Business logic for shopping cart operations
  */
 
-import { useCart } from '@/contexts/CartContext';
-import type { CartItem } from '@/types/cart.types';
+import { useCart } from '../contexts';
+import type { CartItem } from '../types';
 
 export const useCartOperations = () => {
   const {
