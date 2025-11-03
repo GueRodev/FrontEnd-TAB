@@ -18,7 +18,6 @@ export type {
   RegisterData,
   AuthResponse,
   AuthState,
-  UserProfile,
 } from './types';
 
 // Note: Services and validations are private to this feature

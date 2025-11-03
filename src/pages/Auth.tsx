@@ -4,8 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Logo } from '@/components/layout';
-import { useAuthForm } from '@/hooks/business';
-import { LoginForm, RegisterForm, DevCredentials, ForgotPasswordDialog } from '@/components/features/auth';
+import { useAuthForm, LoginForm, RegisterForm, DevCredentials, ForgotPasswordDialog } from '@/features/auth';
 
 const Auth: React.FC = () => {
   const navigate = useNavigate();

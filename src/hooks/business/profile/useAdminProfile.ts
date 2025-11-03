@@ -6,7 +6,7 @@
 import { useState, useEffect } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import { useApi } from '@/hooks/useApi';
-import { authService } from '@/api/services/auth.service';
+import { authService } from '@/features/auth/services';
 import { adminProfileSchema, type AdminProfileFormData } from '@/lib/validations/user.validation';
 import type { UserProfile } from '@/types/user.types';
 

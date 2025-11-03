@@ -4,7 +4,6 @@
  */
 
 export * from './addresses';
-export * from './auth';
 export * from './cart';
 // categories moved to src/features/categories
 export * from './orders';
