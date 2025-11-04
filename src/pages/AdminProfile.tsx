@@ -4,14 +4,14 @@
  */
 
 import { useAuth } from '@/features/auth';
-import { useAdminProfile } from '@/hooks/business';
+import { useAdminProfile } from '@/features/admin-profile';
 import { SidebarProvider, SidebarInset } from '@/components/ui/sidebar';
 import { AdminSidebar, AdminHeader } from '@/components/layout';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { Badge } from '@/components/ui/badge';
-import { ProfileAvatarSection, ProfileFormFields } from '@/components/features/profile';
+import { ProfileAvatarSection, ProfileFormFields } from '@/features/admin-profile';
 import { Calendar, Clock } from 'lucide-react';
 
 const AdminProfile = () => {

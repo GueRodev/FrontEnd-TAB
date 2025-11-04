@@ -1,7 +1,7 @@
 import { SidebarProvider } from '@/components/ui/sidebar';
 import { AdminSidebar, AdminHeader, Logo } from '@/components/layout';
-import { LogoUploadCard } from '@/components/features/settings';
-import { useLogoSettings } from '@/hooks/business';
+import { LogoUploadCard } from '@/features/admin-settings';
+import { useLogoSettings } from '@/features/admin-settings';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Trash2, Archive, Info as InfoIcon } from 'lucide-react';

@@ -6,8 +6,8 @@ import {
   RecentOrdersTable,
   TopProductsTable,
   QuickSummaryCard,
-} from '@/components/features/dashboard';
-import { useDashboardMetrics } from '@/hooks/business';
+} from '@/features/admin-dashboard';
+import { useDashboardMetrics } from '@/features/admin-dashboard';
 
 const Admin = () => {
   const { metrics, chartData, recentOrders, topProducts, uniqueProducts } = useDashboardMetrics();
