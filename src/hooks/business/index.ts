@@ -1,20 +1,17 @@
 /**
- * Business Logic Hooks
- * Centralized exports organized by feature
+ * Business Logic Hooks Barrel Export
  * 
- * These hooks separate business logic from presentation,
- * making components purely presentational
+ * NOTE: Most hooks have been migrated to src/features/
+ * - addresses → src/features/addresses/hooks
+ * - cart → src/features/cart/hooks
+ * - categories → src/features/categories/hooks
+ * - wishlist → src/features/wishlist/hooks
+ * - products → src/features/products/hooks
+ * - orders → src/features/orders/hooks
+ * - dashboard → src/features/admin-dashboard/hooks
+ * - profile → src/features/admin-profile/hooks
+ * - settings → src/features/admin-settings/hooks
+ * - users → src/features/admin-users/hooks
  * 
- * Structure mirrors src/components/features/
+ * This file is kept for backward compatibility and will be deprecated
  */
-
-// addresses moved to src/features/addresses
-// cart moved to src/features/cart
-// categories moved to src/features/categories
-// wishlist moved to src/features/wishlist
-// products moved to src/features/products
-// orders moved to src/features/orders
-export * from './dashboard';
-export * from './profile';
-export * from './settings';
-export * from './users';
