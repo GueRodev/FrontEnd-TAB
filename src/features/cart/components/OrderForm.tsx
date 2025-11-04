@@ -8,9 +8,9 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
-import { PaymentMethodSelector } from '@/components/features/orders';
 import { DELIVERY_OPTIONS } from '@/config/app.config';
-import type { DeliveryOption } from '@/types/order.types';
+import { PaymentMethodSelector } from '@/features/orders/components';
+import type { DeliveryOption } from '@/features/orders/types';
 
 interface OrderFormProps {
   formData: {

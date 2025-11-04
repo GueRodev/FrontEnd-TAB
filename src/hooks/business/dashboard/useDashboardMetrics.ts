@@ -4,7 +4,7 @@
  */
 
 import { useMemo } from 'react';
-import { useOrders } from '@/contexts/OrdersContext';
+import { useOrders } from '@/features/orders';
 import {
   calculateOrderMetrics,
   getTopProducts,
@@ -14,7 +14,7 @@ import {
   type OrderMetrics,
   type ChartDataPoint,
 } from '@/lib/helpers/order.helpers';
-import type { Order } from '@/types/order.types';
+import type { Order } from '@/features/orders/types';
 
 interface TopProduct {
   name: string;

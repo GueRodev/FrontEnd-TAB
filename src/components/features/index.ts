@@ -8,7 +8,7 @@
 // categories moved to src/features/categories
 // wishlist moved to src/features/wishlist
 // products moved to src/features/products
-export * from './orders';
+// orders moved to src/features/orders
 export * from './profile';
 export * from './users';
 export * from './dashboard';

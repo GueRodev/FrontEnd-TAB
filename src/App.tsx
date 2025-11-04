@@ -7,7 +7,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "./features/auth";
 import { WishlistProvider } from "@/features/wishlist";
 import { CartProvider } from "./features/cart";
-import { OrdersProvider } from "./contexts/OrdersContext";
+import { OrdersProvider } from "@/features/orders";
 import { NotificationsProvider } from "@/features/notifications";
 import { CategoriesProvider } from "./features/categories";
 import { ProductsProvider } from "@/features/products";

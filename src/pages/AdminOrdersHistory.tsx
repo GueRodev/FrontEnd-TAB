@@ -5,9 +5,12 @@ import { Button } from '@/components/ui/button';
 import { Archive, ArrowLeft } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { ExportButton } from '@/components/shared';
-import { OrdersTable, ArchivedOrderCard } from '@/components/features/orders';
 import { EmptyState } from '@/components/common';
-import { useOrdersHistory } from '@/hooks/business';
+import { 
+  useOrdersHistory, 
+  OrdersTable, 
+  ArchivedOrderCard 
+} from '@/features/orders';
 
 const AdminOrdersHistory = () => {
   const navigate = useNavigate();

@@ -2,7 +2,7 @@
  * Dashboard Type Definitions
  */
 
-import type { Order } from './order.types';
+import type { Order } from '@/features/orders/types';
 
 export interface DashboardMetrics {
   totalRevenue: number;

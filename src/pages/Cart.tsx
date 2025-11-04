@@ -1,12 +1,11 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { useOrderForm } from '@/hooks/business';
 import { useAddressSelection } from '@/features/addresses';
 import { useAuth } from '@/features/auth';
 import { useCartOperations, CartItemsList, EmptyCart, CartSummary, OrderForm, AddressConfirmationDialog } from '@/features/cart';
 import { Header, Footer } from '@/components/layout';
-import { AddressSelector } from '@/components/features/orders';
-import type { DeliveryAddress } from '@/types/order.types';
+import { useOrderForm, AddressSelector } from '@/features/orders';
+import type { DeliveryAddress } from '@/features/orders/types';
 
 /**
  * Cart Page
@@ -107,7 +106,10 @@ const Cart = () => {
                 <CartSummary totalItems={items.length} totalPrice={totalPrice} />
 
                 <OrderForm
-                  formData={formData}
+                  formData={{
+                    name: formData.customerName,
+                    phone: formData.customerPhone,
+                  }}
                   deliveryOption={deliveryOption}
                   paymentMethod={paymentMethod}
                   onInputChange={handleInputChange}

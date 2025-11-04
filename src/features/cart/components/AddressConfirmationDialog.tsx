@@ -15,7 +15,7 @@ import {
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
 import { MapPin } from 'lucide-react';
-import type { DeliveryAddress } from '@/types/order.types';
+import type { DeliveryAddress } from '@/features/orders/types';
 
 interface AddressConfirmationDialogProps {
   open: boolean;

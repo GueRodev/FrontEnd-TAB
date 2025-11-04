@@ -3,7 +3,7 @@
  * Business logic for order operations and transformations
  */
 
-import type { Order, OrderStatus, OrderType } from '@/types/order.types';
+import type { Order, OrderStatus, OrderType } from '@/features/orders/types';
 
 /**
  * Get localized label for order status

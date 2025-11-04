@@ -5,7 +5,7 @@
 
 import { useState, useMemo } from 'react';
 import type { UserProfile } from '@/types/user.types';
-import type { DeliveryAddress } from '@/types/order.types';
+import type { DeliveryAddress } from '@/features/orders/types';
 
 interface ManualAddress {
   province: string;

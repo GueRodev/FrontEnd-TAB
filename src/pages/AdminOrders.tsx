@@ -7,9 +7,13 @@ import { SidebarProvider, SidebarInset } from '@/components/ui/sidebar';
 import { AdminSidebar, AdminHeader } from '@/components/layout';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { useOrdersAdmin } from '@/hooks/business';
 import { useCategories } from '@/features/categories';
-import { OrdersList, InStoreOrderForm, PaymentConfirmationDialog } from '@/components/features/orders';
+import { 
+  useOrdersAdmin, 
+  OrdersList, 
+  InStoreOrderForm, 
+  PaymentConfirmationDialog 
+} from '@/features/orders';
 import { DeleteConfirmDialog } from '@/components/shared';
 import { ShoppingCart, Store, History } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
@@ -35,14 +39,12 @@ const AdminOrders = () => {
     setCategoryFilter,
     searchQuery,
     setSearchQuery,
-    openProductSearch,
-    setOpenProductSearch,
+    productSelectorOpen,
+    setProductSelectorOpen,
     filteredProducts,
     selectedProductData,
     deleteOrderDialog,
     paymentConfirmDialog,
-    setDeleteOrderDialog,
-    setPaymentConfirmDialog,
     handleCreateInStoreOrder,
     openDeleteOrderDialog,
     confirmDeleteOrder,
@@ -136,8 +138,8 @@ const AdminOrders = () => {
                     setCategoryFilter={setCategoryFilter}
                     searchQuery={searchQuery}
                     setSearchQuery={setSearchQuery}
-                    openProductSearch={openProductSearch}
-                    setOpenProductSearch={setOpenProductSearch}
+                    productSelectorOpen={productSelectorOpen}
+                    setProductSelectorOpen={setProductSelectorOpen}
                     filteredProducts={filteredProducts}
                     selectedProductData={selectedProductData}
                     categories={categories}
@@ -175,9 +177,7 @@ const AdminOrders = () => {
       {/* Delete Order Confirmation */}
       <DeleteConfirmDialog
         open={deleteOrderDialog.open}
-        onOpenChange={(open) =>
-          setDeleteOrderDialog({ ...deleteOrderDialog, open })
-        }
+        onOpenChange={() => {}}
         itemName={deleteOrderDialog.order?.id || ''}
         itemType="order"
         onConfirm={confirmDeleteOrder}
@@ -186,9 +186,7 @@ const AdminOrders = () => {
       {/* Payment Confirmation Dialog */}
       <PaymentConfirmationDialog
         open={paymentConfirmDialog.open}
-        onOpenChange={(open) =>
-          setPaymentConfirmDialog({ ...paymentConfirmDialog, open })
-        }
+        onOpenChange={() => {}}
         onConfirm={confirmCompleteOrder}
         customerName={paymentConfirmDialog.order?.customerInfo?.name}
         orderTotal={paymentConfirmDialog.order?.total}

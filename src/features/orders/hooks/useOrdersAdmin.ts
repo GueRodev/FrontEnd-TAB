@@ -62,7 +62,7 @@ interface UseOrdersAdminReturn {
   handleCompleteOrder: (order: Order) => void;
   handleCancelOrder: (order: Order) => void;
   
-  // Delete dialog
+  // Dialog states
   deleteOrderDialog: DeleteOrderDialog;
   openDeleteOrderDialog: (orderId: string, order: Order) => void;
   confirmDeleteOrder: () => void;

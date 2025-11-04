@@ -6,7 +6,7 @@
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import * as XLSX from 'xlsx';
-import { Order } from '@/types/order.types';
+import type { Order } from '@/features/orders/types';
 import { formatCurrency, formatDateTime } from '@/lib/formatters';
 import { getStatusLabel, getTypeLabel } from './order.helpers';
 import { toast } from '@/hooks/use-toast';
