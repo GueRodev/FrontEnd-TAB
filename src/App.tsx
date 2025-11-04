@@ -10,7 +10,7 @@ import { CartProvider } from "./features/cart";
 import { OrdersProvider } from "./contexts/OrdersContext";
 import { NotificationsProvider } from "@/features/notifications";
 import { CategoriesProvider } from "./features/categories";
-import { ProductsProvider } from "./contexts/ProductsContext";
+import { ProductsProvider } from "@/features/products";
 import { ProtectedRoute, ScrollToTop } from "./components/shared";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";

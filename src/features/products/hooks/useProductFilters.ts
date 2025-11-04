@@ -4,7 +4,7 @@
  */
 
 import { useState, useMemo } from 'react';
-import type { Product } from '@/types/product.types';
+import type { Product } from '../types';
 
 interface UseProductFiltersProps {
   products: Product[];

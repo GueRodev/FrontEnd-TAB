@@ -6,7 +6,7 @@
 import React from 'react';
 import { ProductCard } from '@/components/shared';
 import { formatCurrency } from '@/lib/formatters';
-import type { Product } from '@/types/product.types';
+import type { Product } from '../types';
 
 interface ProductGridProps {
   products: Product[];

@@ -1,6 +1,6 @@
 import React from 'react';
-import { useProductOperations, useProductModal } from '@/hooks/business';
-import { FeaturedProductsSection, ProductDetailModal } from '@/components/features';
+import { useProductOperations, useProductModal } from '@/features/products';
+import { FeaturedProductsSection, ProductDetailModal } from '@/features/products';
 
 /**
  * FeaturedProducts Component

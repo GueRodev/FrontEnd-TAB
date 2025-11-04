@@ -1,5 +1,5 @@
 /**
- * Products Feature Components Exports
+ * Products Components Exports
  */
 
 export { ProductGrid } from './ProductGrid';

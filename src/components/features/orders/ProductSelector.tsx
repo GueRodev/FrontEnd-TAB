@@ -9,8 +9,8 @@ import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, Command
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Check, ChevronsUpDown } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import type { Product } from '@/types/product.types';
-import type { Category } from '@/types/product.types';
+import type { Product } from '@/features/products';
+import type { Category } from '@/features/products';
 
 interface ProductSelectorProps {
   selectedProduct: string;

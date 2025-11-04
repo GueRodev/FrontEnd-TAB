@@ -7,7 +7,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
 import { ProductGrid } from './ProductGrid';
-import type { Product } from '@/types/product.types';
+import type { Product } from '../types';
 
 interface FeaturedProductsSectionProps {
   products: Product[];

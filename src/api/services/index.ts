@@ -3,7 +3,7 @@
  * Centralized exports for all API services
  */
 
-export { productsService } from './products.service';
+// productsService moved to @/features/products
 export { ordersService } from './orders.service';
 export { authService } from '@/features/auth/services';
 // addressesService moved to @/features/addresses

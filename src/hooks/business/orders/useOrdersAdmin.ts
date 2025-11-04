@@ -5,7 +5,7 @@
 
 import { useState } from 'react';
 import { useOrders } from '@/contexts/OrdersContext';
-import { useProducts } from '@/contexts/ProductsContext';
+import { useProducts } from '@/features/products';
 import { useCategories } from '@/features/categories';
 import { useNotifications } from '@/features/notifications';
 import { toast } from '@/hooks/use-toast';

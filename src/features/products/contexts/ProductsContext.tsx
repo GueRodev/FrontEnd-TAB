@@ -4,12 +4,9 @@
  */
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import type { Product } from '@/types/product.types';
+import type { Product } from '../types';
 import { localStorageAdapter } from '@/lib/storage';
 import { STORAGE_KEYS } from '@/config/app.config';
-
-// Re-export types for backward compatibility
-export type { Product, ProductStatus } from '@/types/product.types';
 
 interface ProductsContextType {
   products: Product[];

@@ -4,14 +4,14 @@
  */
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import type { Category, Subcategory, CreateCategoryDto, UpdateCategoryDto, CreateSubcategoryDto, UpdateSubcategoryDto } from '@/types/product.types';
+import type { Category, Subcategory, CreateCategoryDto, UpdateCategoryDto, CreateSubcategoryDto, UpdateSubcategoryDto } from '@/features/products';
 import { localStorageAdapter } from '@/lib/storage';
 import { STORAGE_KEYS } from '@/config/app.config';
 import { DEFAULT_CATEGORIES } from '../data/categories.data';
 import { categoriesService } from '../services';
 
 // Re-export types for backward compatibility
-export type { Category, Subcategory } from '@/types/product.types';
+export type { Category, Subcategory } from '@/features/products';
 
 interface CategoriesContextType {
   categories: Category[];

@@ -5,7 +5,7 @@
 
 import { useState, useEffect } from 'react';
 import { useCategories } from '../contexts';
-import type { Category, Subcategory } from '@/types/product.types';
+import type { Category, Subcategory } from '@/features/products';
 import { toast } from '@/hooks/use-toast';
 import { useApi } from '@/hooks/useApi';
 import { DragEndEvent } from '@dnd-kit/core';

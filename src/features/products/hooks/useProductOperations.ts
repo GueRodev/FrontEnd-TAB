@@ -3,12 +3,12 @@
  * Business logic for product operations (add to cart, wishlist, filtering)
  */
 
-import { useProducts } from '@/contexts/ProductsContext';
+import { useProducts } from '../contexts';
 import { useCategories } from '@/features/categories';
 import { useCart } from '@/features/cart';
 import { useWishlist } from '@/features/wishlist';
 import { toast } from '@/hooks/use-toast';
-import type { Product } from '@/types/product.types';
+import type { Product } from '../types';
 
 export const useProductOperations = () => {
   const { products } = useProducts();

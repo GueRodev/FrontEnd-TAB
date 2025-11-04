@@ -1,5 +1,5 @@
 /**
- * Products Hooks
+ * Products Hooks Exports
  */
 
 export { useProductOperations } from './useProductOperations';

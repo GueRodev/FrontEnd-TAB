@@ -1,14 +1,15 @@
 /**
- * Categories Types
- * Re-exports from the main types directory
+ * Products Types Exports
  */
 
 export type { 
-  Category, 
+  Product, 
+  ProductStatus,
+  Category,
   Subcategory,
   CreateCategoryDto,
   UpdateCategoryDto,
   CreateSubcategoryDto,
   UpdateSubcategoryDto,
   ReorderCategoriesDto
-} from '@/features/products';
+} from './product.types';

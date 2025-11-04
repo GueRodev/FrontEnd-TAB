@@ -6,6 +6,6 @@
 // address validations moved to @/features/addresses
 export * from '@/features/auth/validations/auth.validation';
 export * from '@/features/categories/validations/category.validation';
-export * from './product.validation';
+// product validations moved to @/features/products
 export * from './user.validation';
 export * from './order.validation';

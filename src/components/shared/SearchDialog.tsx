@@ -9,7 +9,7 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
-import { useProducts } from '@/contexts/ProductsContext';
+import { useProducts, type Product } from '@/features/products';
 import { useCategories } from '@/features/categories';
 import { ScrollArea } from '@/components/ui/scroll-area';
 

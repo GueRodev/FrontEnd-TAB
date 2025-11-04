@@ -23,8 +23,8 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { ProductImageUpload } from './ProductImageUpload';
-import type { ProductFormData } from '@/lib/validations/product.validation';
-import type { Category, Subcategory } from '@/types/product.types';
+import type { ProductFormData } from '../validations';
+import type { Category, Subcategory } from '../types';
 
 interface ProductFormDialogProps {
   open: boolean;

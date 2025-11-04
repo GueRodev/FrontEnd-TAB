@@ -15,7 +15,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { ProductImage } from '@/components/common';
 import { formatCurrency } from '@/lib/formatters';
-import type { Product } from '@/types/product.types';
+import type { Product } from '../types';
 
 interface ProductDetailModalProps {
   product: Product | null;

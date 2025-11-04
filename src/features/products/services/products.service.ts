@@ -3,8 +3,8 @@
  * API service for product operations
  */
 
-import type { Product } from '@/types/product.types';
-import type { ApiResponse, PaginatedResponse, PaginationParams } from '../types';
+import type { Product } from '../types';
+import type { ApiResponse, PaginatedResponse, PaginationParams } from '@/api/types';
 import { localStorageAdapter } from '@/lib/storage';
 import { STORAGE_KEYS } from '@/config/app.config';
 

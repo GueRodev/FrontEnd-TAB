@@ -10,8 +10,8 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { ProductSelector } from './ProductSelector';
 import { ShoppingBag } from 'lucide-react';
-import type { Product } from '@/types/product.types';
-import type { Category } from '@/types/product.types';
+import type { Product } from '@/features/products';
+import type { Category } from '@/features/products';
 
 interface InStoreOrderFormProps {
   selectedProduct: string;

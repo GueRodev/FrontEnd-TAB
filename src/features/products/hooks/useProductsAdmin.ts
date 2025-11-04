@@ -4,14 +4,14 @@
  */
 
 import { useState } from 'react';
-import { useProducts } from '@/contexts/ProductsContext';
+import { useProducts } from '../contexts';
 import { useCategories } from '@/features/categories';
 import { useNotifications } from '@/features/notifications';
 import { toast } from '@/hooks/use-toast';
-import { productSchema, type ProductFormData } from '@/lib/validations/product.validation';
+import { productSchema, type ProductFormData } from '../validations';
 import { useProductFilters } from './useProductFilters';
 import { useApi } from '@/hooks/useApi';
-import type { Product } from '@/types/product.types';
+import type { Product } from '../types';
 
 interface DeleteProductDialog {
   open: boolean;

@@ -8,12 +8,12 @@ import { AdminSidebar, AdminHeader } from '@/components/layout';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Plus } from 'lucide-react';
-import { useProductsAdmin } from '@/hooks/business';
+import { useProductsAdmin } from '@/features/products';
 import {
   ProductsListAdmin,
   ProductFormDialog,
   ProductFilters,
-} from '@/components/features/products';
+} from '@/features/products';
 import { DeleteConfirmDialog } from '@/components/shared';
 
 const AdminProducts = () => {
