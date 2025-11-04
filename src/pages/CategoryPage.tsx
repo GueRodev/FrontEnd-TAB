@@ -3,8 +3,7 @@ import { useParams, Link } from "react-router-dom";
 import { Header, Footer, DecorativeBackground } from '@/components/layout';
 import { ProductCard } from '@/components/shared';
 import { useCategoryPage } from "@/features/categories";
-import { useProductModal } from "@/hooks/business";
-import { ProductDetailModal } from "@/components/features";
+import { useProductModal, ProductDetailModal } from "@/features/products";
 import { formatCurrency } from "@/lib/formatters";
 
 /**
