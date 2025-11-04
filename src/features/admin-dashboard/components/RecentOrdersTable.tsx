@@ -12,7 +12,7 @@ import { formatCurrency } from '@/lib/formatters';
 import { formatOrderId } from '@/lib/helpers/dashboard.helpers';
 import { getStatusLabel } from '@/lib/helpers/order.helpers';
 import { EmptyTableRow } from './EmptyTableRow';
-import type { RecentOrder } from '@/types/dashboard.types';
+import type { RecentOrder } from '../types';
 
 interface RecentOrdersTableProps {
   orders: RecentOrder[];

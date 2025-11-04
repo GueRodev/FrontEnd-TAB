@@ -8,7 +8,7 @@ import { MetricCard } from './MetricCard';
 import { DollarSign, TrendingUp, Clock, ShoppingCart } from 'lucide-react';
 import { formatCurrency } from '@/lib/formatters';
 import { getMonthlyDescription } from '@/lib/helpers/dashboard.helpers';
-import type { DashboardMetrics } from '@/types/dashboard.types';
+import type { DashboardMetrics } from '../types';
 
 interface MetricsGridProps {
   metrics: DashboardMetrics;

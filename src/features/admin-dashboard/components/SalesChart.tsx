@@ -7,7 +7,7 @@ import React from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { formatChartTooltip, getChartMargins, getTooltipStyle } from '@/lib/helpers/dashboard.helpers';
-import type { ChartDataPoint } from '@/types/dashboard.types';
+import type { ChartDataPoint } from '../types';
 
 interface SalesChartProps {
   data: ChartDataPoint[];

@@ -10,7 +10,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Link } from 'react-router-dom';
 import { formatCurrency } from '@/lib/formatters';
 import { EmptyTableRow } from './EmptyTableRow';
-import type { TopProduct } from '@/types/dashboard.types';
+import type { TopProduct } from '../types';
 
 interface TopProductsTableProps {
   products: TopProduct[];

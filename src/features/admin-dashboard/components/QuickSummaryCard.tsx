@@ -7,7 +7,7 @@ import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Package, Clock, CheckCircle2, TrendingUp } from 'lucide-react';
 import { formatCurrency } from '@/lib/formatters';
-import type { DashboardMetrics } from '@/types/dashboard.types';
+import type { DashboardMetrics } from '../types';
 
 interface QuickSummaryCardProps {
   metrics: DashboardMetrics;
