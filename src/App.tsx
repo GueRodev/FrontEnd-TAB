@@ -8,7 +8,7 @@ import { AuthProvider } from "./features/auth";
 import { WishlistProvider } from "@/features/wishlist";
 import { CartProvider } from "./features/cart";
 import { OrdersProvider } from "./contexts/OrdersContext";
-import { NotificationsProvider } from "./contexts/NotificationsContext";
+import { NotificationsProvider } from "@/features/notifications";
 import { CategoriesProvider } from "./features/categories";
 import { ProductsProvider } from "./contexts/ProductsContext";
 import { ProtectedRoute, ScrollToTop } from "./components/shared";

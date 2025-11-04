@@ -7,7 +7,7 @@ import { useState } from 'react';
 import { useOrders } from '@/contexts/OrdersContext';
 import { useProducts } from '@/contexts/ProductsContext';
 import { useCategories } from '@/features/categories';
-import { useNotifications } from '@/contexts/NotificationsContext';
+import { useNotifications } from '@/features/notifications';
 import { toast } from '@/hooks/use-toast';
 import { useApi } from '@/hooks/useApi';
 import { Badge } from '@/components/ui/badge';

@@ -4,7 +4,7 @@
  */
 
 import { useOrders } from '@/contexts/OrdersContext';
-import { useNotifications } from '@/contexts/NotificationsContext';
+import { useNotifications } from '@/features/notifications';
 import { toast } from '@/hooks/use-toast';
 import { exportOrdersToPDF, exportOrdersToExcel } from '@/lib/helpers/export.helpers';
 import { Order } from '@/types/order.types';

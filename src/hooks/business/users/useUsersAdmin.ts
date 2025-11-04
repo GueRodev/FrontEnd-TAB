@@ -4,7 +4,7 @@
  */
 
 import { useState } from 'react';
-import { useNotifications } from '@/contexts/NotificationsContext';
+import { useNotifications } from '@/features/notifications';
 import { toast } from '@/hooks/use-toast';
 import { useApi } from '@/hooks/useApi';
 import { adminSchema, type AdminFormData } from '@/lib/validations/user.validation';

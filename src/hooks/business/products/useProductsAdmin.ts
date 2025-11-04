@@ -6,7 +6,7 @@
 import { useState } from 'react';
 import { useProducts } from '@/contexts/ProductsContext';
 import { useCategories } from '@/features/categories';
-import { useNotifications } from '@/contexts/NotificationsContext';
+import { useNotifications } from '@/features/notifications';
 import { toast } from '@/hooks/use-toast';
 import { productSchema, type ProductFormData } from '@/lib/validations/product.validation';
 import { useProductFilters } from './useProductFilters';

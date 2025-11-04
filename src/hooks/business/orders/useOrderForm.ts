@@ -5,7 +5,7 @@
 
 import { useState, useEffect } from 'react';
 import { useOrders } from '@/contexts/OrdersContext';
-import { useNotifications } from '@/contexts/NotificationsContext';
+import { useNotifications } from '@/features/notifications';
 import { useCartOperations } from '@/features/cart';
 import { toast } from '@/hooks/use-toast';
 import { useApi } from '@/hooks/useApi';
