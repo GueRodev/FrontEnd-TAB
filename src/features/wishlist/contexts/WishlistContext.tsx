@@ -9,7 +9,7 @@ import { localStorageAdapter } from '@/lib/storage';
 import { STORAGE_KEYS } from '@/config/app.config';
 
 // Simplified Product interface for Wishlist
-interface WishlistProduct {
+export interface WishlistProduct {
   id: string;
   name: string;
   image: string;

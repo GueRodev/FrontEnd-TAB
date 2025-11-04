@@ -3,7 +3,7 @@
  * Business logic for wishlist operations
  */
 
-import { useWishlist } from '@/contexts/WishlistContext';
+import { useWishlist } from '../contexts';
 
 export const useWishlistOperations = () => {
   const {

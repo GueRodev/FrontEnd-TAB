@@ -6,7 +6,7 @@
 import { useProducts } from '@/contexts/ProductsContext';
 import { useCategories } from '@/features/categories';
 import { useCart } from '@/features/cart';
-import { useWishlist } from '@/contexts/WishlistContext';
+import { useWishlist } from '@/features/wishlist';
 import { toast } from '@/hooks/use-toast';
 import type { Product } from '@/types/product.types';
 

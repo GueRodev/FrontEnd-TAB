@@ -1,5 +1,5 @@
 /**
- * Wishlist Hooks
+ * Wishlist Hooks Exports
  */
 
 export { useWishlistOperations } from './useWishlistOperations';
