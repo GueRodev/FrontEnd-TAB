@@ -4,7 +4,7 @@
  */
 
 import type { UserProfile, ClientProfile, AdminProfile } from '@/types/user.types';
-import type { ApiResponse } from '../types';
+import type { ApiResponse } from '@/api/types';
 import { localStorageAdapter } from '@/lib/storage';
 
 export const usersService = {

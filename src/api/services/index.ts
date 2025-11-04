@@ -8,4 +8,4 @@
 export { authService } from '@/features/auth/services';
 // addressesService moved to @/features/addresses
 export { categoriesService } from '@/features/categories/services';
-export { usersService } from './users.service';
+// usersService moved to @/features/admin-users/services
