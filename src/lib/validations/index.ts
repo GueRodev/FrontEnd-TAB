@@ -3,7 +3,7 @@
  * Centralized exports for all validation schemas
  */
 
-export * from './address.validation';
+// address validations moved to @/features/addresses
 export * from '@/features/auth/validations/auth.validation';
 export * from '@/features/categories/validations/category.validation';
 export * from './product.validation';

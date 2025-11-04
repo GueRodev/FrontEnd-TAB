@@ -5,7 +5,8 @@ import { Header, Footer, DecorativeBackground } from '@/components/layout';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
-import { AddressList, ProfileForm } from '@/components/features';
+import { ProfileForm } from '@/components/features';
+import { AddressList } from '@/features/addresses';
 import { useAccountPage } from '@/features/auth';
 
 const Account: React.FC = () => {

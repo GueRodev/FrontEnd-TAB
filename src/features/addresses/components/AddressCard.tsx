@@ -8,7 +8,7 @@ import { MapPin, Home, Briefcase, Edit2, Trash2, CheckCircle } from 'lucide-reac
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import type { Address } from '@/types/user.types';
+import type { Address } from '../types';
 
 interface AddressCardProps {
   address: Address;

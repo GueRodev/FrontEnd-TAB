@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { useOrderForm, useAddressSelection } from '@/hooks/business';
+import { useOrderForm } from '@/hooks/business';
+import { useAddressSelection } from '@/features/addresses';
 import { useAuth } from '@/features/auth';
 import { useCartOperations, CartItemsList, EmptyCart, CartSummary, OrderForm, AddressConfirmationDialog } from '@/features/cart';
 import { Header, Footer } from '@/components/layout';

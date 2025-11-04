@@ -9,9 +9,9 @@ import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { AddressCard } from './AddressCard';
 import { AddressForm } from './AddressForm';
-import { addressesService } from '@/api/services';
+import { addressesService } from '../services';
 import { toast } from '@/hooks/use-toast';
-import type { Address } from '@/types/user.types';
+import type { Address } from '../types';
 
 export const AddressList: React.FC = () => {
   const [addresses, setAddresses] = useState<Address[]>([]);

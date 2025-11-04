@@ -3,7 +3,7 @@
  * Centralized exports for all feature components
  */
 
-export * from './addresses';
+// addresses moved to src/features/addresses
 // cart moved to src/features/cart
 // categories moved to src/features/categories
 // wishlist moved to src/features/wishlist

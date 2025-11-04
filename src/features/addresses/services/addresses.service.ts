@@ -3,9 +3,9 @@
  * Handles address CRUD operations for authenticated clients
  */
 
-import { apiClient } from '../client';
-import type { Address } from '@/types/user.types';
-import type { ApiResponse } from '../types';
+import { apiClient } from '@/api/client';
+import type { Address } from '../types';
+import type { ApiResponse } from '@/api/types';
 
 export const addressesService = {
   /**
