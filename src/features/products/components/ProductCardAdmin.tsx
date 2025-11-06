@@ -7,7 +7,8 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Switch } from '@/components/ui/switch';
 import { Pencil, Trash2 } from 'lucide-react';
-import type { Product, Category } from '../types';
+import type { Product } from '../types';
+import type { Category } from '@/features/categories';
 
 interface ProductCardAdminProps {
   product: Product;

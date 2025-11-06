@@ -21,12 +21,5 @@ export * from './validations';
 // Types
 export type { 
   Product, 
-  ProductStatus, 
-  Category, 
-  Subcategory,
-  CreateCategoryDto,
-  UpdateCategoryDto,
-  CreateSubcategoryDto,
-  UpdateSubcategoryDto,
-  ReorderCategoriesDto
+  ProductStatus
 } from './types';

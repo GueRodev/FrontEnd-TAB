@@ -3,7 +3,7 @@
  * Centralized category definitions
  */
 
-import type { Category } from '@/features/products';
+import type { Category } from '../types';
 
 export const DEFAULT_CATEGORIES: Category[] = [
   {

@@ -4,12 +4,5 @@
 
 export type { 
   Product, 
-  ProductStatus,
-  Category,
-  Subcategory,
-  CreateCategoryDto,
-  UpdateCategoryDto,
-  CreateSubcategoryDto,
-  UpdateSubcategoryDto,
-  ReorderCategoriesDto
+  ProductStatus
 } from './product.types';

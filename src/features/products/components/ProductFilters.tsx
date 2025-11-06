@@ -13,7 +13,7 @@ import {
   PopoverTrigger,
 } from '@/components/ui/popover';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import type { Category } from '../types';
+import type { Category } from '@/features/categories';
 
 interface ProductFiltersProps {
   searchQuery: string;

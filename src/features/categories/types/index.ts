@@ -1,6 +1,5 @@
 /**
- * Categories Types
- * Re-exports from the main types directory
+ * Categories Types Exports
  */
 
 export type { 
@@ -11,4 +10,4 @@ export type {
   CreateSubcategoryDto,
   UpdateSubcategoryDto,
   ReorderCategoriesDto
-} from '@/features/products';
+} from './category.types';

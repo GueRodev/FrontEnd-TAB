@@ -5,7 +5,8 @@
 
 import { ProductsTable } from './ProductsTable';
 import { ProductCardAdmin } from './ProductCardAdmin';
-import type { Product, Category } from '../types';
+import type { Product } from '../types';
+import type { Category } from '@/features/categories';
 
 interface ProductsListAdminProps {
   products: Product[];

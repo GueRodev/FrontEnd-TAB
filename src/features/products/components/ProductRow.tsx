@@ -8,7 +8,8 @@ import { Badge } from '@/components/ui/badge';
 import { Switch } from '@/components/ui/switch';
 import { TableRow, TableCell } from '@/components/ui/table';
 import { Pencil, Trash2 } from 'lucide-react';
-import type { Product, Category } from '../types';
+import type { Product } from '../types';
+import type { Category } from '@/features/categories';
 
 interface ProductRowProps {
   product: Product;

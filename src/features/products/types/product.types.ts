@@ -1,6 +1,6 @@
 /**
- * Product-related types
- * Centralized types for products, categories, and subcategories
+ * Product Types
+ * Types for product management
  */
 
 export interface Product {
@@ -18,49 +18,4 @@ export interface Product {
   createdAt: string;
 }
 
-export interface Category {
-  id: string;
-  name: string;
-  description?: string;
-  order: number;
-  slug: string;
-  subcategories: Subcategory[];
-  isExpanded?: boolean;
-}
-
-export interface Subcategory {
-  id: string;
-  name: string;
-  description?: string;
-  order: number;
-  slug: string;
-}
-
 export type ProductStatus = "active" | "inactive";
-
-// DTO types for API operations
-export interface CreateCategoryDto {
-  name: string;
-  description?: string;
-}
-
-export interface UpdateCategoryDto {
-  name?: string;
-  description?: string;
-  order?: number;
-}
-
-export interface CreateSubcategoryDto {
-  name: string;
-  description?: string;
-}
-
-export interface UpdateSubcategoryDto {
-  name?: string;
-  description?: string;
-  order?: number;
-}
-
-export interface ReorderCategoriesDto {
-  order: string[]; // Array of category IDs in the new order
-}

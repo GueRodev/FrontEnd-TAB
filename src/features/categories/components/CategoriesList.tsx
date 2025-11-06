@@ -19,7 +19,7 @@ import {
   verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
 import { CategoryCard } from './CategoryCard';
-import type { Category, Subcategory } from '@/features/products';
+import type { Category, Subcategory } from '../types';
 
 interface CategoriesListProps {
   categories: Category[];

@@ -24,7 +24,7 @@ import {
 } from '@/components/ui/select';
 import { ProductImageUpload } from './ProductImageUpload';
 import type { ProductFormData } from '../validations';
-import type { Category, Subcategory } from '../types';
+import type { Category, Subcategory } from '@/features/categories';
 
 interface ProductFormDialogProps {
   open: boolean;

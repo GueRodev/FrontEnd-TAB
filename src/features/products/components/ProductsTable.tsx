@@ -11,7 +11,8 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { ProductRow } from './ProductRow';
-import type { Product, Category } from '../types';
+import type { Product } from '../types';
+import type { Category } from '@/features/categories';
 
 interface ProductsTableProps {
   products: Product[];

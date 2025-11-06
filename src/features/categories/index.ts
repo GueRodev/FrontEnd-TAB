@@ -12,6 +12,17 @@ export * from './hooks';
 // Contexts (State Management)
 export * from './contexts';
 
+// Types
+export type {
+  Category,
+  Subcategory,
+  CreateCategoryDto,
+  UpdateCategoryDto,
+  CreateSubcategoryDto,
+  UpdateSubcategoryDto,
+  ReorderCategoriesDto
+} from './types';
+
 // Data
 export * from './data';
 
