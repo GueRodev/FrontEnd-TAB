@@ -12,3 +12,4 @@ export { PaymentMethodSelector } from './PaymentMethodSelector';
 export { OrdersTable } from './OrdersTable';
 export { ArchivedOrderCard } from './ArchivedOrderCard';
 export { PaymentConfirmationDialog } from './PaymentConfirmationDialog';
+export { default as ExportButton } from './ExportButton';

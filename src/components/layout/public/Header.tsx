@@ -6,7 +6,7 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Menu, X, ShoppingCart, Search, User, Heart, Shield, LogOut } from 'lucide-react';
 import { Logo } from '../shared';
-import { SearchDialog } from '@/components/shared';
+import { SearchDialog } from '@/features/products';
 import { cn } from '@/lib/utils';
 import { useCart } from '@/features/cart';
 import { useCategories } from '@/features/categories';

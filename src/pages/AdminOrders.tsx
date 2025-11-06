@@ -14,7 +14,7 @@ import {
   InStoreOrderForm, 
   PaymentConfirmationDialog 
 } from '@/features/orders';
-import { DeleteConfirmDialog } from '@/components/shared';
+import { DeleteConfirmDialog } from '@/components/common';
 import { ShoppingCart, Store, History } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 

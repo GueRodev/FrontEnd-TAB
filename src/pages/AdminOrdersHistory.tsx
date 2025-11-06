@@ -4,12 +4,12 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Archive, ArrowLeft } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { ExportButton } from '@/components/shared';
 import { EmptyState } from '@/components/common';
 import { 
   useOrdersHistory, 
   OrdersTable, 
-  ArchivedOrderCard 
+  ArchivedOrderCard,
+  ExportButton
 } from '@/features/orders';
 
 const AdminOrdersHistory = () => {

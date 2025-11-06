@@ -4,7 +4,7 @@
  */
 
 import React from 'react';
-import { ProductCard } from '@/components/shared';
+import ProductCard from './ProductCard';
 import { formatCurrency } from '@/lib/formatters';
 import type { Product } from '../types';
 

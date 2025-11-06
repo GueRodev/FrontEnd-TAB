@@ -16,6 +16,7 @@ export {
   PaymentMethodSelector,
   PaymentConfirmationDialog
 } from './components';
+export { default as ExportButton } from './components/ExportButton';
 
 // Hooks
 export {

@@ -5,6 +5,7 @@
 
 // Components (UI)
 export * from './components';
+export { ProtectedRoute } from './components';
 
 // Hooks (Business Logic)
 export * from './hooks';

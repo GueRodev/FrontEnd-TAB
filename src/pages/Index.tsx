@@ -1,6 +1,6 @@
 import React from "react";
 import { Header, Hero, Footer } from "@/components/layout";
-import { FeaturedProducts } from "@/components/shared";
+import { FeaturedProducts } from "@/features/products";
 
 const Index = () => {
   return (

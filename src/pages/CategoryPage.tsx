@@ -1,7 +1,7 @@
 import React from "react";
 import { useParams, Link } from "react-router-dom";
 import { Header, Footer, DecorativeBackground } from '@/components/layout';
-import { ProductCard } from '@/components/shared';
+import ProductCard from '@/features/products/components/ProductCard';
 import { useCategoryPage } from "@/features/categories";
 import { useProductModal, ProductDetailModal } from "@/features/products";
 import { formatCurrency } from "@/lib/formatters";

@@ -12,3 +12,6 @@ export { ProductFormDialog } from './ProductFormDialog';
 export { ProductImageUpload } from './ProductImageUpload';
 export { ProductsListAdmin } from './ProductsListAdmin';
 export { ProductFilters } from './ProductFilters';
+export { default as ProductCard } from './ProductCard';
+export { default as FeaturedProducts } from './FeaturedProducts';
+export { default as SearchDialog } from './SearchDialog';

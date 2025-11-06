@@ -4,7 +4,7 @@
  */
 
 import React from 'react';
-import { ProductCard } from '@/components/shared';
+import { ProductCard } from '@/features/products';
 import { formatCurrency } from '@/lib/formatters';
 
 interface WishlistProduct {
