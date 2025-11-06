@@ -9,8 +9,8 @@ import { Badge } from '@/components/ui/badge';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Link } from 'react-router-dom';
 import { formatCurrency } from '@/lib/formatters';
-import { formatOrderId } from '@/lib/helpers/dashboard.helpers';
-import { getStatusLabel } from '@/lib/helpers/order.helpers';
+import { formatOrderId } from '../helpers';
+import { getStatusLabel } from '@/features/orders/helpers';
 import { EmptyTableRow } from './EmptyTableRow';
 import type { RecentOrder } from '../types';
 

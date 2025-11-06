@@ -13,7 +13,7 @@ import {
   prepareChartData,
   type OrderMetrics,
   type ChartDataPoint,
-} from '@/lib/helpers/order.helpers';
+} from '@/features/orders/helpers';
 import type { Order } from '@/features/orders/types';
 
 interface TopProduct {

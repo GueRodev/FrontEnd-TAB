@@ -6,7 +6,7 @@
 import { useOrders } from '../contexts';
 import { useNotifications } from '@/features/notifications';
 import { toast } from '@/hooks/use-toast';
-import { exportOrdersToPDF, exportOrdersToExcel } from '@/lib/helpers/export.helpers';
+import { exportOrdersToPDF, exportOrdersToExcel } from '../helpers';
 import type { Order } from '../types';
 
 interface UseOrdersHistoryReturn {

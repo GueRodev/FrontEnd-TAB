@@ -30,6 +30,9 @@ export { OrdersProvider, useOrders } from './contexts';
 // Services
 export { ordersService } from './services';
 
+// Helpers
+export * from './helpers';
+
 // Types
 export type {
   OrderStatus,
