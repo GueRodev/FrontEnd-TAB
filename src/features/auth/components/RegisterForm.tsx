@@ -15,7 +15,7 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { APP_CONFIG } from '@/config/app.config';
-import type { RegisterFormData } from '@/lib/validations';
+import type { RegisterFormData } from '../validations';
 
 interface RegisterFormProps {
   form: UseFormReturn<RegisterFormData>;

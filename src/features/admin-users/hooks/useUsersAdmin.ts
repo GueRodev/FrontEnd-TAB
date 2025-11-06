@@ -5,7 +5,7 @@
 
 import { useState, useMemo } from 'react';
 import { useToast } from '@/hooks/use-toast';
-import type { AdminFormData } from '@/lib/validations/user.validation';
+import type { AdminFormData } from '../validations';
 
 // Temporary mock data - TODO: Replace with API calls
 const MOCK_CLIENTES: any[] = [];

@@ -6,7 +6,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts';
-import type { ProfileFormData } from '@/lib/validations';
+import type { ProfileFormData } from '../validations';
 
 export const useAccountPage = () => {
   const navigate = useNavigate();

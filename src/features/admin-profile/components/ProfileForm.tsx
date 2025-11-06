@@ -11,7 +11,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { profileSchema, type ProfileFormData } from '@/lib/validations';
+import { profileSchema, type ProfileFormData } from '@/features/auth/validations';
 import { APP_CONFIG } from '@/config/app.config';
 
 interface ProfileFormProps {

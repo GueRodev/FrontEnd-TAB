@@ -18,6 +18,12 @@ export type {
   RegisterData,
   AuthResponse,
   AuthState,
+  // Validation types
+  LoginFormData,
+  RegisterFormData,
+  ProfileFormData,
+  ForgotPasswordFormData,
+  VerificationCodeFormData,
 } from './types';
 
 // User types

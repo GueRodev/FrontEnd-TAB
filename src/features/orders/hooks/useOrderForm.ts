@@ -10,7 +10,7 @@ import { useCart } from '@/features/cart';
 import { useApi } from '@/hooks/useApi';
 import { ordersService } from '../services';
 import { toast } from '@/hooks/use-toast';
-import { orderFormSchema } from '@/lib/validations/order.validation';
+import { orderFormSchema } from '../validations';
 import type { DeliveryAddress, DeliveryOption } from '../types';
 
 /**

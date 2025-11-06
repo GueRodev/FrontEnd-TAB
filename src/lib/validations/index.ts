@@ -1,11 +1,14 @@
 /**
  * Validation Schemas Exports
- * Centralized exports for all validation schemas
+ * 
+ * All validation schemas have been migrated to their respective features:
+ * - @/features/auth/validations - Authentication validations
+ * - @/features/categories/validations - Category validations
+ * - @/features/products/validations - Product validations
+ * - @/features/addresses/validations - Address validations
+ * - @/features/admin-users/validations - Admin user validations
+ * - @/features/admin-profile/validations - Admin profile validations
+ * - @/features/orders/validations - Order validations
+ * 
+ * This directory can be removed in the future if no shared validations are needed.
  */
-
-// address validations moved to @/features/addresses
-export * from '@/features/auth/validations/auth.validation';
-export * from '@/features/categories/validations/category.validation';
-// product validations moved to @/features/products
-export * from './user.validation';
-export * from './order.validation';

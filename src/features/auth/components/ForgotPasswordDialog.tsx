@@ -20,7 +20,7 @@ import {
   InputOTPGroup,
   InputOTPSlot,
 } from '@/components/ui/input-otp';
-import { forgotPasswordSchema, verificationCodeSchema } from '@/lib/validations';
+import { forgotPasswordSchema, verificationCodeSchema } from '../validations';
 import { toast } from '@/hooks/use-toast';
 import { Mail, Shield } from 'lucide-react';
 
