@@ -3,7 +3,7 @@
  * API service for user management operations (admin)
  */
 
-import type { UserProfile, ClientProfile, AdminProfile } from '@/types/user.types';
+import type { UserProfile, ClientProfile, AdminProfile } from '@/features/auth';
 import type { ApiResponse } from '@/api/types';
 import { localStorageAdapter } from '@/lib/storage';
 

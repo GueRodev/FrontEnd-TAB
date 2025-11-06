@@ -4,7 +4,7 @@
  */
 
 import { useState, useMemo } from 'react';
-import type { UserProfile } from '@/types/user.types';
+import type { UserProfile } from '@/features/auth';
 import type { DeliveryAddress } from '@/features/orders/types';
 
 interface ManualAddress {

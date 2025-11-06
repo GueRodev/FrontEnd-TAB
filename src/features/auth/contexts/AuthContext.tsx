@@ -7,7 +7,7 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 import { authService } from '../services';
 import { apiClient } from '@/api/client';
 import { STORAGE_KEYS } from '@/config';
-import type { UserProfile } from '@/types/user.types';
+import type { UserProfile } from '../types';
 import type { AuthState, LoginCredentials, RegisterData } from '../types/auth.types';
 import { toast } from '@/hooks/use-toast';
 

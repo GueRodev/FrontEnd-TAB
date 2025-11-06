@@ -20,4 +20,11 @@ export type {
   AuthState,
 } from './types';
 
+// User types
+export type {
+  UserProfile,
+  ClientProfile,
+  AdminProfile,
+} from './types';
+
 // Note: Services and validations are private to this feature

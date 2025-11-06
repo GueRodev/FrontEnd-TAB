@@ -5,7 +5,7 @@
 
 import { apiClient } from '@/api/client';
 import type { AuthResponse, LoginCredentials, RegisterData } from '../types/auth.types';
-import type { UserProfile } from '@/types/user.types';
+import type { UserProfile } from '../types';
 import type { ApiResponse } from '@/api/types';
 import { validateCredentials } from '@/data/users.mock';
 
