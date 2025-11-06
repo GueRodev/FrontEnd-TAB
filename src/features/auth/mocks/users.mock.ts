@@ -3,7 +3,7 @@
  * Usuarios de prueba para desarrollo (admin y clientes)
  */
 
-import type { UserProfile } from '@/features/auth';
+import type { UserProfile } from '../types';
 
 export interface MockUser {
   id: string;
