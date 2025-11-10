@@ -170,7 +170,7 @@ export const useProductsAdmin = (): UseProductsAdminReturn => {
 
     await execute(
       async () => {
-        addProduct({
+        await addProduct({
           name: formData.name,
           marca: formData.marca || undefined,
           categoryId: formData.category,
@@ -231,7 +231,7 @@ export const useProductsAdmin = (): UseProductsAdminReturn => {
 
     await execute(
       async () => {
-        updateProduct(selectedProduct.id, {
+        await updateProduct(selectedProduct.id, {
           name: formData.name,
           marca: formData.marca || undefined,
           categoryId: formData.category,
@@ -284,10 +284,10 @@ export const useProductsAdmin = (): UseProductsAdminReturn => {
     }
   };
 
-  const confirmDeleteProduct = () => {
+  const confirmDeleteProduct = async () => {
     const { productId, productName } = deleteProductDialog;
     
-    deleteProduct(productId);
+    await deleteProduct(productId);
     
     toast({
       title: "Producto eliminado",
@@ -301,10 +301,10 @@ export const useProductsAdmin = (): UseProductsAdminReturn => {
     });
   };
 
-  const handleToggleFeatured = (productId: string, isFeatured: boolean) => {
+  const handleToggleFeatured = async (productId: string, isFeatured: boolean) => {
     const product = products.find(p => p.id === productId);
     if (product) {
-      updateProduct(productId, { isFeatured });
+      await updateProduct(productId, { isFeatured });
       toast({
         title: isFeatured ? "Producto destacado" : "Producto no destacado",
         description: `${product.name} ${isFeatured ? 'aparecerá' : 'no aparecerá'} en productos destacados`,

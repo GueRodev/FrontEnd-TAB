@@ -1,18 +1,19 @@
 /**
  * Products Context
- * Manages product catalog using localStorage
+ * Manages product catalog using productsService as single source of truth
+ * Pattern aligned with OrdersContext for future Laravel integration
  */
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import type { Product } from '../types';
-import { localStorageAdapter } from '@/lib/storage';
-import { STORAGE_KEYS } from '@/config/app.config';
+import { productsService } from '../services';
 
 interface ProductsContextType {
   products: Product[];
-  addProduct: (product: Omit<Product, 'id' | 'createdAt'>) => void;
-  updateProduct: (id: string, product: Partial<Product>) => void;
-  deleteProduct: (id: string) => void;
+  loading: boolean;
+  addProduct: (product: Omit<Product, 'id' | 'createdAt'>) => Promise<Product>;
+  updateProduct: (id: string, product: Partial<Product>) => Promise<Product>;
+  deleteProduct: (id: string) => Promise<void>;
   getProductsByCategory: (categoryId: string) => Product[];
   getProductsBySubcategory: (subcategoryId: string) => Product[];
 }
@@ -20,34 +21,81 @@ interface ProductsContextType {
 const ProductsContext = createContext<ProductsContextType | undefined>(undefined);
 
 export const ProductsProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [products, setProducts] = useState<Product[]>(() => {
-    return localStorageAdapter.getItem<Product[]>(STORAGE_KEYS.products) || [];
-  });
+  const [products, setProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(false);
 
+  // Load products on mount
   useEffect(() => {
-    localStorageAdapter.setItem(STORAGE_KEYS.products, products);
-  }, [products]);
-
-  const addProduct = (productData: Omit<Product, 'id' | 'createdAt'>) => {
-    const newProduct: Product = {
-      ...productData,
-      id: `product-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
-      isFeatured: productData.isFeatured || false,
-      createdAt: new Date().toISOString(),
+    const loadProducts = async () => {
+      setLoading(true);
+      try {
+        const loadedProducts = await productsService.getAll();
+        setProducts(loadedProducts);
+      } catch (error) {
+        console.error('Error loading products:', error);
+      } finally {
+        setLoading(false);
+      }
     };
-    setProducts(prev => [...prev, newProduct]);
+    loadProducts();
+  }, []);
+
+  const addProduct = async (productData: Omit<Product, 'id' | 'createdAt'>): Promise<Product> => {
+    setLoading(true);
+    try {
+      // Call service to persist
+      const response = await productsService.create(productData);
+      const newProduct = response.data;
+      
+      // Update local state
+      setProducts(prev => [...prev, newProduct]);
+      
+      return newProduct;
+    } catch (error) {
+      console.error('Error adding product:', error);
+      throw error;
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const updateProduct = (id: string, productData: Partial<Product>) => {
-    setProducts(prev => 
-      prev.map(product => 
-        product.id === id ? { ...product, ...productData } : product
-      )
-    );
+  const updateProduct = async (id: string, productData: Partial<Product>): Promise<Product> => {
+    setLoading(true);
+    try {
+      // Call service to persist
+      const response = await productsService.update(id, productData);
+      const updatedProduct = response.data;
+      
+      // Update local state
+      setProducts(prev => 
+        prev.map(product => 
+          product.id === id ? updatedProduct : product
+        )
+      );
+      
+      return updatedProduct;
+    } catch (error) {
+      console.error('Error updating product:', error);
+      throw error;
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const deleteProduct = (id: string) => {
-    setProducts(prev => prev.filter(product => product.id !== id));
+  const deleteProduct = async (id: string): Promise<void> => {
+    setLoading(true);
+    try {
+      // Call service to persist
+      await productsService.delete(id);
+      
+      // Update local state
+      setProducts(prev => prev.filter(product => product.id !== id));
+    } catch (error) {
+      console.error('Error deleting product:', error);
+      throw error;
+    } finally {
+      setLoading(false);
+    }
   };
 
   const getProductsByCategory = (categoryId: string) => {
@@ -65,6 +113,7 @@ export const ProductsProvider: React.FC<{ children: React.ReactNode }> = ({ chil
   return (
     <ProductsContext.Provider value={{
       products,
+      loading,
       addProduct,
       updateProduct,
       deleteProduct,
