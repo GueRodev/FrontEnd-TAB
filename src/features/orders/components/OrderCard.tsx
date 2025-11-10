@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Archive, Trash2, CheckCircle, XCircle } from 'lucide-react';
 import { OrderStatusBadge } from './OrderStatusBadge';
+import { cn } from '@/lib/utils';
 import type { Order } from '../types';
 
 interface OrderCardProps {
@@ -39,10 +40,12 @@ export const OrderCard: React.FC<OrderCardProps> = ({
 
   return (
     <Card>
-      <CardHeader className="pb-3">
-        <div className="flex items-start justify-between gap-2">
-          <div className="space-y-1 min-w-0 flex-1">
-            <CardTitle className="text-base">Pedido #{order.id}</CardTitle>
+      <CardHeader className="pb-3 px-4 md:px-6">
+        <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2 sm:gap-3">
+          <div className="space-y-1.5 min-w-0 flex-1">
+            <CardTitle className="text-lg md:text-xl font-bold">
+              Pedido #{order.id}
+            </CardTitle>
             <div className="flex flex-wrap items-center gap-2">
               <OrderStatusBadge status={order.status} />
               <Badge variant="outline" className="text-xs">
@@ -50,69 +53,95 @@ export const OrderCard: React.FC<OrderCardProps> = ({
               </Badge>
             </div>
           </div>
+          <div className="text-xs sm:text-sm text-muted-foreground sm:text-right">
+            {new Date(order.createdAt).toLocaleDateString('es-CR', {
+              day: '2-digit',
+              month: 'short',
+              year: 'numeric',
+            })}
+            <br className="hidden sm:block" />
+            <span className="sm:hidden"> • </span>
+            {new Date(order.createdAt).toLocaleTimeString('es-CR', {
+              hour: '2-digit',
+              minute: '2-digit',
+            })}
+          </div>
         </div>
       </CardHeader>
 
-      <CardContent className="space-y-4 pb-3">
-        <div className="space-y-2 text-sm">
-          <div className="flex justify-between">
-            <span className="text-muted-foreground">Cliente:</span>
-            <span className="font-medium">{order.customerInfo.name}</span>
+      <CardContent className="space-y-3 md:space-y-4 pb-3 px-4 md:px-6">
+        {/* Cliente con fondo gris */}
+        <div className="bg-muted/40 rounded-lg p-3 md:p-4 space-y-1.5">
+          <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-1">
+            <span className="text-xs md:text-sm text-muted-foreground">Cliente:</span>
+            <span className="font-semibold text-sm md:text-base">{order.customerInfo.name}</span>
           </div>
-          <div className="flex justify-between">
-            <span className="text-muted-foreground">Teléfono:</span>
-            <span className="font-medium">{order.customerInfo.phone}</span>
+          <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-1">
+            <span className="text-xs md:text-sm text-muted-foreground">Teléfono:</span>
+            <span className="font-medium text-sm md:text-base">{order.customerInfo.phone}</span>
           </div>
-          {showDeliveryInfo && order.delivery_address && (
-            <>
-              <div className="flex justify-between">
-                <span className="text-muted-foreground">Provincia:</span>
-                <span className="font-medium">{order.delivery_address.province}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-muted-foreground">Cantón:</span>
-                <span className="font-medium">{order.delivery_address.canton}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-muted-foreground">Distrito:</span>
-                <span className="font-medium">{order.delivery_address.district}</span>
-              </div>
-              <div className="pt-2 border-t">
-                <span className="text-muted-foreground">Dirección exacta:</span>
-                <p className="mt-1 text-sm">{order.delivery_address.address}</p>
-              </div>
-            </>
-          )}
-          <div className="flex justify-between">
-            <span className="text-muted-foreground">Fecha:</span>
-            <span className="font-medium">
-              {new Date(order.createdAt).toLocaleDateString('es-CR')}
+        </div>
+
+        {/* Dirección de envío compacta */}
+        {showDeliveryInfo && order.delivery_address && (
+          <div className="bg-blue-50/50 dark:bg-blue-950/20 rounded-lg p-3 md:p-4 space-y-2 border border-blue-100 dark:border-blue-900">
+            <div className="space-y-1">
+              <span className="text-xs md:text-sm font-medium text-blue-900 dark:text-blue-100">
+                📍 Dirección de envío:
+              </span>
+              <p className="text-xs md:text-sm font-medium">
+                {order.delivery_address.province}, {order.delivery_address.canton}, {order.delivery_address.district}
+              </p>
+              <p className="text-xs md:text-sm text-muted-foreground">
+                {order.delivery_address.address}
+              </p>
+            </div>
+          </div>
+        )}
+
+        {/* Total y Pago */}
+        <div className="space-y-2 pt-2 border-t">
+          <div className="flex justify-between items-center">
+            <span className="text-sm md:text-base text-muted-foreground">Total:</span>
+            <span className="font-bold text-lg md:text-xl text-primary">
+              ₡{order.total.toLocaleString('es-CR')}
             </span>
           </div>
-          <div className="flex justify-between">
-            <span className="text-muted-foreground">Total:</span>
-            <span className="font-semibold text-base">₡{order.total.toLocaleString('es-CR')}</span>
-          </div>
           {order.paymentMethod && (
-            <div className="flex justify-between">
-              <span className="text-muted-foreground">Método de pago:</span>
-              <span className="font-medium capitalize">{order.paymentMethod}</span>
+            <div className="flex justify-between items-center">
+              <span className="text-xs md:text-sm text-muted-foreground">Pago:</span>
+              <span className={cn(
+                "font-semibold text-sm md:text-base",
+                order.paymentMethod === 'sinpe' && "text-blue-600 dark:text-blue-400",
+                order.paymentMethod === 'transfer' && "text-purple-600 dark:text-purple-400",
+                order.paymentMethod === 'cash' && "text-green-600 dark:text-green-400"
+              )}>
+                {order.paymentMethod === 'sinpe' ? '💳 SINPE Móvil' : 
+                 order.paymentMethod === 'transfer' ? '🏦 Transferencia' : 
+                 '💵 Efectivo'}
+              </span>
             </div>
           )}
         </div>
 
-        <div className="space-y-2 pt-2 border-t">
-          <h4 className="font-medium text-sm">Productos ({order.items.length})</h4>
-          <div className="space-y-2 max-h-40 overflow-y-auto">
+        {/* Productos */}
+        <div className="space-y-2 pt-3 border-t">
+          <h4 className="font-semibold text-sm md:text-base flex items-center gap-2">
+            📦 Productos 
+            <span className="text-xs md:text-sm font-normal text-muted-foreground">
+              ({order.items.length})
+            </span>
+          </h4>
+          <div className="space-y-2 max-h-32 md:max-h-40 overflow-y-auto pr-1">
             {order.items.map((item) => (
-              <div key={item.id} className="flex items-center gap-3 text-sm">
+              <div key={item.id} className="flex items-center gap-2 md:gap-3 p-2 bg-muted/20 rounded-md">
                 <img
                   src={item.image}
                   alt={item.name}
-                  className="w-12 h-12 object-cover rounded"
+                  className="w-10 h-10 md:w-12 md:h-12 object-cover rounded"
                 />
                 <div className="flex-1 min-w-0">
-                  <p className="font-medium truncate">{item.name}</p>
+                  <p className="font-medium text-xs md:text-sm truncate">{item.name}</p>
                   <p className="text-muted-foreground text-xs">
                     {item.quantity}x ₡{item.price.toLocaleString('es-CR')}
                   </p>
@@ -123,25 +152,25 @@ export const OrderCard: React.FC<OrderCardProps> = ({
         </div>
       </CardContent>
 
-      <CardFooter className="pt-3 border-t gap-2 flex-wrap">
+      <CardFooter className="pt-3 border-t gap-2 flex-col sm:flex-row px-4 md:px-6">
         {order.status === 'pending' && (
           <>
             <Button
               onClick={handleComplete}
               size="sm"
-              className="flex-1"
+              className="w-full sm:flex-1 bg-[hsl(217,33%,17%)] hover:bg-[hsl(222,47%,11%)] dark:bg-[hsl(222,47%,11%)] dark:hover:bg-black text-white"
             >
-              <CheckCircle className="h-4 w-4 mr-1" />
-              Completar
+              <CheckCircle className="h-4 w-4 md:h-5 md:w-5 mr-1.5 md:mr-2" />
+              <span className="text-xs md:text-sm font-semibold">Completar</span>
             </Button>
             <Button
               onClick={() => onCancel(order)}
               size="sm"
-              variant="outline"
-              className="flex-1"
+              variant="destructive"
+              className="w-full sm:flex-1"
             >
-              <XCircle className="h-4 w-4 mr-1" />
-              Cancelar
+              <XCircle className="h-4 w-4 md:h-5 md:w-5 mr-1.5 md:mr-2" />
+              <span className="text-xs md:text-sm font-semibold">Cancelar</span>
             </Button>
           </>
         )}
@@ -151,19 +180,19 @@ export const OrderCard: React.FC<OrderCardProps> = ({
               onClick={() => onArchive(order.id)}
               size="sm"
               variant="outline"
-              className="flex-1"
+              className="w-full sm:flex-1"
             >
-              <Archive className="h-4 w-4 mr-1" />
-              Archivar
+              <Archive className="h-4 w-4 md:h-5 md:w-5 mr-1.5 md:mr-2" />
+              <span className="text-xs md:text-sm">Archivar</span>
             </Button>
             <Button
               onClick={() => onDelete(order.id, order)}
               size="sm"
               variant="destructive"
-              className="flex-1"
+              className="w-full sm:flex-1"
             >
-              <Trash2 className="h-4 w-4 mr-1" />
-              Eliminar
+              <Trash2 className="h-4 w-4 md:h-5 md:w-5 mr-1.5 md:mr-2" />
+              <span className="text-xs md:text-sm">Eliminar</span>
             </Button>
           </>
         )}
