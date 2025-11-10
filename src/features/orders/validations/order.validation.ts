@@ -8,7 +8,7 @@ import { z } from 'zod';
 export const orderFormSchema = z.object({
   customerName: z.string().min(3, 'El nombre debe tener al menos 3 caracteres'),
   customerPhone: z.string().min(8, 'El teléfono debe tener al menos 8 dígitos'),
-  deliveryType: z.enum(['pickup', 'delivery'], {
+  deliveryOption: z.enum(['pickup', 'delivery'], {
     required_error: 'Selecciona un tipo de entrega',
   }),
   paymentMethod: z.enum(['cash', 'card', 'transfer', 'sinpe'], {
@@ -24,7 +24,7 @@ export const orderFormSchema = z.object({
 }).refine(
   (data) => {
     // If delivery type is envío, must have either savedAddressId or complete manual address
-    if (data.deliveryType === 'delivery') {
+    if (data.deliveryOption === 'delivery') {
       if (data.savedAddressId) return true;
       if (
         data.manualAddress?.province &&
