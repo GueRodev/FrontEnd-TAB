@@ -47,11 +47,13 @@ const AdminOrders = () => {
     paymentConfirmDialog,
     handleCreateInStoreOrder,
     openDeleteOrderDialog,
+    closeDeleteOrderDialog,
     confirmDeleteOrder,
     handleArchiveOrder,
     handleCompleteOrder,
     handleCancelOrder,
     openPaymentConfirmDialog,
+    closePaymentConfirmDialog,
     confirmCompleteOrder,
   } = useOrdersAdmin();
 
@@ -177,7 +179,9 @@ const AdminOrders = () => {
       {/* Delete Order Confirmation */}
       <DeleteConfirmDialog
         open={deleteOrderDialog.open}
-        onOpenChange={() => {}}
+        onOpenChange={(open) => {
+          if (!open) closeDeleteOrderDialog();
+        }}
         itemName={deleteOrderDialog.order?.id || ''}
         itemType="order"
         onConfirm={confirmDeleteOrder}
@@ -186,7 +190,9 @@ const AdminOrders = () => {
       {/* Payment Confirmation Dialog */}
       <PaymentConfirmationDialog
         open={paymentConfirmDialog.open}
-        onOpenChange={() => {}}
+        onOpenChange={(open) => {
+          if (!open) closePaymentConfirmDialog();
+        }}
         onConfirm={confirmCompleteOrder}
         customerName={paymentConfirmDialog.order?.customerInfo?.name}
         orderTotal={paymentConfirmDialog.order?.total}

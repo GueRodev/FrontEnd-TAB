@@ -64,11 +64,13 @@ interface UseOrdersAdminReturn {
   // Dialog states
   deleteOrderDialog: DeleteOrderDialog;
   openDeleteOrderDialog: (orderId: string, order: Order) => void;
+  closeDeleteOrderDialog: () => void;
   confirmDeleteOrder: () => void;
   
   // Payment confirmation dialog
   paymentConfirmDialog: PaymentConfirmationDialog;
   openPaymentConfirmDialog: (order: Order) => void;
+  closePaymentConfirmDialog: () => void;
   confirmCompleteOrder: () => void;
 }
 
@@ -224,6 +226,13 @@ export const useOrdersAdmin = (): UseOrdersAdminReturn => {
   };
 
   /**
+   * Close delete order dialog without confirming
+   */
+  const closeDeleteOrderDialog = () => {
+    setDeleteOrderDialog({ open: false, orderId: null, order: null });
+  };
+
+  /**
    * Confirm and delete order
    */
   const confirmDeleteOrder = async () => {
@@ -299,6 +308,13 @@ export const useOrdersAdmin = (): UseOrdersAdminReturn => {
       open: true,
       order,
     });
+  };
+
+  /**
+   * Close payment confirmation dialog without confirming
+   */
+  const closePaymentConfirmDialog = () => {
+    setPaymentConfirmDialog({ open: false, order: null });
   };
 
   /**
@@ -433,9 +449,11 @@ export const useOrdersAdmin = (): UseOrdersAdminReturn => {
     handleCreateInStoreOrder,
     deleteOrderDialog,
     openDeleteOrderDialog,
+    closeDeleteOrderDialog,
     confirmDeleteOrder,
     paymentConfirmDialog,
     openPaymentConfirmDialog,
+    closePaymentConfirmDialog,
     confirmCompleteOrder,
     handleArchiveOrder,
     handleCompleteOrder,
