@@ -45,7 +45,7 @@ export const OrderForm: React.FC<OrderFormProps> = ({
           <Label htmlFor="name">Nombre *</Label>
           <Input
             id="name"
-            name="name"
+            name="customerName"
             value={formData.name}
             onChange={onInputChange}
             placeholder="Tu nombre completo"
@@ -57,7 +57,7 @@ export const OrderForm: React.FC<OrderFormProps> = ({
           <Label htmlFor="phone">Teléfono *</Label>
           <Input
             id="phone"
-            name="phone"
+            name="customerPhone"
             value={formData.phone}
             onChange={onInputChange}
             placeholder="Tu número de teléfono"
