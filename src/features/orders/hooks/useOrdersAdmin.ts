@@ -9,7 +9,6 @@ import { useProducts } from '@/features/products';
 import { useCategories } from '@/features/categories';
 import { useNotifications } from '@/features/notifications';
 import { useApi } from '@/hooks/useApi';
-import { ordersService } from '../services';
 import { productsService } from '@/features/products/services';
 import { toast } from '@/hooks/use-toast';
 import type { Order } from '../types';
@@ -99,7 +98,7 @@ export const useOrdersAdmin = (): UseOrdersAdminReturn => {
   });
 
   // Get data from contexts
-  const { getOrdersByType, archiveOrder, updateOrderStatus } = useOrders();
+  const { getOrdersByType, addOrder, deleteOrder, archiveOrder, updateOrderStatus } = useOrders();
   const { products, updateProduct } = useProducts();
   const { categories } = useCategories();
   const { addNotification } = useNotifications();
@@ -134,9 +133,6 @@ export const useOrdersAdmin = (): UseOrdersAdminReturn => {
   const selectedProductData = activeProducts.find(p => p.id === selectedProduct);
 
   // API hooks
-  const { execute: createOrder } = useApi();
-  const { execute: deleteOrderApi } = useApi();
-  const { execute: updateOrderStatusApi } = useApi();
   const { execute: updateProductApi } = useApi();
 
   /**
@@ -181,9 +177,9 @@ export const useOrdersAdmin = (): UseOrdersAdminReturn => {
       paymentMethod,
     };
 
-    const result = await createOrder(() => ordersService.create(orderData));
+    try {
+      const orderId = await addOrder(orderData);
 
-    if (result?.data) {
       // Update product stock
       await updateProductApi(() => productsService.update(selectedProductData.id, {
         stock: selectedProductData.stock - quantity,
@@ -192,7 +188,7 @@ export const useOrdersAdmin = (): UseOrdersAdminReturn => {
       addNotification({
         type: 'order',
         title: 'Pedido creado',
-        message: `Pedido en tienda #${result.data.id} creado`,
+        message: `Pedido en tienda #${orderId} creado`,
         time: 'Ahora',
       });
 
@@ -206,6 +202,12 @@ export const useOrdersAdmin = (): UseOrdersAdminReturn => {
       toast({
         title: "Pedido creado",
         description: "El pedido en tienda ha sido creado exitosamente",
+      });
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "No se pudo crear el pedido",
+        variant: "destructive",
       });
     }
   };
@@ -227,9 +229,9 @@ export const useOrdersAdmin = (): UseOrdersAdminReturn => {
   const confirmDeleteOrder = async () => {
     if (!deleteOrderDialog.orderId || !deleteOrderDialog.order) return;
 
-    const result = await deleteOrderApi(() => ordersService.delete(deleteOrderDialog.orderId!));
+    try {
+      await deleteOrder(deleteOrderDialog.orderId);
 
-    if (result) {
       // Restore stock if order was completed
       if (deleteOrderDialog.order.status === 'completed') {
         for (const item of deleteOrderDialog.order.items) {
@@ -253,6 +255,12 @@ export const useOrdersAdmin = (): UseOrdersAdminReturn => {
         title: "Pedido eliminado",
         description: "El pedido ha sido eliminado del sistema",
       });
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "No se pudo eliminar el pedido",
+        variant: "destructive",
+      });
     }
 
     setDeleteOrderDialog({ open: false, orderId: null, order: null });
@@ -261,18 +269,26 @@ export const useOrdersAdmin = (): UseOrdersAdminReturn => {
   /**
    * Archive order
    */
-  const handleArchiveOrder = (orderId: string) => {
-    archiveOrder(orderId);
-    addNotification({
-      type: 'order',
-      title: 'Pedido archivado',
-      message: `Pedido #${orderId} archivado`,
-      time: 'Ahora',
-    });
-    toast({
-      title: "Pedido archivado",
-      description: "El pedido ha sido movido al historial",
-    });
+  const handleArchiveOrder = async (orderId: string) => {
+    try {
+      await archiveOrder(orderId);
+      addNotification({
+        type: 'order',
+        title: 'Pedido archivado',
+        message: `Pedido #${orderId} archivado`,
+        time: 'Ahora',
+      });
+      toast({
+        title: "Pedido archivado",
+        description: "El pedido ha sido movido al historial",
+      });
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "No se pudo archivar el pedido",
+        variant: "destructive",
+      });
+    }
   };
 
   /**
@@ -292,9 +308,10 @@ export const useOrdersAdmin = (): UseOrdersAdminReturn => {
     if (!paymentConfirmDialog.order) return;
 
     const order = paymentConfirmDialog.order;
-    const result = await updateOrderStatusApi(() => ordersService.updateStatus(order.id, 'completed'));
+    
+    try {
+      await updateOrderStatus(order.id, 'completed');
 
-    if (result?.data) {
       // Update stock for each item
       for (const item of order.items) {
         const product = products.find(p => p.id === item.id);
@@ -315,6 +332,12 @@ export const useOrdersAdmin = (): UseOrdersAdminReturn => {
       toast({
         title: "Pedido completado",
         description: "El pedido ha sido marcado como completado",
+      });
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "No se pudo completar el pedido",
+        variant: "destructive",
       });
     }
 
@@ -325,9 +348,9 @@ export const useOrdersAdmin = (): UseOrdersAdminReturn => {
    * Complete order (in-store orders complete immediately)
    */
   const handleCompleteOrder = async (order: Order) => {
-    const result = await updateOrderStatusApi(() => ordersService.updateStatus(order.id, 'completed'));
+    try {
+      await updateOrderStatus(order.id, 'completed');
 
-    if (result?.data) {
       // Update stock for each item
       for (const item of order.items) {
         const product = products.find(p => p.id === item.id);
@@ -349,6 +372,12 @@ export const useOrdersAdmin = (): UseOrdersAdminReturn => {
         title: "Pedido completado",
         description: "El pedido ha sido marcado como completado",
       });
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "No se pudo completar el pedido",
+        variant: "destructive",
+      });
     }
   };
 
@@ -356,9 +385,9 @@ export const useOrdersAdmin = (): UseOrdersAdminReturn => {
    * Cancel order
    */
   const handleCancelOrder = async (order: Order) => {
-    const result = await updateOrderStatusApi(() => ordersService.updateStatus(order.id, 'cancelled'));
+    try {
+      await updateOrderStatus(order.id, 'cancelled');
 
-    if (result?.data) {
       addNotification({
         type: 'order',
         title: 'Pedido cancelado',
@@ -369,6 +398,12 @@ export const useOrdersAdmin = (): UseOrdersAdminReturn => {
       toast({
         title: "Pedido cancelado",
         description: "El pedido ha sido cancelado",
+      });
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "No se pudo cancelar el pedido",
+        variant: "destructive",
       });
     }
   };

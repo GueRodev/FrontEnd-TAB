@@ -4,18 +4,16 @@
  */
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { localStorageAdapter } from '@/lib/storage';
+import { ordersService } from '../services';
 import type { Order, OrderStatus, OrderType } from '../types';
-
-const STORAGE_KEY = 'orders';
 
 interface OrdersContextType {
   orders: Order[];
-  addOrder: (order: Omit<Order, 'id' | 'createdAt'>) => string;
-  updateOrderStatus: (orderId: string, status: OrderStatus) => void;
-  deleteOrder: (orderId: string) => void;
-  archiveOrder: (orderId: string) => void;
-  unarchiveOrder: (orderId: string) => void;
+  addOrder: (order: Omit<Order, 'id' | 'createdAt'>) => Promise<string>;
+  updateOrderStatus: (orderId: string, status: OrderStatus) => Promise<void>;
+  deleteOrder: (orderId: string) => Promise<void>;
+  archiveOrder: (orderId: string) => Promise<void>;
+  unarchiveOrder: (orderId: string) => Promise<void>;
   getOrdersByType: (type: OrderType) => Order[];
   getArchivedOrders: () => Order[];
 }
@@ -23,27 +21,32 @@ interface OrdersContextType {
 const OrdersContext = createContext<OrdersContextType | undefined>(undefined);
 
 export const OrdersProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [orders, setOrders] = useState<Order[]>(() => {
-    return localStorageAdapter.getItem<Order[]>(STORAGE_KEY) || [];
-  });
+  const [orders, setOrders] = useState<Order[]>([]);
 
-  // Persist to localStorage whenever orders change
+  // Load orders from service on mount
   useEffect(() => {
-    localStorageAdapter.setItem(STORAGE_KEY, orders);
-  }, [orders]);
-
-  const addOrder = (orderData: Omit<Order, 'id' | 'createdAt'>): string => {
-    const newOrder: Order = {
-      ...orderData,
-      id: `ORD-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
-      createdAt: new Date().toISOString(),
+    const loadOrders = async () => {
+      const loadedOrders = await ordersService.getAll();
+      setOrders(loadedOrders);
     };
+    loadOrders();
+  }, []);
 
-    setOrders(prev => [newOrder, ...prev]);
-    return newOrder.id;
+  const addOrder = async (orderData: Omit<Order, 'id' | 'createdAt'>): Promise<string> => {
+    // Call service to persist
+    const result = await ordersService.create(orderData);
+    
+    // Update local state with the created order
+    setOrders(prev => [result.data, ...prev]);
+    
+    return result.data.id;
   };
 
-  const updateOrderStatus = (orderId: string, status: OrderStatus) => {
+  const updateOrderStatus = async (orderId: string, status: OrderStatus): Promise<void> => {
+    // Call service to persist
+    await ordersService.updateStatus(orderId, status);
+    
+    // Update local state
     setOrders(prev =>
       prev.map(order =>
         order.id === orderId
@@ -53,11 +56,19 @@ export const OrdersProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     );
   };
 
-  const deleteOrder = (orderId: string) => {
+  const deleteOrder = async (orderId: string): Promise<void> => {
+    // Call service to persist
+    await ordersService.delete(orderId);
+    
+    // Update local state
     setOrders(prev => prev.filter(order => order.id !== orderId));
   };
 
-  const archiveOrder = (orderId: string) => {
+  const archiveOrder = async (orderId: string): Promise<void> => {
+    // Call service to persist
+    await ordersService.archive(orderId);
+    
+    // Update local state
     setOrders(prev =>
       prev.map(order =>
         order.id === orderId
@@ -67,7 +78,11 @@ export const OrdersProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     );
   };
 
-  const unarchiveOrder = (orderId: string) => {
+  const unarchiveOrder = async (orderId: string): Promise<void> => {
+    // Call service to persist
+    await ordersService.unarchive(orderId);
+    
+    // Update local state
     setOrders(prev =>
       prev.map(order =>
         order.id === orderId

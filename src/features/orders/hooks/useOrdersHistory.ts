@@ -22,18 +22,26 @@ export const useOrdersHistory = (): UseOrdersHistoryReturn => {
   
   const archivedOrders = getArchivedOrders();
 
-  const handleRestoreOrder = (orderId: string) => {
-    unarchiveOrder(orderId);
-    addNotification({
-      type: 'order',
-      title: 'Pedido restaurado',
-      message: `El pedido ${orderId} ha sido restaurado`,
-      time: 'Ahora',
-    });
-    toast({
-      title: "Pedido restaurado",
-      description: "El pedido ha sido restaurado y está visible en la página de pedidos",
-    });
+  const handleRestoreOrder = async (orderId: string) => {
+    try {
+      await unarchiveOrder(orderId);
+      addNotification({
+        type: 'order',
+        title: 'Pedido restaurado',
+        message: `El pedido ${orderId} ha sido restaurado`,
+        time: 'Ahora',
+      });
+      toast({
+        title: "Pedido restaurado",
+        description: "El pedido ha sido restaurado y está visible en la página de pedidos",
+      });
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "No se pudo restaurar el pedido",
+        variant: "destructive",
+      });
+    }
   };
 
   const handleExportPDF = () => {

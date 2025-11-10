@@ -7,8 +7,6 @@ import { useState, useEffect } from 'react';
 import { useOrders } from '../contexts';
 import { useNotifications } from '@/features/notifications';
 import { useCart } from '@/features/cart';
-import { useApi } from '@/hooks/useApi';
-import { ordersService } from '../services';
 import { toast } from '@/hooks/use-toast';
 import { orderFormSchema } from '../validations';
 import type { DeliveryAddress, DeliveryOption } from '../types';
@@ -34,8 +32,6 @@ export const useOrderForm = () => {
   const { addOrder } = useOrders();
   const { addNotification } = useNotifications();
   const { items: cart, clearCart } = useCart();
-  
-  const { execute: addOrderApi } = useApi();
 
   /**
    * Handle form input changes
@@ -160,10 +156,9 @@ export const useOrderForm = () => {
       paymentMethod,
     };
 
-    const result = await addOrderApi(() => ordersService.create(orderData));
-
-    if (result?.data) {
-      const orderId = result.data.id;
+    try {
+      // Context internally calls the service
+      const orderId = await addOrder(orderData);
 
       // Add notification
       addNotification({
@@ -185,6 +180,13 @@ export const useOrderForm = () => {
       toast({
         title: "Pedido enviado",
         description: "Tu pedido ha sido enviado correctamente",
+      });
+    } catch (error) {
+      console.error('Error creating order:', error);
+      toast({
+        title: "Error",
+        description: "No se pudo crear el pedido. Intenta de nuevo.",
+        variant: "destructive",
       });
     }
   };
