@@ -163,7 +163,7 @@ export const useOrdersAdmin = (): UseOrdersAdminReturn => {
 
     const orderData = {
       type: 'in-store' as const,
-      status: 'completed' as const,
+      status: 'pending' as const,
       items: [{
         id: selectedProductData.id,
         name: selectedProductData.name,
@@ -182,15 +182,10 @@ export const useOrdersAdmin = (): UseOrdersAdminReturn => {
     try {
       const orderId = await addOrder(orderData);
 
-      // Update product stock
-      await updateProductApi(() => productsService.update(selectedProductData.id, {
-        stock: selectedProductData.stock - quantity,
-      }));
-
       addNotification({
         type: 'order',
-        title: 'Pedido creado',
-        message: `Pedido en tienda #${orderId} creado`,
+        title: 'Pedido pendiente',
+        message: `Pedido en tienda #${orderId} creado - pendiente de completar`,
         time: 'Ahora',
       });
 
@@ -203,7 +198,7 @@ export const useOrdersAdmin = (): UseOrdersAdminReturn => {
 
       toast({
         title: "Pedido creado",
-        description: "El pedido en tienda ha sido creado exitosamente",
+        description: "El pedido ha sido creado. Complétalo para confirmar la venta.",
       });
     } catch (error) {
       toast({
