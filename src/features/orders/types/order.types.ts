@@ -26,6 +26,7 @@ export interface DeliveryAddress {
 export interface CustomerInfo {
   name: string;
   phone: string;
+  email?: string; // Optional email for in-store receipts/notifications
   // Address fields removed - now using delivery_address snapshot
 }
 

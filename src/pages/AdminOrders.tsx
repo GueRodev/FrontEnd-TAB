@@ -33,6 +33,8 @@ const AdminOrders = () => {
     setCustomerName,
     customerPhone,
     setCustomerPhone,
+    customerEmail,
+    setCustomerEmail,
     paymentMethod,
     setPaymentMethod,
     categoryFilter,
@@ -134,6 +136,8 @@ const AdminOrders = () => {
                     setCustomerName={setCustomerName}
                     customerPhone={customerPhone}
                     setCustomerPhone={setCustomerPhone}
+                    customerEmail={customerEmail}
+                    setCustomerEmail={setCustomerEmail}
                     paymentMethod={paymentMethod}
                     setPaymentMethod={setPaymentMethod}
                     categoryFilter={categoryFilter}

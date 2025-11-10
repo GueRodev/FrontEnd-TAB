@@ -6,7 +6,7 @@
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Archive, Trash2, CheckCircle, XCircle } from 'lucide-react';
+import { Archive, Trash2, CheckCircle, XCircle, Mail } from 'lucide-react';
 import { OrderStatusBadge } from './OrderStatusBadge';
 import { cn } from '@/lib/utils';
 import type { Order } from '../types';
@@ -80,6 +80,15 @@ export const OrderCard: React.FC<OrderCardProps> = ({
             <span className="text-xs md:text-sm text-muted-foreground">Teléfono:</span>
             <span className="font-medium text-sm md:text-base">{order.customerInfo.phone}</span>
           </div>
+          {order.customerInfo.email && (
+            <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-1">
+              <span className="text-xs md:text-sm text-muted-foreground flex items-center gap-1">
+                <Mail className="h-3 w-3" />
+                Correo:
+              </span>
+              <span className="font-medium text-sm md:text-base">{order.customerInfo.email}</span>
+            </div>
+          )}
         </div>
 
         {/* Dirección de envío compacta */}

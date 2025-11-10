@@ -22,6 +22,8 @@ interface InStoreOrderFormProps {
   setCustomerName: (name: string) => void;
   customerPhone: string;
   setCustomerPhone: (phone: string) => void;
+  customerEmail: string;
+  setCustomerEmail: (email: string) => void;
   paymentMethod: string;
   setPaymentMethod: (method: string) => void;
   categoryFilter: string;
@@ -45,6 +47,8 @@ export const InStoreOrderForm: React.FC<InStoreOrderFormProps> = ({
   setCustomerName,
   customerPhone,
   setCustomerPhone,
+  customerEmail,
+  setCustomerEmail,
   paymentMethod,
   setPaymentMethod,
   categoryFilter,
@@ -89,7 +93,7 @@ export const InStoreOrderForm: React.FC<InStoreOrderFormProps> = ({
           />
 
           <div className="space-y-2">
-            <Label htmlFor="quantity">Cantidad</Label>
+            <Label htmlFor="quantity">Cantidad *</Label>
             <Input
               id="quantity"
               type="number"
@@ -102,7 +106,7 @@ export const InStoreOrderForm: React.FC<InStoreOrderFormProps> = ({
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="customerName">Nombre del Cliente</Label>
+            <Label htmlFor="customerName">Nombre del Cliente *</Label>
             <Input
               id="customerName"
               value={customerName}
@@ -112,7 +116,7 @@ export const InStoreOrderForm: React.FC<InStoreOrderFormProps> = ({
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="customerPhone">Teléfono</Label>
+            <Label htmlFor="customerPhone">Teléfono *</Label>
             <Input
               id="customerPhone"
               value={customerPhone}
@@ -122,7 +126,23 @@ export const InStoreOrderForm: React.FC<InStoreOrderFormProps> = ({
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="paymentMethod">Método de Pago</Label>
+            <Label htmlFor="customerEmail">
+              Correo Electrónico <span className="text-muted-foreground text-sm">(opcional)</span>
+            </Label>
+            <Input
+              id="customerEmail"
+              type="email"
+              value={customerEmail}
+              onChange={(e) => setCustomerEmail(e.target.value)}
+              placeholder="correo@ejemplo.com"
+            />
+            <p className="text-xs text-muted-foreground">
+              Para enviar comprobantes y notificaciones
+            </p>
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="paymentMethod">Método de Pago *</Label>
             <Select value={paymentMethod} onValueChange={setPaymentMethod}>
               <SelectTrigger id="paymentMethod">
                 <SelectValue placeholder="Seleccionar método" />

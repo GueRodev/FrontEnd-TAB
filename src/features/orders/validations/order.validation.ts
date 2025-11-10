@@ -36,3 +36,31 @@ export const orderFormSchema = z.object({
 );
 
 export type OrderFormData = z.infer<typeof orderFormSchema>;
+
+/**
+ * Schema de validación para pedidos en tienda física
+ */
+export const inStoreOrderSchema = z.object({
+  customerName: z.string()
+    .trim()
+    .min(3, 'El nombre debe tener al menos 3 caracteres')
+    .max(100, 'El nombre no puede exceder 100 caracteres'),
+  
+  customerPhone: z.string()
+    .trim()
+    .min(8, 'El teléfono debe tener al menos 8 dígitos')
+    .max(20, 'El teléfono no puede exceder 20 caracteres'),
+  
+  customerEmail: z.string()
+    .trim()
+    .email('El correo electrónico no es válido')
+    .max(255, 'El correo no puede exceder 255 caracteres')
+    .optional()
+    .or(z.literal('')), // Permite string vacío como válido
+  
+  paymentMethod: z.enum(['cash', 'card', 'transfer', 'sinpe'], {
+    required_error: 'Selecciona un método de pago',
+  }),
+});
+
+export type InStoreOrderFormData = z.infer<typeof inStoreOrderSchema>;

@@ -39,6 +39,8 @@ interface UseOrdersAdminReturn {
   setCustomerName: (name: string) => void;
   customerPhone: string;
   setCustomerPhone: (phone: string) => void;
+  customerEmail: string;
+  setCustomerEmail: (email: string) => void;
   paymentMethod: string;
   setPaymentMethod: (method: string) => void;
   
@@ -80,6 +82,7 @@ export const useOrdersAdmin = (): UseOrdersAdminReturn => {
   const [quantity, setQuantity] = useState(1);
   const [customerName, setCustomerName] = useState('');
   const [customerPhone, setCustomerPhone] = useState('');
+  const [customerEmail, setCustomerEmail] = useState('');
   const [paymentMethod, setPaymentMethod] = useState('');
   
   // Product filtering state
@@ -175,6 +178,7 @@ export const useOrdersAdmin = (): UseOrdersAdminReturn => {
       customerInfo: {
         name: customerName,
         phone: customerPhone,
+        email: customerEmail || undefined, // Solo incluir si hay valor
       },
       paymentMethod,
     };
@@ -194,6 +198,7 @@ export const useOrdersAdmin = (): UseOrdersAdminReturn => {
       setQuantity(1);
       setCustomerName('');
       setCustomerPhone('');
+      setCustomerEmail('');
       setPaymentMethod('');
 
       toast({
@@ -430,6 +435,8 @@ export const useOrdersAdmin = (): UseOrdersAdminReturn => {
     setCustomerName,
     customerPhone,
     setCustomerPhone,
+    customerEmail,
+    setCustomerEmail,
     paymentMethod,
     setPaymentMethod,
     categoryFilter,
