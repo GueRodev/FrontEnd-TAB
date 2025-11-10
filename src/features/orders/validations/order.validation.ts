@@ -14,34 +14,24 @@ export const orderFormSchema = z.object({
   paymentMethod: z.enum(['cash', 'card', 'transfer', 'sinpe'], {
     required_error: 'Selecciona un método de pago',
   }),
-  savedAddressId: z.string().optional(),
-  manualAddress: z.object({
-    province: z.string().optional(),
-    canton: z.string().optional(),
-    district: z.string().optional(),
-    address: z.string().optional(),
+  deliveryAddress: z.object({
+    label: z.string().optional(),
+    province: z.string().min(1, 'La provincia es requerida'),
+    canton: z.string().min(1, 'El cantón es requerido'),
+    district: z.string().min(1, 'El distrito es requerido'),
+    address: z.string().min(10, 'La dirección debe tener al menos 10 caracteres'),
   }).optional(),
 }).refine(
   (data) => {
-    // If delivery type is envío, must have either savedAddressId or complete manual address
+    // If delivery type is envío, must have complete address
     if (data.deliveryOption === 'delivery') {
-      if (data.savedAddressId) return true;
-      if (
-        data.manualAddress?.province &&
-        data.manualAddress?.canton &&
-        data.manualAddress?.district &&
-        data.manualAddress?.address &&
-        data.manualAddress.address.length >= 10
-      ) {
-        return true;
-      }
-      return false;
+      return !!data.deliveryAddress;
     }
     return true;
   },
   {
     message: 'Debes proporcionar una dirección de entrega completa',
-    path: ['manualAddress'],
+    path: ['deliveryAddress'],
   }
 );
 
