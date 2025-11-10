@@ -30,7 +30,7 @@ export const PaymentMethodSelector: React.FC<PaymentMethodSelectorProps> = ({
 }) => {
   /**
    * Filter payment methods based on delivery option
-   * Delivery only allows transfer and sinpe
+   * Envío only allows transfer and sinpe
    */
   const getFilteredPaymentMethods = () => {
     if (deliveryOption === 'delivery') {

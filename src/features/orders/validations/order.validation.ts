@@ -23,7 +23,7 @@ export const orderFormSchema = z.object({
   }).optional(),
 }).refine(
   (data) => {
-    // If delivery type is delivery, must have either savedAddressId or complete manual address
+    // If delivery type is envío, must have either savedAddressId or complete manual address
     if (data.deliveryType === 'delivery') {
       if (data.savedAddressId) return true;
       if (

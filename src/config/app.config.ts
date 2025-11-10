@@ -107,7 +107,7 @@ export type PaymentMethod = typeof PAYMENT_METHODS[number]['value'];
 
 export const DELIVERY_OPTIONS = [
   { value: 'pickup', label: 'Recoger en tienda' },
-  { value: 'delivery', label: 'Delivery' },
+  { value: 'delivery', label: 'Envío' },
 ] as const;
 
 export type DeliveryOption = typeof DELIVERY_OPTIONS[number]['value'];
