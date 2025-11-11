@@ -41,34 +41,34 @@ const App = () => (
               <WishlistProvider>
                 <NotificationsProvider>
                   <TooltipProvider>
-                <Toaster />
-                <Sonner />
-                <BrowserRouter>
-                  <ScrollToTop />
-                <Routes>
-                <Route path="/" element={<Index />} />
-                <Route path="/auth" element={<Auth />} />
-                <Route path="/category/:category" element={<CategoryPage />} />
-                <Route path="/category/:category/:subcategory" element={<CategoryPage />} />
-                <Route path="/wishlist" element={<Wishlist />} />
-                <Route path="/account" element={<ProtectedRoute><Account /></ProtectedRoute>} />
-                <Route path="/cart" element={<Cart />} />
-                {/* 🔒 PROTECTED ADMIN ROUTES - Require authentication & admin role */}
-                <Route path="/admin" element={<ProtectedRoute requireAdmin><Admin /></ProtectedRoute>} />
-                <Route path="/admin/products" element={<ProtectedRoute requireAdmin><AdminProducts /></ProtectedRoute>} />
-                <Route path="/admin/categories" element={<ProtectedRoute requireAdmin><AdminCategories /></ProtectedRoute>} />
-                <Route path="/admin/users" element={<ProtectedRoute requireAdmin><AdminUsers /></ProtectedRoute>} />
-                <Route path="/admin/orders" element={<ProtectedRoute requireAdmin><AdminOrders /></ProtectedRoute>} />
-                <Route path="/admin/orders/history" element={<ProtectedRoute requireAdmin><AdminOrdersHistory /></ProtectedRoute>} />
-                <Route path="/admin/settings" element={<ProtectedRoute requireAdmin><AdminSettings /></ProtectedRoute>} />
-                <Route path="/admin/profile" element={<ProtectedRoute requireAdmin><AdminProfile /></ProtectedRoute>} />
-                <Route path="/new-arrivals" element={<CategoryPage />} />
-                <Route path="/limited-editions" element={<CategoryPage />} />
-                <Route path="/on-sale" element={<CategoryPage />} />
-                {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-                <Route path="*" element={<NotFound />} />
-              </Routes>
-              </BrowserRouter>
+                    <Toaster />
+                    <Sonner />
+                    <BrowserRouter>
+                      <ScrollToTop />
+                      <Routes>
+                        <Route path="/" element={<Index />} />
+                        <Route path="/auth" element={<Auth />} />
+                        <Route path="/category/:category" element={<CategoryPage />} />
+                        <Route path="/category/:category/:subcategory" element={<CategoryPage />} />
+                        <Route path="/wishlist" element={<Wishlist />} />
+                        <Route path="/account" element={<ProtectedRoute><Account /></ProtectedRoute>} />
+                        <Route path="/cart" element={<Cart />} />
+                        {/* 🔒 PROTECTED ADMIN ROUTES - Require authentication & admin role */}
+                        <Route path="/admin" element={<ProtectedRoute requireAdmin><Admin /></ProtectedRoute>} />
+                        <Route path="/admin/products" element={<ProtectedRoute requireAdmin><AdminProducts /></ProtectedRoute>} />
+                        <Route path="/admin/categories" element={<ProtectedRoute requireAdmin><AdminCategories /></ProtectedRoute>} />
+                        <Route path="/admin/users" element={<ProtectedRoute requireAdmin><AdminUsers /></ProtectedRoute>} />
+                        <Route path="/admin/orders" element={<ProtectedRoute requireAdmin><AdminOrders /></ProtectedRoute>} />
+                        <Route path="/admin/orders/history" element={<ProtectedRoute requireAdmin><AdminOrdersHistory /></ProtectedRoute>} />
+                        <Route path="/admin/settings" element={<ProtectedRoute requireAdmin><AdminSettings /></ProtectedRoute>} />
+                        <Route path="/admin/profile" element={<ProtectedRoute requireAdmin><AdminProfile /></ProtectedRoute>} />
+                        <Route path="/new-arrivals" element={<CategoryPage />} />
+                        <Route path="/limited-editions" element={<CategoryPage />} />
+                        <Route path="/on-sale" element={<CategoryPage />} />
+                        {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+                        <Route path="*" element={<NotFound />} />
+                      </Routes>
+                    </BrowserRouter>
                   </TooltipProvider>
                 </NotificationsProvider>
               </WishlistProvider>
