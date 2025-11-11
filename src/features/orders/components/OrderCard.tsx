@@ -41,7 +41,7 @@ export const OrderCard: React.FC<OrderCardProps> = ({
   return (
     <Card>
       <CardHeader className="pb-3 px-4 md:px-6">
-        <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2 sm:gap-3">
+        <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-2 md:gap-3">
           <div className="space-y-1.5 min-w-0 flex-1">
             <CardTitle className="text-lg md:text-xl font-bold">
               Pedido #{order.id}
@@ -72,16 +72,16 @@ export const OrderCard: React.FC<OrderCardProps> = ({
       <CardContent className="space-y-3 md:space-y-4 pb-3 px-4 md:px-6">
         {/* Cliente con fondo gris */}
         <div className="bg-muted/40 rounded-lg p-3 md:p-4 space-y-1.5">
-          <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-1">
+          <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-1">
             <span className="text-xs md:text-sm text-muted-foreground">Cliente:</span>
             <span className="font-semibold text-sm md:text-base">{order.customerInfo.name}</span>
           </div>
-          <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-1">
+          <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-1">
             <span className="text-xs md:text-sm text-muted-foreground">Teléfono:</span>
             <span className="font-medium text-sm md:text-base">{order.customerInfo.phone}</span>
           </div>
           {order.customerInfo.email && (
-            <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-1">
+            <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-1">
               <span className="text-xs md:text-sm text-muted-foreground flex items-center gap-1">
                 <Mail className="h-3 w-3" />
                 Correo:
@@ -141,7 +141,7 @@ export const OrderCard: React.FC<OrderCardProps> = ({
               ({order.items.length})
             </span>
           </h4>
-          <div className="space-y-2 max-h-32 md:max-h-40 overflow-y-auto pr-1">
+          <div className="space-y-2 max-h-32 md:max-h-48 lg:max-h-40 overflow-y-auto pr-1">
             {order.items.map((item) => (
               <div key={item.id} className="flex items-center gap-2 md:gap-3 p-2 bg-muted/20 rounded-md">
                 <img
@@ -161,13 +161,13 @@ export const OrderCard: React.FC<OrderCardProps> = ({
         </div>
       </CardContent>
 
-      <CardFooter className="pt-3 border-t gap-2 flex-col sm:flex-row px-4 md:px-6">
+      <CardFooter className="pt-3 border-t gap-2 flex-col md:flex-row px-4 md:px-6">
         {order.status === 'pending' && (
           <>
             <Button
               onClick={handleComplete}
               size="sm"
-              className="w-full sm:flex-1 bg-[hsl(217,33%,17%)] hover:bg-[hsl(222,47%,11%)] dark:bg-[hsl(222,47%,11%)] dark:hover:bg-black text-white"
+              className="w-full md:flex-1 bg-[hsl(217,33%,17%)] hover:bg-[hsl(222,47%,11%)] dark:bg-[hsl(222,47%,11%)] dark:hover:bg-black text-white"
             >
               <CheckCircle className="h-4 w-4 md:h-5 md:w-5 mr-1.5 md:mr-2" />
               <span className="text-xs md:text-sm font-semibold">Completar</span>
@@ -176,7 +176,7 @@ export const OrderCard: React.FC<OrderCardProps> = ({
               onClick={() => onCancel(order)}
               size="sm"
               variant="destructive"
-              className="w-full sm:flex-1"
+              className="w-full md:flex-1"
             >
               <XCircle className="h-4 w-4 md:h-5 md:w-5 mr-1.5 md:mr-2" />
               <span className="text-xs md:text-sm font-semibold">Cancelar</span>
@@ -189,7 +189,7 @@ export const OrderCard: React.FC<OrderCardProps> = ({
               onClick={() => onArchive(order.id)}
               size="sm"
               variant="outline"
-              className="w-full sm:flex-1"
+              className="w-full md:flex-1"
             >
               <Archive className="h-4 w-4 md:h-5 md:w-5 mr-1.5 md:mr-2" />
               <span className="text-xs md:text-sm">Archivar</span>
@@ -198,7 +198,7 @@ export const OrderCard: React.FC<OrderCardProps> = ({
               onClick={() => onDelete(order.id, order)}
               size="sm"
               variant="destructive"
-              className="w-full sm:flex-1"
+              className="w-full md:flex-1"
             >
               <Trash2 className="h-4 w-4 md:h-5 md:w-5 mr-1.5 md:mr-2" />
               <span className="text-xs md:text-sm">Eliminar</span>

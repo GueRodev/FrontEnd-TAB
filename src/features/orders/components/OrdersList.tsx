@@ -24,7 +24,7 @@ export const OrdersList: React.FC<OrdersListProps> = ({
   showDeliveryInfo = false,
   emptyMessage = 'No hay pedidos',
   emptyIcon,
-  gridColumns = "grid-cols-1 md:grid-cols-2 xl:grid-cols-3",
+  gridColumns = "grid-cols-1 lg:grid-cols-2 xl:grid-cols-3",
   onArchive,
   onDelete,
   onComplete,
