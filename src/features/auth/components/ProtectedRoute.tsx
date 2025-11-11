@@ -31,13 +31,15 @@ import { useAuth } from '@/features/auth';
 interface ProtectedRouteProps {
   children: React.ReactNode;
   requireAdmin?: boolean;
+  requirePermission?: string;
 }
 
 export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ 
   children, 
-  requireAdmin = false 
+  requireAdmin = false,
+  requirePermission,
 }) => {
-  const { isAuthenticated, isAdmin, isLoading } = useAuth();
+  const { isAuthenticated, isAdmin, hasPermission, isLoading } = useAuth();
 
   if (isLoading) {
     return (
@@ -55,6 +57,10 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
   }
 
   if (requireAdmin && !isAdmin()) {
+    return <Navigate to="/" replace />;
+  }
+
+  if (requirePermission && !hasPermission(requirePermission)) {
     return <Navigate to="/" replace />;
   }
 

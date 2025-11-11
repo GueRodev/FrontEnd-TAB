@@ -30,28 +30,31 @@ export const API_CONFIG = {
 
 export const API_ROUTES = {
   // Productos
-  products: "/products",
+  products: "/v1/products",
   
   // Categorías
-  categories: "/categories",
+  categories: "/v1/categories",
   
   // Órdenes
-  orders: "/orders",
+  orders: "/v1/orders",
   
   // Autenticación
-  auth: "/auth",
-  login: "/auth/login",
-  register: "/auth/register",
-  logout: "/auth/logout",
-  refresh: "/auth/refresh",
+  auth: "/v1/auth",
+  login: "/v1/auth/login",
+  register: "/v1/auth/register",
+  logout: "/v1/auth/logout",
+  logoutAll: "/v1/auth/logout-all",
+  me: "/v1/auth/me",
+  refresh: "/v1/auth/refresh",
+  profile: "/v1/auth/profile",
   
   // Usuarios y administradores
-  users: "/users",
-  clients: "/users/clients",
-  admins: "/users/admins",
+  users: "/v1/users",
+  clients: "/v1/users/clients",
+  admins: "/v1/users/admins",
   
   // Direcciones
-  addresses: "/addresses",
+  addresses: "/v1/addresses",
 } as const;
 
 export type ApiRoute = typeof API_ROUTES[keyof typeof API_ROUTES];

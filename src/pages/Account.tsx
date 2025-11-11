@@ -108,7 +108,6 @@ const Account: React.FC = () => {
               defaultValues={{
                 name: user.name,
                 email: user.email,
-                phone: user.phone || '',
               }}
               onSubmit={handleSave}
               onCancel={handleCancel}

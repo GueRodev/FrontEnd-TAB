@@ -4,10 +4,12 @@
  */
 
 import { apiClient } from '@/api/client';
-import type { AuthResponse, LoginCredentials, RegisterData } from '../types/auth.types';
+import { API_ROUTES, APP_CONFIG } from '@/config';
+import type { AuthResponse, LoginCredentials, RegisterData, LaravelAuthResponse } from '../types/auth.types';
 import type { UserProfile } from '../types';
 import type { ApiResponse } from '@/api/types';
 import { validateCredentials } from '../mocks';
+import { transformLaravelAuthResponse, transformLaravelUser } from '../utils/transformers';
 
 export const authService = {
   /**
@@ -19,28 +21,47 @@ export const authService = {
    * - Cliente: cliente1@test.com / cliente123
    */
   async login(credentials: LoginCredentials): Promise<ApiResponse<AuthResponse>> {
-    // TODO: Uncomment when Laravel is ready
-    // return apiClient.post('/auth/login', credentials);
-    
-    // Simular delay de red
-    await new Promise(resolve => setTimeout(resolve, 800));
-    
-    // Validar contra usuarios mock
-    const mockUser = validateCredentials(credentials.email, credentials.password);
-    
-    if (!mockUser) {
-      throw new Error('Credenciales inválidas');
+    if (!APP_CONFIG.useAPI) {
+      // Mock implementation
+      await new Promise(resolve => setTimeout(resolve, 800));
+      const mockUser = validateCredentials(credentials.email, credentials.password);
+      
+      if (!mockUser) {
+        throw new Error('Credenciales inválidas');
+      }
+
+      return Promise.resolve({
+        data: {
+          user: mockUser.profile,
+          token: 'mock-token-' + mockUser.id + '-' + Date.now(),
+          expires_at: new Date(Date.now() + 86400000).toISOString(),
+        },
+        message: 'Login exitoso',
+        timestamp: new Date().toISOString(),
+      });
     }
 
-    return Promise.resolve({
-      data: {
-        user: mockUser.profile,
-        token: 'mock-token-' + mockUser.id + '-' + Date.now(),
-        expires_at: new Date(Date.now() + 86400000).toISOString(),
-      },
-      message: 'Login exitoso',
-      timestamp: new Date().toISOString(),
-    });
+    // ✅ Laravel API Integration
+    try {
+      const laravelResponse = await apiClient.post<LaravelAuthResponse>(
+        API_ROUTES.login,
+        credentials
+      );
+
+      const authResponse = transformLaravelAuthResponse(laravelResponse);
+
+      return {
+        data: authResponse,
+        message: laravelResponse.message,
+        timestamp: new Date().toISOString(),
+      };
+    } catch (error: any) {
+      if (error.status === 422) {
+        const errorMessages = error.errors?.email?.[0] || 'Credenciales inválidas';
+        throw new Error(errorMessages);
+      }
+      throw error;
+    }
   },
 
   /**
@@ -48,26 +69,53 @@ export const authService = {
    * TODO: Connect to Laravel endpoint: POST /api/auth/register
    */
   async register(data: RegisterData): Promise<ApiResponse<AuthResponse>> {
-    // TODO: Uncomment when Laravel is ready
-    // return apiClient.post('/auth/register', data);
-    
-    return Promise.resolve({
-      data: {
-        user: { 
-          id: '1', 
-          name: data.name, 
-          email: data.email, 
-          phone: data.phone || '', 
-          role: 'cliente' as const,
-          created_at: new Date().toISOString(), 
-          updated_at: new Date().toISOString() 
+    if (!APP_CONFIG.useAPI) {
+      // Mock implementation
+      return Promise.resolve({
+        data: {
+          user: { 
+            id: '1', 
+            name: data.name, 
+            email: data.email, 
+            role: 'cliente' as const,
+            created_at: new Date().toISOString(), 
+            updated_at: new Date().toISOString() 
+          },
+          token: 'mock-token-123',
+          expires_at: new Date(Date.now() + 86400000).toISOString(),
         },
-        token: 'mock-token-123',
-        expires_at: new Date(Date.now() + 86400000).toISOString(),
-      },
-      message: 'Registro exitoso',
-      timestamp: new Date().toISOString(),
-    });
+        message: 'Registro exitoso',
+        timestamp: new Date().toISOString(),
+      });
+    }
+
+    // ✅ Laravel API Integration
+    try {
+      const laravelResponse = await apiClient.post<LaravelAuthResponse>(
+        API_ROUTES.register,
+        {
+          name: data.name,
+          email: data.email,
+          password: data.password,
+          password_confirmation: data.password_confirmation,
+        }
+      );
+
+      const authResponse = transformLaravelAuthResponse(laravelResponse);
+
+      return {
+        data: authResponse,
+        message: laravelResponse.message,
+        timestamp: new Date().toISOString(),
+      };
+    } catch (error: any) {
+      if (error.status === 422) {
+        const errors = error.errors || {};
+        const firstError = Object.values(errors)[0]?.[0] || 'Error de validación';
+        throw new Error(firstError as string);
+      }
+      throw error;
+    }
   },
 
   /**
@@ -76,14 +124,56 @@ export const authService = {
    * Requires: Authorization header with Bearer token
    */
   async logout(): Promise<ApiResponse<void>> {
-    // TODO: Uncomment when Laravel is ready
-    // return apiClient.post('/auth/logout');
-    
-    return Promise.resolve({
-      data: undefined,
-      message: 'Logout exitoso',
-      timestamp: new Date().toISOString(),
-    });
+    if (!APP_CONFIG.useAPI) {
+      return Promise.resolve({
+        data: undefined,
+        message: 'Logout exitoso',
+        timestamp: new Date().toISOString(),
+      });
+    }
+
+    // ✅ Laravel API Integration
+    try {
+      const response = await apiClient.post<{ success: boolean; message: string }>(
+        API_ROUTES.logout
+      );
+
+      return {
+        data: undefined,
+        message: response.message,
+        timestamp: new Date().toISOString(),
+      };
+    } catch (error) {
+      throw error;
+    }
+  },
+
+  /**
+   * Logout from all devices
+   * Revokes all user tokens
+   */
+  async logoutAll(): Promise<ApiResponse<void>> {
+    if (!APP_CONFIG.useAPI) {
+      return Promise.resolve({
+        data: undefined,
+        message: 'Sesión cerrada en todos los dispositivos',
+        timestamp: new Date().toISOString(),
+      });
+    }
+
+    try {
+      const response = await apiClient.post<{ success: boolean; message: string }>(
+        API_ROUTES.logoutAll
+      );
+
+      return {
+        data: undefined,
+        message: response.message,
+        timestamp: new Date().toISOString(),
+      };
+    } catch (error) {
+      throw error;
+    }
   },
 
   /**
@@ -123,18 +213,33 @@ export const authService = {
    * Requires: Authorization header with Bearer token
    */
   async me(): Promise<ApiResponse<UserProfile>> {
-    // TODO: Uncomment when Laravel is ready
-    // return apiClient.get('/auth/me');
-    
-    const userStr = localStorage.getItem('auth_user');
-    if (userStr) {
-      return Promise.resolve({
-        data: JSON.parse(userStr),
-        timestamp: new Date().toISOString(),
-      });
+    if (!APP_CONFIG.useAPI) {
+      const userStr = localStorage.getItem('auth_user');
+      if (userStr) {
+        return Promise.resolve({
+          data: JSON.parse(userStr),
+          timestamp: new Date().toISOString(),
+        });
+      }
+      throw new Error('No authenticated user');
     }
-    
-    throw new Error('No authenticated user');
+
+    // ✅ Laravel API Integration
+    try {
+      const laravelResponse = await apiClient.get<{
+        success: boolean;
+        data: { user: LaravelAuthResponse['data']['user'] };
+      }>(API_ROUTES.me);
+
+      const userProfile = transformLaravelUser(laravelResponse.data.user);
+
+      return {
+        data: userProfile,
+        timestamp: new Date().toISOString(),
+      };
+    } catch (error) {
+      throw error;
+    }
   },
 
   /**

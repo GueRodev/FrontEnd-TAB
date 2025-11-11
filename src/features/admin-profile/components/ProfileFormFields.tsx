@@ -5,8 +5,7 @@
 
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { User, Mail, Phone, Lock } from 'lucide-react';
-import { APP_CONFIG } from '@/config/app.config';
+import { User, Mail, Lock } from 'lucide-react';
 import type { AdminProfileFormData } from '../validations';
 
 interface ProfileFormFieldsProps {
@@ -58,25 +57,6 @@ export const ProfileFormFields: React.FC<ProfileFormFieldsProps> = ({
         />
         {errors.email && (
           <p className="text-sm text-destructive">{errors.email}</p>
-        )}
-      </div>
-
-      {/* Phone */}
-      <div className="space-y-2">
-        <Label htmlFor="phone" className="flex items-center gap-2">
-          <Phone className="h-4 w-4" />
-          Teléfono
-        </Label>
-        <Input
-          id="phone"
-          type="tel"
-          value={formData.phone}
-          onChange={(e) => onChange('phone', e.target.value)}
-          disabled={!isEditing}
-          placeholder={`${APP_CONFIG.whatsapp.countryCode} 1234-5678`}
-        />
-        {errors.phone && (
-          <p className="text-sm text-destructive">{errors.phone}</p>
         )}
       </div>
 

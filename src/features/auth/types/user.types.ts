@@ -14,7 +14,6 @@ export interface UserProfile {
   id: string;
   name: string;
   email: string;
-  phone: string;
   
   /**
    * ⚠️ SEGURIDAD: El rol viene de user_roles table (backend PostgreSQL + Laravel)
@@ -29,7 +28,7 @@ export interface UserProfile {
    * ```
    * auth.users (autenticación)
    *     ↓ 1:1
-   * public.users (perfiles: name, phone, email)
+   * public.users (perfiles: name, email)
    *     ↓ 1:N
    * public.user_roles (roles: admin, cliente)
    *     ↓
@@ -56,6 +55,17 @@ export interface UserProfile {
    *    - Tests de seguridad
    */
   role: 'cliente' | 'admin';
+  
+  /**
+   * Permisos de Spatie (Laravel)
+   * Lista de permisos asignados al usuario
+   */
+  permissions?: string[];
+  
+  /**
+   * Email verification timestamp
+   */
+  email_verified_at?: string | null;
   
   created_at: string;
   updated_at: string;

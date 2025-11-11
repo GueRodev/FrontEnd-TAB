@@ -35,7 +35,6 @@ export const useAdminProfile = (user: UserProfile | null): UseAdminProfileReturn
   const [formData, setFormData] = useState<AdminProfileFormData>({
     name: '',
     email: '',
-    phone: '',
     password: '',
   });
 
@@ -45,7 +44,6 @@ export const useAdminProfile = (user: UserProfile | null): UseAdminProfileReturn
       setFormData({
         name: user.name,
         email: user.email,
-        phone: user.phone || '',
         password: '',
       });
     }
@@ -67,7 +65,6 @@ export const useAdminProfile = (user: UserProfile | null): UseAdminProfileReturn
       setFormData({
         name: user.name,
         email: user.email,
-        phone: user.phone || '',
         password: '',
       });
     }
@@ -155,7 +152,6 @@ export const useAdminProfile = (user: UserProfile | null): UseAdminProfileReturn
         const updateData: Partial<UserProfile> = {
           name: formData.name,
           email: formData.email,
-          phone: formData.phone || '',
         };
 
         return authService.updateAdminProfile(updateData);

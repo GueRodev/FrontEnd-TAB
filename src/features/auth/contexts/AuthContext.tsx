@@ -12,12 +12,15 @@ import type { AuthState, LoginCredentials, RegisterData } from '../types/auth.ty
 import { toast } from '@/hooks/use-toast';
 
 interface AuthContextType extends AuthState {
+  permissions: string[];
   login: (credentials: LoginCredentials) => Promise<void>;
   register: (data: RegisterData) => Promise<void>;
   logout: () => Promise<void>;
+  logoutAll: () => Promise<void>;
   updateProfile: (data: Partial<UserProfile>) => Promise<void>;
   isAdmin: () => boolean;
   isClient: () => boolean;
+  hasPermission: (permission: string) => boolean;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -29,6 +32,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     isAuthenticated: false,
     isLoading: true,
   });
+
+  const permissions = state.user?.permissions || [];
 
   // Load user from localStorage on mount
   useEffect(() => {
@@ -145,6 +150,30 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
+  const logoutAll = async () => {
+    try {
+      await authService.logoutAll();
+    } catch (error) {
+      console.error('Logout all error:', error);
+    } finally {
+      localStorage.removeItem(STORAGE_KEYS.authToken);
+      localStorage.removeItem(STORAGE_KEYS.authUser);
+      apiClient.removeAuthToken();
+      
+      setState({
+        user: null,
+        token: null,
+        isAuthenticated: false,
+        isLoading: false,
+      });
+      
+      toast({
+        title: 'Sesión cerrada en todos los dispositivos',
+        description: 'Has cerrado sesión en todos tus dispositivos',
+      });
+    }
+  };
+
   const updateProfile = async (updates: Partial<UserProfile>) => {
     if (state.user) {
       try {
@@ -202,16 +231,39 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     return state.user?.role === 'cliente';
   };
 
+  /**
+   * ⚠️ SEGURIDAD: Permission Check (Client-Side Only)
+   * 
+   * IMPORTANTE: Esta validación es SOLO para UX (mostrar/ocultar componentes en la UI).
+   * NUNCA confiar en esta función para decisiones de seguridad.
+   * 
+   * El backend DEBE verificar permisos en cada endpoint protegido.
+   * Super Admin tiene todos los permisos automáticamente.
+   */
+  const hasPermission = (permission: string): boolean => {
+    if (!state.user) return false;
+    
+    // Super Admin tiene todos los permisos
+    if (state.user.role === 'admin') {
+      return true;
+    }
+    
+    return state.user.permissions?.includes(permission) || false;
+  };
+
   return (
     <AuthContext.Provider
       value={{
         ...state,
+        permissions,
         login,
         register,
         logout,
+        logoutAll,
         updateProfile,
         isAdmin,
         isClient,
+        hasPermission,
       }}
     >
       {children}

@@ -69,24 +69,6 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
 
         <FormField
           control={form.control}
-          name="phone"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Teléfono (opcional)</FormLabel>
-              <FormControl>
-                <Input
-                  type="tel"
-                  placeholder={`${APP_CONFIG.whatsapp.countryCode} 8888 8888`}
-                  {...field}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
           name="password"
           render={({ field }) => (
             <FormItem>

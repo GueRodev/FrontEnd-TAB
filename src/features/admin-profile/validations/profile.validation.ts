@@ -17,11 +17,6 @@ export const adminProfileSchema = z.object({
     .email('Email inválido')
     .max(255, 'El email no puede exceder 255 caracteres'),
   
-  phone: z.string()
-    .regex(/^\+?\d{1,4}[\s\-]?\d{4,14}$/, 'Teléfono inválido')
-    .optional()
-    .or(z.literal('')),
-  
   password: z.string()
     .min(8, 'La contraseña debe tener al menos 8 caracteres')
     .optional()

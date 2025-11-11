@@ -55,7 +55,6 @@ export const useAuthForm = (): UseAuthFormReturn => {
       email: '',
       password: '',
       password_confirmation: '',
-      phone: '',
     },
   });
 
@@ -82,7 +81,6 @@ export const useAuthForm = (): UseAuthFormReturn => {
         email: data.email,
         password: data.password,
         password_confirmation: data.password_confirmation,
-        phone: data.phone,
       }),
       {
         onSuccess: () => navigate('/'),
