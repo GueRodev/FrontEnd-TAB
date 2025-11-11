@@ -23,23 +23,23 @@ export const DevCredentials: React.FC = () => {
       </div>
       
       <div className="space-y-3 text-xs">
-        {/* Admin */}
+        {/* Admin - Credenciales REALES de Laravel */}
         <div className="bg-white p-3 rounded border border-yellow-100">
           <div className="flex items-center gap-2 mb-1">
             <User className="h-3 w-3 text-brand-darkBlue" />
-            <span className="font-semibold text-brand-darkBlue">Admin</span>
+            <span className="font-semibold text-brand-darkBlue">Admin (Laravel Backend)</span>
           </div>
           <div className="space-y-1 text-gray-600">
             <div className="flex items-center gap-2">
               <span className="text-gray-500">📧</span>
               <code className="bg-gray-100 px-2 py-0.5 rounded text-[11px]">
-                admin@test.com
+                toysandbricksdev@gmail.com
               </code>
             </div>
             <div className="flex items-center gap-2">
               <span className="text-gray-500">🔒</span>
               <code className="bg-gray-100 px-2 py-0.5 rounded text-[11px]">
-                admin123
+                password
               </code>
             </div>
           </div>
@@ -51,19 +51,11 @@ export const DevCredentials: React.FC = () => {
             <User className="h-3 w-3 text-gray-600" />
             <span className="font-semibold text-gray-700">Cliente</span>
           </div>
-          <div className="space-y-1 text-gray-600">
-            <div className="flex items-center gap-2">
-              <span className="text-gray-500">📧</span>
-              <code className="bg-gray-100 px-2 py-0.5 rounded text-[11px]">
-                cliente1@test.com
-              </code>
-            </div>
-            <div className="flex items-center gap-2">
-              <span className="text-gray-500">🔒</span>
-              <code className="bg-gray-100 px-2 py-0.5 rounded text-[11px]">
-                cliente123
-              </code>
-            </div>
+          <div className="text-gray-600 text-center py-2">
+            <p>Crear nuevo usuario usando el formulario de registro</p>
+            <p className="text-[10px] text-gray-500 mt-1">
+              (Solo requiere: nombre, email, contraseña)
+            </p>
           </div>
         </div>
       </div>

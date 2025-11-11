@@ -1,6 +1,12 @@
 /**
- * Register Form Component
+ * RegisterForm Component
  * Presentational component for registration form with validation
+ * 
+ * Campos: name, email, password, password_confirmation
+ * ⚠️ Nota: Campo 'phone' eliminado (se implementará en módulo de perfil)
+ * 
+ * ✅ Integrado con Laravel backend (Sanctum)
+ * 📖 Ver: docs/AUTH-LARAVEL-INTEGRATION.md
  */
 
 import { UseFormReturn } from 'react-hook-form';

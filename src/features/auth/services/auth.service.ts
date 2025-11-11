@@ -1,6 +1,13 @@
 /**
  * Authentication Service
  * Handles user authentication operations
+ * 
+ * ✅ INTEGRADO CON LARAVEL BACKEND
+ * - Laravel Sanctum token-based authentication
+ * - Spatie roles & permissions
+ * - Data transformers for Laravel responses
+ * 
+ * 📖 Documentación completa: docs/AUTH-LARAVEL-INTEGRATION.md
  */
 
 import { apiClient } from '@/api/client';
@@ -14,11 +21,9 @@ import { transformLaravelAuthResponse, transformLaravelUser } from '../utils/tra
 export const authService = {
   /**
    * Login user
-   * TODO: Connect to Laravel endpoint: POST /api/auth/login
+   * ✅ Integrado con Laravel: POST /api/v1/auth/login
    * 
-   * CREDENCIALES DE PRUEBA:
-   * - Admin: admin@test.com / admin123
-   * - Cliente: cliente1@test.com / cliente123
+   * 📖 Ver: docs/AUTH-LARAVEL-INTEGRATION.md
    */
   async login(credentials: LoginCredentials): Promise<ApiResponse<AuthResponse>> {
     if (!APP_CONFIG.useAPI) {
@@ -66,7 +71,10 @@ export const authService = {
 
   /**
    * Register new user
-   * TODO: Connect to Laravel endpoint: POST /api/auth/register
+   * ✅ Integrado con Laravel: POST /api/v1/auth/register
+   * 
+   * ⚠️ Nota: Campo 'phone' eliminado del módulo auth
+   * 📖 Ver: docs/AUTH-LARAVEL-INTEGRATION.md
    */
   async register(data: RegisterData): Promise<ApiResponse<AuthResponse>> {
     if (!APP_CONFIG.useAPI) {
@@ -120,8 +128,8 @@ export const authService = {
 
   /**
    * Logout user
-   * TODO: Connect to Laravel endpoint: POST /api/auth/logout
-   * Requires: Authorization header with Bearer token
+   * ✅ Integrado con Laravel: POST /api/v1/auth/logout
+   * Revoca el token actual
    */
   async logout(): Promise<ApiResponse<void>> {
     if (!APP_CONFIG.useAPI) {
@@ -150,7 +158,8 @@ export const authService = {
 
   /**
    * Logout from all devices
-   * Revokes all user tokens
+   * ✅ Integrado con Laravel: POST /api/v1/auth/logout-all
+   * Revoca todos los tokens del usuario
    */
   async logoutAll(): Promise<ApiResponse<void>> {
     if (!APP_CONFIG.useAPI) {
@@ -178,39 +187,10 @@ export const authService = {
 
   /**
    * Get current authenticated user
+   * ✅ Integrado con Laravel: GET /api/v1/auth/me
    * 
-   * 🔗 CONEXIÓN LARAVEL: GET /api/auth/me
-   * 
-   * ⚠️ SEGURIDAD: El backend DEBE retornar el rol desde user_roles table
-   * 
-   * Laravel debe:
-   * 1. Verificar token JWT/Sanctum válido
-   * 2. Hacer JOIN o relación con user_roles: $user->getRole()
-   * 3. NUNCA retornar rol desde columna users.role (si existe, eliminarla)
-   * 
-   * Ejemplo Laravel (AuthController):
-   * ```php
-   * public function me(Request $request)
-   * {
-   *     $user = $request->user();
-   *     return response()->json([
-   *         'data' => [
-   *             'id' => $user->id,
-   *             'name' => $user->name,
-   *             'email' => $user->email,
-   *             'phone' => $user->phone,
-   *             'role' => $user->getRole(), // ✅ Desde user_roles table
-   *             'created_at' => $user->created_at,
-   *             'updated_at' => $user->updated_at,
-   *         ]
-   *     ]);
-   * }
-   * ```
-   * 
-   * 📖 Ver SECURITY.md sección "Integración con Laravel Backend"
-   * 
-   * TODO: Connect to Laravel endpoint: GET /api/auth/me
-   * Requires: Authorization header with Bearer token
+   * Retorna usuario con rol desde Spatie y permisos
+   * 📖 Ver: docs/AUTH-LARAVEL-INTEGRATION.md
    */
   async me(): Promise<ApiResponse<UserProfile>> {
     if (!APP_CONFIG.useAPI) {
@@ -244,16 +224,37 @@ export const authService = {
 
   /**
    * Update user profile
-   * 🔗 CONEXIÓN LARAVEL:
-   * 1. Descomentar: return apiClient.patch('/auth/profile', data);
-   * 2. Laravel debe retornar: { data: UserProfile, message: string, timestamp: string }
+   * ⚠️ PENDIENTE: Requiere endpoint Laravel
    * 
-   * TODO: Connect to Laravel endpoint: PATCH /api/auth/profile
-   * Requires: Authorization header with Bearer token
+   * Endpoint requerido: PATCH /api/v1/auth/profile
+   * 📖 Ver implementación en: docs/AUTH-LARAVEL-INTEGRATION.md
    */
   async updateProfile(data: Partial<UserProfile>): Promise<ApiResponse<UserProfile>> {
-    // TODO: Uncomment when Laravel is ready
-    // return apiClient.patch('/auth/profile', data);
+    // TODO: Descomentar cuando Laravel esté listo
+    // Ver código en docs/AUTH-LARAVEL-INTEGRATION.md
+    /*
+    if (!APP_CONFIG.useAPI) {
+      // Mock...
+    }
+    
+    try {
+      const laravelResponse = await apiClient.patch<{
+        success: boolean;
+        message: string;
+        data: { user: LaravelAuthResponse['data']['user'] };
+      }>(API_ROUTES.profile, data);
+
+      const userProfile = transformLaravelUser(laravelResponse.data.user);
+
+      return {
+        data: userProfile,
+        message: laravelResponse.message,
+        timestamp: new Date().toISOString(),
+      };
+    } catch (error) {
+      throw error;
+    }
+    */
     
     // Mock temporal - actualiza localStorage
     const userStr = localStorage.getItem('auth_user');
@@ -274,13 +275,12 @@ export const authService = {
 
   /**
    * Update admin profile (includes avatar)
-   * 🔗 CONEXIÓN LARAVEL:
-   * 1. Descomentar: return apiClient.patch('/auth/admin/profile', data);
-   * 2. Laravel debe retornar: { data: UserProfile, message: string, timestamp: string }
+   * ⚠️ PENDIENTE: No implementado
+   * 
+   * Este método se moverá al módulo de perfil de usuario
    */
   async updateAdminProfile(data: Partial<UserProfile>): Promise<ApiResponse<UserProfile>> {
-    // TODO: Replace with Laravel endpoint
-    // return apiClient.patch('/auth/admin/profile', data);
+    // TODO: Implementar en módulo de perfil
     
     // Mock temporal
     const savedProfile = localStorage.getItem('adminProfile');
@@ -301,15 +301,12 @@ export const authService = {
 
   /**
    * Upload avatar
-   * 🔗 CONEXIÓN LARAVEL:
-   * 1. Descomentar: const formData = new FormData(); formData.append('avatar', file); return apiClient.post('/auth/avatar', formData);
-   * 2. Laravel debe retornar: { data: { avatarUrl: string }, message: string, timestamp: string }
+   * ⚠️ PENDIENTE: No implementado
+   * 
+   * Este método se moverá al módulo de perfil de usuario
    */
   async uploadAvatar(file: File): Promise<ApiResponse<{ avatarUrl: string }>> {
-    // TODO: Replace with Laravel endpoint
-    // const formData = new FormData();
-    // formData.append('avatar', file);
-    // return apiClient.post('/auth/avatar', formData);
+    // TODO: Implementar en módulo de perfil
     
     // Mock temporal - convert to base64
     return new Promise((resolve) => {

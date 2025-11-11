@@ -1,6 +1,11 @@
 /**
  * Mock Users Data
- * Usuarios de prueba para desarrollo (admin y clientes)
+ * Data de prueba para desarrollo sin backend
+ * 
+ * ⚠️ SOLO se usa cuando VITE_USE_API=false
+ * 
+ * Credenciales REALES de Laravel:
+ * 📖 Ver: docs/AUTH-LARAVEL-INTEGRATION.md
  */
 
 import type { UserProfile } from '../types';
@@ -13,9 +18,12 @@ export interface MockUser {
 }
 
 /**
- * Usuarios de prueba
+ * Usuarios de prueba (solo para modo localStorage)
  * 
- * CREDENCIALES DE ACCESO:
+ * ⚠️ IMPORTANTE: Estas NO son las credenciales reales de Laravel.
+ * Para credenciales de Laravel, ver: docs/AUTH-LARAVEL-INTEGRATION.md
+ * 
+ * CREDENCIALES MOCK (solo cuando VITE_USE_API=false):
  * 
  * 👨‍💼 ADMIN:
  *   - Email: admin@test.com

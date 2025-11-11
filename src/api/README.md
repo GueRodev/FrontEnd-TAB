@@ -4,12 +4,24 @@ Infraestructura compartida para integración con backend Laravel.
 
 ## Estado Actual
 
-**Actualmente NO activo.** La aplicación usa:
+**Integración Parcial:** La aplicación usa:
 - React Context para estado global
-- LocalStorage para persistencia
-- Datos mock en `src/data/*`
+- LocalStorage para persistencia (modo desarrollo)
+- **Auth Module**: ✅ 100% integrado con Laravel (ver `docs/AUTH-LARAVEL-INTEGRATION.md`)
+- **Otros módulos**: Datos mock en `src/data/*`
 
 Cada feature gestiona su propio servicio en `src/features/*/services/`.
+
+### Ejemplo de Integración Completa: Auth Module
+
+El módulo de autenticación es un ejemplo completo de integración con Laravel:
+- ✅ Endpoints implementados: login, register, logout, logoutAll, me
+- ✅ Transformadores de datos Laravel → Frontend
+- ✅ Switch API automático (VITE_USE_API)
+- ✅ Sanctum token authentication
+- ✅ Spatie roles & permissions
+
+📖 Ver documentación completa: `docs/AUTH-LARAVEL-INTEGRATION.md`
 
 ## Estructura de Archivos
 

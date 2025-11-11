@@ -1,6 +1,9 @@
 /**
- * Login Form Component
+ * LoginForm Component
  * Presentational component for login form with validation
+ * 
+ * ✅ Integrado con Laravel backend (Sanctum)
+ * 📖 Ver: docs/AUTH-LARAVEL-INTEGRATION.md
  */
 
 import { UseFormReturn } from 'react-hook-form';

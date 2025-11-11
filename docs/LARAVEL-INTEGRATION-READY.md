@@ -71,8 +71,9 @@ async getAll() {
 
 ### ✅ Auth Service
 - **Archivo**: `src/features/auth/services/auth.service.ts`
-- **Switch API**: ⚠️ Tiene TODOs para descomentar
-- **Endpoints Laravel**: Documentados en archivo
+- **Switch API**: ✅ Implementado (login, register, logout, logoutAll, me)
+- **Endpoints Laravel**: ✅ Documentados en `docs/AUTH-LARAVEL-INTEGRATION.md`
+- **Estado**: ✅ 100% integrado con Laravel
 
 ---
 
@@ -143,7 +144,7 @@ Esto soluciona el bug "Pedido no encontrado" al completar pedidos del carrito.
 - [x] ordersService → `APP_CONFIG.useAPI`
 - [x] productsService → `APP_CONFIG.useAPI`
 - [ ] categoriesService → Tiene TODOs comentados
-- [ ] authService → Tiene TODOs comentados
+- [x] authService → ✅ Implementado (ver `docs/AUTH-LARAVEL-INTEGRATION.md`)
 
 ### Hooks Actualizados ✅
 - [x] useProductsAdmin → async/await en todas las operaciones
@@ -174,6 +175,7 @@ Esto soluciona el bug "Pedido no encontrado" al completar pedidos del carrito.
 
 ## 📖 Referencias
 
+- **Auth Integration**: `docs/AUTH-LARAVEL-INTEGRATION.md` ← ✅ Documentación completa de autenticación
 - **API Endpoints**: `docs/API-INTEGRATION.md`
 - **Database Schema**: `docs/DATABASE-SCHEMA-LARAVEL.md`
 - **Seguridad**: `docs/SECURITY.md`

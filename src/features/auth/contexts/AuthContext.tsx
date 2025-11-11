@@ -1,6 +1,13 @@
 /**
- * Authentication Context
- * Manages user authentication state and operations
+ * Authentication Context - Authentication State Management
+ * 
+ * ✅ INTEGRADO CON LARAVEL BACKEND
+ * - Sanctum token-based authentication
+ * - Spatie roles & permissions
+ * - Automatic token refresh
+ * - localStorage persistence
+ * 
+ * 📖 Documentación: docs/AUTH-LARAVEL-INTEGRATION.md
  */
 
 import React, { createContext, useContext, useState, useEffect } from 'react';

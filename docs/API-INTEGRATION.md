@@ -162,7 +162,11 @@ curl -X POST http://localhost:8000/api/users/{userId}/assign-role \
 
 ## 🔐 Endpoints de Autenticación
 
-### POST /api/auth/login
+**📖 DOCUMENTACIÓN COMPLETA**: Ver `docs/AUTH-LARAVEL-INTEGRATION.md`
+
+**Estado**: ✅ 100% integrado con Laravel
+
+### POST /api/v1/auth/login
 
 **Descripción:** Iniciar sesión de usuario
 
@@ -170,8 +174,8 @@ curl -X POST http://localhost:8000/api/users/{userId}/assign-role \
 
 ```json
 {
-  "email": "user@example.com",
-  "password": "password123"
+  "email": "toysandbricksdev@gmail.com",
+  "password": "password"
 }
 ```
 
@@ -179,29 +183,37 @@ curl -X POST http://localhost:8000/api/users/{userId}/assign-role \
 
 ```json
 {
+  "success": true,
+  "message": "Login exitoso",
   "data": {
     "user": {
-      "id": "1",
-      "name": "Juan Pérez",
-      "email": "user@example.com",
-      "phone": "88888888",
-      "role": "cliente",
+      "id": 1,
+      "name": "Admin User",
+      "email": "toysandbricksdev@gmail.com",
+      "role": "Super Admin",
+      "permissions": ["view_products", "create_products", "edit_products"],
+      "email_verified_at": "2024-01-01T00:00:00.000Z",
       "created_at": "2024-01-01T00:00:00.000Z",
       "updated_at": "2024-01-01T00:00:00.000Z"
     },
-    "token": "eyJ0eXAiOiJKV1QiLCJhbGci...",
-    "expires_at": "2024-01-02T00:00:00.000Z"
-  },
-  "message": "Login exitoso",
-  "timestamp": "2024-01-01T12:00:00.000Z"
+    "token": "1|abcdef1234567890...",
+    "token_type": "Bearer"
+  }
 }
 ```
 
-**Archivo Frontend:** `src/lib/api/services/auth.service.ts` línea 18
+**⚠️ Cambios vs versión anterior:**
+- ❌ Campo `phone` eliminado
+- ✅ Campo `permissions` agregado (Spatie)
+- ✅ Campo `email_verified_at` agregado
+- ✅ Estructura anidada: `{ success, message, data }`
+- ✅ Prefijo `/v1` en rutas
+
+**Archivo Frontend:** `src/features/auth/services/auth.service.ts` línea 23
 
 ---
 
-### POST /api/auth/register
+### POST /api/v1/auth/register
 
 **Descripción:** Registrar nuevo usuario
 
@@ -209,43 +221,45 @@ curl -X POST http://localhost:8000/api/users/{userId}/assign-role \
 
 ```json
 {
-  "name": "Juan Pérez",
-  "email": "user@example.com",
+  "name": "Nuevo Usuario",
+  "email": "nuevo@example.com",
   "password": "password123",
-  "password_confirmation": "password123",
-  "phone": "88888888"
+  "password_confirmation": "password123"
 }
 ```
+
+**⚠️ IMPORTANTE**: Campo `phone` eliminado del registro.
 
 **Response (201 Created):**
 
 ```json
 {
+  "success": true,
+  "message": "Registro exitoso",
   "data": {
     "user": {
-      "id": "1",
-      "name": "Juan Pérez",
-      "email": "user@example.com",
-      "phone": "88888888",
-      "role": "cliente",
-      "created_at": "2024-01-01T00:00:00.000Z",
-      "updated_at": "2024-01-01T00:00:00.000Z"
+      "id": 2,
+      "name": "Nuevo Usuario",
+      "email": "nuevo@example.com",
+      "role": "Cliente",
+      "permissions": ["view_products"],
+      "email_verified_at": null,
+      "created_at": "2024-01-01T12:00:00.000Z",
+      "updated_at": "2024-01-01T12:00:00.000Z"
     },
-    "token": "eyJ0eXAiOiJKV1QiLCJhbGci...",
-    "expires_at": "2024-01-02T00:00:00.000Z"
-  },
-  "message": "Registro exitoso",
-  "timestamp": "2024-01-01T12:00:00.000Z"
+    "token": "2|xyz123...",
+    "token_type": "Bearer"
+  }
 }
 ```
 
-**Archivo Frontend:** `src/lib/api/services/auth.service.ts` línea 46
+**Archivo Frontend:** `src/features/auth/services/auth.service.ts` línea 71
 
 ---
 
-### POST /api/auth/logout
+### POST /api/v1/auth/logout
 
-**Descripción:** Cerrar sesión de usuario
+**Descripción:** Cerrar sesión de usuario (revoca token actual)
 
 **Headers:**
 
@@ -257,16 +271,39 @@ Authorization: Bearer {token}
 
 ```json
 {
-  "message": "Logout exitoso",
-  "timestamp": "2024-01-01T12:00:00.000Z"
+  "success": true,
+  "message": "Sesión cerrada exitosamente"
 }
 ```
 
-**Archivo Frontend:** `src/lib/api/services/auth.service.ts` línea 74
+**Archivo Frontend:** `src/features/auth/services/auth.service.ts` línea 126
 
 ---
 
-### GET /api/auth/me
+### POST /api/v1/auth/logout-all
+
+**Descripción:** Cerrar sesión en todos los dispositivos (revoca todos los tokens)
+
+**Headers:**
+
+```
+Authorization: Bearer {token}
+```
+
+**Response (200 OK):**
+
+```json
+{
+  "success": true,
+  "message": "Sesión cerrada en todos los dispositivos"
+}
+```
+
+**Archivo Frontend:** `src/features/auth/services/auth.service.ts` línea 155
+
+---
+
+### GET /api/v1/auth/me
 
 **Descripción:** Obtener perfil del usuario autenticado
 
@@ -280,24 +317,30 @@ Authorization: Bearer {token}
 
 ```json
 {
+  "success": true,
+  "message": "Usuario autenticado",
   "data": {
-    "id": "1",
-    "name": "Juan Pérez",
-    "email": "user@example.com",
-    "phone": "88888888",
-    "role": "cliente",
-    "created_at": "2024-01-01T00:00:00.000Z",
-    "updated_at": "2024-01-01T00:00:00.000Z"
-  },
-  "timestamp": "2024-01-01T12:00:00.000Z"
+    "user": {
+      "id": 1,
+      "name": "Admin User",
+      "email": "toysandbricksdev@gmail.com",
+      "role": "Super Admin",
+      "permissions": ["view_products", "create_products"],
+      "email_verified_at": "2024-01-01T00:00:00.000Z",
+      "created_at": "2024-01-01T00:00:00.000Z",
+      "updated_at": "2024-01-01T00:00:00.000Z"
+    }
+  }
 }
 ```
 
-**Archivo Frontend:** `src/lib/api/services/auth.service.ts` línea 90
+**Archivo Frontend:** `src/features/auth/services/auth.service.ts` línea 215
 
 ---
 
-### PATCH /api/auth/profile
+### PATCH /api/v1/auth/profile
+
+**Estado:** ⚠️ Pendiente implementación Laravel
 
 **Descripción:** Actualizar perfil del usuario autenticado
 
@@ -311,30 +354,26 @@ Authorization: Bearer {token}
 
 ```json
 {
-  "name": "Juan Pérez García",
-  "phone": "99999999"
+  "name": "Nombre Actualizado",
+  "email": "nuevo@email.com"
 }
 ```
 
-**Response (200 OK):**
+**Response esperada (200 OK):**
 
 ```json
 {
+  "success": true,
+  "message": "Perfil actualizado exitosamente",
   "data": {
-    "id": "1",
-    "name": "Juan Pérez García",
-    "email": "user@example.com",
-    "phone": "99999999",
-    "role": "cliente",
-    "created_at": "2024-01-01T00:00:00.000Z",
-    "updated_at": "2024-01-01T12:00:00.000Z"
-  },
-  "message": "Perfil actualizado correctamente",
-  "timestamp": "2024-01-01T12:00:00.000Z"
+    "user": { /* estructura user completa */ }
+  }
 }
 ```
 
-**Archivo Frontend:** `src/lib/api/services/auth.service.ts` línea 115
+**📖 Ver código Laravel necesario en:** `docs/AUTH-LARAVEL-INTEGRATION.md`
+
+**Archivo Frontend:** `src/features/auth/services/auth.service.ts` línea 254
 
 ---
 
