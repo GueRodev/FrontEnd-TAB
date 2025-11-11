@@ -1263,7 +1263,6 @@ Antes de considerar la integración completa, verificar:
 - **Documentación Laravel Sanctum**: https://laravel.com/docs/12.x/sanctum
 - **Spatie Laravel Permission**: https://spatie.be/docs/laravel-permission/
 - **API Integration General**: `docs/API-INTEGRATION.md`
-- **Database Schema**: `docs/DATABASE-SCHEMA-LARAVEL.md`
 - **Security Guidelines**: `docs/SECURITY.md`
 
 ---

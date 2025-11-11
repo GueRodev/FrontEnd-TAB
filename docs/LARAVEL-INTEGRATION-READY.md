@@ -177,7 +177,6 @@ Esto soluciona el bug "Pedido no encontrado" al completar pedidos del carrito.
 
 - **Auth Integration**: `docs/AUTH-LARAVEL-INTEGRATION.md` ← ✅ Documentación completa de autenticación
 - **API Endpoints**: `docs/API-INTEGRATION.md`
-- **Database Schema**: `docs/DATABASE-SCHEMA-LARAVEL.md`
 - **Seguridad**: `docs/SECURITY.md`
 
 ---
