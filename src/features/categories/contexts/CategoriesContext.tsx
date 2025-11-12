@@ -33,8 +33,30 @@ const defaultContextValue: CategoriesContextType = {
   loading: false,
   setCategories: () => {},
   syncWithAPI: async () => {},
-  addCategory: async () => ({ id: '', name: '', slug: '', order: 0, subcategories: [] }),
-  updateCategory: async () => ({ id: '', name: '', slug: '', order: 0, subcategories: [] }),
+  addCategory: async () => ({ 
+    id: '', 
+    name: '', 
+    slug: '', 
+    order: 0, 
+    parent_id: null,
+    level: 0,
+    is_protected: false,
+    is_active: true,
+    subcategories: [],
+    children: [],
+  }),
+  updateCategory: async () => ({ 
+    id: '', 
+    name: '', 
+    slug: '', 
+    order: 0,
+    parent_id: null,
+    level: 0,
+    is_protected: false,
+    is_active: true, 
+    subcategories: [],
+    children: [],
+  }),
   deleteCategory: async () => {},
   addSubcategory: async () => ({ id: '', name: '', slug: '', order: 0 }),
   updateSubcategory: async () => ({ id: '', name: '', slug: '', order: 0 }),
@@ -244,7 +266,14 @@ export const CategoriesProvider: React.FC<{ children: React.ReactNode }> = ({ ch
     setLoading(true);
     try {
       const categoryIds = newCategories.map(cat => cat.id);
-      const response = await categoriesService.reorder({ order: categoryIds });
+      // Support both old and new format for reorder
+      const response = await categoriesService.reorder({ 
+        order: categoryIds,
+        categories: newCategories.map((cat, index) => ({
+          id: cat.id,
+          order: index + 1,
+        })),
+      });
       setCategories(response.data);
     } catch (error) {
       console.error('Error reordering categories:', error);

@@ -140,9 +140,14 @@ export const categoriesService = {
         id: `cat-${Date.now()}`,
         name: data.name,
         description: data.description,
-        order: categories.length + 1,
+        order: data.order ?? categories.length + 1,
         slug,
+        parent_id: data.parent_id ?? null,
+        level: data.level ?? 0,
+        is_protected: false,
+        is_active: data.is_active ?? true,
         subcategories: [],
+        children: [],
         isExpanded: false,
       };
 
@@ -261,10 +266,24 @@ export const categoriesService = {
       // Fallback: Update order in localStorage
       const categories = localStorageAdapter.getItem<Category[]>(STORAGE_KEYS.categories) || [];
       
-      const reorderedCategories = data.order.map((id, index) => {
-        const category = categories.find(c => c.id === id);
-        return category ? { ...category, order: index + 1 } : null;
-      }).filter((c): c is Category => c !== null);
+      // Support both old format (order: string[]) and new format (categories: {id, order}[])
+      let reorderedCategories: Category[];
+      
+      if (data.categories) {
+        // New format
+        reorderedCategories = data.categories.map(item => {
+          const category = categories.find(c => c.id === item.id);
+          return category ? { ...category, order: item.order } : null;
+        }).filter((c): c is Category => c !== null);
+      } else if (data.order) {
+        // Old format (backward compatibility)
+        reorderedCategories = data.order.map((id, index) => {
+          const category = categories.find(c => c.id === id);
+          return category ? { ...category, order: index + 1 } : null;
+        }).filter((c): c is Category => c !== null);
+      } else {
+        throw new Error('Invalid reorder data format');
+      }
 
       localStorageAdapter.setItem(STORAGE_KEYS.categories, reorderedCategories);
 
