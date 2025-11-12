@@ -7,12 +7,14 @@ import { SidebarProvider, SidebarInset } from '@/components/ui/sidebar';
 import { AdminSidebar, AdminHeader } from '@/components/layout';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { Plus } from 'lucide-react';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Plus, Package, Trash2 } from 'lucide-react';
 import { useProductsAdmin } from '@/features/products';
 import {
   ProductsListAdmin,
   ProductFormDialog,
   ProductFilters,
+  ProductRecycleBin,
 } from '@/features/products';
 import { DeleteConfirmDialog } from '@/components/common';
 
@@ -105,24 +107,45 @@ const AdminProducts = () => {
                 </CardContent>
               </Card>
 
-              {/* Products List */}
-              <Card>
-                <CardContent className="p-4 md:p-6">
-                  <div className="mb-4">
-                    <h3 className="text-base md:text-lg font-semibold text-gray-900">
-                      Productos ({filteredProducts.length})
-                    </h3>
-                  </div>
-                  
-                  <ProductsListAdmin
-                    products={filteredProducts}
-                    categories={categories}
-                    onEdit={handleEditProduct}
-                    onDelete={openDeleteProductDialog}
-                    onToggleFeatured={handleToggleFeatured}
-                  />
-                </CardContent>
-              </Card>
+              {/* Products Tabs */}
+              <Tabs defaultValue="active" className="w-full">
+                <TabsList className="grid w-full grid-cols-2 max-w-md mx-auto sm:mx-0">
+                  <TabsTrigger value="active" className="flex items-center gap-2">
+                    <Package className="h-4 w-4" />
+                    <span className="hidden sm:inline">Productos Activos</span>
+                    <span className="sm:hidden">Activos</span>
+                  </TabsTrigger>
+                  <TabsTrigger value="deleted" className="flex items-center gap-2">
+                    <Trash2 className="h-4 w-4" />
+                    <span className="hidden sm:inline">Papelera</span>
+                    <span className="sm:hidden">Papelera</span>
+                  </TabsTrigger>
+                </TabsList>
+
+                <TabsContent value="active" className="mt-4">
+                  <Card>
+                    <CardContent className="p-4 md:p-6">
+                      <div className="mb-4">
+                        <h3 className="text-base md:text-lg font-semibold text-gray-900">
+                          Productos ({filteredProducts.length})
+                        </h3>
+                      </div>
+                      
+                      <ProductsListAdmin
+                        products={filteredProducts}
+                        categories={categories}
+                        onEdit={handleEditProduct}
+                        onDelete={openDeleteProductDialog}
+                        onToggleFeatured={handleToggleFeatured}
+                      />
+                    </CardContent>
+                  </Card>
+                </TabsContent>
+
+                <TabsContent value="deleted" className="mt-4">
+                  <ProductRecycleBin />
+                </TabsContent>
+              </Tabs>
             </div>
           </div>
         </SidebarInset>

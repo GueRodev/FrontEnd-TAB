@@ -352,6 +352,30 @@ export const productsService = {
   },
 
   /**
+   * Get deleted products (recycle bin)
+   * 🔗 LARAVEL: GET /api/v1/products/deleted
+   * ⚠️ NEW ENDPOINT
+   */
+  async getDeleted(): Promise<ApiResponse<Product[]>> {
+    if (APP_CONFIG.useAPI) {
+      const response = await apiClient.get<Product[]>('/products/deleted');
+      return {
+        data: response.map(transformLaravelProduct),
+        timestamp: new Date().toISOString(),
+      };
+    } else {
+      // localStorage fallback
+      const allProducts = localStorageAdapter.getItem<Product[]>(STORAGE_KEYS.products) || [];
+      const deletedProducts = allProducts.filter(p => p.deleted_at !== null);
+      
+      return {
+        data: deletedProducts,
+        timestamp: new Date().toISOString(),
+      };
+    }
+  },
+
+  /**
    * Restore deleted product
    * 🔗 LARAVEL: POST /api/v1/products/{id}/restore
    * Response: { message, product }

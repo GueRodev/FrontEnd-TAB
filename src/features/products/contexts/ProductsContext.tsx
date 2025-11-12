@@ -5,7 +5,7 @@
  */
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import type { Product } from '../types';
+import type { Product, AdjustStockDto } from '../types';
 import { productsService } from '../services';
 
 interface ProductsContextType {
@@ -14,6 +14,10 @@ interface ProductsContextType {
   addProduct: (product: Omit<Product, 'id' | 'created_at' | 'updated_at' | 'deleted_at'>) => Promise<Product>;
   updateProduct: (id: string, product: Partial<Product>) => Promise<Product>;
   deleteProduct: (id: string) => Promise<void>;
+  restoreProduct: (id: string) => Promise<Product>;
+  forceDeleteProduct: (id: string) => Promise<void>;
+  getDeletedProducts: () => Promise<Product[]>;
+  adjustStock: (productId: string, dto: AdjustStockDto) => Promise<Product>;
   getProductsByCategory: (categoryId: string) => Product[];
   getProductsBySubcategory: (subcategoryId: string) => Product[]; // Deprecated: use getProductsByCategory
 }
@@ -111,6 +115,74 @@ export const ProductsProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     );
   };
 
+  const restoreProduct = async (id: string): Promise<Product> => {
+    setLoading(true);
+    try {
+      const response = await productsService.restore(id);
+      const restoredProduct = response.data;
+      
+      // Add back to local state
+      setProducts(prev => [...prev, restoredProduct]);
+      
+      return restoredProduct;
+    } catch (error) {
+      console.error('Error restoring product:', error);
+      throw error;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const forceDeleteProduct = async (id: string): Promise<void> => {
+    setLoading(true);
+    try {
+      await productsService.forceDelete(id);
+      
+      // Remove from local state (if exists)
+      setProducts(prev => prev.filter(product => product.id !== id));
+    } catch (error) {
+      console.error('Error force deleting product:', error);
+      throw error;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const getDeletedProducts = async (): Promise<Product[]> => {
+    setLoading(true);
+    try {
+      const response = await productsService.getDeleted();
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching deleted products:', error);
+      throw error;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const adjustStock = async (productId: string, dto: AdjustStockDto): Promise<Product> => {
+    setLoading(true);
+    try {
+      const response = await productsService.adjustStock(productId, dto);
+      const updatedProduct = response.data;
+      
+      // Update local state
+      setProducts(prev =>
+        prev.map(product =>
+          product.id === productId ? updatedProduct : product
+        )
+      );
+      
+      return updatedProduct;
+    } catch (error) {
+      console.error('Error adjusting stock:', error);
+      throw error;
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <ProductsContext.Provider value={{
       products,
@@ -118,6 +190,10 @@ export const ProductsProvider: React.FC<{ children: React.ReactNode }> = ({ chil
       addProduct,
       updateProduct,
       deleteProduct,
+      restoreProduct,
+      forceDeleteProduct,
+      getDeletedProducts,
+      adjustStock,
       getProductsByCategory,
       getProductsBySubcategory,
     }}>
