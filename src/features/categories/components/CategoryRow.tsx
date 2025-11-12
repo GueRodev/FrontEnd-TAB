@@ -7,7 +7,9 @@ import React from 'react';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { Button } from '@/components/ui/button';
-import { GripVertical, Edit2, Trash2, ChevronDown, ChevronRight } from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { GripVertical, Edit2, Trash2, ChevronDown, ChevronRight, Shield, Package } from 'lucide-react';
 import type { Category, Subcategory } from '../types';
 
 interface CategoryRowProps {
@@ -64,12 +66,47 @@ export const CategoryRow: React.FC<CategoryRowProps> = ({
                 <ChevronRight className="h-4 w-4" />
               )}
             </button>
-            <div>
+            <div className="flex items-center gap-2">
               <div className="font-medium">{category.name}</div>
+              
+              {/* Protected Badge */}
+              {category.is_protected && (
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Badge variant="secondary" className="gap-1">
+                        <Shield className="h-3 w-3" />
+                        Protegida
+                      </Badge>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>Esta categoría no puede ser eliminada</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              )}
+
+              {/* Products Count */}
+              {category.products_count !== undefined && category.products_count > 0 && (
+                <Badge variant="outline" className="gap-1">
+                  <Package className="h-3 w-3" />
+                  {category.products_count}
+                </Badge>
+              )}
+
+              {/* Deleted Badge */}
+              {category.deleted_at && (
+                <Badge variant="destructive">Eliminada</Badge>
+              )}
+
+              {/* Inactive Badge */}
+              {!category.is_active && !category.deleted_at && (
+                <Badge variant="secondary">Inactiva</Badge>
+              )}
             </div>
           </div>
         </td>
-        <td className="px-6 py-4 text-center">{category.subcategories.length}</td>
+        <td className="px-6 py-4 text-center">{category.subcategories?.length || 0}</td>
         <td className="px-6 py-4">
           <div className="flex items-center gap-2">
             <Button
@@ -79,14 +116,28 @@ export const CategoryRow: React.FC<CategoryRowProps> = ({
             >
               <Edit2 className="h-4 w-4" />
             </Button>
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => onDelete(category.id)}
-              className="text-destructive hover:text-destructive"
-            >
-              <Trash2 className="h-4 w-4" />
-            </Button>
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <span>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => onDelete(category.id)}
+                      className="text-destructive hover:text-destructive"
+                      disabled={category.is_protected}
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  </span>
+                </TooltipTrigger>
+                {category.is_protected && (
+                  <TooltipContent>
+                    <p>Las categorías protegidas no pueden eliminarse</p>
+                  </TooltipContent>
+                )}
+              </Tooltip>
+            </TooltipProvider>
           </div>
         </td>
       </tr>

@@ -7,7 +7,9 @@ import React from 'react';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { Button } from '@/components/ui/button';
-import { GripVertical, Edit2, Trash2, ChevronDown, ChevronRight } from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { GripVertical, Edit2, Trash2, ChevronDown, ChevronRight, Shield, Package } from 'lucide-react';
 import type { Category, Subcategory } from '../types';
 
 interface CategoryCardProps {
@@ -72,12 +74,40 @@ export const CategoryCard: React.FC<CategoryCardProps> = ({
 
           <div className="flex-1 min-w-0">
             <div className="mb-2">
-              <h3 className="font-semibold text-sm mb-0.5">{category.name}</h3>
+              <div className="flex items-center gap-2 flex-wrap">
+                <h3 className="font-semibold text-sm mb-0.5">{category.name}</h3>
+                
+                {/* Protected Badge */}
+                {category.is_protected && (
+                  <Badge variant="secondary" className="gap-1 text-xs">
+                    <Shield className="h-2.5 w-2.5" />
+                    Protegida
+                  </Badge>
+                )}
+
+                {/* Products Count */}
+                {category.products_count !== undefined && category.products_count > 0 && (
+                  <Badge variant="outline" className="gap-1 text-xs">
+                    <Package className="h-2.5 w-2.5" />
+                    {category.products_count}
+                  </Badge>
+                )}
+
+                {/* Deleted Badge */}
+                {category.deleted_at && (
+                  <Badge variant="destructive" className="text-xs">Eliminada</Badge>
+                )}
+
+                {/* Inactive Badge */}
+                {!category.is_active && !category.deleted_at && (
+                  <Badge variant="secondary" className="text-xs">Inactiva</Badge>
+                )}
+              </div>
             </div>
 
             <div className="flex items-center justify-between mt-2 pt-2 border-t">
               <span className="text-xs text-muted-foreground">
-                {category.subcategories.length} subcategorías
+                {category.subcategories?.length || 0} subcategorías
               </span>
 
               <div className="flex items-center gap-1">
@@ -89,14 +119,28 @@ export const CategoryCard: React.FC<CategoryCardProps> = ({
                 >
                   <Edit2 className="h-3.5 w-3.5" />
                 </Button>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => onDelete(category.id)}
-                  className="text-destructive hover:text-destructive h-7 w-7 p-0"
-                >
-                  <Trash2 className="h-3.5 w-3.5" />
-                </Button>
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <span>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => onDelete(category.id)}
+                          className="text-destructive hover:text-destructive h-7 w-7 p-0"
+                          disabled={category.is_protected}
+                        >
+                          <Trash2 className="h-3.5 w-3.5" />
+                        </Button>
+                      </span>
+                    </TooltipTrigger>
+                    {category.is_protected && (
+                      <TooltipContent>
+                        <p className="text-xs">No se puede eliminar</p>
+                      </TooltipContent>
+                    )}
+                  </Tooltip>
+                </TooltipProvider>
               </div>
             </div>
           </div>

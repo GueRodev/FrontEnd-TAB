@@ -3,21 +3,25 @@
  * Category management page with drag & drop reordering
  */
 
-import React from 'react';
+import React, { useState } from 'react';
 import { SidebarProvider, SidebarInset } from '@/components/ui/sidebar';
 import { AdminSidebar, AdminHeader } from '@/components/layout';
 import { Button } from '@/components/ui/button';
-import { Plus, Save } from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
+import { Plus, Save, Trash2 } from 'lucide-react';
 import {
   CategoriesTable,
   CategoriesList,
   CategoryFormDialog,
   SubcategoryFormDialog,
+  CategoryRecycleBin,
 } from '@/features/categories';
 import { DeleteConfirmDialog } from '@/components/common';
-import { useCategoriesAdmin } from '@/features/categories';
+import { useCategoriesAdmin, useCategoryRecycleBin } from '@/features/categories';
 
 const AdminCategories: React.FC = () => {
+  const [showRecycleBin, setShowRecycleBin] = useState(false);
+
   const {
     // Data
     categories,
@@ -66,6 +70,14 @@ const AdminCategories: React.FC = () => {
     confirmDeleteSubcategory,
     handleToggleExpand,
   } = useCategoriesAdmin();
+
+  const {
+    deletedCategories,
+    deletedCount,
+    handleRestore,
+    handleForceDelete,
+    isLoading: recycleBinLoading,
+  } = useCategoryRecycleBin();
 
   return (
     <SidebarProvider>
@@ -131,30 +143,59 @@ const AdminCategories: React.FC = () => {
                     </Button>
                   </>
                 )}
+
+                {/* Recycle Bin Toggle */}
+                <div className="sm:ml-auto">
+                  <Button
+                    onClick={() => setShowRecycleBin(!showRecycleBin)}
+                    variant={showRecycleBin ? "default" : "outline"}
+                    className="w-full sm:w-auto relative"
+                  >
+                    <Trash2 className="h-4 w-4 mr-2" />
+                    Papelera
+                    {deletedCount > 0 && (
+                      <Badge variant="destructive" className="ml-2 px-1.5 py-0 text-xs">
+                        {deletedCount}
+                      </Badge>
+                    )}
+                  </Button>
+                </div>
               </div>
+
+              {/* Recycle Bin Section */}
+              {showRecycleBin && (
+                <CategoryRecycleBin
+                  deletedCategories={deletedCategories}
+                  onRestore={handleRestore}
+                  onForceDelete={handleForceDelete}
+                  isLoading={recycleBinLoading}
+                />
+              )}
 
               {/* Categories Table/Cards */}
-              <div className="bg-card rounded-lg shadow-sm border">
-                <CategoriesTable
-                  categories={pendingCategories}
-                  onDragEnd={handleDragEnd}
-                  onEdit={openEditCategory}
-                  onDelete={openDeleteCategoryDialog}
-                  onToggleExpand={handleToggleExpand}
-                  onEditSubcategory={openEditSubcategory}
-                  onDeleteSubcategory={openDeleteSubcategoryDialog}
-                />
+              {!showRecycleBin && (
+                <div className="bg-card rounded-lg shadow-sm border">
+                  <CategoriesTable
+                    categories={pendingCategories}
+                    onDragEnd={handleDragEnd}
+                    onEdit={openEditCategory}
+                    onDelete={openDeleteCategoryDialog}
+                    onToggleExpand={handleToggleExpand}
+                    onEditSubcategory={openEditSubcategory}
+                    onDeleteSubcategory={openDeleteSubcategoryDialog}
+                  />
 
-                <CategoriesList
-                  categories={pendingCategories}
-                  onDragEnd={handleDragEnd}
-                  onEdit={openEditCategory}
-                  onDelete={openDeleteCategoryDialog}
-                  onToggleExpand={handleToggleExpand}
-                  onEditSubcategory={openEditSubcategory}
-                  onDeleteSubcategory={openDeleteSubcategoryDialog}
-                />
-              </div>
+                  <CategoriesList
+                    categories={pendingCategories}
+                    onDragEnd={handleDragEnd}
+                    onEdit={openEditCategory}
+                    onDelete={openDeleteCategoryDialog}
+                    onToggleExpand={handleToggleExpand}
+                    onEditSubcategory={openEditSubcategory}
+                    onDeleteSubcategory={openDeleteSubcategoryDialog}
+                  />
+                </div>
+              )}
             </div>
           </div>
         </SidebarInset>
