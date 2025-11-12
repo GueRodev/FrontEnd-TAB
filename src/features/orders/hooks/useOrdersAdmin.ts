@@ -120,7 +120,7 @@ export const useOrdersAdmin = (): UseOrdersAdminReturn => {
     let filtered = activeProducts;
     
     if (categoryFilter !== 'all') {
-      filtered = filtered.filter(p => p.categoryId === categoryFilter);
+      filtered = filtered.filter(p => p.category_id === categoryFilter);
     }
     
     if (searchQuery) {
@@ -170,7 +170,7 @@ export const useOrdersAdmin = (): UseOrdersAdminReturn => {
       items: [{
         id: selectedProductData.id,
         name: selectedProductData.name,
-        image: selectedProductData.image,
+        image: selectedProductData.image_url || '',
         price: selectedProductData.price,
         quantity,
       }],

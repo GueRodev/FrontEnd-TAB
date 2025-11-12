@@ -103,7 +103,7 @@ export const ProductSelector: React.FC<ProductSelectorProps> = ({
                         )}
                       />
                       <img
-                        src={product.image}
+                        src={product.image_url || ''}
                         alt={product.name}
                         className="w-10 h-10 object-cover rounded"
                       />
@@ -126,7 +126,7 @@ export const ProductSelector: React.FC<ProductSelectorProps> = ({
         <div className="p-3 bg-accent rounded-lg">
           <div className="flex items-center gap-3">
             <img
-              src={selectedProductData.image}
+              src={selectedProductData.image_url || ''}
               alt={selectedProductData.name}
               className="w-16 h-16 object-cover rounded"
             />

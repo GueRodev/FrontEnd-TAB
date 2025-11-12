@@ -101,7 +101,7 @@ const CategoryPage: React.FC = () => {
                   id={product.id}
                   name={product.name}
                   price={formatCurrency(product.price)}
-                  image={product.image}
+                  image={product.image_url || ''}
                   category={currentCategory.name}
                   isWishlisted={isProductInWishlist(product.id)}
                   onToggleWishlist={handleWishlistToggle}
