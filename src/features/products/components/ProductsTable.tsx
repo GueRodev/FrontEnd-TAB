@@ -46,7 +46,7 @@ export const ProductsTable = ({
         </TableHeader>
         <TableBody>
           {products.map((product) => {
-            const category = categories.find(c => c.id === product.categoryId);
+            const category = categories.find(c => c.id === product.category_id);
             return (
               <ProductRow
                 key={product.id}

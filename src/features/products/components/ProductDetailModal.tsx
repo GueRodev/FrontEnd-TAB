@@ -70,7 +70,7 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
           {/* Product Image */}
           <div className="aspect-square overflow-hidden rounded-lg bg-muted">
             <ProductImage
-              src={product.image}
+              src={product.image_url || ''}
               alt={product.name}
               variant="detail"
               className="w-full h-full"
@@ -91,9 +91,9 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
               <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-2">
                 {product.name}
               </h2>
-              {product.marca && (
+              {product.brand && (
                 <p className="text-sm text-muted-foreground">
-                  Marca: {product.marca}
+                  Marca: {product.brand}
                 </p>
               )}
             </div>

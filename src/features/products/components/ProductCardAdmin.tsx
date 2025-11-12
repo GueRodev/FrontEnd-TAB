@@ -31,7 +31,7 @@ export const ProductCardAdmin = ({
         {/* Product Header with Image and Title */}
         <div className="flex gap-3 items-start">
           <img 
-            src={product.image} 
+            src={product.image_url || ''} 
             alt={product.name}
             className="w-16 h-16 object-cover rounded-lg flex-shrink-0"
           />
@@ -81,7 +81,7 @@ export const ProductCardAdmin = ({
           <div className="flex items-center gap-2">
             <span className="text-xs text-gray-600">Destacado</span>
             <Switch
-              checked={product.isFeatured}
+              checked={product.is_featured}
               onCheckedChange={(checked) => onToggleFeatured(product.id, checked)}
             />
           </div>

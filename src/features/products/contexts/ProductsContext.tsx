@@ -11,11 +11,11 @@ import { productsService } from '../services';
 interface ProductsContextType {
   products: Product[];
   loading: boolean;
-  addProduct: (product: Omit<Product, 'id' | 'createdAt'>) => Promise<Product>;
+  addProduct: (product: Omit<Product, 'id' | 'created_at' | 'updated_at' | 'deleted_at'>) => Promise<Product>;
   updateProduct: (id: string, product: Partial<Product>) => Promise<Product>;
   deleteProduct: (id: string) => Promise<void>;
   getProductsByCategory: (categoryId: string) => Product[];
-  getProductsBySubcategory: (subcategoryId: string) => Product[];
+  getProductsBySubcategory: (subcategoryId: string) => Product[]; // Deprecated: use getProductsByCategory
 }
 
 const ProductsContext = createContext<ProductsContextType | undefined>(undefined);
@@ -29,8 +29,8 @@ export const ProductsProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     const loadProducts = async () => {
       setLoading(true);
       try {
-        const loadedProducts = await productsService.getAll();
-        setProducts(loadedProducts);
+        const result = await productsService.getAll();
+        setProducts(result.data); // Extract data from paginated response
       } catch (error) {
         console.error('Error loading products:', error);
       } finally {
@@ -40,7 +40,7 @@ export const ProductsProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     loadProducts();
   }, []);
 
-  const addProduct = async (productData: Omit<Product, 'id' | 'createdAt'>): Promise<Product> => {
+  const addProduct = async (productData: Omit<Product, 'id' | 'created_at' | 'updated_at' | 'deleted_at'>): Promise<Product> => {
     setLoading(true);
     try {
       // Call service to persist
@@ -100,13 +100,14 @@ export const ProductsProvider: React.FC<{ children: React.ReactNode }> = ({ chil
 
   const getProductsByCategory = (categoryId: string) => {
     return products.filter(product => 
-      product.categoryId === categoryId && product.status === 'active'
+      product.category_id === categoryId && product.status === 'active'
     );
   };
 
   const getProductsBySubcategory = (subcategoryId: string) => {
+    // Deprecated: subcategories are now categories
     return products.filter(product => 
-      product.subcategoryId === subcategoryId && product.status === 'active'
+      product.category_id === subcategoryId && product.status === 'active'
     );
   };
 

@@ -21,7 +21,7 @@ export const useProductOperations = () => {
    */
   const getFeaturedProducts = () => {
     return products.filter(
-      product => product.isFeatured && product.status === 'active'
+      product => product.is_featured && product.status === 'active'
     );
   };
 
@@ -30,16 +30,16 @@ export const useProductOperations = () => {
    */
   const getProductsByCategory = (categoryId: string) => {
     return products.filter(
-      product => product.categoryId === categoryId && product.status === 'active'
+      product => product.category_id === categoryId && product.status === 'active'
     );
   };
 
   /**
-   * Get active products by subcategory
+   * Get active products by subcategory (deprecated - use getProductsByCategory)
    */
   const getProductsBySubcategory = (subcategoryId: string) => {
     return products.filter(
-      product => product.subcategoryId === subcategoryId && product.status === 'active'
+      product => product.category_id === subcategoryId && product.status === 'active'
     );
   };
 
@@ -72,7 +72,7 @@ export const useProductOperations = () => {
     addToCart({
       id: product.id,
       name: product.name,
-      image: product.image,
+      image: product.image_url || '',
       price: product.price,
     });
 
@@ -88,12 +88,12 @@ export const useProductOperations = () => {
       e.stopPropagation();
     }
 
-    const categorySlug = getCategorySlug(product.categoryId);
+    const categorySlug = getCategorySlug(product.category_id);
 
     toggleWishlist({
       id: product.id,
       name: product.name,
-      image: product.image,
+      image: product.image_url || '',
       price: product.price,
       category: categorySlug,
     });

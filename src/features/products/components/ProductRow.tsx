@@ -30,7 +30,7 @@ export const ProductRow = ({
     <TableRow className="hover:bg-gray-50">
       <TableCell>
         <img 
-          src={product.image} 
+          src={product.image_url || ''} 
           alt={product.name}
           className="w-16 h-16 object-cover rounded-lg"
         />
@@ -70,7 +70,7 @@ export const ProductRow = ({
       <TableCell>
         <div className="flex items-center justify-center">
           <Switch
-            checked={product.isFeatured}
+            checked={product.is_featured}
             onCheckedChange={(checked) => onToggleFeatured(product.id, checked)}
           />
         </div>

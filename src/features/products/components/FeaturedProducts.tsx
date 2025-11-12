@@ -51,7 +51,7 @@ const FeaturedProducts: React.FC = () => {
         onAddToCart={handleAddToCartFromModal}
         onToggleWishlist={handleToggleWishlistFromModal}
         isInWishlist={isModalProductInWishlist}
-        categoryName={selectedProduct ? getCategorySlug(selectedProduct.categoryId) : undefined}
+        categoryName={selectedProduct ? getCategorySlug(selectedProduct.category_id) : undefined}
         quantity={quantity}
         onQuantityChange={setQuantity}
       />

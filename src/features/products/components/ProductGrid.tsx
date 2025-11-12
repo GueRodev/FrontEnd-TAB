@@ -44,9 +44,9 @@ export const ProductGrid: React.FC<ProductGridProps> = ({
           key={product.id}
           id={product.id}
           name={product.name}
-          image={product.image}
+          image={product.image_url || ''}
           price={formatCurrency(product.price)}
-          category={getCategorySlug ? getCategorySlug(product.categoryId) : undefined}
+          category={getCategorySlug ? getCategorySlug(product.category_id) : undefined}
           isWishlisted={isInWishlist(product.id)}
           onToggleWishlist={(e) => onToggleWishlist(product, e)}
           onAddToCart={(e) => onAddToCart(product, e)}

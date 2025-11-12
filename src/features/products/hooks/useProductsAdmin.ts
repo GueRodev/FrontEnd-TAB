@@ -1,6 +1,7 @@
 /**
  * Products Admin Business Logic Hook
  * Manages all business logic for admin products page
+ * Updated for Laravel backend compatibility
  */
 
 import { useState } from 'react';
@@ -8,10 +9,22 @@ import { useProducts } from '../contexts';
 import { useCategories } from '@/features/categories';
 import { useNotifications } from '@/features/notifications';
 import { toast } from '@/hooks/use-toast';
-import { productSchema, type ProductFormData } from '../validations';
+import { productSchema } from '../validations';
 import { useProductFilters } from './useProductFilters';
 import { useApi } from '@/hooks/useApi';
-import type { Product } from '../types';
+import type { Product, CreateProductDto } from '../types';
+
+// Form data type for UI (strings for inputs)
+export interface ProductAdminFormData {
+  name: string;
+  brand: string;
+  category_id: string;
+  sku: string;
+  price: string;
+  stock: string;
+  description: string;
+  status: 'active' | 'inactive' | 'out_of_stock';
+}
 
 interface DeleteProductDialog {
   open: boolean;
@@ -43,16 +56,16 @@ interface UseProductsAdminReturn {
   deleteProductDialog: DeleteProductDialog;
   
   // Form state
-  selectedImage: string | null;
+  selectedImage: File | null;
   selectedProduct: Product | null;
-  formData: ProductFormData;
+  formData: ProductAdminFormData;
   availableSubcategories: any[];
   
   // Handlers
   setIsAddDialogOpen: (open: boolean) => void;
   setIsEditDialogOpen: (open: boolean) => void;
-  setSelectedImage: (image: string | null) => void;
-  setFormData: (data: ProductFormData) => void;
+  setSelectedImage: (image: File | null) => void;
+  setFormData: (data: ProductAdminFormData) => void;
   setDeleteProductDialog: (dialog: DeleteProductDialog) => void;
   handleImageUpload: (e: React.ChangeEvent<HTMLInputElement>) => void;
   handleRemoveImage: () => void;
@@ -61,7 +74,7 @@ interface UseProductsAdminReturn {
   handleUpdateProduct: (e: React.FormEvent) => void;
   openDeleteProductDialog: (productId: string) => void;
   confirmDeleteProduct: () => void;
-  handleToggleFeatured: (productId: string, isFeatured: boolean) => void;
+  handleToggleFeatured: (productId: string, is_featured: boolean) => void;
   handleOpenAddDialog: () => void;
 }
 
@@ -95,32 +108,28 @@ export const useProductsAdmin = (): UseProductsAdminReturn => {
   });
 
   // Form state
-  const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const [selectedImage, setSelectedImage] = useState<File | null>(null);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
-  const [formData, setFormData] = useState<ProductFormData>({
+  const [formData, setFormData] = useState<ProductAdminFormData>({
     name: '',
-    marca: '',
-    category: '',
-    subcategory: '',
+    brand: '',
+    category_id: '',
+    sku: '',
     price: '',
     stock: '',
     description: '',
     status: 'active'
   });
 
-  // Derived state - subcategories for form
+  // Derived state - subcategories for form (deprecated but kept for compatibility)
   const availableSubcategories = categories.find(
-    c => c.id === formData.category
+    c => c.id === formData.category_id
   )?.subcategories || [];
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setSelectedImage(reader.result as string);
-      };
-      reader.readAsDataURL(file);
+      setSelectedImage(file);
     }
   };
 
@@ -132,33 +141,21 @@ export const useProductsAdmin = (): UseProductsAdminReturn => {
     setSelectedProduct(product);
     setFormData({
       name: product.name,
-      marca: product.marca || '',
-      category: product.categoryId,
-      subcategory: product.subcategoryId || '',
+      brand: product.brand || '',
+      category_id: product.category_id,
+      sku: product.sku || '',
       price: product.price.toString(),
       stock: product.stock.toString(),
       description: product.description || '',
       status: product.status
     });
-    setSelectedImage(product.image);
+    setSelectedImage(null); // Reset image, use existing product.image_url
     setIsEditDialogOpen(true);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Validate
-    const validation = productSchema.safeParse(formData);
-    if (!validation.success) {
-      const firstError = validation.error.errors[0];
-      toast({
-        title: "Error de validación",
-        description: firstError.message,
-        variant: "destructive",
-      });
-      return;
-    }
-
     if (!selectedImage) {
       toast({
         title: "Error",
@@ -170,19 +167,22 @@ export const useProductsAdmin = (): UseProductsAdminReturn => {
 
     await execute(
       async () => {
-        await addProduct({
+        const productData = {
           name: formData.name,
-          marca: formData.marca || undefined,
-          categoryId: formData.category,
-          subcategoryId: formData.subcategory || undefined,
+          brand: formData.brand || null,
+          category_id: formData.category_id,
+          sku: formData.sku || null,
           price: parseFloat(formData.price),
           stock: parseInt(formData.stock) || 0,
-          description: formData.description || '',
+          description: formData.description || null,
           image: selectedImage,
-          status: formData.status as 'active' | 'inactive',
-          isFeatured: false,
-        });
+          status: formData.status,
+          is_featured: false,
+          slug: '', // Generated by backend
+          image_url: '', // Generated by backend
+        };
         
+        await addProduct(productData as any);
         return formData.name;
       },
       {
@@ -198,9 +198,9 @@ export const useProductsAdmin = (): UseProductsAdminReturn => {
           setIsAddDialogOpen(false);
           setFormData({
             name: '',
-            marca: '',
-            category: '',
-            subcategory: '',
+            brand: '',
+            category_id: '',
+            sku: '',
             price: '',
             stock: '',
             description: '',
@@ -217,32 +217,24 @@ export const useProductsAdmin = (): UseProductsAdminReturn => {
     
     if (!selectedProduct) return;
 
-    // Validate
-    const validation = productSchema.safeParse(formData);
-    if (!validation.success) {
-      const firstError = validation.error.errors[0];
-      toast({
-        title: "Error de validación",
-        description: firstError.message,
-        variant: "destructive",
-      });
-      return;
-    }
-
     await execute(
       async () => {
-        await updateProduct(selectedProduct.id, {
+        const updateData: any = {
           name: formData.name,
-          marca: formData.marca || undefined,
-          categoryId: formData.category,
-          subcategoryId: formData.subcategory || undefined,
+          brand: formData.brand || null,
+          category_id: formData.category_id,
+          sku: formData.sku || null,
           price: parseFloat(formData.price),
           stock: parseInt(formData.stock) || 0,
-          description: formData.description || '',
-          image: selectedImage || selectedProduct.image,
-          status: formData.status as 'active' | 'inactive',
-        });
+          description: formData.description || null,
+          status: formData.status,
+        };
         
+        if (selectedImage) {
+          updateData.image = selectedImage;
+        }
+        
+        await updateProduct(selectedProduct.id, updateData);
         return formData.name;
       },
       {
@@ -258,9 +250,9 @@ export const useProductsAdmin = (): UseProductsAdminReturn => {
           setIsEditDialogOpen(false);
           setFormData({
             name: '',
-            marca: '',
-            category: '',
-            subcategory: '',
+            brand: '',
+            category_id: '',
+            sku: '',
             price: '',
             stock: '',
             description: '',
@@ -301,13 +293,13 @@ export const useProductsAdmin = (): UseProductsAdminReturn => {
     });
   };
 
-  const handleToggleFeatured = async (productId: string, isFeatured: boolean) => {
+  const handleToggleFeatured = async (productId: string, is_featured: boolean) => {
     const product = products.find(p => p.id === productId);
     if (product) {
-      await updateProduct(productId, { isFeatured });
+      await updateProduct(productId, { is_featured });
       toast({
-        title: isFeatured ? "Producto destacado" : "Producto no destacado",
-        description: `${product.name} ${isFeatured ? 'aparecerá' : 'no aparecerá'} en productos destacados`,
+        title: is_featured ? "Producto destacado" : "Producto no destacado",
+        description: `${product.name} ${is_featured ? 'aparecerá' : 'no aparecerá'} en productos destacados`,
       });
     }
   };

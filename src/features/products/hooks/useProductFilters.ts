@@ -34,7 +34,7 @@ export const useProductFilters = ({
       product =>
         product.name.toLowerCase().includes(query) ||
         product.description?.toLowerCase().includes(query) ||
-        product.marca?.toLowerCase().includes(query)
+        product.brand?.toLowerCase().includes(query)
     );
   };
 
@@ -43,7 +43,7 @@ export const useProductFilters = ({
    */
   const filterByCategory = (products: Product[]): Product[] => {
     if (!selectedCategory) return products;
-    return products.filter(product => product.categoryId === selectedCategory);
+    return products.filter(product => product.category_id === selectedCategory);
   };
 
   /**
@@ -73,7 +73,7 @@ export const useProductFilters = ({
       
       case 'newest':
         return sorted.sort((a, b) => 
-          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+          new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
         );
       
       default:

@@ -96,7 +96,7 @@ const SearchDialog: React.FC<SearchDialogProps> = ({ open, onOpenChange }) => {
           ) : (
             <div className="space-y-2">
               {filteredProducts.map((product) => {
-                const category = categories.find(c => c.id === product.categoryId);
+                const category = categories.find(c => c.id === product.category_id);
                 return (
                   <Link
                     key={product.id}
@@ -105,7 +105,7 @@ const SearchDialog: React.FC<SearchDialogProps> = ({ open, onOpenChange }) => {
                     className="flex items-center gap-4 p-3 rounded-lg hover:bg-gray-50 transition-colors border border-transparent hover:border-brand-orange"
                   >
                     <img
-                      src={product.image}
+                      src={product.image_url || ''}
                       alt={product.name}
                       className="w-16 h-16 object-cover rounded-md"
                     />
