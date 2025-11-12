@@ -483,4 +483,83 @@ export const categoriesService = {
       throw error;
     }
   },
+
+  /**
+   * Restore category from recycle bin (soft delete)
+   * 
+   * 🔗 CONEXIÓN LARAVEL: POST /api/v1/categories/{id}/restore
+   * Response (Laravel direct): { message: string, category: Category }
+   * Note: Laravel returns direct object, not wrapped in ApiResponse
+   */
+  async restore(id: string): Promise<ApiResponse<Category>> {
+    try {
+      // TODO: Descomentar cuando Laravel esté listo
+      // const response = await apiClient.post<{ message: string; category: Category }>(`/categories/${id}/restore`);
+      // return {
+      //   data: response.category,
+      //   message: response.message,
+      //   timestamp: new Date().toISOString(),
+      // };
+
+      // Fallback: Remove deleted_at from localStorage
+      const categories = localStorageAdapter.getItem<Category[]>(STORAGE_KEYS.categories) || [];
+      const restoredCategories = categories.map(c => {
+        if (c.id === id) {
+          const { deleted_at, ...restored } = c;
+          return restored as Category;
+        }
+        return c;
+      });
+
+      localStorageAdapter.setItem(STORAGE_KEYS.categories, restoredCategories);
+
+      const restoredCategory = restoredCategories.find(c => c.id === id);
+      if (!restoredCategory) {
+        throw new Error('Category not found');
+      }
+
+      return {
+        data: restoredCategory,
+        message: 'Category restored successfully',
+        timestamp: new Date().toISOString(),
+      };
+    } catch (error) {
+      console.error('Error restoring category:', error);
+      throw error;
+    }
+  },
+
+  /**
+   * Permanently delete category (force delete)
+   * 
+   * 🔗 CONEXIÓN LARAVEL: DELETE /api/v1/categories/{id}/force
+   * Response (Laravel direct): { message: string }
+   * Note: Laravel returns direct object, not wrapped in ApiResponse
+   */
+  async forceDelete(id: string): Promise<ApiResponse<void>> {
+    try {
+      // TODO: Descomentar cuando Laravel esté listo
+      // const response = await apiClient.delete<{ message: string }>(`/categories/${id}/force`);
+      // return {
+      //   data: undefined as void,
+      //   message: response.message,
+      //   timestamp: new Date().toISOString(),
+      // };
+
+      // Fallback: Permanently delete from localStorage
+      const categories = localStorageAdapter.getItem<Category[]>(STORAGE_KEYS.categories) || [];
+      const filteredCategories = categories.filter(c => c.id !== id);
+
+      localStorageAdapter.setItem(STORAGE_KEYS.categories, filteredCategories);
+
+      return {
+        data: undefined as void,
+        message: 'Category permanently deleted',
+        timestamp: new Date().toISOString(),
+      };
+    } catch (error) {
+      console.error('Error force deleting category:', error);
+      throw error;
+    }
+  },
 };

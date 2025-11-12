@@ -21,6 +21,8 @@ interface CategoriesContextType {
   addCategory: (data: CreateCategoryDto) => Promise<Category>;
   updateCategory: (id: string, data: UpdateCategoryDto) => Promise<Category>;
   deleteCategory: (id: string) => Promise<void>;
+  restoreCategory: (id: string) => Promise<Category>;
+  forceDeleteCategory: (id: string) => Promise<void>;
   addSubcategory: (categoryId: string, data: CreateSubcategoryDto) => Promise<Subcategory>;
   updateSubcategory: (categoryId: string, subcategoryId: string, data: UpdateSubcategoryDto & { newCategoryId?: string }) => Promise<Subcategory>;
   deleteSubcategory: (categoryId: string, subcategoryId: string) => Promise<void>;
@@ -58,6 +60,19 @@ const defaultContextValue: CategoriesContextType = {
     children: [],
   }),
   deleteCategory: async () => {},
+  restoreCategory: async () => ({ 
+    id: '', 
+    name: '', 
+    slug: '', 
+    order: 0,
+    parent_id: null,
+    level: 0,
+    is_protected: false,
+    is_active: true, 
+    subcategories: [],
+    children: [],
+  }),
+  forceDeleteCategory: async () => {},
   addSubcategory: async () => ({ id: '', name: '', slug: '', order: 0 }),
   updateSubcategory: async () => ({ id: '', name: '', slug: '', order: 0 }),
   deleteSubcategory: async () => {},
@@ -259,6 +274,42 @@ export const CategoriesProvider: React.FC<{ children: React.ReactNode }> = ({ ch
   };
 
   /**
+   * Restore category from recycle bin
+   * 🔗 CONEXIÓN LARAVEL: POST /api/v1/categories/{id}/restore
+   */
+  const restoreCategory = async (id: string): Promise<Category> => {
+    setLoading(true);
+    try {
+      const response = await categoriesService.restore(id);
+      const restoredCategory = response.data;
+      setCategories(categories.map(cat => cat.id === id ? restoredCategory : cat));
+      return restoredCategory;
+    } catch (error) {
+      console.error('Error restoring category:', error);
+      throw error;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  /**
+   * Permanently delete category (force delete)
+   * 🔗 CONEXIÓN LARAVEL: DELETE /api/v1/categories/{id}/force
+   */
+  const forceDeleteCategory = async (id: string): Promise<void> => {
+    setLoading(true);
+    try {
+      await categoriesService.forceDelete(id);
+      setCategories(categories.filter(cat => cat.id !== id));
+    } catch (error) {
+      console.error('Error force deleting category:', error);
+      throw error;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  /**
    * Reorder categories (drag & drop)
    * 🔗 CONEXIÓN LARAVEL: POST /api/categories/reorder
    */
@@ -292,6 +343,8 @@ export const CategoriesProvider: React.FC<{ children: React.ReactNode }> = ({ ch
       addCategory,
       updateCategory,
       deleteCategory,
+      restoreCategory,
+      forceDeleteCategory,
       addSubcategory,
       updateSubcategory,
       deleteSubcategory,

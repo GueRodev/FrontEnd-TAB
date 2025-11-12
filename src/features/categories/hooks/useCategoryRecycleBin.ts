@@ -11,7 +11,7 @@ import { toast } from '@/hooks/use-toast';
 import type { Category } from '../types';
 
 export const useCategoryRecycleBin = () => {
-  const { categories, syncWithAPI } = useCategories();
+  const { categories, restoreCategory, forceDeleteCategory } = useCategories();
   const { execute, isLoading } = useApi();
 
   /**
@@ -43,17 +43,8 @@ export const useCategoryRecycleBin = () => {
 
     await execute(
       async () => {
-        // TODO: Uncomment when Laravel API is ready
-        // const response = await categoriesService.restore(id);
-        // await syncWithAPI();
-        // return response;
-
-        // Temporary: Remove from deleted in localStorage
-        console.log('Restore category:', id);
-        toast({
-          title: 'Función no disponible',
-          description: 'La restauración estará disponible cuando se integre con Laravel',
-        });
+        const restoredCategory = await restoreCategory(id);
+        return restoredCategory;
       },
       {
         successMessage: `La categoría "${category.name}" ha sido restaurada exitosamente`,
@@ -80,17 +71,7 @@ export const useCategoryRecycleBin = () => {
     // Confirmation is handled by parent component
     await execute(
       async () => {
-        // TODO: Uncomment when Laravel API is ready
-        // const response = await categoriesService.forceDelete(id);
-        // await syncWithAPI();
-        // return response;
-
-        // Temporary: Just show message
-        console.log('Force delete category:', id);
-        toast({
-          title: 'Función no disponible',
-          description: 'La eliminación permanente estará disponible cuando se integre con Laravel',
-        });
+        await forceDeleteCategory(id);
       },
       {
         successMessage: `La categoría "${category.name}" ha sido eliminada permanentemente`,
