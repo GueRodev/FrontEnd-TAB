@@ -13,6 +13,8 @@ export { ProductImageUpload } from './ProductImageUpload';
 export { ProductsListAdmin } from './ProductsListAdmin';
 export { ProductFilters } from './ProductFilters';
 export { ProductRecycleBin } from './ProductRecycleBin';
+export { AdjustStockDialog } from './AdjustStockDialog';
+export { StockMovementHistory } from './StockMovementHistory';
 export { default as ProductCard } from './ProductCard';
 export { default as FeaturedProducts } from './FeaturedProducts';
 export { default as SearchDialog } from './SearchDialog';

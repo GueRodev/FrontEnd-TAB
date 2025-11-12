@@ -20,6 +20,8 @@ interface ProductsTableProps {
   onEdit: (product: Product) => void;
   onDelete: (productId: string) => void;
   onToggleFeatured: (productId: string, isFeatured: boolean) => void;
+  onAdjustStock?: (product: Product) => void;
+  onViewHistory?: (product: Product) => void;
 }
 
 export const ProductsTable = ({
@@ -27,7 +29,9 @@ export const ProductsTable = ({
   categories,
   onEdit,
   onDelete,
-  onToggleFeatured
+  onToggleFeatured,
+  onAdjustStock,
+  onViewHistory,
 }: ProductsTableProps) => {
   return (
     <div className="hidden lg:block border rounded-lg overflow-hidden">
@@ -55,6 +59,8 @@ export const ProductsTable = ({
                 onEdit={onEdit}
                 onDelete={onDelete}
                 onToggleFeatured={onToggleFeatured}
+                onAdjustStock={onAdjustStock}
+                onViewHistory={onViewHistory}
               />
             );
           })}

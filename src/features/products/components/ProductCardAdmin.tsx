@@ -6,7 +6,13 @@
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Switch } from '@/components/ui/switch';
-import { Pencil, Trash2 } from 'lucide-react';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import { Pencil, Trash2, MoreVertical, Package, History } from 'lucide-react';
 import type { Product } from '../types';
 import type { Category } from '@/features/categories';
 
@@ -16,6 +22,8 @@ interface ProductCardAdminProps {
   onEdit: (product: Product) => void;
   onDelete: (productId: string) => void;
   onToggleFeatured: (productId: string, isFeatured: boolean) => void;
+  onAdjustStock?: (product: Product) => void;
+  onViewHistory?: (product: Product) => void;
 }
 
 export const ProductCardAdmin = ({
@@ -23,7 +31,9 @@ export const ProductCardAdmin = ({
   category,
   onEdit,
   onDelete,
-  onToggleFeatured
+  onToggleFeatured,
+  onAdjustStock,
+  onViewHistory,
 }: ProductCardAdminProps) => {
   return (
     <div className="border rounded-lg p-3 hover:bg-gray-50 transition-colors">
@@ -104,6 +114,34 @@ export const ProductCardAdmin = ({
             >
               <Trash2 className="h-4 w-4" />
             </Button>
+            
+            {(onAdjustStock || onViewHistory) && (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="h-8 w-8 text-gray-600 hover:text-gray-900 hover:bg-gray-100"
+                  >
+                    <MoreVertical className="h-4 w-4" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  {onAdjustStock && (
+                    <DropdownMenuItem onClick={() => onAdjustStock(product)}>
+                      <Package className="h-4 w-4 mr-2" />
+                      Ajustar Stock
+                    </DropdownMenuItem>
+                  )}
+                  {onViewHistory && (
+                    <DropdownMenuItem onClick={() => onViewHistory(product)}>
+                      <History className="h-4 w-4 mr-2" />
+                      Ver Historial
+                    </DropdownMenuItem>
+                  )}
+                </DropdownMenuContent>
+              </DropdownMenu>
+            )}
           </div>
         </div>
       </div>

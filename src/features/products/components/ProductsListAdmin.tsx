@@ -14,6 +14,8 @@ interface ProductsListAdminProps {
   onEdit: (product: Product) => void;
   onDelete: (productId: string) => void;
   onToggleFeatured: (productId: string, isFeatured: boolean) => void;
+  onAdjustStock?: (product: Product) => void;
+  onViewHistory?: (product: Product) => void;
 }
 
 export const ProductsListAdmin = ({
@@ -21,7 +23,9 @@ export const ProductsListAdmin = ({
   categories,
   onEdit,
   onDelete,
-  onToggleFeatured
+  onToggleFeatured,
+  onAdjustStock,
+  onViewHistory,
 }: ProductsListAdminProps) => {
   return (
     <>
@@ -32,6 +36,8 @@ export const ProductsListAdmin = ({
         onEdit={onEdit}
         onDelete={onDelete}
         onToggleFeatured={onToggleFeatured}
+        onAdjustStock={onAdjustStock}
+        onViewHistory={onViewHistory}
       />
 
       {/* Mobile/Tablet Card View */}
@@ -46,6 +52,8 @@ export const ProductsListAdmin = ({
               onEdit={onEdit}
               onDelete={onDelete}
               onToggleFeatured={onToggleFeatured}
+              onAdjustStock={onAdjustStock}
+              onViewHistory={onViewHistory}
             />
           );
         })}

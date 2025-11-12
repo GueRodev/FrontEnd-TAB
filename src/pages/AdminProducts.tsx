@@ -9,14 +9,22 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Plus, Package, Trash2 } from 'lucide-react';
-import { useProductsAdmin } from '@/features/products';
+import { useProductsAdmin, useStockManagement } from '@/features/products';
 import {
   ProductsListAdmin,
   ProductFormDialog,
   ProductFilters,
   ProductRecycleBin,
+  AdjustStockDialog,
+  StockMovementHistory,
 } from '@/features/products';
 import { DeleteConfirmDialog } from '@/components/common';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
 
 const AdminProducts = () => {
   const {
@@ -58,6 +66,15 @@ const AdminProducts = () => {
     handleToggleFeatured,
     handleOpenAddDialog,
   } = useProductsAdmin();
+
+  const {
+    adjustStockDialog,
+    openAdjustStockDialog,
+    closeAdjustStockDialog,
+    historyDialog,
+    openHistoryDialog,
+    closeHistoryDialog,
+  } = useStockManagement();
 
   const filterCount = [searchQuery, selectedCategory].filter(Boolean).length;
 
@@ -137,6 +154,8 @@ const AdminProducts = () => {
                         onEdit={handleEditProduct}
                         onDelete={openDeleteProductDialog}
                         onToggleFeatured={handleToggleFeatured}
+                        onAdjustStock={openAdjustStockDialog}
+                        onViewHistory={openHistoryDialog}
                       />
                     </CardContent>
                   </Card>
@@ -191,6 +210,25 @@ const AdminProducts = () => {
         itemType="product"
         onConfirm={confirmDeleteProduct}
       />
+
+      {/* Adjust Stock Dialog */}
+      <AdjustStockDialog
+        open={adjustStockDialog.open}
+        onOpenChange={closeAdjustStockDialog}
+        product={adjustStockDialog.product}
+      />
+
+      {/* Stock Movement History Dialog */}
+      <Dialog open={historyDialog.open} onOpenChange={closeHistoryDialog}>
+        <DialogContent className="max-w-5xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Historial de Movimientos</DialogTitle>
+          </DialogHeader>
+          {historyDialog.product && (
+            <StockMovementHistory product={historyDialog.product} />
+          )}
+        </DialogContent>
+      </Dialog>
     </SidebarProvider>
   );
 };
