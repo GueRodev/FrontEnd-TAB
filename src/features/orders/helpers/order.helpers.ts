@@ -11,8 +11,10 @@ import type { Order, OrderStatus, OrderType } from '@/features/orders/types';
 export const getStatusLabel = (status: OrderStatus): string => {
   const labels: Record<OrderStatus, string> = {
     pending: 'Pendiente',
+    in_progress: 'En Proceso',
     completed: 'Completado',
     cancelled: 'Cancelado',
+    archived: 'Archivado',
   };
   return labels[status] || status;
 };
@@ -36,8 +38,10 @@ export const getStatusVariant = (
 ): 'default' | 'secondary' | 'destructive' | 'outline' => {
   const variants: Record<OrderStatus, 'default' | 'secondary' | 'destructive' | 'outline'> = {
     pending: 'outline',
+    in_progress: 'default',
     completed: 'default',
     cancelled: 'destructive',
+    archived: 'secondary',
   };
   return variants[status] || 'default';
 };

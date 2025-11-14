@@ -8,6 +8,7 @@ import type { Order, OrderStatus, OrderType } from '../types';
 import type { ApiResponse } from '@/api/types';
 import { APP_CONFIG } from '@/config/app.config';
 import { apiClient } from '@/api/client';
+import { transformLaravelOrder, transformToLaravelOrderPayload } from '../utils/transformers';
 
 const STORAGE_KEY = 'orders';
 
@@ -18,13 +19,16 @@ const STORAGE_KEY = 'orders';
 
 /**
  * Get all orders
- * 🔗 LARAVEL: GET /api/orders
+ * 🔗 LARAVEL: GET /api/admin/orders (Admin) or GET /api/orders (Client)
  */
 const getAll = async (): Promise<Order[]> => {
   if (APP_CONFIG.useAPI) {
-    // Use Laravel API
-    const response = await apiClient.get<ApiResponse<Order[]>>('/orders');
-    return response.data;
+    // TODO: Determine if admin or client based on user role
+    const isAdmin = true;
+    const endpoint = isAdmin ? '/admin/orders' : '/orders';
+    
+    const response = await apiClient.get<ApiResponse<any[]>>(endpoint);
+    return response.data.map(transformLaravelOrder);
   } else {
     // Use localStorage (development)
     const orders = localStorageAdapter.getItem<Order[]>(STORAGE_KEY) || [];
@@ -50,23 +54,33 @@ const getByType = async (type: OrderType): Promise<Order[]> => {
 
 /**
  * Get archived orders
+ * 🔗 LARAVEL: GET /api/admin/orders?status=archived
  */
 const getArchived = async (): Promise<Order[]> => {
-  const orders = await getAll();
-  return orders.filter(order => order.archived);
+  if (APP_CONFIG.useAPI) {
+    const response = await apiClient.get<ApiResponse<any[]>>('/admin/orders?status=archived');
+    return response.data.map(transformLaravelOrder);
+  } else {
+    const orders = await getAll();
+    return orders.filter(order => order.archived);
+  }
 };
 
 /**
- * Create new order
+ * Create ONLINE order (from cart - Client)
  * 🔗 LARAVEL: POST /api/orders
  */
-const create = async (
-  data: Omit<Order, 'id' | 'createdAt'>
+const createOnlineOrder = async (
+  data: Omit<Order, 'id' | 'createdAt' | 'order_number'>
 ): Promise<ApiResponse<Order>> => {
   try {
     if (APP_CONFIG.useAPI) {
-      // Use Laravel API
-      return await apiClient.post<ApiResponse<Order>>('/orders', data);
+      const payload = transformToLaravelOrderPayload(data, 'online');
+      const response = await apiClient.post<ApiResponse<any>>('/orders', payload);
+      return {
+        ...response,
+        data: transformLaravelOrder(response.data),
+      };
     } else {
       // Use localStorage (development)
       const orders = await getAll();
@@ -74,23 +88,24 @@ const create = async (
       const newOrder: Order = {
         ...data,
         id: `ORD-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+        order_number: `ORD-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
         createdAt: new Date().toISOString(),
       };
 
       const updatedOrders = [newOrder, ...orders];
       localStorageAdapter.setItem(STORAGE_KEY, updatedOrders);
       
-      // ✅ Verificar que se guardó correctamente (para evitar race conditions)
+      // ✅ Verify saved correctly
       await new Promise(resolve => setTimeout(resolve, 50));
       const savedOrders = await getAll();
       const foundOrder = savedOrders.find(o => o.id === newOrder.id);
       
       if (!foundOrder) {
-        console.error('❌ Error: El pedido no se guardó correctamente en localStorage');
+        console.error('❌ Error: Order not saved correctly in localStorage');
         throw new Error('Error al guardar el pedido');
       }
       
-      console.log(`✅ Pedido ${newOrder.id} creado y verificado`);
+      console.log(`✅ Order ${newOrder.id} created and verified`);
 
       return {
         data: newOrder,
@@ -98,14 +113,112 @@ const create = async (
       };
     }
   } catch (error) {
-    console.error('Error creating order:', error);
+    console.error('Error creating online order:', error);
     throw new Error('Error al crear el pedido');
   }
 };
 
 /**
- * Update order status
- * 🔗 LARAVEL: PATCH /api/orders/{id}/status
+ * Create IN-STORE order (Admin)
+ * 🔗 LARAVEL: POST /api/admin/orders
+ */
+const createInStoreOrder = async (
+  data: Omit<Order, 'id' | 'createdAt' | 'order_number'>
+): Promise<ApiResponse<Order>> => {
+  try {
+    if (APP_CONFIG.useAPI) {
+      const payload = transformToLaravelOrderPayload(data, 'in-store');
+      const response = await apiClient.post<ApiResponse<any>>('/admin/orders', payload);
+      return {
+        ...response,
+        data: transformLaravelOrder(response.data),
+      };
+    } else {
+      // Use localStorage (development)
+      const orders = await getAll();
+      
+      const newOrder: Order = {
+        ...data,
+        id: `ORD-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+        order_number: `ORD-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+        createdAt: new Date().toISOString(),
+      };
+
+      const updatedOrders = [newOrder, ...orders];
+      localStorageAdapter.setItem(STORAGE_KEY, updatedOrders);
+      
+      // ✅ Verify saved correctly
+      await new Promise(resolve => setTimeout(resolve, 50));
+      const savedOrders = await getAll();
+      const foundOrder = savedOrders.find(o => o.id === newOrder.id);
+      
+      if (!foundOrder) {
+        console.error('❌ Error: Order not saved correctly in localStorage');
+        throw new Error('Error al guardar el pedido');
+      }
+      
+      console.log(`✅ Order ${newOrder.id} created and verified`);
+
+      return {
+        data: newOrder,
+        timestamp: new Date().toISOString(),
+      };
+    }
+  } catch (error) {
+    console.error('Error creating in-store order:', error);
+    throw new Error('Error al crear el pedido');
+  }
+};
+
+/**
+ * Unified create method - routes to appropriate endpoint
+ */
+const create = async (
+  data: Omit<Order, 'id' | 'createdAt' | 'order_number'>
+): Promise<ApiResponse<Order>> => {
+  if (data.type === 'online') {
+    return createOnlineOrder(data);
+  } else {
+    return createInStoreOrder(data);
+  }
+};
+
+/**
+ * Mark order as in progress
+ * 🔗 LARAVEL: PATCH /api/admin/orders/{id}/mark-in-progress
+ */
+const markInProgress = async (id: string): Promise<ApiResponse<Order>> => {
+  try {
+    if (APP_CONFIG.useAPI) {
+      const response = await apiClient.patch<ApiResponse<any>>(`/admin/orders/${id}/mark-in-progress`);
+      return {
+        ...response,
+        data: transformLaravelOrder(response.data),
+      };
+    } else {
+      // Use localStorage (development)
+      const orders = await getAll();
+      const orderIndex = orders.findIndex(o => o.id === id);
+      if (orderIndex === -1) throw new Error('Pedido no encontrado');
+      
+      orders[orderIndex].status = 'in_progress';
+      orders[orderIndex].updatedAt = new Date().toISOString();
+      localStorageAdapter.setItem(STORAGE_KEY, orders);
+      
+      return {
+        data: orders[orderIndex],
+        timestamp: new Date().toISOString(),
+      };
+    }
+  } catch (error) {
+    console.error('Error marking order in progress:', error);
+    throw error;
+  }
+};
+
+/**
+ * Update order status (using specific endpoints)
+ * 🔗 LARAVEL: PATCH /api/admin/orders/{id}/[mark-in-progress|complete|cancel]
  */
 const updateStatus = async (
   id: string,
@@ -113,8 +226,28 @@ const updateStatus = async (
 ): Promise<ApiResponse<Order>> => {
   try {
     if (APP_CONFIG.useAPI) {
-      // Use Laravel API
-      return await apiClient.patch<ApiResponse<Order>>(`/orders/${id}/status`, { status });
+      // Use specific endpoint based on status
+      let endpoint = '';
+      
+      switch (status) {
+        case 'in_progress':
+          endpoint = `/admin/orders/${id}/mark-in-progress`;
+          break;
+        case 'completed':
+          endpoint = `/admin/orders/${id}/complete`;
+          break;
+        case 'cancelled':
+          endpoint = `/admin/orders/${id}/cancel`;
+          break;
+        default:
+          throw new Error(`Status ${status} not supported for direct update`);
+      }
+      
+      const response = await apiClient.patch<ApiResponse<any>>(endpoint);
+      return {
+        ...response,
+        data: transformLaravelOrder(response.data),
+      };
     } else {
       // Use localStorage (development)
       let orders = await getAll();
@@ -161,13 +294,16 @@ const updateStatus = async (
 
 /**
  * Archive order
- * 🔗 LARAVEL: PATCH /api/orders/{id}/archive
+ * 🔗 LARAVEL: POST /api/admin/orders/{id}/archive
  */
 const archive = async (id: string): Promise<ApiResponse<Order>> => {
   try {
     if (APP_CONFIG.useAPI) {
-      // Use Laravel API
-      return await apiClient.patch<ApiResponse<Order>>(`/orders/${id}/archive`);
+      const response = await apiClient.post<ApiResponse<any>>(`/admin/orders/${id}/archive`);
+      return {
+        ...response,
+        data: transformLaravelOrder(response.data),
+      };
     } else {
       // Use localStorage (development)
       const orders = await getAll();
@@ -235,13 +371,12 @@ const unarchive = async (id: string): Promise<ApiResponse<Order>> => {
 
 /**
  * Delete order
- * 🔗 LARAVEL: DELETE /api/orders/{id}
+ * 🔗 LARAVEL: DELETE /api/admin/orders/{id}
  */
 const deleteOrder = async (id: string): Promise<ApiResponse<void>> => {
   try {
     if (APP_CONFIG.useAPI) {
-      // Use Laravel API
-      return await apiClient.delete<ApiResponse<void>>(`/orders/${id}`);
+      return await apiClient.delete<ApiResponse<void>>(`/admin/orders/${id}`);
     } else {
       // Use localStorage (development)
       const orders = await getAll();
@@ -270,7 +405,10 @@ export const ordersService = {
   getByType,
   getArchived,
   create,
+  createOnlineOrder,
+  createInStoreOrder,
   updateStatus,
+  markInProgress,
   archive,
   unarchive,
   delete: deleteOrder,
