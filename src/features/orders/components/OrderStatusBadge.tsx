@@ -14,8 +14,10 @@ interface OrderStatusBadgeProps {
 export const OrderStatusBadge: React.FC<OrderStatusBadgeProps> = ({ status }) => {
   const config = {
     pending: { label: 'Pendiente', variant: 'secondary' as const, icon: Package },
+    in_progress: { label: 'En Proceso', variant: 'default' as const, icon: Package },
     completed: { label: 'Finalizado', variant: 'default' as const, icon: CheckCircle },
     cancelled: { label: 'Cancelado', variant: 'destructive' as const, icon: XCircle },
+    archived: { label: 'Archivado', variant: 'secondary' as const, icon: Package },
   };
   
   const { label, variant, icon: Icon } = config[status];

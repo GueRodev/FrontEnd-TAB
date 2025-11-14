@@ -38,14 +38,13 @@ export const AddressSelector: React.FC<AddressSelectorProps> = ({
       
       {savedAddresses.length > 0 && (
         <RadioGroup value={selectedAddressId} onValueChange={onSelectAddress}>
-          {savedAddresses.map((address) => (
+          {savedAddresses.map((address, idx) => (
             <div
-              key={address.label}
+              key={idx}
               className="flex items-center space-x-3 border rounded-lg p-4 hover:bg-accent transition-colors"
             >
-              <RadioGroupItem value={address.label} id={address.label} />
-              <Label htmlFor={address.label} className="flex-1 cursor-pointer">
-                <div className="font-medium">{address.label}</div>
+              <RadioGroupItem value={`saved-${idx}`} id={`saved-${idx}`} />
+              <Label htmlFor={`saved-${idx}`} className="flex-1 cursor-pointer">
                 <div className="text-sm text-muted-foreground">
                   {address.province}, {address.canton}, {address.district}
                 </div>

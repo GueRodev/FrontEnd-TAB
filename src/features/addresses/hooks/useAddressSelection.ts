@@ -57,7 +57,6 @@ export const useAddressSelection = (user: UserProfile | null, isAuthenticated: b
     if (selectedAddressId === 'manual' || userAddresses.length === 0) {
       // Return manual address
       return {
-        label: 'Dirección de envío',
         province: manualAddress.province,
         canton: manualAddress.canton,
         district: manualAddress.district,
