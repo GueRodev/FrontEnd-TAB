@@ -136,17 +136,25 @@ export const useOrderForm = () => {
       return;
     }
 
+    const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+    const shipping_cost = deliveryOption === 'delivery' ? 0 : 0; // TODO: Calculate real shipping cost
+    
     const orderData = {
       type: 'online' as const,
       status: 'pending' as const,
+      order_number: '', // Laravel generates this
       items: cart.map(item => ({
         id: item.id,
+        product_id: Number(item.id),
         name: item.name,
         image: item.image,
         price: item.price,
         quantity: item.quantity,
+        subtotal: item.price * item.quantity,
       })),
-      total: cart.reduce((sum, item) => sum + (item.price * item.quantity), 0),
+      subtotal,
+      shipping_cost,
+      total: subtotal + shipping_cost,
       customerInfo: {
         name: formData.customerName,
         phone: formData.customerPhone,

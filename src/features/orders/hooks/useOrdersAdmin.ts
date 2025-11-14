@@ -164,22 +164,31 @@ export const useOrdersAdmin = (): UseOrdersAdminReturn => {
       return;
     }
 
+    const subtotal = selectedProductData.price * quantity;
+    const shipping_cost = 0; // In-store orders don't have shipping
+    
     const orderData = {
       type: 'in-store' as const,
       status: 'pending' as const,
+      order_number: '', // Laravel generates this
       items: [{
         id: selectedProductData.id,
+        product_id: Number(selectedProductData.id),
         name: selectedProductData.name,
         image: selectedProductData.image_url || '',
         price: selectedProductData.price,
         quantity,
+        subtotal,
       }],
-      total: selectedProductData.price * quantity,
+      subtotal,
+      shipping_cost,
+      total: subtotal,
       customerInfo: {
         name: customerName,
         phone: customerPhone,
-        email: customerEmail || undefined, // Solo incluir si hay valor
+        email: customerEmail || undefined,
       },
+      deliveryOption: 'pickup' as const, // In-store is always pickup
       paymentMethod,
     };
 
