@@ -16,6 +16,89 @@ Component → Hook → Context → Service → [localStorage | Laravel API]
 3. **Updated OrderItem**: Added `product_id`, `product_sku`, `product_description`, `subtotal`
 4. **Removed DeliveryAddress.label**: Not used by Laravel backend
 5. **Separate Endpoints**: Different routes for online vs in-store orders
+6. **Automatic Calculations**: OrdersContext handles subtotal/total calculations; shipping_cost is always 0
+
+## Automatic Calculations in OrdersContext
+
+### Overview
+`OrdersContext.tsx` automatically handles all financial calculations when creating orders. Hooks (`useOrderForm`, `useOrdersAdmin`) only pass the necessary data, and the context calculates derived fields.
+
+### Calculated Fields
+
+#### 1. **Subtotal**
+- **Calculation**: `sum(item.price × item.quantity)` for all items
+- **Responsibility**: OrdersContext
+- **Applied to**: 
+  - Order-level `subtotal`
+  - Item-level `subtotal` for each OrderItem
+
+#### 2. **Shipping Cost**
+- **Current State**: Always `0` (null in backend)
+- **Reason**: Backend doesn't calculate shipping costs yet
+- **Future**: Ready to expand when backend implements shipping logic
+- **Applied to**: Order-level `shipping_cost`
+
+#### 3. **Total**
+- **Calculation**: `subtotal + shipping_cost` (currently `total = subtotal` since shipping is 0)
+- **Responsibility**: OrdersContext
+- **Applied to**: Order-level `total`
+
+### Implementation Details
+
+#### **OrdersContext.tsx - addOrder() Method**
+```typescript
+// 1. Calculate subtotal from items
+const subtotal = orderData.items.reduce(
+  (sum, item) => sum + (item.price * item.quantity),
+  0
+);
+
+// 2. Shipping cost is always 0 (backend doesn't use it yet)
+const shipping_cost = 0;
+
+// 3. Total = subtotal (no shipping for now)
+const total = subtotal;
+
+// 4. Ensure each item has subtotal calculated
+const itemsWithSubtotal = orderData.items.map(item => ({
+  ...item,
+  subtotal: item.price * item.quantity,
+}));
+```
+
+#### **Hooks Simplified**
+Both `useOrderForm.ts` and `useOrdersAdmin.ts` have been simplified to:
+- ❌ **No longer calculate** `subtotal`, `shipping_cost`, or `total`
+- ✅ **Only pass** item data (id, product_id, name, price, quantity)
+- ✅ **OrdersContext handles** all derived calculations automatically
+
+### Data Flow
+```
+Hook (passes raw data)
+   ↓
+OrdersContext.addOrder()
+   ├─► Calculate subtotal
+   ├─► Set shipping_cost = 0
+   ├─► Calculate total = subtotal
+   ├─► Add subtotal to each item
+   ↓
+ordersService.create()
+   ↓
+Laravel API
+```
+
+### Benefits
+1. ✅ **Single Source of Truth**: All calculations in one place (OrdersContext)
+2. ✅ **Consistency**: Same logic for online and in-store orders
+3. ✅ **Maintainability**: Easy to update shipping logic in the future
+4. ✅ **Simplicity**: Hooks focus on data collection, not calculations
+5. ✅ **Type Safety**: OrdersContext ensures all required fields are present
+
+### Future Considerations
+When backend implements shipping cost calculation:
+1. Update `shipping_cost` calculation in `OrdersContext.addOrder()`
+2. Potentially fetch shipping cost from API before order creation
+3. No changes needed in hooks or components
 
 ## API Endpoints
 
