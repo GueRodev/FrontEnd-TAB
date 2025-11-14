@@ -12,8 +12,9 @@ import { toast } from 'sonner';
 
 interface OrdersContextType {
   orders: Order[];
-  addOrder: (order: Omit<Order, 'id' | 'createdAt'>) => Promise<string>;
+  addOrder: (order: Omit<Order, 'id' | 'createdAt' | 'order_number' | 'subtotal' | 'shipping_cost' | 'total' | 'updatedAt'>) => Promise<string>;
   updateOrderStatus: (orderId: string, status: OrderStatus) => Promise<void>;
+  markInProgress: (orderId: string) => Promise<void>;
   deleteOrder: (orderId: string) => Promise<void>;
   archiveOrder: (orderId: string) => Promise<void>;
   unarchiveOrder: (orderId: string) => Promise<void>;
@@ -35,10 +36,40 @@ export const OrdersProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     loadOrders();
   }, []);
 
-  const addOrder = async (orderData: Omit<Order, 'id' | 'createdAt'>): Promise<string> => {
-    // 1. Check stock availability before creating order
-    const items = orderData.items.map(item => ({
-      product_id: item.id,
+  const addOrder = async (
+    orderData: Omit<Order, 'id' | 'createdAt' | 'order_number' | 'subtotal' | 'shipping_cost' | 'total' | 'updatedAt'>
+  ): Promise<string> => {
+    // 1. Calculate subtotal from items
+    const subtotal = orderData.items.reduce(
+      (sum, item) => sum + (item.price * item.quantity),
+      0
+    );
+
+    // 2. Shipping cost is always 0 (backend doesn't use it yet)
+    const shipping_cost = 0;
+
+    // 3. Total = subtotal (no shipping for now)
+    const total = subtotal;
+
+    // 4. Ensure each item has subtotal calculated
+    const itemsWithSubtotal = orderData.items.map(item => ({
+      ...item,
+      subtotal: item.price * item.quantity,
+    }));
+
+    // 5. Build complete order data
+    const completeOrderData: Omit<Order, 'id' | 'createdAt' | 'updatedAt'> = {
+      ...orderData,
+      items: itemsWithSubtotal,
+      order_number: '', // Laravel generates this
+      subtotal,
+      shipping_cost,
+      total,
+    };
+
+    // 6. Check stock availability before creating order
+    const items = completeOrderData.items.map(item => ({
+      product_id: String(item.product_id),
       quantity: item.quantity,
     }));
 
@@ -46,7 +77,6 @@ export const OrdersProvider: React.FC<{ children: React.ReactNode }> = ({ childr
       const availability = await stockMovementsService.checkAvailability(items);
       
       if (!availability.available) {
-        // Stock not available - show detailed error
         const errorMessages = availability.errors
           .map(err => `${err.product_name}: solicitado ${err.requested}, disponible ${err.available}`)
           .join(', ');
@@ -58,19 +88,23 @@ export const OrdersProvider: React.FC<{ children: React.ReactNode }> = ({ childr
         throw new Error('Stock insuficiente para completar el pedido');
       }
 
-      // 2. Create order
-      const result = await ordersService.create(orderData);
+      // 7. Create order via service
+      const result = await ordersService.create(completeOrderData);
       
-      // 3. Reserve stock for pending orders
-      if (orderData.status === 'pending') {
+      // 8. Reserve stock for pending orders
+      if (completeOrderData.status === 'pending') {
         await stockMovementsService.reserveStock({
           order_id: result.data.id,
           items,
         });
       }
       
-      // 4. Update local state with the created order
+      // 9. Update local state
       setOrders(prev => [result.data, ...prev]);
+      
+      toast.success('Pedido creado', {
+        description: `Pedido #${result.data.order_number} creado exitosamente`,
+      });
       
       return result.data.id;
     } catch (error) {
@@ -81,7 +115,6 @@ export const OrdersProvider: React.FC<{ children: React.ReactNode }> = ({ childr
 
   const updateOrderStatus = async (orderId: string, status: OrderStatus): Promise<void> => {
     try {
-      // Get current order to check previous status
       const currentOrder = orders.find(o => o.id === orderId);
       
       if (!currentOrder) {
@@ -90,28 +123,97 @@ export const OrdersProvider: React.FC<{ children: React.ReactNode }> = ({ childr
 
       const previousStatus = currentOrder.status;
 
-      // Call service to persist status change
+      // Validate status transitions
+      const validTransitions: Record<OrderStatus, OrderStatus[]> = {
+        'pending': ['in_progress', 'completed', 'cancelled'],
+        'in_progress': ['completed', 'cancelled'],
+        'completed': [],
+        'cancelled': [],
+        'archived': [],
+      };
+
+      if (!validTransitions[previousStatus]?.includes(status)) {
+        toast.error('Transición inválida', {
+          description: `No se puede cambiar de "${previousStatus}" a "${status}"`,
+        });
+        return;
+      }
+
+      // Call service
       await ordersService.updateStatus(orderId, status);
       
-      // Handle stock movements based on status transition
-      if (previousStatus === 'pending' && status === 'completed') {
-        // Confirm sale - deduct real stock
-        await stockMovementsService.confirmSale(orderId);
-      } else if (previousStatus === 'pending' && status === 'cancelled') {
-        // Cancel reservation - release reserved stock
-        await stockMovementsService.cancelReservation(orderId);
+      // Handle stock movements
+      if (status === 'completed') {
+        // From pending or in_progress → completed: confirm sale
+        if (previousStatus === 'pending' || previousStatus === 'in_progress') {
+          await stockMovementsService.confirmSale(orderId);
+        }
+      } else if (status === 'cancelled') {
+        // From pending or in_progress → cancelled: release reservation
+        if (previousStatus === 'pending' || previousStatus === 'in_progress') {
+          await stockMovementsService.cancelReservation(orderId);
+        }
       }
       
       // Update local state
       setOrders(prev =>
         prev.map(order =>
           order.id === orderId
-            ? { ...order, status }
+            ? { ...order, status, updatedAt: new Date().toISOString() }
             : order
         )
       );
+
+      toast.success('Estado actualizado', {
+        description: `Pedido actualizado a "${status}"`,
+      });
     } catch (error) {
       console.error('Error updating order status:', error);
+      toast.error('Error', {
+        description: 'No se pudo actualizar el estado',
+      });
+      throw error;
+    }
+  };
+
+  const markInProgress = async (orderId: string): Promise<void> => {
+    try {
+      const currentOrder = orders.find(o => o.id === orderId);
+      
+      if (!currentOrder) {
+        throw new Error('Pedido no encontrado');
+      }
+
+      // Validate transition (only from pending)
+      if (currentOrder.status !== 'pending') {
+        toast.error('Transición inválida', {
+          description: 'Solo se pueden marcar como "en proceso" los pedidos pendientes',
+        });
+        return;
+      }
+
+      // Call service
+      await ordersService.markInProgress(orderId);
+      
+      // Stock remains reserved (no movement needed)
+      
+      // Update local state
+      setOrders(prev =>
+        prev.map(order =>
+          order.id === orderId
+            ? { ...order, status: 'in_progress' as OrderStatus, updatedAt: new Date().toISOString() }
+            : order
+        )
+      );
+
+      toast.success('Pedido actualizado', {
+        description: 'El pedido está ahora en proceso',
+      });
+    } catch (error) {
+      console.error('Error marking order in progress:', error);
+      toast.error('Error', {
+        description: 'No se pudo actualizar el pedido',
+      });
       throw error;
     }
   };
@@ -164,6 +266,7 @@ export const OrdersProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     orders,
     addOrder,
     updateOrderStatus,
+    markInProgress,
     deleteOrder,
     archiveOrder,
     unarchiveOrder,
