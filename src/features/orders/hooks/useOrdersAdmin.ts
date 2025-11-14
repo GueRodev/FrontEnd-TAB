@@ -164,13 +164,9 @@ export const useOrdersAdmin = (): UseOrdersAdminReturn => {
       return;
     }
 
-    const subtotal = selectedProductData.price * quantity;
-    const shipping_cost = 0; // In-store orders don't have shipping
-    
     const orderData = {
       type: 'in-store' as const,
       status: 'pending' as const,
-      order_number: '', // Laravel generates this
       items: [{
         id: selectedProductData.id,
         product_id: Number(selectedProductData.id),
@@ -178,11 +174,7 @@ export const useOrdersAdmin = (): UseOrdersAdminReturn => {
         image: selectedProductData.image_url || '',
         price: selectedProductData.price,
         quantity,
-        subtotal,
       }],
-      subtotal,
-      shipping_cost,
-      total: subtotal,
       customerInfo: {
         name: customerName,
         phone: customerPhone,
@@ -193,6 +185,7 @@ export const useOrdersAdmin = (): UseOrdersAdminReturn => {
     };
 
     try {
+      // Context calculates subtotal/total automatically
       const orderId = await addOrder(orderData);
 
       addNotification({
