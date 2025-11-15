@@ -59,7 +59,6 @@ interface UseOrdersAdminReturn {
   
   // Order actions
   handleCreateInStoreOrder: (e: React.FormEvent) => void;
-  handleArchiveOrder: (orderId: string) => void;
   handleCompleteOrder: (order: Order) => void;
   handleCancelOrder: (order: Order) => void;
   
@@ -103,7 +102,7 @@ export const useOrdersAdmin = (): UseOrdersAdminReturn => {
   });
 
   // Get data from contexts
-  const { getOrdersByType, addOrder, deleteOrder, archiveOrder, updateOrderStatus } = useOrders();
+  const { getOrdersByType, addOrder, deleteOrder, updateOrderStatus } = useOrders();
   const { products, updateProduct } = useProducts();
   const { categories } = useCategories();
   const { addNotification } = useNotifications();
@@ -277,30 +276,6 @@ export const useOrdersAdmin = (): UseOrdersAdminReturn => {
     setDeleteOrderDialog({ open: false, orderId: null, order: null });
   };
 
-  /**
-   * Archive order
-   */
-  const handleArchiveOrder = async (orderId: string) => {
-    try {
-      await archiveOrder(orderId);
-      addNotification({
-        type: 'order',
-        title: 'Pedido archivado',
-        message: `Pedido #${orderId} archivado`,
-        time: 'Ahora',
-      });
-      toast({
-        title: "Pedido archivado",
-        description: "El pedido ha sido movido al historial",
-      });
-    } catch (error) {
-      toast({
-        title: "Error",
-        description: "No se pudo archivar el pedido",
-        variant: "destructive",
-      });
-    }
-  };
 
   /**
    * Open payment confirmation dialog for online orders
@@ -459,7 +434,6 @@ export const useOrdersAdmin = (): UseOrdersAdminReturn => {
     openPaymentConfirmDialog,
     closePaymentConfirmDialog,
     confirmCompleteOrder,
-    handleArchiveOrder,
     handleCompleteOrder,
     handleCancelOrder,
   };
