@@ -147,6 +147,7 @@ export const ProfileForm: React.FC<ProfileFormProps> = ({
               {...register('password')}
               className="border-gray-300 focus:border-brand-orange"
               placeholder="Dejar en blanco para mantener la actual"
+              disabled={!isEditing}
             />
             {errors.password && (
               <p className="text-sm text-red-600">{errors.password.message}</p>
@@ -164,6 +165,7 @@ export const ProfileForm: React.FC<ProfileFormProps> = ({
               {...register('password_confirmation')}
               className="border-gray-300 focus:border-brand-orange"
               placeholder="Repite la contraseña"
+              disabled={!isEditing}
             />
             {errors.password_confirmation && (
               <p className="text-sm text-red-600">{errors.password_confirmation.message}</p>
