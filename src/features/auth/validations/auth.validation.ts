@@ -52,7 +52,21 @@ export const profileSchema = z.object({
       (val) => !val || val.length >= 8,
       'La contraseña debe tener al menos 8 caracteres'
     ),
-});
+  password_confirmation: z
+    .string()
+    .optional(),
+}).refine(
+  (data) => {
+    if (data.password && data.password.length > 0) {
+      return data.password === data.password_confirmation;
+    }
+    return true;
+  },
+  {
+    message: 'Las contraseñas no coinciden',
+    path: ['password_confirmation'],
+  }
+);
 
 /**
  * Forgot Password Schema

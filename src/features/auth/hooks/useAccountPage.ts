@@ -29,6 +29,9 @@ export const useAccountPage = () => {
       delete cleanData.password;
     }
     
+    // Eliminar password_confirmation (solo es frontend)
+    delete (cleanData as any).password_confirmation;
+    
     await updateProfile(cleanData);
     setIsEditing(false);
   };

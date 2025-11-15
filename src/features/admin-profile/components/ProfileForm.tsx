@@ -151,8 +151,25 @@ export const ProfileForm: React.FC<ProfileFormProps> = ({
             {errors.password && (
               <p className="text-sm text-red-600">{errors.password.message}</p>
             )}
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="password_confirmation" className="flex items-center gap-2 text-brand-darkBlue">
+              <Lock size={18} />
+              Confirmar Contraseña
+            </Label>
+            <Input
+              id="password_confirmation"
+              type="password"
+              {...register('password_confirmation')}
+              className="border-gray-300 focus:border-brand-orange"
+              placeholder="Repite la contraseña"
+            />
+            {errors.password_confirmation && (
+              <p className="text-sm text-red-600">{errors.password_confirmation.message}</p>
+            )}
             <p className="text-xs text-gray-500">
-              Solo completa este campo si deseas cambiar tu contraseña
+              Las contraseñas deben coincidir
             </p>
           </div>
 

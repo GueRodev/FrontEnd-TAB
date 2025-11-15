@@ -36,6 +36,7 @@ export const useAdminProfile = (user: UserProfile | null): UseAdminProfileReturn
     name: '',
     email: '',
     password: '',
+    password_confirmation: '',
   });
 
   // Initialize form data from user
@@ -45,6 +46,7 @@ export const useAdminProfile = (user: UserProfile | null): UseAdminProfileReturn
         name: user.name,
         email: user.email,
         password: '',
+        password_confirmation: '',
       });
     }
   }, [user]);
@@ -66,6 +68,7 @@ export const useAdminProfile = (user: UserProfile | null): UseAdminProfileReturn
         name: user.name,
         email: user.email,
         password: '',
+        password_confirmation: '',
       });
     }
   };
@@ -152,6 +155,10 @@ export const useAdminProfile = (user: UserProfile | null): UseAdminProfileReturn
         const updateData: Partial<UserProfile> = {
           name: formData.name,
           email: formData.email,
+          ...(formData.password && formData.password.length > 0 
+            ? { password: formData.password }
+            : {}
+          ),
         };
 
         return authService.updateAdminProfile(updateData);
@@ -162,7 +169,11 @@ export const useAdminProfile = (user: UserProfile | null): UseAdminProfileReturn
           setIsEditing(false);
           setAvatarFile(null);
           setAvatarPreview(null);
-          setFormData(prev => ({ ...prev, password: '' }));
+          setFormData(prev => ({ 
+            ...prev, 
+            password: '', 
+            password_confirmation: '' 
+          }));
         }
       }
     );

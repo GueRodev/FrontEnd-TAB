@@ -21,6 +21,21 @@ export const adminProfileSchema = z.object({
     .min(8, 'La contraseña debe tener al menos 8 caracteres')
     .optional()
     .or(z.literal('')),
-});
+  
+  password_confirmation: z.string()
+    .optional()
+    .or(z.literal('')),
+}).refine(
+  (data) => {
+    if (data.password && data.password.length > 0) {
+      return data.password === data.password_confirmation;
+    }
+    return true;
+  },
+  {
+    message: 'Las contraseñas no coinciden',
+    path: ['password_confirmation'],
+  }
+);
 
 export type AdminProfileFormData = z.infer<typeof adminProfileSchema>;
