@@ -6,7 +6,7 @@
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { User, Mail, Phone, Save, X } from 'lucide-react';
+import { User, Mail, Phone, Lock, Save, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -134,6 +134,26 @@ export const ProfileForm: React.FC<ProfileFormProps> = ({
             {errors.phone && (
               <p className="text-sm text-red-600">{errors.phone.message}</p>
             )}
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="password" className="flex items-center gap-2 text-brand-darkBlue">
+              <Lock size={18} />
+              Nueva Contraseña (opcional)
+            </Label>
+            <Input
+              id="password"
+              type="password"
+              {...register('password')}
+              className="border-gray-300 focus:border-brand-orange"
+              placeholder="Dejar en blanco para mantener la actual"
+            />
+            {errors.password && (
+              <p className="text-sm text-red-600">{errors.password.message}</p>
+            )}
+            <p className="text-xs text-gray-500">
+              Solo completa este campo si deseas cambiar tu contraseña
+            </p>
           </div>
 
           <div className="flex gap-3 pt-4">
