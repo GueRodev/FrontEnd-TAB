@@ -40,50 +40,14 @@ export const ProfileForm: React.FC<ProfileFormProps> = ({
     await onSubmit(data);
   };
 
-  if (!isEditing) {
-    return (
-      <Card>
-        <CardHeader>
-          <CardTitle>Información Personal</CardTitle>
-          <CardDescription>
-            Tu información personal y datos de contacto
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-6">
-          <div className="space-y-2">
-            <Label className="flex items-center gap-2 text-brand-darkBlue">
-              <User size={18} />
-              Nombre Completo
-            </Label>
-            <p className="text-gray-700 py-2">{defaultValues.name}</p>
-          </div>
-
-          <div className="space-y-2">
-            <Label className="flex items-center gap-2 text-brand-darkBlue">
-              <Mail size={18} />
-              Correo Electrónico
-            </Label>
-            <p className="text-gray-700 py-2">{defaultValues.email}</p>
-          </div>
-
-          <div className="space-y-2">
-            <Label className="flex items-center gap-2 text-brand-darkBlue">
-              <Phone size={18} />
-              Teléfono
-            </Label>
-            <p className="text-gray-700 py-2">{defaultValues.phone || 'No especificado'}</p>
-          </div>
-        </CardContent>
-      </Card>
-    );
-  }
-
   return (
     <Card>
       <CardHeader>
         <CardTitle>Información Personal</CardTitle>
         <CardDescription>
-          Actualiza tu información personal
+          {isEditing 
+            ? 'Actualiza tu información personal' 
+            : 'Tu información personal y datos de contacto'}
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -97,6 +61,7 @@ export const ProfileForm: React.FC<ProfileFormProps> = ({
               id="name"
               {...register('name')}
               className="border-gray-300 focus:border-brand-orange"
+              disabled={!isEditing}
             />
             {errors.name && (
               <p className="text-sm text-red-600">{errors.name.message}</p>
@@ -113,6 +78,7 @@ export const ProfileForm: React.FC<ProfileFormProps> = ({
               type="email"
               {...register('email')}
               className="border-gray-300 focus:border-brand-orange"
+              disabled={!isEditing}
             />
             {errors.email && (
               <p className="text-sm text-red-600">{errors.email.message}</p>
@@ -130,6 +96,7 @@ export const ProfileForm: React.FC<ProfileFormProps> = ({
               {...register('phone')}
               className="border-gray-300 focus:border-brand-orange"
               placeholder={`${APP_CONFIG.whatsapp.countryCode} 8888 8888`}
+              disabled={!isEditing}
             />
             {errors.phone && (
               <p className="text-sm text-red-600">{errors.phone.message}</p>
@@ -175,26 +142,28 @@ export const ProfileForm: React.FC<ProfileFormProps> = ({
             </p>
           </div>
 
-          <div className="flex gap-3 pt-4">
-            <Button
-              type="submit"
-              disabled={isSubmitting}
-              className="bg-brand-darkBlue hover:bg-brand-orange flex-1"
-            >
-              <Save className="mr-2" size={18} />
-              {isSubmitting ? 'Guardando...' : 'Guardar Cambios'}
-            </Button>
-            <Button
-              type="button"
-              onClick={onCancel}
-              variant="outline"
-              className="flex-1"
-              disabled={isSubmitting}
-            >
-              <X className="mr-2" size={18} />
-              Cancelar
-            </Button>
-          </div>
+          {isEditing && (
+            <div className="flex gap-3 pt-4">
+              <Button
+                type="submit"
+                disabled={isSubmitting}
+                className="bg-brand-darkBlue hover:bg-brand-orange flex-1"
+              >
+                <Save className="mr-2" size={18} />
+                {isSubmitting ? 'Guardando...' : 'Guardar Cambios'}
+              </Button>
+              <Button
+                type="button"
+                onClick={onCancel}
+                variant="outline"
+                className="flex-1"
+                disabled={isSubmitting}
+              >
+                <X className="mr-2" size={18} />
+                Cancelar
+              </Button>
+            </div>
+          )}
         </form>
       </CardContent>
     </Card>
