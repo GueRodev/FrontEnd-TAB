@@ -18,7 +18,18 @@ export const useAccountPage = () => {
   const handleCancel = () => setIsEditing(false);
 
   const handleSave = async (data: ProfileFormData) => {
-    await updateProfile(data);
+    // Limpiar password vacío para no enviarlo al backend
+    const cleanData = {
+      ...data,
+      password: data.password?.trim() || undefined,
+    };
+    
+    // Remover el campo si está vacío
+    if (!cleanData.password) {
+      delete cleanData.password;
+    }
+    
+    await updateProfile(cleanData);
     setIsEditing(false);
   };
 

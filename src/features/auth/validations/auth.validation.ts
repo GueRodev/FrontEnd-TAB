@@ -45,6 +45,13 @@ export const profileSchema = z.object({
       (val) => !val || /^\d{8,15}$/.test(val.replace(/\s/g, '')),
       'Ingresa un número de teléfono válido'
     ),
+  password: z
+    .string()
+    .optional()
+    .refine(
+      (val) => !val || val.length >= 8,
+      'La contraseña debe tener al menos 8 caracteres'
+    ),
 });
 
 /**
