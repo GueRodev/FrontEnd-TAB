@@ -3,6 +3,7 @@
  * Orchestrates orders management using business logic hook and UI components
  */
 
+import { useState } from 'react';
 import { SidebarProvider, SidebarInset } from '@/components/ui/sidebar';
 import { AdminSidebar, AdminHeader } from '@/components/layout';
 import { Card, CardContent } from '@/components/ui/card';
@@ -15,12 +16,19 @@ import {
   PaymentConfirmationDialog 
 } from '@/features/orders';
 import { DeleteConfirmDialog } from '@/components/common';
-import { ShoppingCart, Store, History } from 'lucide-react';
+import { ShoppingCart, Store, History, Eye } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { toast } from '@/hooks/use-toast';
 
 const AdminOrders = () => {
   const navigate = useNavigate();
   const { categories } = useCategories();
+  
+  // Estado local para pedidos ocultos
+  const [hiddenOrderIds, setHiddenOrderIds] = useState<string[]>(() => {
+    const saved = localStorage.getItem('hiddenOrderIds');
+    return saved ? JSON.parse(saved) : [];
+  });
   
   const {
     onlineOrders,
@@ -51,13 +59,32 @@ const AdminOrders = () => {
     openDeleteOrderDialog,
     closeDeleteOrderDialog,
     confirmDeleteOrder,
-    handleArchiveOrder,
     handleCompleteOrder,
     handleCancelOrder,
     openPaymentConfirmDialog,
     closePaymentConfirmDialog,
     confirmCompleteOrder,
   } = useOrdersAdmin();
+
+  // Función para ocultar pedido localmente
+  const handleHideOrder = (orderId: string) => {
+    const newHiddenIds = [...hiddenOrderIds, orderId];
+    setHiddenOrderIds(newHiddenIds);
+    localStorage.setItem('hiddenOrderIds', JSON.stringify(newHiddenIds));
+    toast({
+      title: "Pedido ocultado",
+      description: "El pedido ya no se muestra en la bandeja de entrada",
+    });
+  };
+
+  // Filtrar pedidos visibles
+  const visibleOnlineOrders = onlineOrders.filter(
+    order => !hiddenOrderIds.includes(order.id)
+  );
+  
+  const visibleInStoreOrders = inStoreOrders.filter(
+    order => !hiddenOrderIds.includes(order.id)
+  );
 
   return (
     <SidebarProvider>
@@ -67,8 +94,23 @@ const AdminOrders = () => {
           <AdminHeader title="Gestión de Pedidos" />
 
           <main className="p-3 md:p-4 lg:p-6 space-y-6 md:space-y-8 max-w-full overflow-x-hidden">
-            {/* History Button */}
-            <div className="flex justify-end">
+            {/* Action Buttons */}
+            <div className="flex flex-col sm:flex-row gap-3 justify-between items-stretch sm:items-center">
+              <Button
+                onClick={() => {
+                  setHiddenOrderIds([]);
+                  localStorage.removeItem('hiddenOrderIds');
+                  toast({ title: "Pedidos ocultos restaurados" });
+                }}
+                variant="ghost"
+                size="sm"
+                disabled={hiddenOrderIds.length === 0}
+                className="gap-2"
+              >
+                <Eye className="h-4 w-4" />
+                Mostrar Ocultos ({hiddenOrderIds.length})
+              </Button>
+              
               <Button
                 onClick={() => navigate('/admin/orders/history')}
                 variant="outline"
@@ -96,11 +138,11 @@ const AdminOrders = () => {
               <Card>
                 <CardContent className="p-3 md:p-4 lg:p-6">
                   <OrdersList
-                    orders={onlineOrders}
+                    orders={visibleOnlineOrders}
                     showDeliveryInfo={true}
                     emptyMessage="No hay pedidos online aún"
                     emptyIcon={<ShoppingCart className="h-10 w-10 md:h-12 md:w-12 opacity-30" />}
-                    onArchive={handleArchiveOrder}
+                    onHide={handleHideOrder}
                     onDelete={openDeleteOrderDialog}
                     onComplete={handleCompleteOrder}
                     onCancel={handleCancelOrder}
@@ -164,10 +206,10 @@ const AdminOrders = () => {
                     </Card>
                   ) : (
                     <OrdersList
-                      orders={inStoreOrders}
+                      orders={visibleInStoreOrders}
                       showDeliveryInfo={false}
                       gridColumns="grid-cols-1 lg:grid-cols-2"
-                      onArchive={handleArchiveOrder}
+                      onHide={handleHideOrder}
                       onDelete={openDeleteOrderDialog}
                       onComplete={handleCompleteOrder}
                       onCancel={handleCancelOrder}

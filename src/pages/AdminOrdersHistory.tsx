@@ -2,21 +2,20 @@ import { SidebarProvider, SidebarInset } from '@/components/ui/sidebar';
 import { AdminSidebar, AdminHeader } from '@/components/layout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Archive, ArrowLeft } from 'lucide-react';
+import { History, ArrowLeft } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { EmptyState } from '@/components/common';
 import { 
-  useOrdersHistory, 
-  OrdersTable, 
-  ArchivedOrderCard,
+  useOrdersHistory,
+  OrderCard,
+  OrdersTable,
   ExportButton
 } from '@/features/orders';
 
 const AdminOrdersHistory = () => {
   const navigate = useNavigate();
   const {
-    archivedOrders,
-    handleRestoreOrder,
+    completedOrders,
     handleExportPDF,
     handleExportExcel,
   } = useOrdersHistory();
@@ -43,30 +42,36 @@ const AdminOrdersHistory = () => {
               <ExportButton
                 onExportPDF={handleExportPDF}
                 onExportExcel={handleExportExcel}
-                disabled={archivedOrders.length === 0}
+                disabled={completedOrders.length === 0}
               />
             </div>
 
-            {/* Pedidos archivados */}
+            {/* Historial de pedidos completados */}
             <Card>
               <CardHeader className="p-4 md:p-6">
-                <div className="flex items-center gap-2">
-                  <Archive className="h-4 w-4 md:h-5 md:w-5 text-primary flex-shrink-0" />
-                  <CardTitle className="text-base md:text-lg lg:text-xl">Pedidos Archivados</CardTitle>
+                <div className="flex flex-col gap-1">
+                  <div className="flex items-center gap-2">
+                    <History className="h-4 w-4 md:h-5 md:w-5 text-primary flex-shrink-0" />
+                    <CardTitle className="text-base md:text-lg lg:text-xl">Historial de Pedidos</CardTitle>
+                  </div>
+                  <p className="text-xs text-muted-foreground">
+                    Pedidos completados y cancelados
+                  </p>
                 </div>
               </CardHeader>
               <CardContent className="p-0 md:p-6">
-                {archivedOrders.length === 0 ? (
+                {completedOrders.length === 0 ? (
                   <EmptyState
-                    icon={Archive}
-                    title="No hay pedidos archivados aún"
+                    icon={History}
+                    title="Sin pedidos completados"
+                    description="Los pedidos completados o cancelados aparecerán aquí automáticamente"
                   />
                 ) : (
                   <>
                     {/* Vista Desktop/Tablet: OrdersTable */}
                     <div className="hidden lg:block">
                       <OrdersTable
-                        orders={archivedOrders.map(o => ({ ...o, archived: true }))}
+                        orders={completedOrders}
                         showActions={false}
                         compact={false}
                       />
@@ -74,11 +79,11 @@ const AdminOrdersHistory = () => {
 
                     {/* Vista Mobile/Tablet: Cards */}
                     <div className="lg:hidden space-y-3 p-4">
-                      {archivedOrders.map((order) => (
-                        <ArchivedOrderCard
+                      {completedOrders.map((order) => (
+                        <OrderCard
                           key={order.id}
                           order={order}
-                          onRestore={handleRestoreOrder}
+                          showDeliveryInfo={order.type === 'online'}
                         />
                       ))}
                     </div>

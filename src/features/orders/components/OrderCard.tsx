@@ -6,7 +6,8 @@
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Archive, Trash2, CheckCircle, XCircle, Mail } from 'lucide-react';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { EyeOff, Trash2, CheckCircle, XCircle, Mail } from 'lucide-react';
 import { OrderStatusBadge } from './OrderStatusBadge';
 import { cn } from '@/lib/utils';
 import type { Order } from '../types';
@@ -14,17 +15,17 @@ import type { Order } from '../types';
 interface OrderCardProps {
   order: Order;
   showDeliveryInfo?: boolean;
-  onArchive: (orderId: string) => void;
-  onDelete: (orderId: string, order: Order) => void;
-  onComplete: (order: Order) => void;
-  onCancel: (order: Order) => void;
+  onHide?: (orderId: string) => void;
+  onDelete?: (orderId: string, order: Order) => void;
+  onComplete?: (order: Order) => void;
+  onCancel?: (order: Order) => void;
   onCompleteWithConfirmation?: (order: Order) => void;
 }
 
 export const OrderCard: React.FC<OrderCardProps> = ({
   order,
   showDeliveryInfo = false,
-  onArchive,
+  onHide,
   onDelete,
   onComplete,
   onCancel,
@@ -183,26 +184,40 @@ export const OrderCard: React.FC<OrderCardProps> = ({
             </Button>
           </>
         )}
-        {order.status !== 'pending' && (
+        {(order.status === 'completed' || order.status === 'cancelled') && onHide && (
           <>
-            <Button
-              onClick={() => onArchive(order.id)}
-              size="sm"
-              variant="outline"
-              className="w-full md:flex-1"
-            >
-              <Archive className="h-4 w-4 md:h-5 md:w-5 mr-1.5 md:mr-2" />
-              <span className="text-xs md:text-sm">Archivar</span>
-            </Button>
-            <Button
-              onClick={() => onDelete(order.id, order)}
-              size="sm"
-              variant="destructive"
-              className="w-full md:flex-1"
-            >
-              <Trash2 className="h-4 w-4 md:h-5 md:w-5 mr-1.5 md:mr-2" />
-              <span className="text-xs md:text-sm">Eliminar</span>
-            </Button>
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    onClick={() => onHide(order.id)}
+                    size="sm"
+                    variant="outline"
+                    className="w-full md:flex-1"
+                  >
+                    <EyeOff className="h-4 w-4 md:h-5 md:w-5 mr-1.5 md:mr-2" />
+                    <span className="text-xs md:text-sm">Ocultar</span>
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p className="max-w-xs text-xs">
+                    Oculta este pedido de la bandeja de entrada. 
+                    Seguirá visible en el historial.
+                  </p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+            {onDelete && (
+              <Button
+                onClick={() => onDelete(order.id, order)}
+                size="sm"
+                variant="destructive"
+                className="w-full md:flex-1"
+              >
+                <Trash2 className="h-4 w-4 md:h-5 md:w-5 mr-1.5 md:mr-2" />
+                <span className="text-xs md:text-sm">Eliminar</span>
+              </Button>
+            )}
           </>
         )}
       </CardFooter>

@@ -20,6 +20,7 @@ interface OrdersContextType {
   unarchiveOrder: (orderId: string) => Promise<void>;
   getOrdersByType: (type: OrderType) => Order[];
   getArchivedOrders: () => Order[];
+  getCompletedOrders: () => Order[];
 }
 
 const OrdersContext = createContext<OrdersContextType | undefined>(undefined);
@@ -262,6 +263,12 @@ export const OrdersProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     return orders.filter(order => order.archived);
   };
 
+  const getCompletedOrders = (): Order[] => {
+    return orders.filter(order => 
+      order.status === 'completed' || order.status === 'cancelled'
+    );
+  };
+
   const value: OrdersContextType = {
     orders,
     addOrder,
@@ -272,6 +279,7 @@ export const OrdersProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     unarchiveOrder,
     getOrdersByType,
     getArchivedOrders,
+    getCompletedOrders,
   };
 
   return (

@@ -12,10 +12,10 @@ interface OrdersListProps {
   emptyMessage?: string;
   emptyIcon?: React.ReactNode;
   gridColumns?: string;
-  onArchive: (orderId: string) => void;
-  onDelete: (orderId: string, order: Order) => void;
-  onComplete: (order: Order) => void;
-  onCancel: (order: Order) => void;
+  onHide?: (orderId: string) => void;
+  onDelete?: (orderId: string, order: Order) => void;
+  onComplete?: (order: Order) => void;
+  onCancel?: (order: Order) => void;
   onCompleteWithConfirmation?: (order: Order) => void;
 }
 
@@ -25,7 +25,7 @@ export const OrdersList: React.FC<OrdersListProps> = ({
   emptyMessage = 'No hay pedidos',
   emptyIcon,
   gridColumns = "grid-cols-1 lg:grid-cols-2 xl:grid-cols-3",
-  onArchive,
+  onHide,
   onDelete,
   onComplete,
   onCancel,
@@ -47,7 +47,7 @@ export const OrdersList: React.FC<OrdersListProps> = ({
           key={order.id}
           order={order}
           showDeliveryInfo={showDeliveryInfo}
-          onArchive={onArchive}
+          onHide={onHide}
           onDelete={onDelete}
           onComplete={onComplete}
           onCancel={onCancel}
