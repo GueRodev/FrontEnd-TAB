@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Logo } from '@/components/layout';
-import { useAuthForm, LoginForm, RegisterForm, DevCredentials, ForgotPasswordDialog } from '@/features/auth';
+import { useAuthForm, LoginForm, RegisterForm, ForgotPasswordDialog } from '@/features/auth';
 
 const Auth: React.FC = () => {
   const navigate = useNavigate();
@@ -68,23 +68,6 @@ const Auth: React.FC = () => {
                 />
               </TabsContent>
             </Tabs>
-
-            {/* Credenciales de desarrollo */}
-            <DevCredentials />
-
-            {/* Botón provisional para volver al home */}
-            <div className="mt-6 pt-6 border-t">
-              <p className="text-center text-sm text-gray-600 mb-3">
-                Acceso provisional (sin autenticación)
-              </p>
-              <Button
-                onClick={() => navigate('/')}
-                variant="outline"
-                className="w-full"
-              >
-                Continuar sin cuenta
-              </Button>
-            </div>
           </CardContent>
         </Card>
       </div>

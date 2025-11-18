@@ -15,8 +15,14 @@ import { API_ROUTES, APP_CONFIG } from '@/config';
 import type { AuthResponse, LoginCredentials, RegisterData, LaravelAuthResponse } from '../types/auth.types';
 import type { UserProfile } from '../types';
 import type { ApiResponse } from '@/api/types';
-import { validateCredentials } from '../mocks';
 import { transformLaravelAuthResponse, transformLaravelUser } from '../utils/transformers';
+
+// ⚠️ VALIDACIÓN CRÍTICA: Prevenir uso accidental de mocks
+if (!APP_CONFIG.useAPI) {
+  console.error('❌ ERROR CRÍTICO: API Mode está desactivado');
+  console.error('El módulo Auth requiere VITE_USE_API=true en .env');
+  throw new Error('Módulo Auth solo funciona con Laravel backend');
+}
 
 export const authService = {
   /**
@@ -26,26 +32,6 @@ export const authService = {
    * 📖 Ver: docs/AUTH-LARAVEL-INTEGRATION.md
    */
   async login(credentials: LoginCredentials): Promise<ApiResponse<AuthResponse>> {
-    if (!APP_CONFIG.useAPI) {
-      // Mock implementation
-      await new Promise(resolve => setTimeout(resolve, 800));
-      const mockUser = validateCredentials(credentials.email, credentials.password);
-      
-      if (!mockUser) {
-        throw new Error('Credenciales inválidas');
-      }
-
-      return Promise.resolve({
-        data: {
-          user: mockUser.profile,
-          token: 'mock-token-' + mockUser.id + '-' + Date.now(),
-          expires_at: new Date(Date.now() + 86400000).toISOString(),
-        },
-        message: 'Login exitoso',
-        timestamp: new Date().toISOString(),
-      });
-    }
-
     // ✅ Laravel API Integration
     try {
       const laravelResponse = await apiClient.post<LaravelAuthResponse>(
@@ -77,26 +63,6 @@ export const authService = {
    * 📖 Ver: docs/AUTH-LARAVEL-INTEGRATION.md
    */
   async register(data: RegisterData): Promise<ApiResponse<AuthResponse>> {
-    if (!APP_CONFIG.useAPI) {
-      // Mock implementation
-      return Promise.resolve({
-        data: {
-          user: { 
-            id: '1', 
-            name: data.name, 
-            email: data.email, 
-            role: 'cliente' as const,
-            created_at: new Date().toISOString(), 
-            updated_at: new Date().toISOString() 
-          },
-          token: 'mock-token-123',
-          expires_at: new Date(Date.now() + 86400000).toISOString(),
-        },
-        message: 'Registro exitoso',
-        timestamp: new Date().toISOString(),
-      });
-    }
-
     // ✅ Laravel API Integration
     try {
       const laravelResponse = await apiClient.post<LaravelAuthResponse>(
@@ -132,14 +98,6 @@ export const authService = {
    * Revoca el token actual
    */
   async logout(): Promise<ApiResponse<void>> {
-    if (!APP_CONFIG.useAPI) {
-      return Promise.resolve({
-        data: undefined,
-        message: 'Logout exitoso',
-        timestamp: new Date().toISOString(),
-      });
-    }
-
     // ✅ Laravel API Integration
     try {
       const response = await apiClient.post<{ success: boolean; message: string }>(
@@ -162,14 +120,6 @@ export const authService = {
    * Revoca todos los tokens del usuario
    */
   async logoutAll(): Promise<ApiResponse<void>> {
-    if (!APP_CONFIG.useAPI) {
-      return Promise.resolve({
-        data: undefined,
-        message: 'Sesión cerrada en todos los dispositivos',
-        timestamp: new Date().toISOString(),
-      });
-    }
-
     try {
       const response = await apiClient.post<{ success: boolean; message: string }>(
         API_ROUTES.logoutAll
@@ -193,17 +143,6 @@ export const authService = {
    * 📖 Ver: docs/AUTH-LARAVEL-INTEGRATION.md
    */
   async me(): Promise<ApiResponse<UserProfile>> {
-    if (!APP_CONFIG.useAPI) {
-      const userStr = localStorage.getItem('auth_user');
-      if (userStr) {
-        return Promise.resolve({
-          data: JSON.parse(userStr),
-          timestamp: new Date().toISOString(),
-        });
-      }
-      throw new Error('No authenticated user');
-    }
-
     // ✅ Laravel API Integration
     try {
       const laravelResponse = await apiClient.get<{
@@ -220,105 +159,5 @@ export const authService = {
     } catch (error) {
       throw error;
     }
-  },
-
-  /**
-   * Update user profile
-   * ⚠️ PENDIENTE: Requiere endpoint Laravel
-   * 
-   * Endpoint requerido: PATCH /api/v1/auth/profile
-   * 📖 Ver implementación en: docs/AUTH-LARAVEL-INTEGRATION.md
-   */
-  async updateProfile(data: Partial<UserProfile>): Promise<ApiResponse<UserProfile>> {
-    // TODO: Descomentar cuando Laravel esté listo
-    // Ver código en docs/AUTH-LARAVEL-INTEGRATION.md
-    /*
-    if (!APP_CONFIG.useAPI) {
-      // Mock...
-    }
-    
-    try {
-      const laravelResponse = await apiClient.patch<{
-        success: boolean;
-        message: string;
-        data: { user: LaravelAuthResponse['data']['user'] };
-      }>(API_ROUTES.profile, data);
-
-      const userProfile = transformLaravelUser(laravelResponse.data.user);
-
-      return {
-        data: userProfile,
-        message: laravelResponse.message,
-        timestamp: new Date().toISOString(),
-      };
-    } catch (error) {
-      throw error;
-    }
-    */
-    
-    // Mock temporal - actualiza localStorage
-    const userStr = localStorage.getItem('auth_user');
-    if (userStr) {
-      const user = JSON.parse(userStr);
-      const updatedUser = { ...user, ...data };
-      localStorage.setItem('auth_user', JSON.stringify(updatedUser));
-      
-      return Promise.resolve({
-        data: updatedUser,
-        message: 'Perfil actualizado correctamente',
-        timestamp: new Date().toISOString(),
-      });
-    }
-    
-    throw new Error('No authenticated user');
-  },
-
-  /**
-   * Update admin profile (includes avatar)
-   * ⚠️ PENDIENTE: No implementado
-   * 
-   * Este método se moverá al módulo de perfil de usuario
-   */
-  async updateAdminProfile(data: Partial<UserProfile>): Promise<ApiResponse<UserProfile>> {
-    // TODO: Implementar en módulo de perfil
-    
-    // Mock temporal
-    const savedProfile = localStorage.getItem('adminProfile');
-    if (savedProfile) {
-      const profile = JSON.parse(savedProfile);
-      const updatedProfile = { ...profile, ...data };
-      localStorage.setItem('adminProfile', JSON.stringify(updatedProfile));
-      
-      return Promise.resolve({
-        data: updatedProfile,
-        message: 'Perfil actualizado correctamente',
-        timestamp: new Date().toISOString(),
-      });
-    }
-    
-    throw new Error('No admin profile found');
-  },
-
-  /**
-   * Upload avatar
-   * ⚠️ PENDIENTE: No implementado
-   * 
-   * Este método se moverá al módulo de perfil de usuario
-   */
-  async uploadAvatar(file: File): Promise<ApiResponse<{ avatarUrl: string }>> {
-    // TODO: Implementar en módulo de perfil
-    
-    // Mock temporal - convert to base64
-    return new Promise((resolve) => {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        resolve({
-          data: { avatarUrl: reader.result as string },
-          message: 'Avatar actualizado correctamente',
-          timestamp: new Date().toISOString(),
-        });
-      };
-      reader.readAsDataURL(file);
-    });
   },
 };

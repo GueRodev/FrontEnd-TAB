@@ -24,7 +24,6 @@ interface AuthContextType extends AuthState {
   register: (data: RegisterData) => Promise<void>;
   logout: () => Promise<void>;
   logoutAll: () => Promise<void>;
-  updateProfile: (data: Partial<UserProfile>) => Promise<void>;
   isAdmin: () => boolean;
   isClient: () => boolean;
   hasPermission: (permission: string) => boolean;
@@ -181,29 +180,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
-  const updateProfile = async (updates: Partial<UserProfile>) => {
-    if (state.user) {
-      try {
-        // 🔗 CONEXIÓN LARAVEL: Call backend API
-        const response = await authService.updateProfile(updates);
-        const updatedUser = response.data;
-        
-        setState(prev => ({ ...prev, user: updatedUser }));
-        localStorage.setItem(STORAGE_KEYS.authUser, JSON.stringify(updatedUser));
-        
-        toast({
-          title: 'Perfil actualizado',
-          description: 'Tu perfil ha sido actualizado correctamente',
-        });
-      } catch (error) {
-        toast({
-          title: 'Error',
-          description: 'No se pudo actualizar el perfil',
-          variant: 'destructive',
-        });
-      }
-    }
-  };
 
   /**
    * ⚠️ SEGURIDAD: Role Check (Client-Side Only)
@@ -267,7 +243,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         register,
         logout,
         logoutAll,
-        updateProfile,
         isAdmin,
         isClient,
         hasPermission,
