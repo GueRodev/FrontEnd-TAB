@@ -25,10 +25,6 @@ export interface EnvConfig {
   WHATSAPP_NUMBER: string;
   WHATSAPP_COUNTRY_CODE: string;
 
-  // Business
-  SHIPPING_COST: number;
-  FREE_SHIPPING_THRESHOLD: number;
-
   // Currency
   CURRENCY_CODE: string;
   CURRENCY_SYMBOL: string;
@@ -60,10 +56,6 @@ export const ENV: EnvConfig = {
   // WhatsApp
   WHATSAPP_NUMBER: import.meta.env.VITE_WHATSAPP_NUMBER || '88888888',
   WHATSAPP_COUNTRY_CODE: import.meta.env.VITE_WHATSAPP_COUNTRY_CODE || '+506',
-
-  // Business
-  SHIPPING_COST: Number(import.meta.env.VITE_SHIPPING_COST) || 2000,
-  FREE_SHIPPING_THRESHOLD: Number(import.meta.env.VITE_FREE_SHIPPING_THRESHOLD) || 50000,
 
   // Currency
   CURRENCY_CODE: import.meta.env.VITE_CURRENCY_CODE || 'CRC',

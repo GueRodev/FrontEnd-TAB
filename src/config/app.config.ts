@@ -44,27 +44,6 @@ export const APP_CONFIG = {
     locale: ENV.CURRENCY_LOCALE,
   },
   
-  shipping: {
-    cost: ENV.SHIPPING_COST,
-    freeThreshold: ENV.FREE_SHIPPING_THRESHOLD,
-    
-    /**
-     * Calculate shipping cost based on order total
-     * @param orderTotal - Total amount of the order
-     * @returns Shipping cost (0 if order >= freeThreshold)
-     */
-    calculateCost: (orderTotal: number): number => {
-      return orderTotal >= ENV.FREE_SHIPPING_THRESHOLD ? 0 : ENV.SHIPPING_COST;
-    },
-    
-    /**
-     * Check if order qualifies for free shipping
-     */
-    isFreeShipping: (orderTotal: number): boolean => {
-      return orderTotal >= ENV.FREE_SHIPPING_THRESHOLD;
-    },
-  },
-  
   pagination: {
     defaultPageSize: ENV.PAGINATION_DEFAULT_SIZE,
     maxPageSize: ENV.PAGINATION_MAX_SIZE,
@@ -131,7 +110,5 @@ if (ENV.IS_DEV && ENV.DEBUG) {
   console.log('Name:', APP_CONFIG.name);
   console.log('Use API:', APP_CONFIG.useAPI);
   console.log('WhatsApp:', `${APP_CONFIG.whatsapp.countryCode}${APP_CONFIG.whatsapp.phoneNumber}`);
-  console.log('Shipping Cost:', `${APP_CONFIG.currency.symbol}${APP_CONFIG.shipping.cost}`);
-  console.log('Free Shipping Threshold:', `${APP_CONFIG.currency.symbol}${APP_CONFIG.shipping.freeThreshold}`);
   console.groupEnd();
 }
