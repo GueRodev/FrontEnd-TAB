@@ -4,7 +4,6 @@
  */
 
 import type { Category } from '../types';
-import { localStorageAdapter } from '@/lib/storage';
 import { STORAGE_KEYS } from '@/config/app.config';
 
 interface OldCategory {
@@ -28,7 +27,8 @@ interface OldCategory {
  * New: { id, name, parent_id, level, children: [...] }
  */
 export async function migrateCategoriesFormat(): Promise<Category[]> {
-  const oldCategories = localStorageAdapter.getItem<OldCategory[]>(STORAGE_KEYS.categories);
+  const stored = localStorage.getItem(STORAGE_KEYS.categories);
+  const oldCategories = stored ? JSON.parse(stored) as OldCategory[] : null;
   
   if (!oldCategories || oldCategories.length === 0) {
     return [];
@@ -82,7 +82,8 @@ export async function migrateCategoriesFormat(): Promise<Category[]> {
  * Check if categories need migration
  */
 export function needsMigration(): boolean {
-  const categories = localStorageAdapter.getItem<any[]>(STORAGE_KEYS.categories);
+  const stored = localStorage.getItem(STORAGE_KEYS.categories);
+  const categories = stored ? JSON.parse(stored) : null;
   
   if (!categories || categories.length === 0) {
     return false;
@@ -105,6 +106,6 @@ export async function performMigration(): Promise<void> {
   console.log('Migrating categories to new format...');
   const migratedCategories = await migrateCategoriesFormat();
   
-  localStorageAdapter.setItem(STORAGE_KEYS.categories, migratedCategories);
+  localStorage.setItem(STORAGE_KEYS.categories, JSON.stringify(migratedCategories));
   console.log(`Migration complete: ${migratedCategories.length} categories migrated`);
 }

@@ -5,7 +5,6 @@
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import type { Category, Subcategory, CreateCategoryDto, UpdateCategoryDto, CreateSubcategoryDto, UpdateSubcategoryDto } from '../types';
-import { localStorageAdapter } from '@/lib/storage';
 import { STORAGE_KEYS } from '@/config/app.config';
 import { DEFAULT_CATEGORIES } from '../data/categories.data';
 import { categoriesService } from '../services';
@@ -84,8 +83,9 @@ const CategoriesContext = createContext<CategoriesContextType>(defaultContextVal
 export const CategoriesProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [categories, setCategories] = useState<Category[]>(() => {
     try {
-      const stored = localStorageAdapter.getItem<Category[]>(STORAGE_KEYS.categories);
-      return stored || DEFAULT_CATEGORIES.map(cat => ({ ...cat, isExpanded: false }));
+      const stored = localStorage.getItem(STORAGE_KEYS.categories);
+      const parsed = stored ? JSON.parse(stored) : null;
+      return parsed || DEFAULT_CATEGORIES.map(cat => ({ ...cat, isExpanded: false }));
     } catch (error) {
       console.error('Error loading categories from storage:', error);
       return DEFAULT_CATEGORIES.map(cat => ({ ...cat, isExpanded: false }));
@@ -95,7 +95,7 @@ export const CategoriesProvider: React.FC<{ children: React.ReactNode }> = ({ ch
 
   // Sync with localStorage whenever categories change
   useEffect(() => {
-    localStorageAdapter.setItem(STORAGE_KEYS.categories, categories);
+    localStorage.setItem(STORAGE_KEYS.categories, JSON.stringify(categories));
   }, [categories]);
 
   /**
@@ -107,12 +107,12 @@ export const CategoriesProvider: React.FC<{ children: React.ReactNode }> = ({ ch
     try {
       const response = await categoriesService.getAll();
       setCategories(response.data);
-      localStorageAdapter.setItem(STORAGE_KEYS.categories, response.data);
+      localStorage.setItem(STORAGE_KEYS.categories, JSON.stringify(response.data));
     } catch (error) {
       console.error('Error syncing categories:', error);
       // Fallback to localStorage on error
-      const stored = localStorageAdapter.getItem<Category[]>(STORAGE_KEYS.categories);
-      if (stored) setCategories(stored);
+      const stored = localStorage.getItem(STORAGE_KEYS.categories);
+      if (stored) setCategories(JSON.parse(stored));
     } finally {
       setLoading(false);
     }

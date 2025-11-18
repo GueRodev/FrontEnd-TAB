@@ -5,8 +5,17 @@
 
 import type { Category, Subcategory, CreateCategoryDto, UpdateCategoryDto, CreateSubcategoryDto, UpdateSubcategoryDto, ReorderCategoriesDto } from '../types';
 import type { ApiResponse } from '@/api/types';
-import { localStorageAdapter } from '@/lib/storage';
 import { STORAGE_KEYS } from '@/config/app.config';
+
+// localStorage helpers
+const getItem = <T>(key: string): T | null => {
+  const item = localStorage.getItem(key);
+  return item ? JSON.parse(item) : null;
+};
+const setItem = <T>(key: string, value: T): void => {
+  localStorage.setItem(key, JSON.stringify(value));
+};
+const localStorageAdapter = { getItem, setItem };
 
 /**
  * 🔗 CONEXIÓN LARAVEL:

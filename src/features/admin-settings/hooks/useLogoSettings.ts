@@ -5,7 +5,6 @@
 
 import { useState, useEffect } from 'react';
 import { useToast } from '@/hooks/use-toast';
-import { localStorageAdapter } from '@/lib/storage';
 import { validateFileType, validateFileSize, readFileAsBase64 } from '@/lib/helpers/fileValidation';
 import { formatFileSize } from '@/lib/formatters';
 import { FILE_UPLOAD_CONFIG, STORAGE_KEYS } from '@/config/app.config';
@@ -21,12 +20,12 @@ export const useLogoSettings = () => {
 
   // Load logos from storage on mount
   useEffect(() => {
-    const customLogo = localStorageAdapter.getItem<string>('customLogo');
+    const customLogo = localStorage.getItem('customLogo');
     if (customLogo) {
       setLogoPreview(customLogo);
     }
     
-    const customAdminLogo = localStorageAdapter.getItem<string>('customAdminLogo');
+    const customAdminLogo = localStorage.getItem('customAdminLogo');
     if (customAdminLogo) {
       setAdminLogoPreview(customAdminLogo);
     }
@@ -80,7 +79,7 @@ export const useLogoSettings = () => {
   const saveLogo = () => {
     if (!logoPreview) return;
 
-    localStorageAdapter.setItem('customLogo', logoPreview);
+    localStorage.setItem('customLogo', logoPreview);
     toast({
       title: "Logo actualizado",
       description: "El logo de la tienda se ha guardado correctamente",
@@ -90,7 +89,7 @@ export const useLogoSettings = () => {
   };
 
   const removeLogo = () => {
-    localStorageAdapter.removeItem('customLogo');
+    localStorage.removeItem('customLogo');
     setLogoPreview(null);
     toast({
       title: "Logo restaurado",
@@ -103,7 +102,7 @@ export const useLogoSettings = () => {
   const saveAdminLogo = () => {
     if (!adminLogoPreview) return;
 
-    localStorageAdapter.setItem('customAdminLogo', adminLogoPreview);
+    localStorage.setItem('customAdminLogo', adminLogoPreview);
     toast({
       title: "Logo actualizado",
       description: "El logo del panel admin se ha guardado correctamente",
@@ -113,7 +112,7 @@ export const useLogoSettings = () => {
   };
 
   const removeAdminLogo = () => {
-    localStorageAdapter.removeItem('customAdminLogo');
+    localStorage.removeItem('customAdminLogo');
     setAdminLogoPreview(null);
     toast({
       title: "Logo restaurado",
@@ -124,12 +123,12 @@ export const useLogoSettings = () => {
   };
 
   const cancelLogoPreview = () => {
-    const customLogo = localStorageAdapter.getItem<string>('customLogo');
+    const customLogo = localStorage.getItem('customLogo');
     setLogoPreview(customLogo);
   };
 
   const cancelAdminLogoPreview = () => {
-    const customAdminLogo = localStorageAdapter.getItem<string>('customAdminLogo');
+    const customAdminLogo = localStorage.getItem('customAdminLogo');
     setAdminLogoPreview(customAdminLogo);
   };
 

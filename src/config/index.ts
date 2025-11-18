@@ -22,6 +22,5 @@ export {
 export {
   API_CONFIG,
   API_ROUTES,
-  buildApiUrl,
   type ApiRoute,
 } from '../api/config';
