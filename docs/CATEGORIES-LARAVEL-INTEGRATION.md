@@ -320,13 +320,19 @@ VITE_API_BASE_URL=http://localhost:8000
 ```typescript
 // src/features/categories/services/categories.service.ts
 
+// Helper inline para localStorage
+const getItem = <T>(key: string): T | null => {
+  const item = localStorage.getItem(key);
+  return item ? JSON.parse(item) : null;
+};
+
 if (APP_CONFIG.useAPI) {
   // 🟢 USA API LARAVEL
   const response = await apiClient.get('/categories');
   return { data: response.data.map(transformLaravelCategory), ... };
 } else {
   // 🟡 USA LOCALSTORAGE (desarrollo)
-  const categories = localStorageAdapter.getItem('categories');
+  const categories = getItem<Category[]>(STORAGE_KEYS.categories) || [];
   return { data: categories, ... };
 }
 ```

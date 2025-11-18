@@ -36,6 +36,12 @@ Todos los servicios verifican `APP_CONFIG.useAPI`:
 
 ```typescript
 // Ejemplo en cualquier servicio
+// Helper inline para localStorage
+const getItem = <T>(key: string): T | null => {
+  const item = localStorage.getItem(key);
+  return item ? JSON.parse(item) : null;
+};
+
 async getAll() {
   if (APP_CONFIG.useAPI) {
     // Use Laravel API
@@ -43,7 +49,7 @@ async getAll() {
     return response.data;
   } else {
     // Use localStorage (development)
-    return localStorageAdapter.getItem(KEY) || [];
+    return getItem<DataType[]>(STORAGE_KEY) || [];
   }
 }
 ```

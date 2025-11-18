@@ -1333,9 +1333,9 @@ Ver archivos:
 
 Buscar líneas marcadas con `// TODO: Descomentar cuando Laravel esté listo` y descomentar.
 
-### 4. Eliminar mocks de localStorage
+### 4. Simplificar acceso a localStorage
 
-Eliminar todas las líneas que usan `localStorage` y `localStorageAdapter` en los servicios.
+Los servicios ahora usan helpers inline para acceder a localStorage directamente, sin abstracciones innecesarias.
 
 ### 5. Probar la conexión
 
