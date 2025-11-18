@@ -768,13 +768,19 @@ Todos los servicios detectan automáticamente el modo:
 
 ```typescript
 // src/features/products/services/products.service.ts
+// Helper inline para localStorage
+const getItem = <T>(key: string): T | null => {
+  const item = localStorage.getItem(key);
+  return item ? JSON.parse(item) : null;
+};
+
 if (APP_CONFIG.useAPI) {
   // Use Laravel API
   const response = await apiClient.get('/products');
   return transformLaravelPaginatedProducts(response);
 } else {
   // Use localStorage fallback
-  const products = localStorageAdapter.getItem('products') || [];
+  const products = getItem<Product[]>(STORAGE_KEYS.products) || [];
   return { data: products, ... };
 }
 ```
