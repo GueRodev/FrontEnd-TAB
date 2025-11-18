@@ -6,9 +6,26 @@
 import { useState, useEffect } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import { useApi } from '@/hooks/useApi';
-import { authService } from '@/features/auth/services';
 import { adminProfileSchema, type AdminProfileFormData } from '../validations';
 import type { UserProfile } from '@/features/auth';
+
+// TODO: Implementar módulo de perfil separado
+// Métodos temporales hasta que se implemente el módulo de perfil
+const uploadAvatarTemp = async (file: File): Promise<{ data: { avatarUrl: string } }> => {
+  console.warn('⚠️ uploadAvatar no implementado - pendiente módulo de perfil');
+  return new Promise((resolve) => {
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      resolve({ data: { avatarUrl: reader.result as string } });
+    };
+    reader.readAsDataURL(file);
+  });
+};
+
+const updateAdminProfileTemp = async (data: Partial<UserProfile>): Promise<{ data: UserProfile }> => {
+  console.warn('⚠️ updateAdminProfile no implementado - pendiente módulo de perfil');
+  throw new Error('Funcionalidad pendiente de implementación');
+};
 
 interface UseAdminProfileReturn {
   isEditing: boolean;
@@ -147,7 +164,7 @@ export const useAdminProfile = (user: UserProfile | null): UseAdminProfileReturn
         // Upload avatar if changed
         let avatarUrl: string | undefined;
         if (avatarFile) {
-          const avatarResponse = await authService.uploadAvatar(avatarFile);
+          const avatarResponse = await uploadAvatarTemp(avatarFile);
           avatarUrl = avatarResponse.data.avatarUrl;
         }
 
@@ -161,7 +178,7 @@ export const useAdminProfile = (user: UserProfile | null): UseAdminProfileReturn
           ),
         };
 
-        return authService.updateAdminProfile(updateData);
+        return updateAdminProfileTemp(updateData);
       },
       {
         successMessage: 'Perfil actualizado correctamente',

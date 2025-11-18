@@ -10,8 +10,15 @@ import type { ProfileFormData } from '../validations';
 
 export const useAccountPage = () => {
   const navigate = useNavigate();
-  const { user, updateProfile, logout, isClient } = useAuth();
+  const { user, logout, isClient } = useAuth();
   const [isEditing, setIsEditing] = useState(false);
+
+  // TODO: Implementar lógica propia de actualización de perfil
+  // Este hook debe usar su propio servicio de perfil, no AuthContext
+  const updateProfile = async (data: any) => {
+    console.warn('⚠️ updateProfile no implementado - pendiente módulo de perfil');
+    throw new Error('Funcionalidad pendiente de implementación');
+  };
 
   const handleEdit = () => setIsEditing(true);
   
