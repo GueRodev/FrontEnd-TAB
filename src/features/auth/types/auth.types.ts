@@ -36,6 +36,7 @@ export interface LaravelAuthResponse {
       id: number;
       name: string;
       email: string;
+      phone?: string;
       role: string;  // "Super Admin" | "Cliente"
       permissions: string[];
       email_verified_at?: string | null;

@@ -14,6 +14,7 @@ export interface UserProfile {
   id: string;
   name: string;
   email: string;
+  phone?: string;
   
   /**
    * ⚠️ SEGURIDAD: El rol viene de user_roles table (backend PostgreSQL + Laravel)
