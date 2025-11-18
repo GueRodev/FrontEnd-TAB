@@ -1,7 +1,7 @@
 /**
  * API Client
- * HTTP client configuration for API requests
- * Currently prepared but not active - data comes from localStorage
+ * Bearer Token-based HTTP client for Laravel backend integration
+ * Authentication via Authorization: Bearer {token} header
  */
 
 import type { ApiRequestConfig, ApiClientConfig } from './types';
@@ -16,7 +16,7 @@ const defaultConfig: ApiClientConfig = {
   headers: {
     'Content-Type': 'application/json',
   },
-  withCredentials: true,
+  withCredentials: false,
 };
 
 /**
@@ -31,29 +31,9 @@ class ApiClient {
   }
 
   /**
-   * Get CSRF token from Laravel Sanctum (required for mutations)
-   */
-  private async getCsrfToken(): Promise<void> {
-    try {
-      const baseUrl = this.config.baseURL.replace('/api', '');
-      await fetch(`${baseUrl}/sanctum/csrf-cookie`, {
-        method: 'GET',
-        credentials: 'include',
-      });
-    } catch (error) {
-      console.warn('Failed to fetch CSRF token:', error);
-    }
-  }
-
-  /**
-   * Make HTTP request
+   * Make HTTP request with Bearer Token authentication
    */
   async request<T>(config: ApiRequestConfig): Promise<T> {
-    // Get CSRF token for mutative requests (Laravel Sanctum requirement)
-    const isMutativeRequest = ['POST', 'PUT', 'PATCH', 'DELETE'].includes(config.method);
-    if (isMutativeRequest && this.config.withCredentials) {
-      await this.getCsrfToken();
-    }
 
     const url = `${this.config.baseURL}${config.url}`;
     
@@ -63,7 +43,7 @@ class ApiClient {
         ...this.config.headers,
         ...config.headers,
       },
-      credentials: this.config.withCredentials ? 'include' : 'omit',
+      credentials: 'omit',
     };
 
     // Add body for non-GET requests
@@ -80,7 +60,7 @@ class ApiClient {
     try {
       const response = await fetch(urlWithParams, requestInit);
 
-      // 🔗 CONEXIÓN LARAVEL: Manejo de errores HTTP
+      // Handle HTTP errors
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));
         
