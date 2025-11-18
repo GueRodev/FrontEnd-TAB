@@ -1,21 +1,31 @@
 # Configuración de la Aplicación
 
-Gestión centralizada de configuración, validación de variables de entorno y settings de negocio.
+Gestión centralizada de configuración y variables de entorno con acceso directo y type-safe.
 
 ## Archivos
 
 ### `env.config.ts`
-**Responsabilidad:** Validación y acceso type-safe a variables de entorno.
+**Responsabilidad:** Acceso directo y type-safe a variables de entorno.
 
-- Valida variables requeridas al inicio
 - Define tipos para todas las variables de entorno
-- Helpers para convertir strings a números y booleanos
-- Valida URLs y formatos específicos (WhatsApp)
+- Acceso directo a `import.meta.env` con fallbacks inline
+- Sin validación compleja ni custom error classes
+- Configuración inmutable exportada como `ENV`
+
+**Ejemplo:**
+```typescript
+export const ENV: EnvConfig = {
+  APP_NAME: import.meta.env.VITE_APP_NAME || 'E-Commerce',
+  API_URL: import.meta.env.VITE_API_URL || 'http://localhost:8000/api',
+  USE_API: import.meta.env.VITE_USE_API === 'true',
+  // ... más configuración
+};
+```
 
 **Relación con Laravel:**
-- Define `VITE_API_BASE_URL` para conectar con backend Laravel
-- Valida configuración de API correctamente
-- Prepara integración con autenticación Laravel
+- Define `VITE_API_URL` para conectar con backend Laravel
+- `VITE_USE_API=true` activa modo API (Laravel)
+- Todas las variables tienen fallbacks sensatos para desarrollo
 
 ### `app.config.ts`
 **Responsabilidad:** Configuración de negocio y constantes de aplicación.
@@ -24,11 +34,29 @@ Gestión centralizada de configuración, validación de variables de entorno y s
 - Claves de LocalStorage
 - Opciones de pago y delivery
 - Configuración de subida de archivos
-- Helpers para cálculos (envío gratis, URLs WhatsApp)
+- Helpers integrados para cálculos (envío gratis, URLs WhatsApp)
+
+**Ejemplo:**
+```typescript
+export const APP_CONFIG = {
+  appName: ENV.APP_NAME,
+  currency: {
+    code: ENV.CURRENCY_CODE,
+    symbol: ENV.CURRENCY_SYMBOL,
+    locale: ENV.CURRENCY_LOCALE,
+  },
+  whatsapp: {
+    countryCode: ENV.WHATSAPP_COUNTRY_CODE,
+    number: ENV.WHATSAPP_NUMBER,
+    buildChatUrl: (message?: string) => { /* ... */ }
+  },
+  // ... más configuración
+};
+```
 
 **Relación con Laravel:**
 - Valores actuales son locales pero preparados para migrar a Laravel
-- Al integrar Laravel, estos valores vendrán de la API
+- Al integrar Laravel, estos valores pueden venir de la API
 - Facilita transición a configuración dinámica desde BD
 
 ### `index.ts`
@@ -36,18 +64,43 @@ Gestión centralizada de configuración, validación de variables de entorno y s
 
 - Centraliza exportaciones de configuración
 - Permite importar desde un solo punto: `@/config`
-- Mantiene orden de carga (ENV primero)
+- Mantiene orden de carga (ENV primero, luego APP_CONFIG)
+
+## Uso
+
+### Importar configuración
+```typescript
+import { ENV, APP_CONFIG } from '@/config';
+
+// Acceder a variables de entorno
+console.log(ENV.API_URL);
+console.log(ENV.USE_API);
+
+// Usar configuración de negocio
+const total = 45000;
+const shippingCost = APP_CONFIG.calculateShippingCost(total);
+
+// Construir URL de WhatsApp
+const whatsappUrl = APP_CONFIG.whatsapp.buildChatUrl('Hola, consulta sobre producto');
+```
 
 ## Integración con Laravel
 
-### Actual (Mock/LocalStorage)
+### Modo Local (VITE_USE_API=false)
 ```typescript
-import { APP_CONFIG, ENV } from '@/config';
-// Usa valores estáticos de .env
+import { APP_CONFIG } from '@/config';
+// Usa valores estáticos de .env y localStorage
 ```
 
-### Futura (con Laravel)
-Laravel proveerá endpoints para configuración dinámica:
+### Modo API (VITE_USE_API=true)
+```typescript
+import { APP_CONFIG } from '@/config';
+// Servicios automáticamente usan Laravel backend
+// ENV.API_URL apunta a http://localhost:8000/api (o producción)
+```
+
+### Configuración Dinámica (Futuro)
+Laravel puede proveer endpoints para configuración dinámica:
 
 ```typescript
 // GET /api/settings
@@ -59,4 +112,8 @@ Laravel proveerá endpoints para configuración dinámica:
 }
 ```
 
-`app.config.ts` consumirá estos valores vía API, manteniendo solo URLs base y secrets en variables de entorno.
+`app.config.ts` podría consumir estos valores vía API, manteniendo solo URLs base y secrets en variables de entorno.
+
+## Variables de Entorno Requeridas
+
+Ver archivo `.env.example` para la lista completa de variables disponibles. Todas tienen fallbacks apropiados para desarrollo local.
