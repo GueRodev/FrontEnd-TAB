@@ -30,11 +30,11 @@ export const ENV: EnvConfig = {
 ### `app.config.ts`
 **Responsabilidad:** Configuración de negocio y constantes de aplicación.
 
-- Settings de negocio (envío, moneda, WhatsApp)
+- Settings de negocio (moneda, WhatsApp)
 - Claves de LocalStorage
 - Opciones de pago y delivery
 - Configuración de subida de archivos
-- Helpers integrados para cálculos (envío gratis, URLs WhatsApp)
+- Helpers integrados para cálculos (URLs WhatsApp)
 
 **Ejemplo:**
 ```typescript
@@ -76,10 +76,6 @@ import { ENV, APP_CONFIG } from '@/config';
 console.log(ENV.API_URL);
 console.log(ENV.USE_API);
 
-// Usar configuración de negocio
-const total = 45000;
-const shippingCost = APP_CONFIG.calculateShippingCost(total);
-
 // Construir URL de WhatsApp
 const whatsappUrl = APP_CONFIG.whatsapp.buildChatUrl('Hola, consulta sobre producto');
 ```
@@ -105,8 +101,6 @@ Laravel puede proveer endpoints para configuración dinámica:
 ```typescript
 // GET /api/settings
 {
-  "shipping_cost": 2500,
-  "free_shipping_threshold": 20000,
   "currency": { "code": "CRC", "symbol": "₡" },
   "whatsapp": { "number": "88888888" }
 }
