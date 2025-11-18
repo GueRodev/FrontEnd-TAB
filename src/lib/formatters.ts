@@ -34,12 +34,6 @@ export const formatDate = (date: string | Date, formatString: string = 'PPP'): s
   return format(dateObj, formatString, { locale: es });
 };
 
-/**
- * Format date as short date (dd/MM/yyyy)
- */
-export const formatShortDate = (date: string | Date): string => {
-  return formatDate(date, 'dd/MM/yyyy');
-};
 
 /**
  * Format date with time (dd/MM/yyyy HH:mm)
@@ -48,27 +42,7 @@ export const formatDateTime = (date: string | Date): string => {
   return formatDate(date, 'dd/MM/yyyy HH:mm');
 };
 
-/**
- * Format phone number with country code
- */
-export const formatPhoneNumber = (phone: string, includeCountryCode: boolean = false): string => {
-  if (!phone) return '';
-  
-  const cleanPhone = phone.replace(/\D/g, '');
-  
-  if (includeCountryCode) {
-    return `${APP_CONFIG.whatsapp.countryCode} ${cleanPhone}`;
-  }
-  
-  return cleanPhone;
-};
 
-/**
- * Format number with thousand separators
- */
-export const formatNumber = (num: number): string => {
-  return new Intl.NumberFormat(APP_CONFIG.currency.locale).format(num);
-};
 
 /**
  * Format file size in bytes to human-readable format
