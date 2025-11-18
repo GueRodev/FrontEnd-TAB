@@ -65,6 +65,7 @@ export function transformLaravelUser(laravelUser: LaravelAuthResponse['data']['u
     id: String(laravelUser.id),
     name: laravelUser.name,
     email: laravelUser.email,
+    phone: laravelUser.phone,
     role: mapLaravelRoleToFrontend(laravelUser.role),
     permissions: laravelUser.permissions,
     email_verified_at: laravelUser.email_verified_at,

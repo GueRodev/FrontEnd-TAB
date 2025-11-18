@@ -7,6 +7,7 @@ import { useState, useEffect } from 'react';
 import { useOrders } from '../contexts';
 import { useNotifications } from '@/features/notifications';
 import { useCart } from '@/features/cart';
+import { useAuth } from '@/features/auth';
 import { toast } from '@/hooks/use-toast';
 import { orderFormSchema } from '../validations';
 import type { DeliveryAddress, DeliveryOption } from '../types';
@@ -32,6 +33,19 @@ export const useOrderForm = () => {
   const { addOrder } = useOrders();
   const { addNotification } = useNotifications();
   const { items: cart, clearCart } = useCart();
+  const { user } = useAuth();
+
+  /**
+   * Autocomplete form with user data when available
+   */
+  useEffect(() => {
+    if (user && !formData.customerName && !formData.customerPhone) {
+      setFormData({
+        customerName: user.name || '',
+        customerPhone: user.phone || '',
+      });
+    }
+  }, [user]);
 
   /**
    * Handle form input changes
