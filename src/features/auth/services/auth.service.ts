@@ -35,7 +35,7 @@ export const authService = {
     // ✅ Laravel API Integration
     try {
       const laravelResponse = await apiClient.post<LaravelAuthResponse>(
-        API_ROUTES.login,
+        API_ROUTES.auth.login,
         credentials
       );
 
@@ -66,7 +66,7 @@ export const authService = {
     // ✅ Laravel API Integration
     try {
       const laravelResponse = await apiClient.post<LaravelAuthResponse>(
-        API_ROUTES.register,
+        API_ROUTES.auth.register,
         {
           name: data.name,
           email: data.email,
@@ -101,7 +101,7 @@ export const authService = {
     // ✅ Laravel API Integration
     try {
       const response = await apiClient.post<{ success: boolean; message: string }>(
-        API_ROUTES.logout
+        API_ROUTES.auth.logout
       );
 
       return {
@@ -122,7 +122,7 @@ export const authService = {
   async logoutAll(): Promise<ApiResponse<void>> {
     try {
       const response = await apiClient.post<{ success: boolean; message: string }>(
-        API_ROUTES.logoutAll
+        API_ROUTES.auth.logoutAll
       );
 
       return {
@@ -148,7 +148,7 @@ export const authService = {
       const laravelResponse = await apiClient.get<{
         success: boolean;
         data: { user: LaravelAuthResponse['data']['user'] };
-      }>(API_ROUTES.me);
+      }>(API_ROUTES.auth.me);
 
       const userProfile = transformLaravelUser(laravelResponse.data.user);
 
