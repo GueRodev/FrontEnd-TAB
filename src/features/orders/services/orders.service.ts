@@ -3,10 +3,19 @@
  * API service for managing orders
  */
 
-import { localStorageAdapter } from '@/lib/storage';
 import type { Order, OrderStatus, OrderType } from '../types';
 import type { ApiResponse } from '@/api/types';
 import { APP_CONFIG } from '@/config/app.config';
+
+// localStorage helpers
+const getItem = <T>(key: string): T | null => {
+  const item = localStorage.getItem(key);
+  return item ? JSON.parse(item) : null;
+};
+const setItem = <T>(key: string, value: T): void => {
+  localStorage.setItem(key, JSON.stringify(value));
+};
+const localStorageAdapter = { getItem, setItem };
 import { apiClient } from '@/api/client';
 import { transformLaravelOrder, transformToLaravelOrderPayload } from '../utils/transformers';
 

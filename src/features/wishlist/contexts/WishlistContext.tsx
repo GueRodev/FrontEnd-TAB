@@ -5,7 +5,6 @@
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { toast } from '@/hooks/use-toast';
-import { localStorageAdapter } from '@/lib/storage';
 import { STORAGE_KEYS } from '@/config/app.config';
 
 // Simplified Product interface for Wishlist
@@ -29,11 +28,12 @@ const WishlistContext = createContext<WishlistContextType | undefined>(undefined
 
 export const WishlistProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [wishlist, setWishlist] = useState<WishlistProduct[]>(() => {
-    return localStorageAdapter.getItem<WishlistProduct[]>(STORAGE_KEYS.wishlist) || [];
+    const stored = localStorage.getItem(STORAGE_KEYS.wishlist);
+    return stored ? JSON.parse(stored) : [];
   });
 
   useEffect(() => {
-    localStorageAdapter.setItem(STORAGE_KEYS.wishlist, wishlist);
+    localStorage.setItem(STORAGE_KEYS.wishlist, JSON.stringify(wishlist));
   }, [wishlist]);
 
   const addToWishlist = (product: WishlistProduct) => {

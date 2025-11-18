@@ -5,7 +5,6 @@
 
 import type { UserProfile, ClientProfile, AdminProfile } from '@/features/auth';
 import type { ApiResponse } from '@/api/types';
-import { localStorageAdapter } from '@/lib/storage';
 
 export const usersService = {
   /**

@@ -5,7 +5,6 @@
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import type { Notification } from '../types';
-import { localStorageAdapter } from '@/lib/storage';
 import { STORAGE_KEYS } from '@/config/app.config';
 
 // Re-export types for backward compatibility
@@ -63,12 +62,12 @@ const initialNotifications: Notification[] = [
 
 export const NotificationsProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [notifications, setNotifications] = useState<Notification[]>(() => {
-    const saved = localStorageAdapter.getItem<Notification[]>(STORAGE_KEYS.notifications);
-    return saved || initialNotifications;
+    const saved = localStorage.getItem(STORAGE_KEYS.notifications);
+    return saved ? JSON.parse(saved) : initialNotifications;
   });
 
   useEffect(() => {
-    localStorageAdapter.setItem(STORAGE_KEYS.notifications, notifications);
+    localStorage.setItem(STORAGE_KEYS.notifications, JSON.stringify(notifications));
   }, [notifications]);
 
   const unreadCount = notifications.filter(n => !n.read).length;

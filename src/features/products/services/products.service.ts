@@ -7,8 +7,17 @@
 import type { Product, CreateProductDto, UpdateProductDto, ProductFilters } from '../types/product.types';
 import type { AdjustStockDto } from '../types/stock-movement.types';
 import type { ApiResponse, PaginatedResponse, PaginationParams } from '@/api/types';
-import { localStorageAdapter } from '@/lib/storage';
 import { APP_CONFIG, STORAGE_KEYS } from '@/config/app.config';
+
+// localStorage helpers
+const getItem = <T>(key: string): T | null => {
+  const item = localStorage.getItem(key);
+  return item ? JSON.parse(item) : null;
+};
+const setItem = <T>(key: string, value: T): void => {
+  localStorage.setItem(key, JSON.stringify(value));
+};
+const localStorageAdapter = { getItem, setItem };
 import { apiClient } from '@/api/client';
 import {
   transformLaravelProduct,
