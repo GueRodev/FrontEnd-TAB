@@ -221,7 +221,7 @@ export const OrdersProvider: React.FC<{ children: React.ReactNode }> = ({ childr
 
   const deleteOrder = async (orderId: string): Promise<void> => {
     // Call service to persist
-    await ordersService.delete(orderId);
+    await ordersService.deleteOrder(orderId);
     
     // Update local state
     setOrders(prev => prev.filter(order => order.id !== orderId));

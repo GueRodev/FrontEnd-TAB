@@ -7,7 +7,8 @@ import { useState, useEffect } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import { validateFileType, validateFileSize, readFileAsBase64 } from '@/lib/helpers/fileValidation';
 import { formatFileSize } from '@/lib/formatters';
-import { FILE_UPLOAD_CONFIG, STORAGE_KEYS } from '@/config/app.config';
+import { FILE_UPLOAD_CONFIG } from '@/config/app.config';
+import { STORAGE_KEYS } from '@/api';
 
 const LOGO_UPDATED_EVENT = 'logoUpdated';
 const ADMIN_LOGO_UPDATED_EVENT = 'adminLogoUpdated';

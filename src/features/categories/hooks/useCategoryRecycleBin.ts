@@ -3,16 +3,15 @@
  * Business logic for managing deleted categories in recycle bin
  */
 
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { useCategories } from '../contexts';
-import { useApi } from '@/hooks/useApi';
 import { categoriesService } from '../services';
 import { toast } from '@/hooks/use-toast';
 import type { Category } from '../types';
 
 export const useCategoryRecycleBin = () => {
   const { categories, restoreCategory, forceDeleteCategory } = useCategories();
-  const { execute, isLoading } = useApi();
+  const [isLoading, setIsLoading] = useState(false);
 
   /**
    * Get all soft-deleted categories
@@ -41,16 +40,22 @@ export const useCategoryRecycleBin = () => {
       return;
     }
 
-    await execute(
-      async () => {
-        const restoredCategory = await restoreCategory(id);
-        return restoredCategory;
-      },
-      {
-        successMessage: `La categoría "${category.name}" ha sido restaurada exitosamente`,
-        errorMessage: 'No se pudo restaurar la categoría',
-      }
-    );
+    setIsLoading(true);
+    try {
+      await restoreCategory(id);
+      toast({
+        title: 'Éxito',
+        description: `La categoría "${category.name}" ha sido restaurada exitosamente`,
+      });
+    } catch (error: any) {
+      toast({
+        title: 'Error',
+        description: error.message || 'No se pudo restaurar la categoría',
+        variant: 'destructive',
+      });
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   /**
@@ -69,15 +74,22 @@ export const useCategoryRecycleBin = () => {
     }
 
     // Confirmation is handled by parent component
-    await execute(
-      async () => {
-        await forceDeleteCategory(id);
-      },
-      {
-        successMessage: `La categoría "${category.name}" ha sido eliminada permanentemente`,
-        errorMessage: 'No se pudo eliminar permanentemente la categoría',
-      }
-    );
+    setIsLoading(true);
+    try {
+      await forceDeleteCategory(id);
+      toast({
+        title: 'Éxito',
+        description: `La categoría "${category.name}" ha sido eliminada permanentemente`,
+      });
+    } catch (error: any) {
+      toast({
+        title: 'Error',
+        description: error.message || 'No se pudo eliminar permanentemente la categoría',
+        variant: 'destructive',
+      });
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   /**
