@@ -3,13 +3,13 @@
  * WhatsApp URL builders
  */
 
-import { APP_CONFIG } from '@/config/app.config';
+import { WHATSAPP_CONFIG, CURRENCY_CONFIG } from '@/config';
 
 /**
  * Build WhatsApp chat URL with pre-filled message
  */
 export function buildWhatsAppUrl(message: string, phoneNumber?: string): string {
-  const phone = phoneNumber || APP_CONFIG.whatsapp.phoneNumber;
+  const phone = phoneNumber || WHATSAPP_CONFIG.phoneNumber;
   const cleanNumber = phone.replace(/\D/g, '');
   
   const sanitizedMessage = message.trim().slice(0, 1000);
@@ -35,7 +35,7 @@ export function buildWhatsAppOrderUrl(orderData: {
   message += `📦 *Productos:*\n`;
   
   orderData.items.forEach((item, index) => {
-    message += `${index + 1}. ${item.name} x${item.quantity} - ${APP_CONFIG.currency.symbol}${item.price}\n`;
+    message += `${index + 1}. ${item.name} x${item.quantity} - ${CURRENCY_CONFIG.symbol}${item.price}\n`;
   });
   
   if (orderData.deliveryOption) {

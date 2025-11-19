@@ -5,7 +5,7 @@
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import type { Category, Subcategory, CreateCategoryDto, UpdateCategoryDto, CreateSubcategoryDto, UpdateSubcategoryDto } from '../types';
-import { STORAGE_KEYS } from '@/config/app.config';
+import { STORAGE_KEYS } from '@/config';
 import { DEFAULT_CATEGORIES } from '../data/categories.data';
 import { categoriesService } from '../services';
 

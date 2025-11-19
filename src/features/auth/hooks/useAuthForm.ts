@@ -10,7 +10,6 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts';
 import { loginSchema, registerSchema } from '../validations/auth.validation';
 import type { LoginFormData, RegisterFormData } from '../validations/auth.validation';
-import { useApi } from '@/hooks/useApi';
 import { toast } from '@/hooks/use-toast';
 
 export interface UseAuthFormReturn {
@@ -35,7 +34,7 @@ export interface UseAuthFormReturn {
 export const useAuthForm = (): UseAuthFormReturn => {
   const navigate = useNavigate();
   const { login, register } = useAuth();
-  const { isLoading, execute } = useApi();
+  const [isLoading, setIsLoading] = useState(false);
   const [showForgotPassword, setShowForgotPassword] = useState(false);
 
   // Login form
@@ -60,34 +59,36 @@ export const useAuthForm = (): UseAuthFormReturn => {
 
   // Handle login submission
   const handleLogin = async (data: LoginFormData) => {
-    await execute(
-      () => login({
+    setIsLoading(true);
+    try {
+      await login({
         email: data.email,
         password: data.password,
-      }),
-      {
-        onSuccess: () => navigate('/'),
-        showSuccessToast: false, // AuthContext handles success toast
-        showErrorToast: false, // AuthContext handles error toast
-      }
-    );
+      });
+      navigate('/');
+    } catch (error) {
+      // AuthContext handles error toast
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   // Handle register submission
   const handleRegister = async (data: RegisterFormData) => {
-    await execute(
-      () => register({
+    setIsLoading(true);
+    try {
+      await register({
         name: data.name,
         email: data.email,
         password: data.password,
         password_confirmation: data.password_confirmation,
-      }),
-      {
-        onSuccess: () => navigate('/'),
-        showSuccessToast: false, // AuthContext handles success toast
-        showErrorToast: false, // AuthContext handles error toast
-      }
-    );
+      });
+      navigate('/');
+    } catch (error) {
+      // AuthContext handles error toast
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   // Forgot password handlers

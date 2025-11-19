@@ -68,8 +68,21 @@ export const API_ENDPOINTS = {
 
 // Storage Keys
 export const STORAGE_KEYS = {
+  // Auth
   AUTH_TOKEN: 'auth_token',
   AUTH_USER: 'auth_user',
+  
+  // Data storage (legacy lowercase names for compatibility)
+  cart: 'cart',
+  wishlist: 'wishlist',
+  products: 'products',
+  categories: 'categories',
+  orders: 'orders',
+  notifications: 'notifications',
+  user: 'user',
+  hidden_order_ids: 'hidden_order_ids',
+  
+  // New uppercase names (for consistency)
   CART_ITEMS: 'cart_items',
   WISHLIST_ITEMS: 'wishlist_items',
   HIDDEN_ORDER_IDS: 'hidden_order_ids',

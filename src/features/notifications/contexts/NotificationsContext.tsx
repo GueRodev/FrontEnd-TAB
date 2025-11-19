@@ -5,7 +5,7 @@
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import type { Notification } from '../types';
-import { STORAGE_KEYS } from '@/config/app.config';
+import { STORAGE_KEYS } from '@/config';
 
 // Re-export types for backward compatibility
 export type { Notification, NotificationType } from '../types';

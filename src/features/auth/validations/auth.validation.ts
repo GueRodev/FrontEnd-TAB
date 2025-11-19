@@ -4,7 +4,7 @@
  */
 
 import { z } from 'zod';
-import { APP_CONFIG } from '@/config/app.config';
+import { FILE_UPLOAD_CONFIG } from '@/config';
 
 export const loginSchema = z.object({
   email: z.string().email('Email inválido'),

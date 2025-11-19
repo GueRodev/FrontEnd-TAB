@@ -5,7 +5,6 @@
 
 import { useState, useEffect } from 'react';
 import { useToast } from '@/hooks/use-toast';
-import { useApi } from '@/hooks/useApi';
 import { adminProfileSchema, type AdminProfileFormData } from '../validations';
 import type { UserProfile } from '@/features/auth';
 
@@ -43,7 +42,7 @@ interface UseAdminProfileReturn {
 
 export const useAdminProfile = (user: UserProfile | null): UseAdminProfileReturn => {
   const { toast } = useToast();
-  const { isLoading: isUploading, execute } = useApi();
+  const [isUploading, setIsUploading] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [avatarFile, setAvatarFile] = useState<File | null>(null);
   const [avatarPreview, setAvatarPreview] = useState<string | null>(null);

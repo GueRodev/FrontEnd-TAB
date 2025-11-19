@@ -3,7 +3,7 @@
  * Centralized functions for consistent data formatting
  */
 
-import { APP_CONFIG } from '@/config/app.config';
+import { CURRENCY_CONFIG } from '@/config';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
 
@@ -11,9 +11,9 @@ import { es } from 'date-fns/locale';
  * Format currency using app configuration
  */
 export const formatCurrency = (amount: number): string => {
-  return new Intl.NumberFormat(APP_CONFIG.currency.locale, {
+  return new Intl.NumberFormat(CURRENCY_CONFIG.locale, {
     style: 'currency',
-    currency: APP_CONFIG.currency.code,
+    currency: CURRENCY_CONFIG.code,
     minimumFractionDigits: 2,
     maximumFractionDigits: 2,
   }).format(amount);
@@ -23,7 +23,7 @@ export const formatCurrency = (amount: number): string => {
  * Format currency with custom symbol (for compatibility)
  */
 export const formatPrice = (amount: number): string => {
-  return `${APP_CONFIG.currency.symbol}${amount.toFixed(2)}`;
+  return `${CURRENCY_CONFIG.symbol}${amount.toFixed(2)}`;
 };
 
 /**
