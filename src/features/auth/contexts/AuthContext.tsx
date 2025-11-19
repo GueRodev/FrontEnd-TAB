@@ -49,7 +49,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       if (token && userStr) {
         try {
           const user = JSON.parse(userStr);
-          apiClient.setAuthToken(token);
+          // Token is automatically added by axios interceptor
           setState({
             user,
             token,
@@ -74,11 +74,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       const { user, token } = response.data;
       
       // Save to localStorage
-      localStorage.setItem(STORAGE_KEYS.authToken, token);
-      localStorage.setItem(STORAGE_KEYS.authUser, JSON.stringify(user));
+      localStorage.setItem(STORAGE_KEYS.AUTH_TOKEN, token);
+      localStorage.setItem(STORAGE_KEYS.AUTH_USER, JSON.stringify(user));
       
-      // Set token in apiClient
-      apiClient.setAuthToken(token);
+      // Token is automatically added by axios interceptor
       
       setState({
         user,
@@ -106,9 +105,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       const response = await authService.register(data);
       const { user, token } = response.data;
       
-      localStorage.setItem(STORAGE_KEYS.authToken, token);
-      localStorage.setItem(STORAGE_KEYS.authUser, JSON.stringify(user));
-      apiClient.setAuthToken(token);
+      localStorage.setItem(STORAGE_KEYS.AUTH_TOKEN, token);
+      localStorage.setItem(STORAGE_KEYS.AUTH_USER, JSON.stringify(user));
+      // Token is automatically added by axios interceptor
       
       setState({
         user,
@@ -139,7 +138,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     } finally {
       localStorage.removeItem(STORAGE_KEYS.AUTH_TOKEN);
       localStorage.removeItem(STORAGE_KEYS.AUTH_USER);
-      apiClient.removeAuthToken();
+      // Token removal handled by axios interceptor on 401
       
       setState({
         user: null,
@@ -163,7 +162,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     } finally {
       localStorage.removeItem(STORAGE_KEYS.AUTH_TOKEN);
       localStorage.removeItem(STORAGE_KEYS.AUTH_USER);
-      apiClient.removeAuthToken();
+      // Token removal handled by axios interceptor on 401
       
       setState({
         user: null,

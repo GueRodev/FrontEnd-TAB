@@ -65,7 +65,7 @@ export function useApi<T = any>(): UseApiReturn<T> {
 
         if (showErrorToast) {
           // Handle Laravel validation errors (422)
-          if (error.status === 422 && error.errors) {
+          if (error.errors) {
             const errorMessages = Object.entries(error.errors)
               .map(([field, messages]) => `${field}: ${messages.join(', ')}`)
               .join('\n');
