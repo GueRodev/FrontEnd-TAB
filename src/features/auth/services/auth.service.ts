@@ -11,18 +11,10 @@
  */
 
 import { api, API_ENDPOINTS } from "@/api";
-import { APP_CONFIG } from "@/config";
 import type { AuthResponse, LoginCredentials, RegisterData, LaravelAuthResponse } from "../types/auth.types";
 import type { UserProfile } from "../types";
 import type { ApiResponse } from "@/api/types";
 import { transformLaravelAuthResponse, transformLaravelUser } from "../utils/transformers";
-
-// ⚠️ VALIDACIÓN CRÍTICA: Prevenir uso accidental de mocks
-if (!APP_CONFIG.useAPI) {
-  console.error("❌ ERROR CRÍTICO: API Mode está desactivado");
-  console.error("El módulo Auth requiere VITE_USE_API=true en .env");
-  throw new Error("Módulo Auth solo funciona con Laravel backend");
-}
 
 export const authService = {
   /**

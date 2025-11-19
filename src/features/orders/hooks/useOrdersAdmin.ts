@@ -8,7 +8,6 @@ import { useOrders } from '../contexts';
 import { useProducts } from '@/features/products';
 import { useCategories } from '@/features/categories';
 import { useNotifications } from '@/features/notifications';
-import { useApi } from '@/hooks/useApi';
 import { productsService } from '@/features/products/services';
 import { toast } from '@/hooks/use-toast';
 import type { Order } from '../types';
@@ -136,9 +135,6 @@ export const useOrdersAdmin = (): UseOrdersAdminReturn => {
   // Get selected product data
   const selectedProductData = activeProducts.find(p => p.id === selectedProduct);
 
-  // API hooks
-  const { execute: updateProductApi } = useApi();
-
   /**
    * Create in-store order
    */
@@ -247,9 +243,9 @@ export const useOrdersAdmin = (): UseOrdersAdminReturn => {
         for (const item of deleteOrderDialog.order.items) {
           const product = products.find(p => p.id === item.id);
           if (product) {
-            await updateProductApi(() => productsService.update(product.id, {
+            await updateProduct(product.id, {
               stock: product.stock + item.quantity,
-            }));
+            });
           }
         }
       }
@@ -309,9 +305,9 @@ export const useOrdersAdmin = (): UseOrdersAdminReturn => {
       for (const item of order.items) {
         const product = products.find(p => p.id === item.id);
         if (product && product.stock >= item.quantity) {
-          await updateProductApi(() => productsService.update(product.id, {
+          await updateProduct(product.id, {
             stock: product.stock - item.quantity,
-          }));
+          });
         }
       }
 
@@ -348,9 +344,9 @@ export const useOrdersAdmin = (): UseOrdersAdminReturn => {
       for (const item of order.items) {
         const product = products.find(p => p.id === item.id);
         if (product && product.stock >= item.quantity) {
-          await updateProductApi(() => productsService.update(product.id, {
+          await updateProduct(product.id, {
             stock: product.stock - item.quantity,
-          }));
+          });
         }
       }
 

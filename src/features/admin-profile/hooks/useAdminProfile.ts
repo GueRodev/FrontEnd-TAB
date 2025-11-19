@@ -158,41 +158,49 @@ export const useAdminProfile = (user: UserProfile | null): UseAdminProfileReturn
       return;
     }
 
-    await execute(
-      async () => {
-        // Upload avatar if changed
-        let avatarUrl: string | undefined;
-        if (avatarFile) {
-          const avatarResponse = await uploadAvatarTemp(avatarFile);
-          avatarUrl = avatarResponse.data.avatarUrl;
-        }
-
-        // Update profile
-        const updateData: Partial<UserProfile> = {
-          name: formData.name,
-          email: formData.email,
-          ...(formData.password && formData.password.length > 0 
-            ? { password: formData.password }
-            : {}
-          ),
-        };
-
-        return updateAdminProfileTemp(updateData);
-      },
-      {
-        successMessage: 'Perfil actualizado correctamente',
-        onSuccess: () => {
-          setIsEditing(false);
-          setAvatarFile(null);
-          setAvatarPreview(null);
-          setFormData(prev => ({ 
-            ...prev, 
-            password: '', 
-            password_confirmation: '' 
-          }));
-        }
+    setIsUploading(true);
+    try {
+      // Upload avatar if changed
+      let avatarUrl: string | undefined;
+      if (avatarFile) {
+        const avatarResponse = await uploadAvatarTemp(avatarFile);
+        avatarUrl = avatarResponse.data.avatarUrl;
       }
-    );
+
+      // Update profile
+      const updateData: Partial<UserProfile> = {
+        name: formData.name,
+        email: formData.email,
+        ...(formData.password && formData.password.length > 0 
+          ? { password: formData.password }
+          : {}),
+        ...(avatarUrl ? { avatar: avatarUrl } : {}),
+      };
+
+      await updateAdminProfileTemp(updateData);
+      
+      toast({
+        title: 'Éxito',
+        description: 'Perfil actualizado correctamente',
+      });
+      
+      setIsEditing(false);
+      setAvatarFile(null);
+      setAvatarPreview(null);
+      setFormData(prev => ({ 
+        ...prev, 
+        password: '', 
+        password_confirmation: '' 
+      }));
+    } catch (error: any) {
+      toast({
+        title: 'Error',
+        description: error.message || 'No se pudo actualizar el perfil',
+        variant: 'destructive',
+      });
+    } finally {
+      setIsUploading(false);
+    }
   };
 
   return {

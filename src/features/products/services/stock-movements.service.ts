@@ -4,8 +4,7 @@
  * Laravel Integration Ready with localStorage fallback
  */
 
-import { api } from '@/api';
-import { APP_CONFIG } from '@/config';
+import { api, STORAGE_KEYS } from '@/api';
 import type {
   StockMovement,
   StockAvailability,
@@ -36,30 +35,20 @@ class StockMovementsService {
    * Get stock movements for a specific product
    */
   async getByProduct(productId: string): Promise<StockMovement[]> {
-    if (APP_CONFIG.useAPI) {
-      const response = await api.get<StockMovement[]>(
-        `/products/${productId}/stock-movements`
-      );
-      return response.data.map(transformLaravelStockMovement);
-    }
-
-    // localStorage fallback - return empty array
-    return [];
+    const response = await api.get<StockMovement[]>(
+      `/products/${productId}/stock-movements`
+    );
+    return response.data.map(transformLaravelStockMovement);
   }
 
   /**
    * Get all stock movements with optional filters
    */
   async getAll(filters?: StockMovementFilters): Promise<StockMovement[]> {
-    if (APP_CONFIG.useAPI) {
-      const response = await api.get<StockMovement[]>('/stock-movements', {
-        params: filters,
-      });
-      return response.data.map(transformLaravelStockMovement);
-    }
-
-    // localStorage fallback - return empty array
-    return [];
+    const response = await api.get<StockMovement[]>('/stock-movements', {
+      params: filters,
+    });
+    return response.data.map(transformLaravelStockMovement);
   }
 
   /**
@@ -69,43 +58,11 @@ class StockMovementsService {
   async checkAvailability(
     items: Array<{ product_id: string; quantity: number }>
   ): Promise<StockAvailability> {
-    if (APP_CONFIG.useAPI) {
-      const response = await api.post<StockAvailability>(
-        '/stock-movements/check-availability',
-        { items }
-      );
-      return response.data;
-    }
-
-    // localStorage fallback - simple check
-    const errors: any[] = [];
-    const products = this.getLocalProducts();
-
-    for (const item of items) {
-      const product = products.find(p => p.id === item.product_id);
-      if (!product) {
-        errors.push({
-          product_id: item.product_id,
-          product_name: 'Producto desconocido',
-          requested: item.quantity,
-          available: 0,
-          message: 'Producto no encontrado',
-        });
-      } else if (product.stock < item.quantity) {
-        errors.push({
-          product_id: item.product_id,
-          product_name: product.name,
-          requested: item.quantity,
-          available: product.stock,
-          message: `Stock insuficiente. Disponible: ${product.stock}`,
-        });
-      }
-    }
-
-    return {
-      available: errors.length === 0,
-      errors,
-    };
+    const response = await api.post<StockAvailability>(
+      '/stock-movements/check-availability',
+      { items }
+    );
+    return response.data;
   }
 
   /**
@@ -113,13 +70,7 @@ class StockMovementsService {
    * Creates 'reserva' movements for each item
    */
   async reserveStock(dto: ReserveStockDto): Promise<void> {
-    if (APP_CONFIG.useAPI) {
-      await api.post('/stock-movements/reserve', dto);
-      return;
-    }
-
-    // localStorage fallback - no operation needed
-    // Stock is checked at order creation time
+    await api.post('/stock-movements/reserve', dto);
   }
 
   /**
@@ -127,27 +78,7 @@ class StockMovementsService {
    * Creates 'venta' movements and updates product stock
    */
   async confirmSale(orderId: string): Promise<void> {
-    if (APP_CONFIG.useAPI) {
-      await api.post(`/stock-movements/confirm-sale/${orderId}`);
-      return;
-    }
-
-    // localStorage fallback - deduct stock manually
-    const orders = this.getLocalOrders();
-    const order = orders.find(o => o.id === orderId);
-    
-    if (order) {
-      const products = this.getLocalProducts();
-      
-      for (const item of order.items) {
-        const productIndex = products.findIndex(p => p.id === item.id);
-        if (productIndex !== -1) {
-          products[productIndex].stock -= item.quantity;
-        }
-      }
-      
-      localStorage.setItem('products', JSON.stringify(products));
-    }
+    await api.post(`/stock-movements/confirm-sale/${orderId}`);
   }
 
   /**
@@ -155,13 +86,7 @@ class StockMovementsService {
    * Creates 'cancelacion_reserva' movements
    */
   async cancelReservation(orderId: string): Promise<void> {
-    if (APP_CONFIG.useAPI) {
-      await api.post(`/stock-movements/cancel-reservation/${orderId}`);
-      return;
-    }
-
-    // localStorage fallback - no operation needed
-    // Stock is restored at order cancellation time
+    await api.post(`/stock-movements/cancel-reservation/${orderId}`);
   }
 
   /**
@@ -172,59 +97,21 @@ class StockMovementsService {
     productId: string,
     dto: AdjustStockDto
   ): Promise<StockMovement> {
-    if (APP_CONFIG.useAPI) {
-      const response = await api.post<StockMovement>(
-        `/products/${productId}/stock`,
-        dto
-      );
-      return transformLaravelStockMovement(response.data);
-    }
-
-    // localStorage fallback - update stock directly
-    const products = this.getLocalProducts();
-    const productIndex = products.findIndex(p => p.id === productId);
-    
-    if (productIndex === -1) {
-      throw new Error('Producto no encontrado');
-    }
-
-    const stockBefore = products[productIndex].stock;
-    let stockChange = dto.quantity;
-
-    // Adjust stock based on type
-    if (dto.type === 'salida') {
-      stockChange = -Math.abs(dto.quantity);
-    } else if (dto.type === 'entrada') {
-      stockChange = Math.abs(dto.quantity);
-    }
-
-    products[productIndex].stock = stockBefore + stockChange;
-    localStorage.setItem('products', JSON.stringify(products));
-
-    // Return mock movement
-    return {
-      id: Date.now().toString(),
-      product_id: productId,
-      type: dto.type,
-      quantity: stockChange,
-      stock_before: stockBefore,
-      stock_after: products[productIndex].stock,
-      reason: dto.reason || null,
-      user_id: '1',
-      order_id: null,
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString(),
-    };
+    const response = await api.post<StockMovement>(
+      `/products/${productId}/stock`,
+      dto
+    );
+    return transformLaravelStockMovement(response.data);
   }
 
-  // Helper methods for localStorage
+  // Helper methods for localStorage (kept for type compatibility)
   private getLocalProducts(): any[] {
-    const stored = localStorage.getItem('products');
+    const stored = localStorage.getItem(STORAGE_KEYS.products);
     return stored ? JSON.parse(stored) : [];
   }
 
   private getLocalOrders(): any[] {
-    const stored = localStorage.getItem('orders');
+    const stored = localStorage.getItem(STORAGE_KEYS.orders);
     return stored ? JSON.parse(stored) : [];
   }
 }
