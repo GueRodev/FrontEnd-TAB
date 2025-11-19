@@ -38,8 +38,8 @@ export const productsService = {
   async getAll(filters?: ProductFilters): Promise<PaginatedResponse<Product>> {
     if (APP_CONFIG.useAPI) {
       // Laravel returns paginated response
-      const response = await apiClient.get('/products', filters);
-      return transformLaravelPaginatedProducts(response);
+      const response = await api.get('/products', { params: filters });
+      return transformLaravelPaginatedProducts(response.data);
     } else {
       // localStorage fallback
       let products = localStorageAdapter.getItem<Product[]>(STORAGE_KEYS.products) || [];
@@ -126,8 +126,8 @@ export const productsService = {
   async getFeatured(): Promise<Product[]> {
     if (APP_CONFIG.useAPI) {
       // Laravel returns direct array
-      const response = await apiClient.get<any[]>('/products/featured');
-      return transformLaravelProducts(response);
+      const response = await api.get<any[]>('/products/featured');
+      return transformLaravelProducts(response.data);
     } else {
       // localStorage
       const result = await this.getAll({ featured: true, status: 'active' });
@@ -142,8 +142,8 @@ export const productsService = {
   async getById(id: string): Promise<Product | null> {
     if (APP_CONFIG.useAPI) {
       // Laravel returns direct object with category and stock_movements
-      const response = await apiClient.get(`/products/${id}`);
-      return transformLaravelProduct(response);
+      const response = await api.get(`/products/${id}`);
+      return transformLaravelProduct(response.data);
     } else {
       // localStorage
       const result = await this.getAll();
@@ -198,11 +198,11 @@ export const productsService = {
         formData.append('image', data.image);
       }
       
-      const response = await apiClient.post<any>('/products', formData);
+      const response = await api.post<any>('/products', formData);
       
       return {
-        data: transformLaravelProduct(response.product),
-        message: response.message,
+        data: transformLaravelProduct(response.data.product),
+        message: response.data.message,
         timestamp: new Date().toISOString(),
       };
     } else {
@@ -263,11 +263,11 @@ export const productsService = {
       // Laravel requires _method=PUT with FormData
       formData.append('_method', 'PUT');
       
-      const response = await apiClient.post<any>(`/products/${id}`, formData);
+      const response = await api.post<any>(`/products/${id}`, formData);
       
       return {
-        data: transformLaravelProduct(response.product),
-        message: response.message,
+        data: transformLaravelProduct(response.data.product),
+        message: response.data.message,
         timestamp: new Date().toISOString(),
       };
     } else {
@@ -306,10 +306,10 @@ export const productsService = {
    */
   async delete(id: string): Promise<ApiResponse<void>> {
     if (APP_CONFIG.useAPI) {
-      const response = await apiClient.delete<any>(`/products/${id}`);
+      const response = await api.delete<any>(`/products/${id}`);
       return {
         data: undefined as void,
-        message: response.message,
+        message: response.data.message,
         timestamp: new Date().toISOString(),
       };
     } else {
@@ -338,10 +338,10 @@ export const productsService = {
    */
   async forceDelete(id: string): Promise<ApiResponse<void>> {
     if (APP_CONFIG.useAPI) {
-      const response = await apiClient.delete<any>(`/products/${id}/force`);
+      const response = await api.delete<any>(`/products/${id}/force`);
       return {
         data: undefined as void,
-        message: response.message,
+        message: response.data.message,
         timestamp: new Date().toISOString(),
       };
     } else {
@@ -367,9 +367,9 @@ export const productsService = {
    */
   async getDeleted(): Promise<ApiResponse<Product[]>> {
     if (APP_CONFIG.useAPI) {
-      const response = await apiClient.get<Product[]>('/products/deleted');
+      const response = await api.get<Product[]>('/products/deleted');
       return {
-        data: response.map(transformLaravelProduct),
+        data: response.data.map(transformLaravelProduct),
         timestamp: new Date().toISOString(),
       };
     } else {
@@ -392,10 +392,10 @@ export const productsService = {
    */
   async restore(id: string): Promise<ApiResponse<Product>> {
     if (APP_CONFIG.useAPI) {
-      const response = await apiClient.post<any>(`/products/${id}/restore`);
+      const response = await api.post<any>(`/products/${id}/restore`);
       return {
-        data: transformLaravelProduct(response.product),
-        message: response.message,
+        data: transformLaravelProduct(response.data.product),
+        message: response.data.message,
         timestamp: new Date().toISOString(),
       };
     } else {
@@ -427,10 +427,10 @@ export const productsService = {
    */
   async adjustStock(id: string, data: AdjustStockDto): Promise<ApiResponse<Product>> {
     if (APP_CONFIG.useAPI) {
-      const response = await apiClient.post<any>(`/products/${id}/stock`, data);
+      const response = await api.post<any>(`/products/${id}/stock`, data);
       return {
-        data: transformLaravelProduct(response.product),
-        message: response.message,
+        data: transformLaravelProduct(response.data.product),
+        message: response.data.message,
         timestamp: new Date().toISOString(),
       };
     } else {

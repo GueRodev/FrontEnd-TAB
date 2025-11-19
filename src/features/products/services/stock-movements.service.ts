@@ -37,10 +37,10 @@ class StockMovementsService {
    */
   async getByProduct(productId: string): Promise<StockMovement[]> {
     if (APP_CONFIG.useAPI) {
-      const response = await apiClient.get<StockMovement[]>(
+      const response = await api.get<StockMovement[]>(
         `/products/${productId}/stock-movements`
       );
-      return response.map(transformLaravelStockMovement);
+      return response.data.map(transformLaravelStockMovement);
     }
 
     // localStorage fallback - return empty array
@@ -52,10 +52,10 @@ class StockMovementsService {
    */
   async getAll(filters?: StockMovementFilters): Promise<StockMovement[]> {
     if (APP_CONFIG.useAPI) {
-      const response = await apiClient.get<StockMovement[]>('/stock-movements', {
+      const response = await api.get<StockMovement[]>('/stock-movements', {
         params: filters,
       });
-      return response.map(transformLaravelStockMovement);
+      return response.data.map(transformLaravelStockMovement);
     }
 
     // localStorage fallback - return empty array
@@ -70,11 +70,11 @@ class StockMovementsService {
     items: Array<{ product_id: string; quantity: number }>
   ): Promise<StockAvailability> {
     if (APP_CONFIG.useAPI) {
-      const response = await apiClient.post<StockAvailability>(
+      const response = await api.post<StockAvailability>(
         '/stock-movements/check-availability',
         { items }
       );
-      return response;
+      return response.data;
     }
 
     // localStorage fallback - simple check
@@ -114,7 +114,7 @@ class StockMovementsService {
    */
   async reserveStock(dto: ReserveStockDto): Promise<void> {
     if (APP_CONFIG.useAPI) {
-      await apiClient.post('/stock-movements/reserve', dto);
+      await api.post('/stock-movements/reserve', dto);
       return;
     }
 
@@ -128,7 +128,7 @@ class StockMovementsService {
    */
   async confirmSale(orderId: string): Promise<void> {
     if (APP_CONFIG.useAPI) {
-      await apiClient.post(`/stock-movements/confirm-sale/${orderId}`);
+      await api.post(`/stock-movements/confirm-sale/${orderId}`);
       return;
     }
 
@@ -156,7 +156,7 @@ class StockMovementsService {
    */
   async cancelReservation(orderId: string): Promise<void> {
     if (APP_CONFIG.useAPI) {
-      await apiClient.post(`/stock-movements/cancel-reservation/${orderId}`);
+      await api.post(`/stock-movements/cancel-reservation/${orderId}`);
       return;
     }
 
@@ -173,11 +173,11 @@ class StockMovementsService {
     dto: AdjustStockDto
   ): Promise<StockMovement> {
     if (APP_CONFIG.useAPI) {
-      const response = await apiClient.post<StockMovement>(
+      const response = await api.post<StockMovement>(
         `/products/${productId}/stock`,
         dto
       );
-      return transformLaravelStockMovement(response);
+      return transformLaravelStockMovement(response.data);
     }
 
     // localStorage fallback - update stock directly

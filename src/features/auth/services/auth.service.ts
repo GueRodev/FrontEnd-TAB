@@ -10,8 +10,8 @@
  * 📖 Documentación completa: docs/AUTH-LARAVEL-INTEGRATION.md
  */
 
-import { apiClient } from "@/api/client";
-import { API_ROUTES, APP_CONFIG } from "@/config";
+import { api, API_ENDPOINTS } from "@/api";
+import { APP_CONFIG } from "@/config";
 import type { AuthResponse, LoginCredentials, RegisterData, LaravelAuthResponse } from "../types/auth.types";
 import type { UserProfile } from "../types";
 import type { ApiResponse } from "@/api/types";
@@ -34,7 +34,8 @@ export const authService = {
   async login(credentials: LoginCredentials): Promise<ApiResponse<AuthResponse>> {
     // ✅ Laravel API Integration
     try {
-      const laravelResponse = await apiClient.post<LaravelAuthResponse>(API_ROUTES.auth.login, credentials);
+      const response = await api.post<LaravelAuthResponse>(API_ENDPOINTS.AUTH_LOGIN, credentials);
+      const laravelResponse = response.data;
 
       const authResponse = transformLaravelAuthResponse(laravelResponse);
 
@@ -62,12 +63,13 @@ export const authService = {
   async register(data: RegisterData): Promise<ApiResponse<AuthResponse>> {
     // ✅ Laravel API Integration
     try {
-      const laravelResponse = await apiClient.post<LaravelAuthResponse>(API_ROUTES.auth.register, {
+      const response = await api.post<LaravelAuthResponse>(API_ENDPOINTS.AUTH_REGISTER, {
         name: data.name,
         email: data.email,
         password: data.password,
         password_confirmation: data.password_confirmation,
       });
+      const laravelResponse = response.data;
 
       const authResponse = transformLaravelAuthResponse(laravelResponse);
 
@@ -94,11 +96,12 @@ export const authService = {
   async logout(): Promise<ApiResponse<void>> {
     // ✅ Laravel API Integration
     try {
-      const response = await apiClient.post<{ success: boolean; message: string }>(API_ROUTES.auth.logout);
+      const response = await api.post<{ success: boolean; message: string }>(API_ENDPOINTS.AUTH_LOGOUT);
+      const data = response.data;
 
       return {
         data: undefined,
-        message: response.message,
+        message: data.message,
         timestamp: new Date().toISOString(),
       };
     } catch (error) {
@@ -113,11 +116,12 @@ export const authService = {
    */
   async logoutAll(): Promise<ApiResponse<void>> {
     try {
-      const response = await apiClient.post<{ success: boolean; message: string }>(API_ROUTES.auth.logoutAll);
+      const response = await api.post<{ success: boolean; message: string }>(API_ENDPOINTS.AUTH_LOGOUT_ALL);
+      const data = response.data;
 
       return {
         data: undefined,
-        message: response.message,
+        message: data.message,
         timestamp: new Date().toISOString(),
       };
     } catch (error) {
@@ -135,12 +139,13 @@ export const authService = {
   async me(): Promise<ApiResponse<UserProfile>> {
     // ✅ Laravel API Integration
     try {
-      const laravelResponse = await apiClient.get<{
+      const response = await api.get<{
         success: boolean;
         data: { user: LaravelAuthResponse["data"]["user"] };
-      }>(API_ROUTES.auth.me);
+      }>(API_ENDPOINTS.AUTH_ME);
+      const laravelData = response.data;
 
-      const userProfile = transformLaravelUser(laravelResponse.data.user);
+      const userProfile = transformLaravelUser(laravelData.data.user);
 
       return {
         data: userProfile,

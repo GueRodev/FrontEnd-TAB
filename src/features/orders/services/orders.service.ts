@@ -36,8 +36,8 @@ const getAll = async (): Promise<Order[]> => {
     const isAdmin = true;
     const endpoint = isAdmin ? '/admin/orders' : '/orders';
     
-    const response = await apiClient.get<ApiResponse<any[]>>(endpoint);
-    return response.data.map(transformLaravelOrder);
+    const response = await api.get<ApiResponse<any[]>>(endpoint);
+    return response.data.data.map(transformLaravelOrder);
   } else {
     // Use localStorage (development)
     const orders = localStorageAdapter.getItem<Order[]>(STORAGE_KEY) || [];
@@ -67,8 +67,8 @@ const getByType = async (type: OrderType): Promise<Order[]> => {
  */
 const getArchived = async (): Promise<Order[]> => {
   if (APP_CONFIG.useAPI) {
-    const response = await apiClient.get<ApiResponse<any[]>>('/admin/orders?status=archived');
-    return response.data.map(transformLaravelOrder);
+    const response = await api.get<ApiResponse<any[]>>('/admin/orders?status=archived');
+    return response.data.data.map(transformLaravelOrder);
   } else {
     const orders = await getAll();
     return orders.filter(order => order.archived);
@@ -85,10 +85,10 @@ const createOnlineOrder = async (
   try {
     if (APP_CONFIG.useAPI) {
       const payload = transformToLaravelOrderPayload(data, 'online');
-      const response = await apiClient.post<ApiResponse<any>>('/orders', payload);
+      const response = await api.post<ApiResponse<any>>('/orders', payload);
       return {
-        ...response,
-        data: transformLaravelOrder(response.data),
+        ...response.data,
+        data: transformLaravelOrder(response.data.data),
       };
     } else {
       // Use localStorage (development)
@@ -137,10 +137,10 @@ const createInStoreOrder = async (
   try {
     if (APP_CONFIG.useAPI) {
       const payload = transformToLaravelOrderPayload(data, 'in-store');
-      const response = await apiClient.post<ApiResponse<any>>('/admin/orders', payload);
+      const response = await api.post<ApiResponse<any>>('/admin/orders', payload);
       return {
-        ...response,
-        data: transformLaravelOrder(response.data),
+        ...response.data,
+        data: transformLaravelOrder(response.data.data),
       };
     } else {
       // Use localStorage (development)
@@ -199,10 +199,10 @@ const create = async (
 const markInProgress = async (id: string): Promise<ApiResponse<Order>> => {
   try {
     if (APP_CONFIG.useAPI) {
-      const response = await apiClient.patch<ApiResponse<any>>(`/admin/orders/${id}/mark-in-progress`);
+      const response = await api.patch<ApiResponse<any>>(`/admin/orders/${id}/mark-in-progress`);
       return {
-        ...response,
-        data: transformLaravelOrder(response.data),
+        ...response.data,
+        data: transformLaravelOrder(response.data.data),
       };
     } else {
       // Use localStorage (development)
@@ -252,10 +252,10 @@ const updateStatus = async (
           throw new Error(`Status ${status} not supported for direct update`);
       }
       
-      const response = await apiClient.patch<ApiResponse<any>>(endpoint);
+      const response = await api.patch<ApiResponse<any>>(endpoint);
       return {
-        ...response,
-        data: transformLaravelOrder(response.data),
+        ...response.data,
+        data: transformLaravelOrder(response.data.data),
       };
     } else {
       // Use localStorage (development)
@@ -308,10 +308,10 @@ const updateStatus = async (
 const archive = async (id: string): Promise<ApiResponse<Order>> => {
   try {
     if (APP_CONFIG.useAPI) {
-      const response = await apiClient.post<ApiResponse<any>>(`/admin/orders/${id}/archive`);
+      const response = await api.post<ApiResponse<any>>(`/admin/orders/${id}/archive`);
       return {
-        ...response,
-        data: transformLaravelOrder(response.data),
+        ...response.data,
+        data: transformLaravelOrder(response.data.data),
       };
     } else {
       // Use localStorage (development)
@@ -349,7 +349,8 @@ const unarchive = async (id: string): Promise<ApiResponse<Order>> => {
   try {
     if (APP_CONFIG.useAPI) {
       // Use Laravel API
-      return await apiClient.patch<ApiResponse<Order>>(`/orders/${id}/unarchive`);
+      const response = await api.patch<ApiResponse<Order>>(`/orders/${id}/unarchive`);
+      return response.data;
     } else {
       // Use localStorage (development)
       const orders = await getAll();
@@ -385,7 +386,8 @@ const unarchive = async (id: string): Promise<ApiResponse<Order>> => {
 const deleteOrder = async (id: string): Promise<ApiResponse<void>> => {
   try {
     if (APP_CONFIG.useAPI) {
-      return await apiClient.delete<ApiResponse<void>>(`/admin/orders/${id}`);
+      const response = await api.delete<ApiResponse<void>>(`/admin/orders/${id}`);
+      return response.data;
     } else {
       // Use localStorage (development)
       const orders = await getAll();
