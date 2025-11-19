@@ -3,7 +3,7 @@
  * Handles address CRUD operations for authenticated clients
  */
 
-import { apiClient } from '@/api/client';
+import { api } from '@/api';
 import type { Address } from '../types';
 import type { ApiResponse } from '@/api/types';
 

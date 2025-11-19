@@ -9,7 +9,6 @@ export { ENV, type EnvConfig, type AppEnvironment } from './env.config';
 // Application Config
 export {
   APP_CONFIG,
-  STORAGE_KEYS,
   PAYMENT_METHODS,
   DELIVERY_OPTIONS,
   FILE_UPLOAD_CONFIG,
@@ -18,9 +17,5 @@ export {
   type DeliveryOption,
 } from './app.config';
 
-// API Config
-export {
-  API_CONFIG,
-  API_ROUTES,
-  type ApiRoute,
-} from '../api/config';
+// API Layer Re-exports (from simplified API layer)
+export { api, API_BASE_URL, API_ENDPOINTS, STORAGE_KEYS } from '@/api';

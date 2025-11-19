@@ -18,7 +18,7 @@ const setItem = <T>(key: string, value: T): void => {
   localStorage.setItem(key, JSON.stringify(value));
 };
 const localStorageAdapter = { getItem, setItem };
-import { apiClient } from '@/api/client';
+import { api } from '@/api';
 import {
   transformLaravelProduct,
   transformLaravelProducts,

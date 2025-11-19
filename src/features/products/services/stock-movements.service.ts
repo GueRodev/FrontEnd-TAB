@@ -4,7 +4,7 @@
  * Laravel Integration Ready with localStorage fallback
  */
 
-import { apiClient } from '@/api';
+import { api } from '@/api';
 import { APP_CONFIG } from '@/config';
 import type {
   StockMovement,

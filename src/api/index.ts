@@ -1,8 +1,7 @@
 /**
- * API Layer Exports
- * Main entry point for Laravel backend integration
+ * API Layer - Main Entry Point
  */
 
-export { apiClient, ApiClient } from './client';
-export type * from './types';
-export * from './config';
+export { api, default as apiService } from './apiService';
+export { API_BASE_URL, API_ENDPOINTS, STORAGE_KEYS } from './constants';
+export type { ValidationError, PaginationParams, ApiResponse, PaginatedResponse } from './types';

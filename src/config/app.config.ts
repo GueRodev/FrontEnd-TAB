@@ -46,11 +46,7 @@ export const APP_CONFIG = {
 // ============================================
 
 export const STORAGE_KEYS = {
-  // Auth
-  authToken: "auth_token",
-  authUser: "auth_user",
-
-  // Data
+  // Data storage (Auth keys are now in @/api/constants)
   products: "products",
   categories: "categories",
   cart: "cart",

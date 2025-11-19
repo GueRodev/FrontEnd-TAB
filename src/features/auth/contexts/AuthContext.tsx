@@ -12,7 +12,6 @@
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { authService } from '../services';
-import { apiClient } from '@/api/client';
 import { STORAGE_KEYS } from '@/config';
 import type { UserProfile } from '../types';
 import type { AuthState, LoginCredentials, RegisterData } from '../types/auth.types';
@@ -44,8 +43,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   // Load user from localStorage on mount
   useEffect(() => {
     const loadUser = async () => {
-      const token = localStorage.getItem(STORAGE_KEYS.authToken);
-      const userStr = localStorage.getItem(STORAGE_KEYS.authUser);
+      const token = localStorage.getItem(STORAGE_KEYS.AUTH_TOKEN);
+      const userStr = localStorage.getItem(STORAGE_KEYS.AUTH_USER);
       
       if (token && userStr) {
         try {
@@ -138,8 +137,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     } catch (error) {
       console.error('Logout error:', error);
     } finally {
-      localStorage.removeItem(STORAGE_KEYS.authToken);
-      localStorage.removeItem(STORAGE_KEYS.authUser);
+      localStorage.removeItem(STORAGE_KEYS.AUTH_TOKEN);
+      localStorage.removeItem(STORAGE_KEYS.AUTH_USER);
       apiClient.removeAuthToken();
       
       setState({
@@ -162,8 +161,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     } catch (error) {
       console.error('Logout all error:', error);
     } finally {
-      localStorage.removeItem(STORAGE_KEYS.authToken);
-      localStorage.removeItem(STORAGE_KEYS.authUser);
+      localStorage.removeItem(STORAGE_KEYS.AUTH_TOKEN);
+      localStorage.removeItem(STORAGE_KEYS.AUTH_USER);
       apiClient.removeAuthToken();
       
       setState({
