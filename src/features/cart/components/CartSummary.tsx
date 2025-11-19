@@ -7,7 +7,7 @@ import React from 'react';
 import { MessageCircle } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { APP_CONFIG } from '@/config';
+import { WHATSAPP_CONFIG, CURRENCY_CONFIG } from '@/config';
 
 interface CartSummaryProps {
   totalItems: number;
@@ -19,8 +19,8 @@ export const CartSummary: React.FC<CartSummaryProps> = ({
   totalPrice,
 }) => {
   const handleWhatsAppClick = () => {
-    const message = `Hola! Tengo una consulta sobre mi pedido.\n\nTotal de productos: ${totalItems}\nTotal: ${APP_CONFIG.currency.symbol}${totalPrice.toFixed(2)}`;
-    const url = APP_CONFIG.whatsapp.buildChatUrl(message);
+    const message = `Hola! Tengo una consulta sobre mi pedido.\n\nTotal de productos: ${totalItems}\nTotal: ${CURRENCY_CONFIG.symbol}${totalPrice.toFixed(2)}`;
+    const url = WHATSAPP_CONFIG.buildChatUrl(message);
     window.open(url, '_blank');
   };
 

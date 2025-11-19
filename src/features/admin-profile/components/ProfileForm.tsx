@@ -12,7 +12,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { profileSchema, type ProfileFormData } from '@/features/auth/validations';
-import { APP_CONFIG } from '@/config/app.config';
+import { WHATSAPP_CONFIG } from '@/config';
 
 interface ProfileFormProps {
   defaultValues: ProfileFormData;
@@ -95,7 +95,7 @@ export const ProfileForm: React.FC<ProfileFormProps> = ({
               type="tel"
               {...register('phone')}
               className="border-gray-300 focus:border-brand-orange"
-              placeholder={`${APP_CONFIG.whatsapp.countryCode} 8888 8888`}
+              placeholder={`${WHATSAPP_CONFIG.countryCode} 8888 8888`}
               disabled={!isEditing}
             />
             {errors.phone && (

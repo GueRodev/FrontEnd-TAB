@@ -7,7 +7,7 @@
 import type { Product, CreateProductDto, UpdateProductDto, ProductFilters } from '../types/product.types';
 import type { AdjustStockDto } from '../types/stock-movement.types';
 import type { ApiResponse, PaginatedResponse, PaginationParams } from '@/api/types';
-import { APP_CONFIG, STORAGE_KEYS } from '@/config/app.config';
+import { STORAGE_KEYS } from '@/config';
 
 // localStorage helpers
 const getItem = <T>(key: string): T | null => {

@@ -5,7 +5,7 @@
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { toast } from '@/hooks/use-toast';
-import { STORAGE_KEYS } from '@/config/app.config';
+import { STORAGE_KEYS } from '@/config';
 
 // Simplified Product interface for Wishlist
 export interface WishlistProduct {

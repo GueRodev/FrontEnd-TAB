@@ -1,67 +1,41 @@
 /**
  * Application Configuration
- * Business settings, storage keys, and app constants
- *
- * ⚠️ IMPORTANTE: Este archivo lee de ENV (src/config/env.config.ts)
+ * Business constants and app settings
  */
 
-import { ENV } from "./env.config";
-
 // ============================================
-// Application Configuration - Business Settings
+// WhatsApp Configuration
 // ============================================
-
-export const APP_CONFIG = {
-  name: ENV.APP_NAME,
-  description: ENV.APP_DESCRIPTION,
-  environment: ENV.APP_ENV,
-  debug: ENV.DEBUG,
-  useAPI: ENV.USE_API,
-
-  whatsapp: {
-    phoneNumber: ENV.WHATSAPP_NUMBER,
-    countryCode: ENV.WHATSAPP_COUNTRY_CODE,
-
-    buildChatUrl: (message: string): string => {
-      const cleanNumber = ENV.WHATSAPP_NUMBER.replace(/\D/g, "");
-      const encodedMessage = encodeURIComponent(message);
-      return `https://wa.me/${cleanNumber}?text=${encodedMessage}`;
-    },
-  },
-
-  currency: {
-    code: ENV.CURRENCY_CODE,
-    symbol: ENV.CURRENCY_SYMBOL,
-    locale: ENV.CURRENCY_LOCALE,
-  },
-
-  pagination: {
-    defaultPageSize: ENV.PAGINATION_DEFAULT_SIZE,
-    maxPageSize: ENV.PAGINATION_MAX_SIZE,
+export const WHATSAPP_CONFIG = {
+  phoneNumber: "50689176111",
+  countryCode: "+506",
+  
+  buildChatUrl: (message: string): string => {
+    const encodedMessage = encodeURIComponent(message);
+    return `https://wa.me/50689176111?text=${encodedMessage}`;
   },
 } as const;
 
 // ============================================
-// Storage Keys - LocalStorage Identifiers
+// Currency Configuration
 // ============================================
-
-export const STORAGE_KEYS = {
-  // Data storage (Auth keys are now in @/api/constants)
-  products: "products",
-  categories: "categories",
-  cart: "cart",
-  wishlist: "wishlist",
-  orders: "orders",
-  notifications: "notifications",
-  user: "user",
+export const CURRENCY_CONFIG = {
+  code: "CRC",
+  symbol: "₡",
+  locale: "es-CR",
 } as const;
 
-export type StorageKey = (typeof STORAGE_KEYS)[keyof typeof STORAGE_KEYS];
+// ============================================
+// Pagination Configuration
+// ============================================
+export const PAGINATION_CONFIG = {
+  defaultPageSize: 12,
+  maxPageSize: 100,
+} as const;
 
 // ============================================
 // Payment & Delivery Options
 // ============================================
-
 export const PAYMENT_METHODS = [
   { value: "cash", label: "Efectivo" },
   { value: "card", label: "Tarjeta" },
@@ -81,21 +55,8 @@ export type DeliveryOption = (typeof DELIVERY_OPTIONS)[number]["value"];
 // ============================================
 // File Upload Configuration
 // ============================================
-
 export const FILE_UPLOAD_CONFIG = {
   maxSize: 5 * 1024 * 1024, // 5MB
   allowedTypes: ["image/jpeg", "image/png", "image/webp", "image/gif"],
   allowedExtensions: [".jpg", ".jpeg", ".png", ".webp", ".gif"],
 } as const;
-
-// ============================================
-// Debug Logging (Development Only)
-// ============================================
-
-if (ENV.IS_DEV && ENV.DEBUG) {
-  console.group("⚙️ App Configuration");
-  console.log("Name:", APP_CONFIG.name);
-  console.log("Use API:", APP_CONFIG.useAPI);
-  console.log("WhatsApp:", `${APP_CONFIG.whatsapp.countryCode}${APP_CONFIG.whatsapp.phoneNumber}`);
-  console.groupEnd();
-}

@@ -5,7 +5,7 @@
 
 import type { Category, Subcategory, CreateCategoryDto, UpdateCategoryDto, CreateSubcategoryDto, UpdateSubcategoryDto, ReorderCategoriesDto } from '../types';
 import type { ApiResponse } from '@/api/types';
-import { STORAGE_KEYS } from '@/config/app.config';
+import { STORAGE_KEYS } from '@/config';
 
 // localStorage helpers
 const getItem = <T>(key: string): T | null => {

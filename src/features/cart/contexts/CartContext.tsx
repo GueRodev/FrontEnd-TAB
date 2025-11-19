@@ -6,7 +6,7 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { toast } from '@/hooks/use-toast';
 import type { CartItem } from '../types';
-import { STORAGE_KEYS } from '@/config/app.config';
+import { STORAGE_KEYS } from '@/config';
 
 // Re-export types for backward compatibility
 export type { CartItem } from '../types';

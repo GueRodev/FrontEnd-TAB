@@ -4,7 +4,7 @@
  */
 
 import type { Category } from '../types';
-import { STORAGE_KEYS } from '@/config/app.config';
+import { STORAGE_KEYS } from '@/config';
 
 interface OldCategory {
   id: string;
