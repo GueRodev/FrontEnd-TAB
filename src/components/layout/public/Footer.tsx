@@ -9,7 +9,7 @@ import { Facebook, Instagram, Mail, Phone, MapPin, CreditCard, Truck } from 'luc
 
 const Footer: React.FC = () => {
   return (
-    <footer className="bg-brand-darkBlue text-white pt-16 pb-8">
+    <footer className="bg-brand-darkBlue text-white pt-16 pb-8 relative overflow-hidden z-10">
       <div className="container mx-auto px-4">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
           <div>
